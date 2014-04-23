@@ -10,26 +10,28 @@ namespace Caliburn.Light
     {
         private static int? _managedThreadId;
         private static TaskScheduler _taskScheduler;
-        private static bool _isInDesignTool;
+        private static bool _isInDesignTool = true;
+        private static IUIView _uiView;
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
         /// <param name="isInDesignTool">Whether or not the framework is running in the context of a designer.</param>
-        public static void Initialize(bool isInDesignTool)
+        /// <param name="uiView"></param>
+        public static void Initialize(bool isInDesignTool, IUIView uiView)
         {
-            if (_managedThreadId.HasValue)
-                throw new InvalidOperationException("UIContext is already initialized.");
-
             _managedThreadId = Environment.CurrentManagedThreadId;
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             _isInDesignTool = isInDesignTool;
+            _uiView = uiView;
         }
 
-        private static void VerifyInitialized()
+        /// <summary>
+        /// Gets the view interaction object.
+        /// </summary>
+        public static IUIView View
         {
-            if (!_managedThreadId.HasValue)
-                throw new InvalidOperationException("UIContext is not initialized.");
+            get { return _uiView ?? NullUIView.Instance; }
         }
 
         /// <summary>
@@ -37,11 +39,7 @@ namespace Caliburn.Light
         /// </summary>
         public static bool IsInDesignTool
         {
-            get
-            {
-                VerifyInitialized();
-                return _isInDesignTool;
-            }
+            get { return _isInDesignTool; }
         }
 
         /// <summary>
@@ -50,8 +48,7 @@ namespace Caliburn.Light
         /// <returns></returns>
         public static bool CheckAccess()
         {
-            VerifyInitialized();
-            return _managedThreadId == Environment.CurrentManagedThreadId;
+            return !_managedThreadId.HasValue || _managedThreadId == Environment.CurrentManagedThreadId;
         }
 
         /// <summary>
@@ -59,11 +56,7 @@ namespace Caliburn.Light
         /// </summary>
         public static TaskScheduler TaskScheduler
         {
-            get
-            {
-                VerifyInitialized();
-                return _taskScheduler;
-            }
+            get { return _taskScheduler ?? TaskScheduler.Current; }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Demo.Validation
         {
             InitializeComponent();
 
-            UIContext.Initialize(false);
+            UIContext.Initialize(false, null);
 
             var company = new Company
             {

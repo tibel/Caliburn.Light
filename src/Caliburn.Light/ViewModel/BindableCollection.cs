@@ -11,7 +11,7 @@ namespace Caliburn.Light
     /// Represents a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
     /// </summary>
     /// <typeparam name="T">The type of elements in the collection.</typeparam>
-    public class BindableCollection<T> : ObservableCollection<T>
+    public class BindableCollection<T> : ObservableCollection<T>, IBindableCollection<T>
     {
         private int _suspensionCount;
 
@@ -88,7 +88,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Raises a property and collection changed event that notifies that all of the properties on this object have changed.
         /// </summary>
-        public void RaiseCollectionRefreshed()
+        public void Refresh()
         {
             CheckReentrancy();
             OnCollectionRefreshed();
