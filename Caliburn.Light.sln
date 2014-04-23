@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Light", "src\Caliburn.Light\Caliburn.Light.csproj", "{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{37BFCCA7-0B83-4B34-B4EA-896F6757F785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Validation", "samples\Demo.Validation\Demo.Validation.csproj", "{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +19,15 @@ Global
 		{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 	EndGlobalSection
 EndGlobal

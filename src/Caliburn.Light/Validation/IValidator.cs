@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Caliburn.Light.Validation
+namespace Caliburn.Light
 {
     /// <summary>
     /// Interface for a validator.

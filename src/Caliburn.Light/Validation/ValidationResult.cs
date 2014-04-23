@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Caliburn.Light.Validation
+namespace Caliburn.Light
 {
     /// <summary>
     /// Represents a container for the results of a validation request.

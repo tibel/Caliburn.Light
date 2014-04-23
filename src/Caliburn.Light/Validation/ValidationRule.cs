@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Caliburn.Light.Validation
+namespace Caliburn.Light
 {
     /// <summary>
     /// Provides a way to create a custom rule in order to check the validity of a value. 
@@ -12,7 +12,7 @@ namespace Caliburn.Light.Validation
         /// </summary>
         /// <param name="value">The value to check.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
-        /// <returns>A <see cref="Caliburn.Light.Validation.ValidationResult"/> object.</returns>
+        /// <returns>A <see cref="ValidationResult"/> object.</returns>
         ValidationResult Validate(object value, CultureInfo cultureInfo);
     }
 
@@ -28,7 +28,7 @@ namespace Caliburn.Light.Validation
         /// <param name="value">The value to check.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
-        /// A <see cref="Caliburn.Light.Validation.ValidationResult" /> object.
+        /// A <see cref="ValidationResult" /> object.
         /// </returns>
         public ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
@@ -40,7 +40,7 @@ namespace Caliburn.Light.Validation
         /// </summary>
         /// <param name="value">The value to check.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
-        /// <returns>A <see cref="Caliburn.Light.Validation.ValidationResult" /> object.</returns>
+        /// <returns>A <see cref="ValidationResult" /> object.</returns>
         protected abstract ValidationResult OnValidate(T value, CultureInfo cultureInfo);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Caliburn.Light.Validation
+namespace Caliburn.Light
 {
     /// <summary>
     /// Performs a range validation.
@@ -35,7 +35,7 @@ namespace Caliburn.Light.Validation
         /// </summary>
         /// <param name="value">The value to check.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
-        /// <returns>A <see cref="Caliburn.Light.Validation.ValidationResult" /> object.</returns>
+        /// <returns>A <see cref="ValidationResult" /> object.</returns>
         protected override ValidationResult OnValidate(T value, CultureInfo cultureInfo)
         {
             if (value.CompareTo(_minimum) < 0 || value.CompareTo(_maximum) > 0)

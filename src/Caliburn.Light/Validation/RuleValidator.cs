@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Weakly;
 
-namespace Caliburn.Light.Validation
+namespace Caliburn.Light
 {
     /// <summary>
     /// Helper for rule based validation.
@@ -16,7 +16,7 @@ namespace Caliburn.Light.Validation
             new Dictionary<string, IList<IValidationRule>>();
 
         /// <summary>
-        /// Adds a <see cref="Caliburn.Light.Validation.IValidationRule"/> to the validator.
+        /// Adds a <see cref="IValidationRule"/> to the validator.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="rule">The rule to add.</param>
@@ -33,7 +33,7 @@ namespace Caliburn.Light.Validation
         }
 
         /// <summary>
-        /// Adds a <see cref="Caliburn.Light.Validation.IValidationRule"/> to the validator.
+        /// Adds a <see cref="IValidationRule"/> to the validator.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <param name="property">The property.</param>

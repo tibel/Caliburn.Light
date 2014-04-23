@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Weakly;
 
-namespace Caliburn.Light.Validation
+namespace Caliburn.Light
 {
     /// <summary>
     /// A container for all <see cref="IValidator"/> instances used by an object.
