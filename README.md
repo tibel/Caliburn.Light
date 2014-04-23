@@ -1,4 +1,3 @@
-Caliburn.Light
-==============
+# Caliburn.Light
 
-Fork of Caliburn.Mico that integrates some ideas of Prism and MVVMLight including a modular aproach and weak events.
+Fork of [Caliburn.Micro](https://github.com/BlueSpire/Caliburn.Micro) that integrates some ideas of [Prism](http://msdn.microsoft.com/en-us/library/ff648465.aspx) and [MVVMLight](http://www.mvvmlight.net/) including a modular approach and weak events.
