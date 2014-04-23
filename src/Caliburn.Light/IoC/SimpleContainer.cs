@@ -35,7 +35,7 @@ namespace Caliburn.Light
         /// <returns>A new container.</returns>
         public SimpleContainer CreateChildContainer()
         {
-            return new SimpleContainer();
+            return new SimpleContainer(_entries);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Caliburn.Light
 
             if (service == null)
             {
-                return null;
+                throw new InvalidOperationException("Could not locate any instances.");
             }
 
             var serviceType = service.GetTypeInfo();
@@ -152,7 +152,7 @@ namespace Caliburn.Light
                 return array;
             }
 
-            return null;
+            throw new InvalidOperationException("Could not locate any instances.");
         }
 
         /// <summary>

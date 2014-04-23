@@ -73,25 +73,25 @@ namespace Caliburn.Light
         /// </summary>
         public event EventHandler<DeactivationEventArgs> Deactivated;
 
-        private void OnActivated(ActivationEventArgs args)
+        private void OnActivated(bool wasInitialized)
         {
             var handler = Activated;
             if (handler != null)
-                handler(this, args);
+                handler(this, new ActivationEventArgs(wasInitialized));
         }
 
-        private void OnDeactivating(DeactivationEventArgs args)
+        private void OnDeactivating(bool wasClosed)
         {
             var handler = Deactivating;
             if (handler != null)
-                handler(this, args);
+                handler(this, new DeactivationEventArgs(wasClosed));
         }
 
-        private void OnDeactivated(DeactivationEventArgs args)
+        private void OnDeactivated(bool wasClosed)
         {
             var handler = Deactivated;
             if (handler != null)
-                handler(this, args);
+                handler(this, new DeactivationEventArgs(wasClosed));
         }
 
         void IActivate.Activate()
@@ -109,7 +109,7 @@ namespace Caliburn.Light
             Log.Info("Activating {0}.", this);
             OnActivate();
 
-            OnActivated(new ActivationEventArgs(initialized));
+            OnActivated(initialized);
         }
 
         /// <summary>
@@ -130,13 +130,13 @@ namespace Caliburn.Light
         {
             if (IsActive || (IsInitialized && close))
             {
-                OnDeactivating(new DeactivationEventArgs(close));
+                OnDeactivating(close);
 
                 IsActive = false;
                 Log.Info("Deactivating {0}.", this);
                 OnDeactivate(close);
 
-                OnDeactivated(new DeactivationEventArgs(close));
+                OnDeactivated(close);
 
                 if (close)
                 {
