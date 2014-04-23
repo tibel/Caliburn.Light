@@ -69,6 +69,9 @@
     <Compile Include="EventAggregator\EventAggregator.cs" />
     <Compile Include="EventAggregator\IEventAggregator.cs" />
     <Compile Include="EventAggregator\ThreadOption.cs" />
+    <Compile Include="IoC\IoC.cs" />
+    <Compile Include="IoC\IServiceLocator.cs" />
+    <Compile Include="IoC\NullServiceLocator.cs" />
     <Compile Include="Logging\DebugLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\LogManager.cs" />

@@ -10,11 +10,6 @@ namespace Caliburn.Light
     public static class Coroutine
     {
         /// <summary>
-        /// Pushes dependencies into an <see cref="ICoTask"/> instance.
-        /// </summary>
-        public static Action<object> BuildUp = instance => { };
-
-        /// <summary>
         /// Executes an <see cref="ICoTask"/> asynchronous.
         /// </summary>
         /// <param name="coTask">The coroutine to execute.</param>
@@ -60,7 +55,7 @@ namespace Caliburn.Light
 
             try
             {
-                BuildUp(coTask);
+                IoC.InjectProperties(coTask);
                 coTask.Completed += completed;
                 coTask.BeginExecute(context ?? new CoroutineExecutionContext());
             }

@@ -33,7 +33,7 @@ namespace Caliburn.Light
             try
             {
                 _innerCoTask.Completed += InnerCoTaskCompleted;
-                Coroutine.BuildUp(_innerCoTask);
+                IoC.InjectProperties(_innerCoTask);
                 _innerCoTask.BeginExecute(_context);
             }
             catch (Exception ex)
