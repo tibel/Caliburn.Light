@@ -72,6 +72,8 @@
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="IoC\IServiceLocator.cs" />
     <Compile Include="IoC\NullServiceLocator.cs" />
+    <Compile Include="IoC\SimpleContainer.cs" />
+    <Compile Include="IoC\SimpleContainerHelper.cs" />
     <Compile Include="Logging\DebugLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\LogManager.cs" />

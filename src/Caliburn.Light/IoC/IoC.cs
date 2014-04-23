@@ -62,7 +62,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="T">The type to resolve.</typeparam>
         /// <returns>The resolved instances.</returns>
-        public static IEnumerable<T> GetAll<T>()
+        public static IEnumerable<T> GetAllInstances<T>()
         {
             return GetAllInstances(typeof(T)).Cast<T>();
         }
