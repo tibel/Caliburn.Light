@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Light", "src\Caliburn.Light\Caliburn.Light.csproj", "{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{37BFCCA7-0B83-4B34-B4EA-896F6757F785}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Validation", "samples\Demo.Validation\Demo.Validation.csproj", "{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.NET45", "src\Caliburn.Xaml\Caliburn.Xaml.NET45.csproj", "{F289FF4D-21E1-4E33-8E92-4677A17543D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
