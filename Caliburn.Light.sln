@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Validation", "samples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.NET45", "src\Caliburn.Xaml\Caliburn.Xaml.NET45.csproj", "{F289FF4D-21E1-4E33-8E92-4677A17543D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WIN81", "src\Caliburn.Xaml\Caliburn.Xaml.WIN81.csproj", "{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WP8", "src\Caliburn.Xaml\Caliburn.Xaml.WP8.csproj", "{751CEF13-946E-48A3-94F5-07B92FC4120E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WPA81", "src\Caliburn.Xaml\Caliburn.Xaml.WPA81.csproj", "{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +35,18 @@ Global
 		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F289FF4D-21E1-4E33-8E92-4677A17543D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{751CEF13-946E-48A3-94F5-07B92FC4120E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{751CEF13-946E-48A3-94F5-07B92FC4120E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{751CEF13-946E-48A3-94F5-07B92FC4120E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{751CEF13-946E-48A3-94F5-07B92FC4120E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
