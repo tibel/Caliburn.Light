@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Caliburn.Light</id>
+    <title>Caliburn.Light</title>
+    <version>1.0.0</version>
+    <authors>Thomas Ibel</authors>
+    <description>Fork of Caliburn.Micro that integrates some ideas of Prism and MVVMLight including a modular approach and weak events.</description>
+    <language>en-US</language>
+    <licenseUrl>https://github.com/tibel/Caliburn.Light/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
+    <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright Thomas Ibel 2014</copyright>
+    <tags></tags>
+
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Windows.Interactivity" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.Windows.Interactivity" targetFramework="wp8" />
+    </frameworkAssemblies>
+
+    <dependencies>
+      <group>
+        <dependency id="Weakly" version="[2.1.1,2.2)" />
+      </group>
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="..\src\Caliburn.Light\bin\Release\Caliburn.*" target="lib\portable-net45+win8+wp8+wpa81" />
+	<file src="..\src\Caliburn.Xaml\bin\net45\Release\Caliburn.*" target="lib\net45" />
+	<file src="..\src\Caliburn.Xaml\bin\win81\Release\Caliburn.*" target="lib\win81" />
+	<file src="..\src\Caliburn.Xaml\bin\wp8\Release\Caliburn.*" target="lib\wp8" />
+	<file src="..\src\Caliburn.Xaml\bin\wpa81\Release\Caliburn.*" target="lib\wpa81" />
+	
+	<file src="tools\**" target="tools" />
+	
+    <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
+  </files>
+</package>
