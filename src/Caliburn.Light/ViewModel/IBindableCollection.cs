@@ -8,7 +8,7 @@ namespace Caliburn.Light
     /// Represents a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
     /// </summary>
     /// <typeparam name="T">The type of elements contained in the collection.</typeparam>
-    public interface IBindableCollection<T> : IList<T>, IReadOnlyList<T>, IList, INotifyCollectionChanged, IBindableObject
+    public interface IBindableCollection<T> : IList<T>, INotifyCollectionChanged, IBindableObject
     {
         /// <summary>
         /// Moves the item at the specified index to a new location in the collection.
