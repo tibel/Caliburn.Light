@@ -29,10 +29,10 @@
 
   <files>
     <file src="..\src\Caliburn.Light\bin\Release\Caliburn.*" target="lib\portable-net45+win8+wp8+wpa81" />
-	<file src="..\src\Caliburn.Xaml\bin\net45\Release\Caliburn.*" target="lib\net45" />
-	<file src="..\src\Caliburn.Xaml\bin\win81\Release\Caliburn.*" target="lib\win81" />
-	<file src="..\src\Caliburn.Xaml\bin\wp8\Release\Caliburn.*" target="lib\wp8" />
-	<file src="..\src\Caliburn.Xaml\bin\wpa81\Release\Caliburn.*" target="lib\wpa81" />
+	<file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net45" />
+	<file src="..\src\Caliburn.Xaml.WIN81\bin\Release\Caliburn.*" target="lib\win81" />
+	<file src="..\src\Caliburn.Xaml.WP8\bin\Release\Caliburn.*" target="lib\wp8" />
+	<file src="..\src\Caliburn.Xaml.WPA81\bin\Release\Caliburn.*" target="lib\wpa81" />
 	
 	<file src="tools\**" target="tools" />
 	

@@ -10,7 +10,9 @@ using System.Resources;
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
 
+#if !NETFX_CORE
 [assembly: CLSCompliant(true)]
+#endif
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

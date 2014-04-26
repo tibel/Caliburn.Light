@@ -9,18 +9,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{37BF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Validation", "samples\Demo.Validation\Demo.Validation.csproj", "{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.NET45", "src\Caliburn.Xaml\Caliburn.Xaml.NET45.csproj", "{F289FF4D-21E1-4E33-8E92-4677A17543D4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WIN81", "src\Caliburn.Xaml\Caliburn.Xaml.WIN81.csproj", "{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WP8", "src\Caliburn.Xaml\Caliburn.Xaml.WP8.csproj", "{751CEF13-946E-48A3-94F5-07B92FC4120E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WPA81", "src\Caliburn.Xaml\Caliburn.Xaml.WPA81.csproj", "{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AB5A63C0-08FA-497E-8A57-F4A574E3AFCC}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.NET45", "src\Caliburn.Xaml.NET45\Caliburn.Xaml.NET45.csproj", "{F289FF4D-21E1-4E33-8E92-4677A17543D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WIN81", "src\Caliburn.Xaml.WIN81\Caliburn.Xaml.WIN81.csproj", "{C10464F7-3B8F-4ECD-B0B0-2B319E90B31B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WP8", "src\Caliburn.Xaml.WP8\Caliburn.Xaml.WP8.csproj", "{751CEF13-946E-48A3-94F5-07B92FC4120E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WPA81", "src\Caliburn.Xaml.WPA81\Caliburn.Xaml.WPA81.csproj", "{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
