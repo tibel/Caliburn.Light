@@ -67,4 +67,20 @@ namespace Caliburn.Xaml
         /// <param name="parameter">The parameter to the action. If the action does not require a parameter, the parameter may be set to a null reference.</param>
         protected abstract void Invoke(object parameter);
     }
+
+    /// <summary>
+    /// Represents an attachable object that encapsulates a unit of functionality.
+    /// </summary>
+    /// <typeparam name="T">The type to which this action can be attached.</typeparam>
+    public abstract class TriggerAction<T> : TriggerAction
+        where T : DependencyObject
+    {
+        /// <summary>
+        /// Gets the object to which this <see cref="TriggerAction&lt;T&gt;"/> is attached.
+        /// </summary>
+        protected new T AssociatedObject
+        {
+            get { return (T) base.AssociatedObject; }
+        }
+    }
 }
