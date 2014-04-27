@@ -47,6 +47,8 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Behaviors\AttachedCollection.cs" />
+    <Compile Include="Behaviors\IHaveParameters.cs" />
+    <Compile Include="Behaviors\Parameter.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
