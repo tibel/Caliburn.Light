@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="Behaviors\AttachedCollection.cs" />
     <Compile Include="Behaviors\IHaveParameters.cs" />
+    <Compile Include="Behaviors\InvokeCommandAction.cs" />
     <Compile Include="Behaviors\Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
