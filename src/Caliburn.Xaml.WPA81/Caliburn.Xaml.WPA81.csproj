@@ -44,8 +44,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Caliburn.Xaml.WIN81\AttachedCollection.cs">
+      <Link>AttachedCollection.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml.WIN81\BooleanToVisibilityConverter.cs">
       <Link>BooleanToVisibilityConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\IAttachedObject.cs">
+      <Link>IAttachedObject.cs</Link>
     </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
