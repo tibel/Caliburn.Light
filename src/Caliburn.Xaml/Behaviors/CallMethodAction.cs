@@ -86,14 +86,14 @@ namespace Caliburn.Xaml
         {
             var callMethodAction = (CallMethodAction)sender;
             callMethodAction.UpdateMethodInfo();
-            callMethodAction.UpdateAvailability();
+            callMethodAction.UpdateEnabledState();
         }
 
         private static void OnTargetObjectChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             var callMethodAction = (CallMethodAction)sender;
             callMethodAction.UpdateMethodInfo();
-            callMethodAction.UpdateAvailability();
+            callMethodAction.UpdateEnabledState();
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Caliburn.Xaml
             Parameters.OfType<Parameter>().ForEach(x => x.MakeAwareOf(this));
 
             UpdateMethodInfo();
-            UpdateAvailability();
+            UpdateEnabledState();
         }
 
         /// <summary>
@@ -171,16 +171,16 @@ namespace Caliburn.Xaml
             {
 #if NETFX_CORE
                 if (Dispatcher.HasThreadAccess)
-                    UpdateAvailability();
+                    UpdateEnabledState();
                 else
                 {
-                    var dummy = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateAvailability);
+                    var dummy = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateEnabledState);
                 }
 #else
                 if (Dispatcher.CheckAccess())
-                    UpdateAvailability();
+                    UpdateEnabledState();
                 else
-                    Dispatcher.BeginInvoke(new Action(UpdateAvailability));
+                    Dispatcher.BeginInvoke(new Action(UpdateEnabledState));
 #endif
             }
         }
@@ -188,7 +188,7 @@ namespace Caliburn.Xaml
         /// <summary>
         /// Forces an update of the IsEnabled state.
         /// </summary>
-        public void UpdateAvailability()
+        public void UpdateEnabledState()
         {
             if (AssociatedObject == null) return;
 

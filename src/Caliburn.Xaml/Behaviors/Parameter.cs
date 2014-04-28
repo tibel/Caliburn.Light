@@ -71,7 +71,7 @@ namespace Caliburn.Xaml
         {
             var owner = ((Parameter)d).Owner;
             if (owner != null)
-                owner.UpdateAvailability();
+                owner.UpdateEnabledState();
         }
     }
 }

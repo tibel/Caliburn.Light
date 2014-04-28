@@ -17,6 +17,6 @@ namespace Caliburn.Xaml
         /// <summary>
         /// Forces an update of the IsEnabled state.
         /// </summary>
-        void UpdateAvailability();
+        void UpdateEnabledState();
     }
 }
