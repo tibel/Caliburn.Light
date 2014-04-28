@@ -1,32 +1,45 @@
-﻿using Caliburn.Light;
+﻿using Weakly;
+using System.Linq;
+using Caliburn.Light;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+#if !NETFX_CORE
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interactivity;
 using System.Windows.Markup;
-using Weakly;
+#else
+using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
+#endif
 
 namespace Caliburn.Xaml
 {
     /// <summary>
     /// Calls a method on a specified object when invoked.
     /// </summary>
+#if !NETFX_CORE
     [ContentProperty("Parameters")]
+#else
+    [ContentProperty(Name = "Parameters")]
+#endif
     public class CallMethodAction : TriggerAction<UIElement>, IHaveParameters
     {
         /// <summary>
         /// Identifies the <seealso cref="CallMethodAction.TargetObject"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty TargetObjectProperty = DependencyProperty.Register("TargetObject",
-            typeof (object), typeof (CallMethodAction), new PropertyMetadata(OnTargetObjectChanged));
+            typeof (object), typeof (CallMethodAction), new PropertyMetadata(null, OnTargetObjectChanged));
 
         /// <summary>
         /// Identifies the <seealso cref="CallMethodAction.MethodName"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty MethodNameProperty = DependencyProperty.Register("MethodName",
-            typeof(string), typeof(CallMethodAction), new PropertyMetadata(OnMethodNameChanged));
+            typeof(string), typeof(CallMethodAction), new PropertyMetadata(null, OnMethodNameChanged));
 
         /// <summary>
         /// Identifies the <seealso cref="CallMethodAction.Parameters"/> dependency property.
@@ -90,7 +103,7 @@ namespace Caliburn.Xaml
         {
             base.OnAttached();
             Parameters.Attach(AssociatedObject);
-            Parameters.ForEach(x => x.MakeAwareOf(this));
+            Parameters.OfType<Parameter>().ForEach(x => x.MakeAwareOf(this));
 
             UpdateMethodInfo();
             UpdateAvailability();
@@ -156,10 +169,19 @@ namespace Caliburn.Xaml
         {
             if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == _guardName)
             {
+#if NETFX_CORE
+                if (Dispatcher.HasThreadAccess)
+                    UpdateAvailability();
+                else
+                {
+                    var dummy = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateAvailability);
+                }
+#else
                 if (Dispatcher.CheckAccess())
                     UpdateAvailability();
                 else
                     Dispatcher.BeginInvoke(new Action(UpdateAvailability));
+#endif
             }
         }
 
@@ -170,15 +192,20 @@ namespace Caliburn.Xaml
         {
             if (AssociatedObject == null) return;
 
-            if (_guard == null)
+            var canExecute = true;
+            if (_guard != null)
             {
-                AssociatedObject.IsEnabled = true;
-                return;
+                var guardFunction = DynamicDelegate.From(_guard);
+                canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(Parameters, _guard.GetParameters()));
             }
 
-            var guardFunction = DynamicDelegate.From(_guard);
-            var canExecute = (bool) guardFunction(Target, ParameterBinder.DetermineParameters(Parameters, _guard.GetParameters()));
-            AssociatedObject.IsEnabled = canExecute;
+#if SILVERLIGHT || NETFX_CORE
+            var control = AssociatedObject as Control;
+            if (control != null)
+                control.IsEnabled = canExecute;
+#else
+                AssociatedObject.IsEnabled = canExecute;
+#endif
         }
 
         /// <summary>

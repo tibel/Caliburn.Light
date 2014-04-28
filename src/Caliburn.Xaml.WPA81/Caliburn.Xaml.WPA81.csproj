@@ -44,7 +44,39 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Caliburn.Xaml.WIN81\**\*.cs" Exclude="..\Caliburn.Xaml.WIN81\Properties\*.cs;..\Caliburn.Xaml.WIN81\obj\**\*.cs" />
+    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\AttachedCollection.cs">
+      <Link>Behaviors\AttachedCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\EventTrigger.cs">
+      <Link>Behaviors\EventTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\IAttachedObject.cs">
+      <Link>Behaviors\IAttachedObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\TriggerAction.cs">
+      <Link>Behaviors\TriggerAction.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\TriggerBase.cs">
+      <Link>Behaviors\TriggerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\BooleanToVisibilityConverter.cs">
+      <Link>BooleanToVisibilityConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\Behaviors\CallMethodAction.cs">
+      <Link>Behaviors\CallMethodAction.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\Behaviors\IHaveParameters.cs">
+      <Link>Behaviors\IHaveParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\Behaviors\InvokeCommandAction.cs">
+      <Link>Behaviors\InvokeCommandAction.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\Behaviors\Parameter.cs">
+      <Link>Behaviors\Parameter.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\Behaviors\ParameterBinder.cs">
+      <Link>Behaviors\ParameterBinder.cs</Link>
+    </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>

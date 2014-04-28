@@ -1,4 +1,6 @@
-﻿using System.Windows.Interactivity;
+﻿#if !NETFX_CORE
+using System.Windows.Interactivity;
+#endif
 
 namespace Caliburn.Xaml
 {

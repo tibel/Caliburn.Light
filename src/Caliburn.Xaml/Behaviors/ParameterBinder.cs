@@ -56,7 +56,7 @@ namespace Caliburn.Xaml
 
             if (guard == null) return null;
             if (guard.ContainsGenericParameters) return null;
-            if (!typeof(bool).Equals(guard.ReturnType)) return null;
+            if (typeof(bool) != guard.ReturnType) return null;
 
             var guardPars = guard.GetParameters();
             var actionPars = method.GetParameters();
@@ -134,7 +134,11 @@ namespace Caliburn.Xaml
                 return GetDefaultValue(destinationType);
 
             var providedType = providedValue.GetType();
+#if NETFX_CORE
+            if (destinationType.GetTypeInfo().IsAssignableFrom(providedType.GetTypeInfo()))
+#else
             if (destinationType.IsAssignableFrom(providedType))
+#endif
                 return providedValue;
 
             if (CustomConverters.ContainsKey(destinationType))
@@ -165,7 +169,11 @@ namespace Caliburn.Xaml
                     return Enum.ToObject(destinationType, providedValue);
                 }
 
+#if NETFX_CORE
+                if (typeof(Guid).GetTypeInfo().IsAssignableFrom(destinationType.GetTypeInfo()))
+#else
                 if (typeof(Guid).IsAssignableFrom(destinationType))
+#endif
                 {
                     var stringValue = providedValue as string;
                     if (stringValue != null)
@@ -198,7 +206,7 @@ namespace Caliburn.Xaml
         {
 #if NETFX_CORE
             var typeInfo = type.GetTypeInfo();
-            return typeInfo.IsClass || typeInfo.IsInterface ? null : System.Activator.CreateInstance(type);
+            return typeInfo.IsClass || typeInfo.IsInterface ? null : Activator.CreateInstance(type);
 #else
             return type.IsClass || type.IsInterface ? null : Activator.CreateInstance(type);
 #endif

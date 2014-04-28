@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Windows.Input;
+#if !NETFX_CORE
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interactivity;
+#else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+#endif
 
 namespace Caliburn.Xaml
 {
@@ -9,7 +15,7 @@ namespace Caliburn.Xaml
     /// Executes a specified ICommand when invoked.
     /// It also maintains the Enabled state of the target element based on the CanExecute method of the command.
     /// </summary>
-    public class InvokeCommandAction : TriggerAction<Control>
+    public class InvokeCommandAction : TriggerAction<UIElement>
     {
         /// <summary>
         /// Identifies the <seealso cref="InvokeCommandAction.Command"/> dependency property.
@@ -70,7 +76,15 @@ namespace Caliburn.Xaml
         {
             if (AssociatedObject != null && Command != null)
             {
-                AssociatedObject.IsEnabled = Command.CanExecute(CommandParameter);
+                var canExecute = Command.CanExecute(CommandParameter);
+
+#if SILVERLIGHT || NETFX_CORE
+                var control = AssociatedObject as Control;
+                if (control != null)
+                    control.IsEnabled = canExecute;
+#else
+                AssociatedObject.IsEnabled = canExecute;
+#endif
             }
         }
 
