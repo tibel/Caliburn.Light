@@ -53,7 +53,7 @@
     </Reference>
     <Reference Include="Weakly, Version=2.1.0.0, Culture=neutral, PublicKeyToken=3e9c206b2200b970, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Weakly.2.1.1\lib\portable-net45+win8+wp8+wpa81\Weakly.dll</HintPath>
+      <HintPath>..\..\packages\Weakly.2.1.2\lib\portable-net45+win8+wp8+wpa81\Weakly.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />

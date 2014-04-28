@@ -22,7 +22,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Weakly" version="[2.1.1,2.2)" />
+        <dependency id="Weakly" version="[2.1.2,2.2)" />
       </group>
     </dependencies>
   </metadata>
