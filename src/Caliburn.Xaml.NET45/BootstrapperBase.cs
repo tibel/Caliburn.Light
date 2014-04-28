@@ -126,6 +126,8 @@ namespace Caliburn.Xaml
         /// <returns>The located service.</returns>
         public virtual object GetInstance(Type service, string key)
         {
+            if (service == typeof (IWindowManager))
+                return new WindowManager();
             return Activator.CreateInstance(service);
         }
 
@@ -177,14 +179,23 @@ namespace Caliburn.Xaml
         /// <summary>
         /// Locates the view model, locates the associate view, binds them and shows it as the root view.
         /// </summary>
+        /// <param name="viewModelType">The view model type.</param>
+        /// <param name="settings">The optional window settings.</param>
+        protected void DisplayRootViewFor(Type viewModelType, IDictionary<string, object> settings = null)
+        {
+            var windowManager = IoC.GetInstance<IWindowManager>();
+            var viewModel = IoC.GetInstance(viewModelType);
+            windowManager.ShowWindow(viewModel, null, settings);
+        }
+
+        /// <summary>
+        /// Locates the view model, locates the associate view, binds them and shows it as the root view.
+        /// </summary>
         /// <typeparam name="TViewModel">The view model type.</typeparam>
         /// <param name="settings">The optional window settings.</param>
         protected void DisplayRootViewFor<TViewModel>(IDictionary<string, object> settings = null)
         {
-            //TODO: this should be removed an be part of the client code
-            var windowManager = IoC.GetInstance<IWindowManager>();
-            var viewModel = IoC.GetInstance<TViewModel>();
-            windowManager.ShowWindow(viewModel, null, settings);
+            DisplayRootViewFor(typeof (TViewModel), settings);
         }
     }
 }
