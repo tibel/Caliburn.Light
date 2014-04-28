@@ -98,7 +98,7 @@ namespace Caliburn.Xaml
                 return;
             }
 
-            View.ExecuteOnLoad(fe, delegate
+            ViewHelper.ExecuteOnLoad(fe, delegate
             {
                 var target = e.NewValue;
                 var containerKey = e.NewValue as string;
@@ -106,8 +106,6 @@ namespace Caliburn.Xaml
                 {
                     target = IoC.GetInstance(null, containerKey);
                 }
-
-                d.SetValue(View.IsScopeRootProperty, true);
 
                 var context = string.IsNullOrEmpty(fe.Name)
                     ? fe.GetHashCode().ToString(CultureInfo.InvariantCulture)
@@ -130,7 +128,7 @@ namespace Caliburn.Xaml
                 return;
             }
 
-            View.ExecuteOnLoad(fe, delegate
+            ViewHelper.ExecuteOnLoad(fe, delegate
             {
                 var target = e.NewValue;
                 var containerKey = e.NewValue as string;
@@ -138,8 +136,6 @@ namespace Caliburn.Xaml
                 {
                     target = IoC.GetInstance(null, containerKey);
                 }
-
-                d.SetValue(View.IsScopeRootProperty, true);
 
                 var context = string.IsNullOrEmpty(fe.Name)
                     ? fe.GetHashCode().ToString(CultureInfo.InvariantCulture)

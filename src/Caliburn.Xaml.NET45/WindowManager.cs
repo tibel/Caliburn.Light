@@ -70,7 +70,7 @@ namespace Caliburn.Xaml
             var view = ViewLocator.LocateForModel(rootModel, popup, context);
 
             popup.Child = view;
-            popup.SetValue(View.IsGeneratedProperty, true);
+            ViewHelper.SetIsGenerated(popup, true);
 
             ViewModelBinder.Bind(rootModel, popup, null);
 
@@ -163,7 +163,7 @@ namespace Caliburn.Xaml
                     SizeToContent = SizeToContent.WidthAndHeight
                 };
 
-                window.SetValue(View.IsGeneratedProperty, true);
+                ViewHelper.SetIsGenerated(window, true);
 
                 var owner = InferOwnerOf(window);
                 if (owner != null)
@@ -253,7 +253,7 @@ namespace Caliburn.Xaml
             if (page == null)
             {
                 page = new Page {Content = view};
-                page.SetValue(View.IsGeneratedProperty, true);
+                ViewHelper.SetIsGenerated(page, true);
             }
 
             return page;

@@ -23,7 +23,7 @@ namespace Caliburn.Xaml
         /// </returns>
         public object GetFirstNonGeneratedView(object view)
         {
-            return View.GetFirstNonGeneratedView(view);
+            return ViewHelper.GetFirstNonGeneratedView(view);
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Caliburn.Xaml
         {
             var element = view as FrameworkElement;
             if (element != null)
-                View.ExecuteOnFirstLoad(element, (s, e) => handler(s));
+                ViewHelper.ExecuteOnFirstLoad(element, (s, e) => handler(s));
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Caliburn.Xaml
         {
             var element = view as FrameworkElement;
             if (element != null)
-                View.ExecuteOnLayoutUpdated(element, (s, e) => handler(s));
+                ViewHelper.ExecuteOnLayoutUpdated(element, (s, e) => handler(s));
         }
 
         /// <summary>

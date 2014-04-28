@@ -44,7 +44,7 @@ namespace Caliburn.Xaml
             var host = new DialogHost(navigationSvc);
             var view = ViewLocator.LocateForModel(rootModel, host, context);
             host.Content = view;
-            host.SetValue(View.IsGeneratedProperty, true);
+            ViewHelper.SetIsGenerated(host, true);
 
             ViewModelBinder.Bind(rootModel, host, null);
 
@@ -78,7 +78,7 @@ namespace Caliburn.Xaml
             var view = ViewLocator.LocateForModel(rootModel, popup, context);
 
             popup.Child = view;
-            popup.SetValue(View.IsGeneratedProperty, true);
+            ViewHelper.SetIsGenerated(popup, true);
 
             ViewModelBinder.Bind(rootModel, popup, null);
 
