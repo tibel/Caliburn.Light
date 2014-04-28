@@ -75,16 +75,49 @@
     <Compile Include="..\Caliburn.Xaml\Behaviors\ParameterBinder.cs">
       <Link>Behaviors\ParameterBinder.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml\Bind.cs">
+      <Link>Bind.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\NameTransformer.cs">
+      <Link>NameTransformer.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\RegExHelper.cs">
+      <Link>RegExHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\TypeMappingConfiguration.cs">
+      <Link>TypeMappingConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\TypeResolver.cs">
+      <Link>TypeResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\View.cs">
+      <Link>View.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewAdapter.cs">
+      <Link>ViewAdapter.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml\ViewHelper.cs">
       <Link>ViewHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewLocator.cs">
+      <Link>ViewLocator.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewModelBinder.cs">
+      <Link>ViewModelBinder.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewModelLocator.cs">
+      <Link>ViewModelLocator.cs</Link>
     </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Behaviors\AttachedCollection.cs" />
+    <Compile Include="BootstrapperBase.cs" />
+    <Compile Include="IWindowManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WindowManager.cs" />
     <None Include="..\Caliburn.Light.snk">
       <Link>Properties\Caliburn.Light.snk</Link>
     </None>

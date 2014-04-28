@@ -62,6 +62,15 @@
     <Compile Include="..\Caliburn.Xaml.WIN81\BooleanToVisibilityConverter.cs">
       <Link>BooleanToVisibilityConverter.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\CaliburnApplication.cs">
+      <Link>CaliburnApplication.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\FrameAdapter.cs">
+      <Link>FrameAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\INavigationService.cs">
+      <Link>INavigationService.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml\Behaviors\CallMethodAction.cs">
       <Link>Behaviors\CallMethodAction.cs</Link>
     </Compile>
@@ -77,8 +86,38 @@
     <Compile Include="..\Caliburn.Xaml\Behaviors\ParameterBinder.cs">
       <Link>Behaviors\ParameterBinder.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml\Bind.cs">
+      <Link>Bind.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\NameTransformer.cs">
+      <Link>NameTransformer.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\RegExHelper.cs">
+      <Link>RegExHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\TypeMappingConfiguration.cs">
+      <Link>TypeMappingConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\TypeResolver.cs">
+      <Link>TypeResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\View.cs">
+      <Link>View.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewAdapter.cs">
+      <Link>ViewAdapter.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml\ViewHelper.cs">
       <Link>ViewHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewLocator.cs">
+      <Link>ViewLocator.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewModelBinder.cs">
+      <Link>ViewModelBinder.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewModelLocator.cs">
+      <Link>ViewModelLocator.cs</Link>
     </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
