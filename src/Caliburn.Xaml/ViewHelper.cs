@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Media;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Data;
 #endif
 
 namespace Caliburn.Xaml
@@ -54,6 +55,18 @@ namespace Caliburn.Xaml
             var contentPropertyAttribute = type.GetTypeInfo().GetCustomAttribute<ContentPropertyAttribute>(true);
             var contentPropertyName = (contentPropertyAttribute == null) ? DefaultContentPropertyName : contentPropertyAttribute.Name;
             return type.GetRuntimeProperty(contentPropertyName);
+        }
+
+        /// <summary>
+        /// Determines whether a particular dependency property already has a binding on the provided element.
+        /// </summary>
+        public static bool HasBinding(FrameworkElement element, DependencyProperty property)
+        {
+#if SILVERLIGHT || NETFX_CORE
+            return element.GetBindingExpression(property) != null;
+#else
+            return BindingOperations.GetBindingBase(element, property) != null;
+#endif
         }
     }
 }
