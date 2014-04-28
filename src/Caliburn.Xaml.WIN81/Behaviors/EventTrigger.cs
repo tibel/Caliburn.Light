@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 
 namespace Caliburn.Xaml
 {
@@ -99,7 +98,7 @@ namespace Caliburn.Xaml
                 if (!_isLoadedEventRegistered)
                 {
                     var frameworkElement = _resolvedSource as FrameworkElement;
-                    if (frameworkElement != null && !IsElementLoaded(frameworkElement))
+                    if (frameworkElement != null && !ViewHelper.IsElementLoaded(frameworkElement))
                     {
                         _isLoadedEventRegistered = true;
                         frameworkElement.Loaded += OnEvent;
@@ -187,17 +186,6 @@ namespace Caliburn.Xaml
 
             eventTrigger.UnregisterEvent((string)args.OldValue);
             eventTrigger.RegisterEvent((string)args.NewValue);
-        }
-
-        internal static bool IsElementLoaded(FrameworkElement element)
-        {
-            if (element == null)
-                return false;
-
-            var content = Window.Current.Content;
-            var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
-
-            return parent != null || (content != null && element == content);
         }
 
         private static bool IsWindowsRuntimeType(Type type)

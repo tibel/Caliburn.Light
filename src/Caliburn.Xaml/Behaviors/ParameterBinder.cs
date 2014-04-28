@@ -134,11 +134,8 @@ namespace Caliburn.Xaml
                 return GetDefaultValue(destinationType);
 
             var providedType = providedValue.GetType();
-#if NETFX_CORE
+
             if (destinationType.GetTypeInfo().IsAssignableFrom(providedType.GetTypeInfo()))
-#else
-            if (destinationType.IsAssignableFrom(providedType))
-#endif
                 return providedValue;
 
             if (CustomConverters.ContainsKey(destinationType))
@@ -156,11 +153,7 @@ namespace Caliburn.Xaml
                     return converter.ConvertTo(providedValue, destinationType);
 #endif
 
-#if NETFX_CORE
                 if (destinationType.GetTypeInfo().IsEnum)
-#else
-                if (destinationType.IsEnum)
-#endif
                 {
                     var stringValue = providedValue as string;
                     if (stringValue != null)
@@ -169,11 +162,7 @@ namespace Caliburn.Xaml
                     return Enum.ToObject(destinationType, providedValue);
                 }
 
-#if NETFX_CORE
                 if (typeof(Guid).GetTypeInfo().IsAssignableFrom(destinationType.GetTypeInfo()))
-#else
-                if (typeof(Guid).IsAssignableFrom(destinationType))
-#endif
                 {
                     var stringValue = providedValue as string;
                     if (stringValue != null)
@@ -204,12 +193,8 @@ namespace Caliburn.Xaml
         /// <returns>The default value.</returns>
         public static object GetDefaultValue(Type type)
         {
-#if NETFX_CORE
             var typeInfo = type.GetTypeInfo();
             return typeInfo.IsClass || typeInfo.IsInterface ? null : Activator.CreateInstance(type);
-#else
-            return type.IsClass || type.IsInterface ? null : Activator.CreateInstance(type);
-#endif
         }
     }
 }

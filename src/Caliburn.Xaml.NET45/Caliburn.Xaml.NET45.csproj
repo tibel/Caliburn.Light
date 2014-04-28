@@ -75,6 +75,9 @@
     <Compile Include="..\Caliburn.Xaml\Behaviors\ParameterBinder.cs">
       <Link>Behaviors\ParameterBinder.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml\ViewHelper.cs">
+      <Link>ViewHelper.cs</Link>
+    </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
