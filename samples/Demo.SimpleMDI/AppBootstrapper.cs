@@ -1,4 +1,5 @@
-﻿using Caliburn.Xaml;
+﻿using Caliburn.Light;
+using Caliburn.Xaml;
 using System.Windows;
 
 namespace Demo.SimpleMDI
@@ -7,6 +8,7 @@ namespace Demo.SimpleMDI
     {
         public AppBootstrapper()
         {
+            LogManager.Initialize(type => new DebugLogger(type));
             Initialize();
         }
 
