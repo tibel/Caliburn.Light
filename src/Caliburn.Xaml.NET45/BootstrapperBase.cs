@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Weakly;
@@ -42,6 +43,12 @@ namespace Caliburn.Xaml
             var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
                 typeof (FrameworkElement));
             var inDesignMode = (bool) descriptor.Metadata.DefaultValue;
+
+            // set SynchronizationContext so that we can create the TaskScheduler
+            // this is needed here as the dispatcher-loop is not yet running and therefor
+            // the Dispatcher has not set the SynchronizationContext yet.
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+
             UIContext.Initialize(inDesignMode, new ViewAdapter());
 
             if (inDesignMode)
