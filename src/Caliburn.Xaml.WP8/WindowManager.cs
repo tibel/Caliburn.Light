@@ -332,7 +332,7 @@ namespace Caliburn.Xaml
                 {
                     Close(_currentPageUri != null);
                 }
-                else if (e.Uri.Equals(_currentPageUri))
+                else if (e.Uri == _currentPageUri)
                 {
                     _currentPageUri = null;
                     //refreshes the page instance

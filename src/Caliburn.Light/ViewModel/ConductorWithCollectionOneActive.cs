@@ -69,7 +69,7 @@ namespace Caliburn.Light
                 /// <param name="item">The item to activate.</param>
                 public override void ActivateItem(T item)
                 {
-                    if (item != null && item.Equals(ActiveItem))
+                    if (item != null && ReferenceEquals(item, ActiveItem))
                     {
                         if (IsActive)
                         {
@@ -110,7 +110,7 @@ namespace Caliburn.Light
 
                 private void CloseItemCore(T item)
                 {
-                    if (item.Equals(ActiveItem))
+                    if (ReferenceEquals(item, ActiveItem))
                     {
                         var index = _items.IndexOf(item);
                         var next = DetermineNextItemToActivate(_items, index);
