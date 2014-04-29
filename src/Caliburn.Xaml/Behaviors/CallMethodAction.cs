@@ -21,6 +21,7 @@ namespace Caliburn.Xaml
 {
     /// <summary>
     /// Calls a method on a specified object when invoked.
+    /// It also maintains the Enabled state of the target element based on a guard method/property.
     /// </summary>
 #if !NETFX_CORE
     [ContentProperty("Parameters")]
