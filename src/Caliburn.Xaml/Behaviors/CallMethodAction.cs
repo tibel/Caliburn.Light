@@ -28,7 +28,7 @@ namespace Caliburn.Xaml
 #else
     [ContentProperty(Name = "Parameters")]
 #endif
-    public class CallMethodAction : TriggerAction<UIElement>, IHaveParameters
+    public class CallMethodAction : TriggerAction<DependencyObject>, IHaveParameters
     {
         /// <summary>
         /// Identifies the <seealso cref="CallMethodAction.TargetObject"/> dependency property.
@@ -160,9 +160,10 @@ namespace Caliburn.Xaml
             var inpc = Target as INotifyPropertyChanged;
             if (inpc == null) return;
 
-            _guard = Target.GetType().GetRuntimeProperty(_guardName).GetMethod;
-            if (_guard == null) return;
+            var property = Target.GetType().GetRuntimeProperty(_guardName);
+            if (property == null) return;
 
+            _guard = property.GetMethod;
             _propertyChangedRegistration = WeakEventHandler.Register<PropertyChangedEventArgs>(inpc, "PropertyChanged", OnPropertyChanged);
         }
 
@@ -202,11 +203,12 @@ namespace Caliburn.Xaml
 
 #if SILVERLIGHT || NETFX_CORE
             var control = AssociatedObject as Control;
+#else
+            var control = AssociatedObject as UIElement;
+#endif
+
             if (control != null)
                 control.IsEnabled = canExecute;
-#else
-                AssociatedObject.IsEnabled = canExecute;
-#endif
         }
 
         /// <summary>

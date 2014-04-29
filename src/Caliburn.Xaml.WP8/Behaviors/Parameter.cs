@@ -1,11 +1,7 @@
 ﻿using System;
-#if !NETFX_CORE
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Interactivity;
-#else
-using Windows.UI.Xaml;
-#endif
 
 namespace Caliburn.Xaml
 {
@@ -26,9 +22,7 @@ namespace Caliburn.Xaml
         /// <summary>
         /// Gets or sets the value of the parameter.
         /// </summary>
-#if !NETFX_CORE
         [Category("Common Properties")]
-#endif
         public object Value
         {
             get { return GetValue(ValueProperty); }

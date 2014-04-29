@@ -53,6 +53,9 @@
     <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\IAttachedObject.cs">
       <Link>Behaviors\IAttachedObject.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\Parameter.cs">
+      <Link>Behaviors\Parameter.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\TriggerAction.cs">
       <Link>Behaviors\TriggerAction.cs</Link>
     </Compile>
@@ -79,9 +82,6 @@
     </Compile>
     <Compile Include="..\Caliburn.Xaml\Behaviors\InvokeCommandAction.cs">
       <Link>Behaviors\InvokeCommandAction.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\Behaviors\Parameter.cs">
-      <Link>Behaviors\Parameter.cs</Link>
     </Compile>
     <Compile Include="..\Caliburn.Xaml\Behaviors\ParameterBinder.cs">
       <Link>Behaviors\ParameterBinder.cs</Link>

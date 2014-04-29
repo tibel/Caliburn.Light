@@ -15,7 +15,7 @@ namespace Caliburn.Xaml
     /// Executes a specified ICommand when invoked.
     /// It also maintains the Enabled state of the target element based on the CanExecute method of the command.
     /// </summary>
-    public class InvokeCommandAction : TriggerAction<UIElement>
+    public class InvokeCommandAction : TriggerAction<DependencyObject>
     {
         /// <summary>
         /// Identifies the <seealso cref="InvokeCommandAction.Command"/> dependency property.
@@ -80,11 +80,12 @@ namespace Caliburn.Xaml
 
 #if SILVERLIGHT || NETFX_CORE
                 var control = AssociatedObject as Control;
+#else
+                var control = AssociatedObject as UIElement;
+#endif
+
                 if (control != null)
                     control.IsEnabled = canExecute;
-#else
-                AssociatedObject.IsEnabled = canExecute;
-#endif
             }
         }
 
