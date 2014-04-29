@@ -59,12 +59,14 @@ namespace Caliburn.Light
             _method = method;
 
             _guardName = "Can" + _method.Name;
-            var guard = target.GetType().GetRuntimeProperty(_guardName).GetMethod;
-            var inpc = target as INotifyPropertyChanged;
-            if (inpc == null || guard == null) return;
+            var property = target.GetType().GetRuntimeProperty(_guardName);
+            if (property == null) return;
 
+            var inpc = target as INotifyPropertyChanged;
+            if (inpc == null) return;
+
+            _canExecute = new WeakFunc<bool>(inpc, property.GetMethod);
             WeakEventHandler.Register<PropertyChangedEventArgs>(inpc, "PropertyChanged", OnPropertyChanged);
-            _canExecute = new WeakFunc<bool>(inpc, guard);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
