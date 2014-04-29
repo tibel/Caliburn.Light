@@ -18,18 +18,18 @@ namespace Caliburn.Xaml
         /// <summary>
         /// Allows binding on an existing view. Use this on root UserControls, Pages and Windows; not in a DataTemplate.
         /// </summary>
-        public static DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model", typeof (object),
-            typeof (Bind), new PropertyMetadata(null, OnModelChanged));
+        public static readonly DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model",
+            typeof (object), typeof (Bind), new PropertyMetadata(null, OnModelChanged));
 
         /// <summary>
         /// Allows binding on an existing view without setting the data context. Use this from within a DataTemplate.
         /// </summary>
-        public static DependencyProperty ModelWithoutContextProperty =
+        public static readonly DependencyProperty ModelWithoutContextProperty =
             DependencyProperty.RegisterAttached("ModelWithoutContext", typeof (object), typeof (Bind),
                 new PropertyMetadata(null, OnModelWithoutContextChanged));
 
-        internal static DependencyProperty NoDataContextProperty = DependencyProperty.RegisterAttached("NoDataContext",
-            typeof (bool), typeof (Bind), null);
+        internal static readonly DependencyProperty NoDataContextProperty =
+            DependencyProperty.RegisterAttached("NoDataContext", typeof (bool), typeof (Bind), null);
 
         /// <summary>
         /// Gets the model to bind to.
@@ -108,8 +108,9 @@ namespace Caliburn.Xaml
         /// <summary>
         /// Allows application of conventions at design-time.
         /// </summary>
-        public static DependencyProperty AtDesignTimeProperty = DependencyProperty.RegisterAttached("AtDesignTime",
-            typeof (bool), typeof (Bind), new PropertyMetadata(false, OnAtDesignTimeChanged));
+        public static readonly DependencyProperty AtDesignTimeProperty =
+            DependencyProperty.RegisterAttached("AtDesignTime", typeof (bool), typeof (Bind),
+                new PropertyMetadata(false, OnAtDesignTimeChanged));
 
         private static readonly DependencyProperty DesignDataContextProperty =
             DependencyProperty.RegisterAttached("DesignDataContext", typeof (object), typeof (Bind),
@@ -120,9 +121,6 @@ namespace Caliburn.Xaml
         /// </summary>
         /// <param name="dependencyObject">The ui to apply conventions to.</param>
         /// <returns>Whether or not conventions are applied.</returns>
-#if !SILVERLIGHT && !NETFX_CORE
-        [AttachedPropertyBrowsableForTypeAttribute(typeof (DependencyObject))]
-#endif
         public static bool GetAtDesignTime(DependencyObject dependencyObject)
         {
             return (bool) dependencyObject.GetValue(AtDesignTimeProperty);

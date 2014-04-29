@@ -27,8 +27,8 @@ namespace Caliburn.Xaml
         /// <summary>
         /// A dependency property for attaching a model to the UI.
         /// </summary>
-        public static DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model", typeof (object),
-            typeof (View), new PropertyMetadata(null, OnModelChanged));
+        public static readonly DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model",
+            typeof (object), typeof (View), new PropertyMetadata(null, OnModelChanged));
 
         /// <summary>
         /// Sets the model.
