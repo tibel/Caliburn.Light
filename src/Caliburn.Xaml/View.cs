@@ -14,33 +14,21 @@ using System.Windows.Controls;
 namespace Caliburn.Xaml
 {
     /// <summary>
-    /// Hosts attached properties related to view models.
+    /// Hosts attached properties related to ViewModel-First.
     /// </summary>
     public static class View
     {
         /// <summary>
         /// A dependency property for assigning a context to a particular portion of the UI.
         /// </summary>
-        public static readonly DependencyProperty ContextProperty =
-            DependencyProperty.RegisterAttached(
-                "Context",
-                typeof (object),
-                typeof (View),
-                new PropertyMetadata(null, OnContextChanged)
-                );
+        public static readonly DependencyProperty ContextProperty = DependencyProperty.RegisterAttached("Context",
+            typeof (object), typeof (View), new PropertyMetadata(null, OnContextChanged));
 
         /// <summary>
         /// A dependency property for attaching a model to the UI.
         /// </summary>
-        public static DependencyProperty ModelProperty =
-            DependencyProperty.RegisterAttached(
-                "Model",
-                typeof (object),
-                typeof (View),
-                new PropertyMetadata(null, OnModelChanged)
-                );
-
-        
+        public static DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model", typeof (object),
+            typeof (View), new PropertyMetadata(null, OnModelChanged));
 
         /// <summary>
         /// Sets the model.
@@ -84,41 +72,33 @@ namespace Caliburn.Xaml
 
         private static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs args)
         {
-            if (args.OldValue == args.NewValue)
-            {
-                return;
-            }
+            if (args.OldValue == args.NewValue) return;
 
-            if (args.NewValue != null)
+            if (args.NewValue == null)
             {
-                var context = GetContext(targetLocation);
-                var view = ViewLocator.LocateForModel(args.NewValue, targetLocation, context);
-
-                SetContentProperty(targetLocation, view);
-                ViewModelBinder.Bind(args.NewValue, view, context);
+                SetContentProperty(targetLocation, null);
             }
             else
             {
-                SetContentProperty(targetLocation, null);
+                var context = GetContext(targetLocation);
+
+                var view = ViewLocator.LocateForModel(args.NewValue, targetLocation, context);
+                SetContentProperty(targetLocation, view);
+
+                ViewModelBinder.Bind(args.NewValue, view, context);
             }
         }
 
         private static void OnContextChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue)
-            {
-                return;
-            }
+            if (e.OldValue == e.NewValue) return;
 
             var model = GetModel(targetLocation);
-            if (model == null)
-            {
-                return;
-            }
+            if (model == null) return;
 
             var view = ViewLocator.LocateForModel(model, targetLocation, e.NewValue);
-
             SetContentProperty(targetLocation, view);
+
             ViewModelBinder.Bind(model, view, e.NewValue);
         }
 

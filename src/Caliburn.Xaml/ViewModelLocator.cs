@@ -349,22 +349,8 @@ namespace Caliburn.Xaml
         /// </remarks>
         public static Func<Type, object> LocateForViewType = viewType =>
         {
-            var viewModelType = LocateTypeForViewType(viewType, false);
-
-            if (viewModelType != null)
-            {
-                var viewModel = IoC.GetInstance(viewModelType);
-                if (viewModel != null)
-                {
-                    return viewModel;
-                }
-            }
-
-            viewModelType = LocateTypeForViewType(viewType, true);
-
-            return viewModelType != null
-                ? IoC.GetInstance(viewModelType)
-                : null;
+            var viewModelType = LocateTypeForViewType(viewType, false) ?? LocateTypeForViewType(viewType, true);
+            return (viewModelType != null) ? IoC.GetInstance(viewModelType) : null;
         };
 
         /// <summary>

@@ -24,8 +24,10 @@ namespace Caliburn.Xaml
         {
             Log.Info("Binding {0} and {1}.", view, viewModel);
 
+            var noDataContext = (bool)view.GetValue(Xaml.Bind.NoDataContextProperty);
+
             var frameworkElement = view as FrameworkElement;
-            if (frameworkElement != null)
+            if (frameworkElement != null && !noDataContext)
             {
                 Log.Info("Setting DC of {0} to {1}.", frameworkElement, viewModel);
                 frameworkElement.DataContext = viewModel;

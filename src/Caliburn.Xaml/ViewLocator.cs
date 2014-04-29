@@ -274,9 +274,7 @@ namespace Caliburn.Xaml
         /// </remarks>
         public static Func<Type, UIElement> GetOrCreateViewType = viewType =>
         {
-            var view = IoC.GetAllInstances(viewType)
-                .FirstOrDefault() as UIElement;
-
+            var view = IoC.GetAllInstances(viewType).FirstOrDefault() as UIElement;
             if (view != null)
             {
                 InitializeComponent(view);

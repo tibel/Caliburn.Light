@@ -11,42 +11,28 @@ using System.Windows.Data;
 namespace Caliburn.Xaml
 {
     /// <summary>
-    ///   Hosts dependency properties for binding.
+    /// Hosts attached properties related to View-First.
     /// </summary>
     public static class Bind
     {
         /// <summary>
-        ///   Allows binding on an existing view. Use this on root UserControls, Pages and Windows; not in a DataTemplate.
+        /// Allows binding on an existing view. Use this on root UserControls, Pages and Windows; not in a DataTemplate.
         /// </summary>
-        public static DependencyProperty ModelProperty =
-            DependencyProperty.RegisterAttached(
-                "Model",
-                typeof (object),
-                typeof (Bind),
-                new PropertyMetadata(null, ModelChanged)
-                );
+        public static DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model", typeof (object),
+            typeof (Bind), new PropertyMetadata(null, OnModelChanged));
 
         /// <summary>
-        ///   Allows binding on an existing view without setting the data context. Use this from within a DataTemplate.
+        /// Allows binding on an existing view without setting the data context. Use this from within a DataTemplate.
         /// </summary>
         public static DependencyProperty ModelWithoutContextProperty =
-            DependencyProperty.RegisterAttached(
-                "ModelWithoutContext",
-                typeof (object),
-                typeof (Bind),
-                new PropertyMetadata(null, ModelWithoutContextChanged)
-                );
+            DependencyProperty.RegisterAttached("ModelWithoutContext", typeof (object), typeof (Bind),
+                new PropertyMetadata(null, OnModelWithoutContextChanged));
 
-        internal static DependencyProperty NoContextProperty =
-            DependencyProperty.RegisterAttached(
-                "NoContext",
-                typeof (bool),
-                typeof (Bind),
-                new PropertyMetadata(false)
-                );
+        internal static DependencyProperty NoDataContextProperty = DependencyProperty.RegisterAttached("NoDataContext",
+            typeof (bool), typeof (Bind), null);
 
         /// <summary>
-        ///   Gets the model to bind to.
+        /// Gets the model to bind to.
         /// </summary>
         /// <param name = "dependencyObject">The dependency object to bind to.</param>
         /// <returns>The model.</returns>
@@ -56,7 +42,7 @@ namespace Caliburn.Xaml
         }
 
         /// <summary>
-        ///   Sets the model to bind to.
+        /// Sets the model to bind to.
         /// </summary>
         /// <param name = "dependencyObject">The dependency object to bind to.</param>
         /// <param name = "value">The model.</param>
@@ -66,7 +52,7 @@ namespace Caliburn.Xaml
         }
 
         /// <summary>
-        ///   Gets the model to bind to.
+        /// Gets the model to bind to.
         /// </summary>
         /// <param name = "dependencyObject">The dependency object to bind to.</param>
         /// <returns>The model.</returns>
@@ -76,7 +62,7 @@ namespace Caliburn.Xaml
         }
 
         /// <summary>
-        ///   Sets the model to bind to.
+        /// Sets the model to bind to.
         /// </summary>
         /// <param name = "dependencyObject">The dependency object to bind to.</param>
         /// <param name = "value">The model.</param>
@@ -85,77 +71,49 @@ namespace Caliburn.Xaml
             dependencyObject.SetValue(ModelProperty, value);
         }
 
-        private static void ModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (UIContext.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
-            {
                 return;
-            }
 
             var fe = d as FrameworkElement;
-            if (fe == null)
-            {
-                return;
-            }
+            if (fe == null) return;
 
-            ViewHelper.ExecuteOnLoad(fe, delegate
-            {
-                var target = e.NewValue;
-                var containerKey = e.NewValue as string;
-                if (containerKey != null)
-                {
-                    target = IoC.GetInstance(null, containerKey);
-                }
-
-                var context = string.IsNullOrEmpty(fe.Name)
-                    ? fe.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                    : fe.Name;
-
-                ViewModelBinder.Bind(target, d, context);
-            });
+            ViewHelper.ExecuteOnLoad(fe, (sender, args) => SetModelCore(e.NewValue, fe, false));
         }
 
-        private static void ModelWithoutContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnModelWithoutContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (UIContext.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
-            {
                 return;
-            }
 
             var fe = d as FrameworkElement;
-            if (fe == null)
-            {
-                return;
-            }
+            if (fe == null) return;
 
-            ViewHelper.ExecuteOnLoad(fe, delegate
-            {
-                var target = e.NewValue;
-                var containerKey = e.NewValue as string;
-                if (containerKey != null)
-                {
-                    target = IoC.GetInstance(null, containerKey);
-                }
+            ViewHelper.ExecuteOnLoad(fe, (sender, args) => SetModelCore(e.NewValue, fe, true));
+        }
 
-                var context = string.IsNullOrEmpty(fe.Name)
-                    ? fe.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                    : fe.Name;
+        private static void SetModelCore(object viewModel, FrameworkElement view, bool noDataContext)
+        {
+            var context = string.IsNullOrEmpty(view.Name)
+                ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                : view.Name;
 
-                d.SetValue(NoContextProperty, true);
-                ViewModelBinder.Bind(target, d, context);
-            });
+            if (noDataContext)
+                view.SetValue(NoDataContextProperty, true);
+
+            ViewModelBinder.Bind(viewModel, view, context);
         }
 
         /// <summary>
         /// Allows application of conventions at design-time.
         /// </summary>
-        public static DependencyProperty AtDesignTimeProperty =
-            DependencyProperty.RegisterAttached(
-                "AtDesignTime",
-                typeof (bool),
-                typeof (Bind),
-                new PropertyMetadata(false, AtDesignTimeChanged)
-                );
+        public static DependencyProperty AtDesignTimeProperty = DependencyProperty.RegisterAttached("AtDesignTime",
+            typeof (bool), typeof (Bind), new PropertyMetadata(false, OnAtDesignTimeChanged));
+
+        private static readonly DependencyProperty DesignDataContextProperty =
+            DependencyProperty.RegisterAttached("DesignDataContext", typeof (object), typeof (Bind),
+                new PropertyMetadata(null, OnDesignDataContextChanged));
 
         /// <summary>
         /// Gets whether or not conventions are being applied at design-time.
@@ -180,41 +138,31 @@ namespace Caliburn.Xaml
             dependencyObject.SetValue(AtDesignTimeProperty, value);
         }
 
-        private static void AtDesignTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnAtDesignTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!UIContext.IsInDesignTool)
-                return;
+            if (!UIContext.IsInDesignTool) return;
 
-            var atDesignTime = (bool) e.NewValue;
-            if (!atDesignTime)
-                return;
+            var enabled = (bool) e.NewValue;
+            if (!enabled) return;
 
-            BindingOperations.SetBinding(d, DataContextProperty, new Binding());
+            BindingOperations.SetBinding(d, DesignDataContextProperty, new Binding());
         }
 
-        private static readonly DependencyProperty DataContextProperty =
-            DependencyProperty.RegisterAttached(
-                "DataContext",
-                typeof (object),
-                typeof (Bind),
-                new PropertyMetadata(null, DataContextChanged)
-                );
-
-        private static void DataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnDesignDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!UIContext.IsInDesignTool)
-                return;
+            if (!UIContext.IsInDesignTool || e.NewValue == null) return;
 
-            var enable = d.GetValue(AtDesignTimeProperty);
-            if (enable == null || ((bool) enable) == false || e.NewValue == null)
-                return;
+            var enabled = (bool) d.GetValue(AtDesignTimeProperty);
+            if (!enabled) return;
 
-            var fe = d as FrameworkElement;
-            if (fe == null)
-                return;
+            var view = d as FrameworkElement;
+            if (view == null) return;
 
-            ViewModelBinder.Bind(e.NewValue, d,
-                string.IsNullOrEmpty(fe.Name) ? fe.GetHashCode().ToString(CultureInfo.InvariantCulture) : fe.Name);
+            var context = string.IsNullOrEmpty(view.Name)
+                ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                : view.Name;
+
+            ViewModelBinder.Bind(e.NewValue, view, context);
         }
     }
 }
