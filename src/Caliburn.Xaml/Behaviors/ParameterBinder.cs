@@ -22,19 +22,11 @@ namespace Caliburn.Xaml
         /// <returns>The matching method, if available.</returns>
         public static MethodInfo FindBestMethod(object target, string methodName, AttachedCollection<Parameter> parameters)
         {
-#if NETFX_CORE
             return (from method in target.GetType().GetRuntimeMethods()
                     where method.Name == methodName
                     let methodParameters = method.GetParameters()
                     where parameters.Count == methodParameters.Length
                     select method).FirstOrDefault();
-#else
-            return (from method in target.GetType().GetMethods()
-                    where method.Name == methodName
-                    let methodParameters = method.GetParameters()
-                    where parameters.Count == methodParameters.Length
-                    select method).FirstOrDefault();
-#endif
         }
 
         /// <summary>
@@ -49,7 +41,6 @@ namespace Caliburn.Xaml
         /// <returns>A MethodInfo, if found; null otherwise</returns>
         public static MethodInfo FindGuardMethod(object target, MethodInfo method)
         {
-#if NETFX_CORE
             var guardName = "Can" + method.Name;
             var targetType = target.GetType();
             var guard = targetType.GetRuntimeMethods().SingleOrDefault(m => m.Name == guardName);
@@ -65,23 +56,6 @@ namespace Caliburn.Xaml
 
             var comparisons = guardPars.Zip(method.GetParameters(), (x, y) => x.ParameterType == y.ParameterType);
             return comparisons.Any(x => !x) ? null : guard;
-#else
-            var guardName = "Can" + method.Name;
-            var targetType = target.GetType();
-            var guard = targetType.GetMethod(guardName);
-
-            if (guard == null) return null;
-            if (guard.ContainsGenericParameters) return null;
-            if (typeof(bool) != guard.ReturnType) return null;
-
-            var guardPars = guard.GetParameters();
-            var actionPars = method.GetParameters();
-            if (guardPars.Length == 0) return guard;
-            if (guardPars.Length != actionPars.Length) return null;
-
-            var comparisons = guardPars.Zip(method.GetParameters(), (x, y) => x.ParameterType == y.ParameterType);
-            return comparisons.Any(x => !x) ? null : guard;
-#endif
         }
 
         /// <summary>
