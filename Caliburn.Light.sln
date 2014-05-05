@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Light", "src\Caliburn.Light\Caliburn.Light.csproj", "{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Light", "src\Caliburn.Core\Caliburn.Light.csproj", "{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{37BFCCA7-0B83-4B34-B4EA-896F6757F785}"
 EndProject
