@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:cal="clr-namespace:Caliburn.Light;assembly=Caliburn.Xaml"
+        xmlns:local="clr-namespace:Demo.SimpleMDI"
         Title="Demo.SimpleMDI" Height="350" Width="525">
     <DockPanel>
         <Button Content="Open Tab" DockPanel.Dock="Top">
@@ -16,7 +17,7 @@
         <TabControl x:Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl cal:View.Model="{Binding}" />
+                    <local:TabView cal:Bind.ModelWithoutContext="{Binding}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>
