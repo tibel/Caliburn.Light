@@ -32,7 +32,7 @@ namespace Caliburn.Light
         void IViewAware.AttachView(object view, object context)
         {
             Views[context ?? DefaultContext] = view;
-            var nonGeneratedView = UIContext.ViewAdapter.GetFirstNonGeneratedView(view);
+            var nonGeneratedView = UIContext.GetFirstNonGeneratedView(view);
             OnViewAttached(nonGeneratedView, context);
         }
 
