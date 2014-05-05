@@ -18,7 +18,7 @@ namespace Demo.Validation
             _validation.Validators.Add(new DataAnnotationsValidator(GetType()));
 
             _company = company;
-            SaveCommand = WeakCommand.Create(Save);
+            SaveCommand = DelegateCommand.Create(Save);
         }
 
         [Required(ErrorMessage = @"Name is required.")]

@@ -12,7 +12,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Wraps a ViewModel method (with guard) in an <see cref="ICommand"/>.
     /// </summary>
-    public sealed class WeakCommand : ICommand
+    public sealed class DelegateCommand : ICommand
     {
         private readonly WeakReference _targetReference;
         private readonly MethodInfo _method;
@@ -21,27 +21,27 @@ namespace Caliburn.Light
         private readonly string _guardName;
 
         /// <summary>
-        /// Creates a new <see cref="WeakCommand"/> from the specified <paramref name="action"/>.
+        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
         /// </summary>
         /// <param name="action">The action.</param>
-        /// <returns>The new <see cref="WeakCommand"/>.</returns>
-        public static WeakCommand Create(Action action)
+        /// <returns>The new <see cref="DelegateCommand"/>.</returns>
+        public static DelegateCommand Create(Action action)
         {
             return CreateInternal(action);
         }
 
         /// <summary>
-        /// Creates a new <see cref="WeakCommand"/> from the specified <paramref name="action"/>.
+        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action.</param>
-        /// <returns>The new <see cref="WeakCommand"/>.</returns>
-        public static WeakCommand Create<TResult>(Func<TResult> action)
+        /// <returns>The new <see cref="DelegateCommand"/>.</returns>
+        public static DelegateCommand Create<TResult>(Func<TResult> action)
         {
             return CreateInternal(action);
         }
 
-        private static WeakCommand CreateInternal(Delegate action)
+        private static DelegateCommand CreateInternal(Delegate action)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -50,10 +50,10 @@ namespace Caliburn.Light
             if (action.GetMethodInfo().IsClosure())
                 throw new ArgumentException("A closure cannot be used.", "action");
 
-            return new WeakCommand(action.Target, action.GetMethodInfo());
+            return new DelegateCommand(action.Target, action.GetMethodInfo());
         }
 
-        private WeakCommand(object target, MethodInfo method)
+        private DelegateCommand(object target, MethodInfo method)
         {
             _targetReference = new WeakReference(target);
             _method = method;

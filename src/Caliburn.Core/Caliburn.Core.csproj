@@ -116,7 +116,7 @@
     <Compile Include="Validation\ValidationAdapter.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationRule.cs" />
-    <Compile Include="ViewModel\WeakCommand.cs" />
+    <Compile Include="ViewModel\DelegateCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Weakly">
