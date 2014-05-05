@@ -1,10 +1,6 @@
 ﻿using System;
 #if NETFX_CORE
-using System.Reflection;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
 #else
 using System.Windows;
 using System.Windows.Controls;

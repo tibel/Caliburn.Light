@@ -1,7 +1,6 @@
 ﻿using System;
 #if NETFX_CORE
 using Windows.UI.Xaml;
-using Microsoft.Xaml.Interactivity;
 #else
 using System.Windows;
 #endif
