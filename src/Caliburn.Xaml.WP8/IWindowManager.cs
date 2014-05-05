@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A service that manages windows.

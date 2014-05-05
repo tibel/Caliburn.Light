@@ -2,13 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:xaml="clr-namespace:Caliburn.Xaml;assembly=Caliburn.Xaml"
+        xmlns:cal="clr-namespace:Caliburn.Light;assembly=Caliburn.Xaml"
         Title="Demo.SimpleMDI" Height="350" Width="525">
     <DockPanel>
         <Button Content="Open Tab" DockPanel.Dock="Top">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <xaml:CallMethodAction TargetObject="{Binding}" MethodName="OpenTab" />
+                    <cal:CallMethodAction TargetObject="{Binding}" MethodName="OpenTab" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
@@ -16,7 +16,7 @@
         <TabControl x:Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl xaml:View.Model="{Binding}" />
+                    <ContentControl cal:View.Model="{Binding}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>
@@ -27,11 +27,11 @@
                         <Button Content="X">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <xaml:CallMethodAction TargetObject="{Binding Path=DataContext, ElementName=Items}"
+                                    <cal:CallMethodAction TargetObject="{Binding Path=DataContext, ElementName=Items}"
                                                            MethodName="DeactivateItem">
-                                        <xaml:Parameter Value="{Binding}"/>
-                                        <xaml:Parameter Value="true"/>
-                                    </xaml:CallMethodAction>
+                                        <cal:Parameter Value="{Binding}"/>
+                                        <cal:Parameter Value="true"/>
+                                    </cal:CallMethodAction>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

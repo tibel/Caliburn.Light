@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Provides information about the characteristics for a component, such as its attributes, properties, and events. This class cannot be inherited.

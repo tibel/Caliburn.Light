@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using System;
+﻿using System;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Microsoft.Xaml.Interactivity;
@@ -7,7 +6,7 @@ using Microsoft.Xaml.Interactivity;
 using System.Windows;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Binds a view to a view model.
@@ -24,7 +23,7 @@ namespace Caliburn.Xaml
         {
             Log.Info("Binding {0} and {1}.", view, viewModel);
 
-            var noDataContext = (bool)view.GetValue(Xaml.Bind.NoDataContextProperty);
+            var noDataContext = (bool)view.GetValue(Light.Bind.NoDataContextProperty);
 
             var frameworkElement = view as FrameworkElement;
             if (frameworkElement != null && !noDataContext)

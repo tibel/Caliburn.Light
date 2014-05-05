@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Represents a parameter of a TriggerAction.

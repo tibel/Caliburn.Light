@@ -11,7 +11,7 @@ using System.Windows;
 using Windows.UI.Xaml;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A strategy for resolving type names by the framework.

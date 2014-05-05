@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -9,7 +8,7 @@ using Weakly;
 using Windows.UI.Xaml;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A strategy for determining which view model to use for a given view.

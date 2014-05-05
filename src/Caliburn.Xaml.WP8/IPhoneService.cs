@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Implemented by services that provide access to the basic phone capabilities.

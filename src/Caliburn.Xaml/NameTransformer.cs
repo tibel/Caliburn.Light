@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     ///  Class for managing the list of rules for doing name transformation.

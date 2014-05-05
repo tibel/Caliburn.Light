@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Windows.ApplicationModel;
@@ -7,7 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Weakly;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Encapsulates the app and its available services.

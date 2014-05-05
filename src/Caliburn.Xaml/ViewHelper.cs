@@ -13,7 +13,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Some helper methods when dealing with UI elements.

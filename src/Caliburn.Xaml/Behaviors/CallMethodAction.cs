@@ -1,6 +1,5 @@
 ﻿using Weakly;
 using System.Linq;
-using Caliburn.Light;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Calls a method on a specified object when invoked.

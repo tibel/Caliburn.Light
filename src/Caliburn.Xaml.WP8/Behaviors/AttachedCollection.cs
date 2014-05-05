@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Interactivity;
 using Weakly;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A collection that can exist as part of a behavior.

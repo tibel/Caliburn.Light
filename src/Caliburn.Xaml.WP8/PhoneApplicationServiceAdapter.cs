@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Shell;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// An implementation of <see cref = "IPhoneService" /> that adapts <see cref = "PhoneApplicationService" />.

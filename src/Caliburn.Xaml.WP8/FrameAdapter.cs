@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Caliburn.Light;
 using Microsoft.Phone.Controls;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A basic implementation of <see cref="INavigationService" /> designed to adapt the <see cref="Frame" /> control.

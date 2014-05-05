@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xaml.Interactivity;
 using Windows.UI.Xaml;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Represents an attachable object that encapsulates a unit of functionality.

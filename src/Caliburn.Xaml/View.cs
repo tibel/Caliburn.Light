@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using System;
+﻿using System;
 #if NETFX_CORE
 using System.Reflection;
 using Windows.UI.Xaml;
@@ -11,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Hosts attached properties related to ViewModel-First.

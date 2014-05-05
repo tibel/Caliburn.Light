@@ -9,7 +9,7 @@
     <ProjectGuid>{4D82BEB8-2800-4DD3-8EFD-EDC2CC6665CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Caliburn.Xaml</RootNamespace>
+    <RootNamespace>Caliburn.Light</RootNamespace>
     <AssemblyName>Caliburn.Xaml</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>

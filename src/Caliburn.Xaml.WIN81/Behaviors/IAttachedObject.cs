@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Xaml;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// An interface for an object that can be attached to another object.

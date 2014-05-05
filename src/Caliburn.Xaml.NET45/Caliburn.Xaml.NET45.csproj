@@ -7,7 +7,7 @@
     <ProjectGuid>{F289FF4D-21E1-4E33-8E92-4677A17543D4}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Caliburn.Xaml</RootNamespace>
+    <RootNamespace>Caliburn.Light</RootNamespace>
     <AssemblyName>Caliburn.Xaml</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using Microsoft.Phone.Controls;
+﻿using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Weakly;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A service that manages windows.

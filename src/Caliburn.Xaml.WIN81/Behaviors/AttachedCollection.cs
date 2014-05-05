@@ -3,7 +3,7 @@ using Weakly;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A collection that can exist as part of a behavior.

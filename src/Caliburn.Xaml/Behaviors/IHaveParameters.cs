@@ -2,7 +2,7 @@
 using System.Windows.Interactivity;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Indicates that a <see cref="TriggerAction"/> is parametrized.

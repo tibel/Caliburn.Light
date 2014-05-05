@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -16,7 +15,7 @@ using Windows.UI.Xaml.Controls;
 using System.Windows.Interop;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A strategy for determining which view to use for a given model.

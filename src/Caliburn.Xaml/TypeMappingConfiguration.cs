@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Class to specify settings for configuring type mappings by the ViewLocator or ViewModelLocator

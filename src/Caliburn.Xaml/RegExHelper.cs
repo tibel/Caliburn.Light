@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Helper class for encoding strings to regular expression patterns

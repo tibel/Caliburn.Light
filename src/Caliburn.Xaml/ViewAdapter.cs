@@ -5,9 +5,8 @@ using System.Windows;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 #endif
-using Caliburn.Light;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Adapter for the view-model to interact with a XAML view.

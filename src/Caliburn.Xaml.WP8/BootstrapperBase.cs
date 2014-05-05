@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using Microsoft.Phone.Controls;
+﻿using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Windows;
 using System.Windows.Navigation;
 using Weakly;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Inherit from this class in order to customize the configuration of the framework.

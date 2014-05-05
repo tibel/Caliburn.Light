@@ -4,9 +4,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Caliburn.Light;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A service that is capable of properly binding <see cref="IHaveParameters.Parameters"/> to a method's parameters.

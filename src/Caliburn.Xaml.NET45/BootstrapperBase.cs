@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -8,7 +7,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Weakly;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Inherit from this class in order to customize the configuration of the framework.

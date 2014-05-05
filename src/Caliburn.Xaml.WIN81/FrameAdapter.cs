@@ -6,9 +6,8 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Caliburn.Light;
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// A basic implementation of <see cref="INavigationService" /> designed to adapt the <see cref="Frame" /> control.

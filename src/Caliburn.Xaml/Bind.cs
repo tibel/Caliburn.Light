@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Caliburn.Light;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -8,7 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 #endif
 
-namespace Caliburn.Xaml
+namespace Caliburn.Light
 {
     /// <summary>
     /// Hosts attached properties related to View-First.

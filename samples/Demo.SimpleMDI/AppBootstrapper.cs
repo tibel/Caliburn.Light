@@ -1,5 +1,4 @@
 ﻿using Caliburn.Light;
-using Caliburn.Xaml;
 using System.Windows;
 
 namespace Demo.SimpleMDI
