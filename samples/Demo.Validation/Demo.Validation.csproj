@@ -99,9 +99,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Caliburn.Core\Caliburn.Light.csproj">
+    <ProjectReference Include="..\..\src\Caliburn.Core\Caliburn.Core.csproj">
       <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
-      <Name>Caliburn.Light</Name>
+      <Name>Caliburn.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
