@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Caliburn.Light
 {
-    internal sealed class NullUIView : IUIView
+    internal sealed class NullViewAdapter : IViewAdapter
     {
-        public static readonly NullUIView Instance = new NullUIView();
+        public static readonly NullViewAdapter Instance = new NullViewAdapter();
 
-        private NullUIView()
+        private NullViewAdapter()
         {
         }
 

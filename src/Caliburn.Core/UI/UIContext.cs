@@ -11,27 +11,27 @@ namespace Caliburn.Light
         private static int? _managedThreadId;
         private static TaskScheduler _taskScheduler;
         private static bool _isInDesignTool = true;
-        private static IUIView _uiView;
+        private static IViewAdapter _viewAdapter;
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
         /// <param name="isInDesignTool">Whether or not the framework is running in the context of a designer.</param>
-        /// <param name="uiView"></param>
-        public static void Initialize(bool isInDesignTool, IUIView uiView)
+        /// <param name="viewAdapter"></param>
+        public static void Initialize(bool isInDesignTool, IViewAdapter viewAdapter)
         {
             _managedThreadId = Environment.CurrentManagedThreadId;
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             _isInDesignTool = isInDesignTool;
-            _uiView = uiView;
+            _viewAdapter = viewAdapter;
         }
 
         /// <summary>
         /// Gets the view interaction object.
         /// </summary>
-        public static IUIView View
+        public static IViewAdapter ViewAdapter
         {
-            get { return _uiView ?? NullUIView.Instance; }
+            get { return _viewAdapter ?? NullViewAdapter.Instance; }
         }
 
         /// <summary>

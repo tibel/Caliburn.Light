@@ -21,10 +21,10 @@ namespace Caliburn.Light
     public static class ViewHelper
     {
         private static readonly DependencyProperty PreviouslyAttachedProperty =
-            DependencyProperty.RegisterAttached("PreviouslyAttached", typeof (bool), typeof (View), null);
+            DependencyProperty.RegisterAttached("PreviouslyAttached", typeof (bool), typeof (ViewHelper), null);
 
         private static readonly DependencyProperty IsGeneratedProperty =
-            DependencyProperty.RegisterAttached("IsGenerated", typeof (bool), typeof (View), null);
+            DependencyProperty.RegisterAttached("IsGenerated", typeof (bool), typeof (ViewHelper), null);
 
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.
@@ -36,18 +36,16 @@ namespace Caliburn.Light
         /// The WindowManager marks that element as a framework-created element so that it can determine what it created vs. what was intended by the developer.
         /// Calling GetFirstNonGeneratedView allows the framework to discover what the original element was. 
         /// </remarks>
-        public static object GetFirstNonGeneratedView(object view)
+        public static object GetFirstNonGeneratedView(DependencyObject view)
         {
-            var dependencyObject = view as DependencyObject;
-            if (dependencyObject == null) return view;
-            if (!(bool) dependencyObject.GetValue(IsGeneratedProperty)) return dependencyObject;
+            if (!(bool) view.GetValue(IsGeneratedProperty)) return view;
 
-            var contentControl = dependencyObject as ContentControl;
+            var contentControl = view as ContentControl;
             if (contentControl != null)
                 return contentControl.Content;
 
-            var contentProperty = FindContentProperty(dependencyObject);
-            return contentProperty.GetValue(dependencyObject);
+            var contentProperty = FindContentProperty(view);
+            return contentProperty.GetValue(view);
         }
 
         /// <summary>

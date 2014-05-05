@@ -20,7 +20,7 @@ namespace Caliburn.Light
             _serviceLocator = serviceLocator;
         }
 
-        static IServiceLocator ServiceLocator
+        private static IServiceLocator ServiceLocator
         {
             get { return _serviceLocator ?? NullServiceLocator.Instance; }
         }

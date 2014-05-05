@@ -6,7 +6,7 @@ namespace Caliburn.Light
     /// <summary>
     /// The interface a view-model uses to interact with the view.
     /// </summary>
-    public interface IUIView
+    public interface IViewAdapter
     {
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.

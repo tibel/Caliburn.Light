@@ -11,7 +11,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Adapter for the view-model to interact with a XAML view.
     /// </summary>
-    public sealed class ViewAdapter : IUIView
+    public sealed class ViewAdapter : IViewAdapter
     {
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.
@@ -22,7 +22,9 @@ namespace Caliburn.Light
         /// </returns>
         public object GetFirstNonGeneratedView(object view)
         {
-            return ViewHelper.GetFirstNonGeneratedView(view);
+            var dependencyObject = view as DependencyObject;
+            if (dependencyObject == null) return view;
+            return ViewHelper.GetFirstNonGeneratedView(dependencyObject);
         }
 
         /// <summary>

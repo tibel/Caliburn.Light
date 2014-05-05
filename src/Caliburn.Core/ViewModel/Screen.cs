@@ -170,7 +170,7 @@ namespace Caliburn.Light
         /// <param name="dialogResult">The dialog result.</param>
         public virtual void TryClose(bool? dialogResult = null)
         {
-            UIContext.View.TryClose(this, Views.Values, dialogResult);
+            UIContext.ViewAdapter.TryClose(this, Views.Values, dialogResult);
         }
     }
 }
