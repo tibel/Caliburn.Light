@@ -109,7 +109,7 @@ namespace Caliburn.Light
         ///<summary>
         /// A rule that describes a name transform.
         ///</summary>
-        public class Rule
+        private class Rule
         {
             /// <summary>
             /// Regular expression pattern for global filtering
