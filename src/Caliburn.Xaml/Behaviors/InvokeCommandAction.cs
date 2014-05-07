@@ -101,7 +101,7 @@ namespace Caliburn.Light
             }
         }
 
-        private IDisposable _commandChangedRegistration;
+        private IDisposable _canExecuteChangedRegistration;
 
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -118,10 +118,10 @@ namespace Caliburn.Light
 
         private void ResetCommand()
         {
-            if (_commandChangedRegistration != null)
+            if (_canExecuteChangedRegistration != null)
             {
-                _commandChangedRegistration.Dispose();
-                _commandChangedRegistration = null;
+                _canExecuteChangedRegistration.Dispose();
+                _canExecuteChangedRegistration = null;
             }
         }
 
@@ -129,7 +129,7 @@ namespace Caliburn.Light
         {
             ResetCommand();
             if (Command == null) return;
-            _commandChangedRegistration = WeakEventHandler.Register<EventArgs>(Command, "CanExecuteChanged", OnCommandCanExecuteChanged);
+            _canExecuteChangedRegistration = WeakEventHandler.Register<EventArgs>(Command, "CanExecuteChanged", OnCommandCanExecuteChanged);
         }
 
         private void OnCommandCanExecuteChanged(object sender, EventArgs e)
