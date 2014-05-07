@@ -138,9 +138,8 @@ namespace Caliburn.Light
 
             ApplySettings(view, settings);
 
-            new WindowConductor(rootModel, view);
-
-            return view;
+            var conductor = new WindowConductor(rootModel, view);
+            return conductor.View;
         }
 
         /// <summary>
@@ -278,13 +277,13 @@ namespace Caliburn.Light
             private bool _deactivatingFromView;
             private bool _deactivateFromViewModel;
             private bool _actuallyClosing;
-            private readonly Window _view;
-            private readonly object _model;
+            public readonly Window View;
+            public readonly object Model;
 
             public WindowConductor(object model, Window view)
             {
-                _model = model;
-                _view = view;
+                Model = model;
+                View = view;
 
                 var activatable = model as IActivate;
                 if (activatable != null)
@@ -304,14 +303,14 @@ namespace Caliburn.Light
 
             private void OnClosed(object sender, EventArgs e)
             {
-                _view.Closed -= OnClosed;
-                _view.Closing -= OnClosing;
+                View.Closed -= OnClosed;
+                View.Closing -= OnClosing;
 
                 if (_deactivateFromViewModel)
                     return;
 
                 _deactivatingFromView = true;
-                ((IDeactivate)_model).Deactivate(true);
+                ((IDeactivate)Model).Deactivate(true);
                 _deactivatingFromView = false;
             }
 
@@ -320,14 +319,14 @@ namespace Caliburn.Light
                 if (!e.WasClosed)
                     return;
 
-                ((IDeactivate)_model).Deactivated -= OnDeactivated;
+                ((IDeactivate)Model).Deactivated -= OnDeactivated;
 
                 if (_deactivatingFromView)
                     return;
 
                 _deactivateFromViewModel = true;
                 _actuallyClosing = true;
-                _view.Close();
+                View.Close();
                 _actuallyClosing = false;
                 _deactivateFromViewModel = false;
             }
@@ -345,14 +344,14 @@ namespace Caliburn.Light
 
                 bool runningAsync = false, shouldEnd = false;
 
-                ((ICloseGuard)_model).CanClose(canClose =>
+                ((ICloseGuard)Model).CanClose(canClose =>
                 {
                     OnUIThread(() =>
                     {
                         if (runningAsync && canClose)
                         {
                             _actuallyClosing = true;
-                            _view.Close();
+                            View.Close();
                         }
                         else
                         {
@@ -371,10 +370,10 @@ namespace Caliburn.Light
 
             private void OnUIThread(Action action)
             {
-                if (_view.Dispatcher.CheckAccess())
+                if (View.Dispatcher.CheckAccess())
                     action();
                 else
-                    _view.Dispatcher.BeginInvoke(action);
+                    View.Dispatcher.BeginInvoke(action);
             }
         }
     }
