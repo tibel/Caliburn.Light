@@ -8,6 +8,7 @@ using System.Windows.Interactivity;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif
+using Weakly;
 
 namespace Caliburn.Light
 {
@@ -55,6 +56,7 @@ namespace Caliburn.Light
         protected override void OnAttached()
         {
             base.OnAttached();
+            UpdateCommand();
             UpdateEnabledState();
         }
 
@@ -64,9 +66,7 @@ namespace Caliburn.Light
         protected override void OnDetaching()
         {
             base.OnDetaching();
-
-            Command = null;
-            CommandParameter = null;
+            ResetCommand();
         }
 
         /// <summary>
@@ -97,43 +97,39 @@ namespace Caliburn.Light
         {
             if (Command != null)
             {
-                if (CommandParameter != null)
-                {
-                    Command.Execute(CommandParameter);
-                }
-                else
-                {
-                    Command.Execute(parameter);
-                }
+                Command.Execute(CommandParameter ?? parameter);
             }
         }
 
+        private IDisposable _commandChangedRegistration;
+
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue) return;
-
             var action = (InvokeCommandAction)d;
-            var oldValue = (ICommand) e.OldValue;
-            var newValue = (ICommand) e.NewValue;
-
-            if (oldValue != null)
-            {
-                oldValue.CanExecuteChanged -= action.OnCommandCanExecuteChanged;
-            }
-
-            if (newValue != null)
-            {
-                newValue.CanExecuteChanged += action.OnCommandCanExecuteChanged;
-                action.UpdateEnabledState();
-            }
+            action.UpdateCommand();
+            action.UpdateEnabledState();
         }
 
         private static void OnCommandParameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue) return;
-
             var action = (InvokeCommandAction)d;
             action.UpdateEnabledState();
+        }
+
+        private void ResetCommand()
+        {
+            if (_commandChangedRegistration != null)
+            {
+                _commandChangedRegistration.Dispose();
+                _commandChangedRegistration = null;
+            }
+        }
+
+        private void UpdateCommand()
+        {
+            ResetCommand();
+            if (Command == null) return;
+            _commandChangedRegistration = WeakEventHandler.Register<EventArgs>(Command, "CanExecuteChanged", OnCommandCanExecuteChanged);
         }
 
         private void OnCommandCanExecuteChanged(object sender, EventArgs e)
