@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Thomas Ibel</authors>
     <description>Fork of Caliburn.Micro that integrates some ideas of Prism and MVVMLight including a modular approach and weak events.</description>
     <language>en-US</language>

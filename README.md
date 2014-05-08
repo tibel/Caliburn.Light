@@ -10,6 +10,13 @@ Caliburn.Light is a fork of [Caliburn.Micro](https://github.com/BlueSpire/Calibu
 
 
 
+## Install
+Caliburn.Light is available through NuGet:
+
+**Install-Package** [Caliburn.Light](https://www.nuget.org/packages/Caliburn.Light/)
+
+
+
 ## Attached Properties
 
 ### View-First
