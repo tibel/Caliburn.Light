@@ -13,7 +13,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>First stable version for WPF</releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
-    <tags></tags>
+    <tags>Caliburn MVVM WPF WP8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command</tags>
 
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Windows.Interactivity" targetFramework="net45" />
