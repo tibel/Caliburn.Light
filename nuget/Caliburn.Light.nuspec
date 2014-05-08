@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>First stable version for WPF</releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags></tags>
 
