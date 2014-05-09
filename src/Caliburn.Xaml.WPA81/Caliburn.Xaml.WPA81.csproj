@@ -68,17 +68,17 @@
     <Compile Include="..\Caliburn.Xaml.WIN81\CaliburnApplication.cs">
       <Link>CaliburnApplication.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\FrameAdapter.cs">
-      <Link>FrameAdapter.cs</Link>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Services\FrameAdapter.cs">
+      <Link>Services\FrameAdapter.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\INavigationService.cs">
-      <Link>INavigationService.cs</Link>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Services\INavigationService.cs">
+      <Link>Services\INavigationService.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\NavigationServiceHelper.cs">
-      <Link>NavigationServiceHelper.cs</Link>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Services\NavigationServiceHelper.cs">
+      <Link>Services\NavigationServiceHelper.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\UriBuilder.cs">
-      <Link>UriBuilder.cs</Link>
+    <Compile Include="..\Caliburn.Xaml.WIN81\Services\UriBuilder.cs">
+      <Link>Services\UriBuilder.cs</Link>
     </Compile>
     <Compile Include="..\Caliburn.Xaml\Behaviors\CallMethodAction.cs">
       <Link>Behaviors\CallMethodAction.cs</Link>
@@ -147,6 +147,7 @@
       <HintPath>..\..\packages\Weakly.2.1.2\lib\portable-net45+win8+wp8+wpa81\Weakly.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

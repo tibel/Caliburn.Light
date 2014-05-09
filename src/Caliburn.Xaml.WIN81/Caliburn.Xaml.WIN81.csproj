@@ -98,13 +98,13 @@
     <Compile Include="Behaviors\EventTrigger.cs" />
     <Compile Include="Behaviors\IAttachedObject.cs" />
     <Compile Include="CaliburnApplication.cs" />
-    <Compile Include="FrameAdapter.cs" />
-    <Compile Include="INavigationService.cs" />
-    <Compile Include="NavigationServiceHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Behaviors\TriggerAction.cs" />
     <Compile Include="Behaviors\TriggerBase.cs" />
-    <Compile Include="UriBuilder.cs" />
+    <Compile Include="Services\FrameAdapter.cs" />
+    <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Services\NavigationServiceHelper.cs" />
+    <Compile Include="Services\UriBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Core\Caliburn.Core.csproj">
@@ -123,6 +123,7 @@
       <HintPath>..\..\packages\Weakly.2.1.2\lib\portable-net45+win8+wp8+wpa81\Weakly.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>
