@@ -8,7 +8,9 @@ namespace Demo.SimpleMDI
 
         public void OpenTab()
         {
-            ActivateItem(new TabViewModel {DisplayName = "Tab " + _count++});
+            var tab = IoC.GetInstance<TabViewModel>();
+            tab.DisplayName = "Tab " + _count++;
+            ActivateItem(tab);
         }
     }
 }
