@@ -129,7 +129,7 @@ namespace Caliburn.Light
 
         private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            if (Application.RootVisual != RootFrame)
+            if (!ReferenceEquals(Application.RootVisual, RootFrame))
                 Application.RootVisual = RootFrame;
         }
 

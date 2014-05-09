@@ -354,7 +354,7 @@ namespace Caliburn.Light
 
             BindViewModel(view);
 
-            if (Window.Current.Content != _frame)
+            if (!ReferenceEquals(Window.Current.Content, _frame))
                 Window.Current.Content = _frame;
 
             Window.Current.Activate();
