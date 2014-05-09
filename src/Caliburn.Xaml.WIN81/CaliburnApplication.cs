@@ -21,59 +21,30 @@ namespace Caliburn.Light
         protected Frame RootFrame { get; private set; }
 
         /// <summary>
-        /// Called by the bootstrapper's constructor at design time to start the framework.
-        /// </summary>
-        protected virtual void StartDesignTime()
-        {
-            TypeResolver.Reset();
-            SelectAssemblies().ForEach(TypeResolver.AddAssembly);
-
-            Configure();
-            IoC.Initialize(this);
-        }
-
-        /// <summary>
-        /// Called by the bootstrapper's constructor at runtime to start the framework.
-        /// </summary>
-        protected virtual void StartRuntime()
-        {
-            SelectAssemblies().ForEach(TypeResolver.AddAssembly);
-
-            PrepareApplication();
-            Configure();
-
-            IoC.Initialize(this);
-        }
-
-        /// <summary>
         /// Start the framework.
         /// </summary>
         protected void Initialize()
         {
-            if (_isInitialized)
-            {
-                return;
-            }
-
+            if (_isInitialized) return;
             _isInitialized = true;
 
             UIContext.Initialize(DesignMode.DesignModeEnabled, new ViewAdapter());
-            if (DesignMode.DesignModeEnabled)
+            IoC.Initialize(this);
+
+            try
             {
-                try
-                {
-                    StartDesignTime();
-                }
-                catch
-                {
-                    //if something fails at design-time, there's really nothing we can do...
-                    _isInitialized = false;
-                    throw;
-                }
+                TypeResolver.Reset();
+                SelectAssemblies().ForEach(TypeResolver.AddAssembly);
+
+                if (!DesignMode.DesignModeEnabled)
+                    PrepareApplication();
+
+                Configure();
             }
-            else
+            catch
             {
-                StartRuntime();
+                _isInitialized = false;
+                throw;
             }
         }
 

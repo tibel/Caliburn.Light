@@ -12,10 +12,8 @@ namespace Demo.WinFormsInterop
             _elementHost = elementHost;
         }
 
-        protected override void StartRuntime()
+        protected override void Configure()
         {
-            base.StartRuntime();
-
             var viewModel = IoC.GetInstance<MainViewModel>();
             var view = ViewLocator.LocateForModel(viewModel, null, null);
 

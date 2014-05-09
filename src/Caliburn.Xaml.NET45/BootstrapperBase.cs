@@ -31,59 +31,32 @@ namespace Caliburn.Light
 
             var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
                 typeof (FrameworkElement));
-            var inDesignMode = (bool) descriptor.Metadata.DefaultValue;
+            var isInDesignTool = (bool)descriptor.Metadata.DefaultValue;
 
             // set SynchronizationContext so that we can create the TaskScheduler
             // this is needed here as the dispatcher-loop is not yet running and therefor
             // the Dispatcher has not set the SynchronizationContext yet.
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-            UIContext.Initialize(inDesignMode, new ViewAdapter());
-
-            if (inDesignMode)
-            {
-                try
-                {
-                    StartDesignTime();
-                }
-                catch
-                {
-                    //if something fails at design-time, there's really nothing we can do...
-                    _isInitialized = false;
-                    throw;
-                }
-            }
-            else
-            {
-                StartRuntime();
-            }
-        }
-
-        /// <summary>
-        /// Called by the bootstrapper's constructor at design time to start the framework.
-        /// </summary>
-        protected virtual void StartDesignTime()
-        {
-            TypeResolver.Reset();
-            SelectAssemblies().ForEach(TypeResolver.AddAssembly);
-
-            Configure();
+            UIContext.Initialize(isInDesignTool, new ViewAdapter());
             IoC.Initialize(this);
-        }
 
-        /// <summary>
-        /// Called by the bootstrapper's constructor at runtime to start the framework.
-        /// </summary>
-        protected virtual void StartRuntime()
-        {
-            SelectAssemblies().ForEach(TypeResolver.AddAssembly);
+            try
+            {
+                TypeResolver.Reset();
+                SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-            Application = Application.Current;
-            if (Application != null)
-                PrepareApplication();
+                Application = Application.Current;
+                if (Application != null)
+                    PrepareApplication();
 
-            Configure();
-            IoC.Initialize(this);
+                Configure();
+            }
+            catch
+            {
+                _isInitialized = false;
+                throw;
+            }
         }
 
         /// <summary>

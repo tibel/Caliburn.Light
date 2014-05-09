@@ -30,52 +30,25 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            var inDesignMode = DesignerProperties.IsInDesignTool;
-            UIContext.Initialize(inDesignMode, new ViewAdapter());
-
-            if (inDesignMode)
-            {
-                try
-                {
-                    StartDesignTime();
-                }
-                catch
-                {
-                    //if something fails at design-time, there's really nothing we can do...
-                    _isInitialized = false;
-                    throw;
-                }
-            }
-            else
-            {
-                StartRuntime();
-            }
-        }
-
-        /// <summary>
-        /// Called by the bootstrapper's constructor at design time to start the framework.
-        /// </summary>
-        protected virtual void StartDesignTime()
-        {
-            TypeResolver.Reset();
-            SelectAssemblies().ForEach(TypeResolver.AddAssembly);
-
-            Configure();
+            UIContext.Initialize(DesignerProperties.IsInDesignTool, new ViewAdapter());
             IoC.Initialize(this);
-        }
 
-        /// <summary>
-        /// Called by the bootstrapper's constructor at runtime to start the framework.
-        /// </summary>
-        protected virtual void StartRuntime()
-        {
-            SelectAssemblies().ForEach(TypeResolver.AddAssembly);
+            try
+            {
+                TypeResolver.Reset();
+                SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-            Application = Application.Current;
-            PrepareApplication();
+                Application = Application.Current;
+                if (Application != null)
+                    PrepareApplication();
 
-            Configure();
-            IoC.Initialize(this);
+                Configure();
+            }
+            catch
+            {
+                _isInitialized = false;
+                throw;
+            }
         }
 
         /// <summary>
