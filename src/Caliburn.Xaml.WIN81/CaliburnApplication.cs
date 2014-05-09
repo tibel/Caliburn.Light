@@ -188,7 +188,7 @@ namespace Caliburn.Light
             RootFrame.Navigate(viewType, paramter);
 
             // Seems stupid but observed weird behaviour when resetting the Content
-            if (Window.Current.Content != RootFrame)
+            if (!ReferenceEquals(Window.Current.Content, RootFrame))
                 Window.Current.Content = RootFrame;
 
             Window.Current.Activate();
