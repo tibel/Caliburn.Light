@@ -26,9 +26,9 @@ namespace Caliburn.Light
                     NavigatedEventHandler onNavigated = null;
                     onNavigated = (s2, e2) =>
                     {
+                        rootFrame.Navigated -= onNavigated;
                         IsResurrecting = false;
                         OnResurrected();
-                        rootFrame.Navigated -= onNavigated;
                     };
                     rootFrame.Navigated += onNavigated;
                 }
@@ -38,8 +38,8 @@ namespace Caliburn.Light
                     NavigatedEventHandler onNavigated = null;
                     onNavigated = (s2, e2) =>
                     {
-                        OnContinued();
                         rootFrame.Navigated -= onNavigated;
+                        OnContinued();
                     };
                     rootFrame.Navigated += onNavigated;
                 }

@@ -24,12 +24,14 @@ namespace Demo.HelloWP8
             if (!UIContext.IsInDesignTool)
             {
                 _container.RegisterInstance<INavigationService>(new FrameAdapter(RootFrame));
-
+                _container.RegisterInstance<IPhoneService>(new PhoneApplicationServiceAdapter(PhoneService, RootFrame));
+                
                 RootFrame.Language = XmlLanguage.GetLanguage(AppResources.ResourceLanguage);
                 var flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
                 RootFrame.FlowDirection = flow;
             }
 
+            _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterPerRequest<MainPageViewModel>();
             _container.RegisterPerRequest<SecondPageViewModel>();
         }

@@ -70,14 +70,8 @@ namespace Caliburn.Light
         {
             Application.Startup += OnStartup;
             Application.UnhandledException += OnUnhandledException;
-            Application.Exit += OnExit;
 
             PhoneService = new PhoneApplicationService();
-            PhoneService.Activated += OnActivate;
-            PhoneService.Deactivated += OnDeactivate;
-            PhoneService.Launching += OnLaunch;
-            PhoneService.Closing += OnClose;
-
             Application.ApplicationLifetimeObjects.Add(PhoneService);
 
             RootFrame = CreatePhoneApplicationFrame();
@@ -172,48 +166,11 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Override this to add custom behavior on exit.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The event args.</param>
-        protected virtual void OnExit(object sender, EventArgs e)
-        {
-        }
-
-        /// <summary>
         /// Override this to add custom behavior for unhandled exceptions.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
         protected virtual void OnUnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Occurs when a fresh instance of the application is launching.
-        /// </summary>
-        protected virtual void OnLaunch(object sender, LaunchingEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Occurs when a previously tombstoned or paused application is resurrected/resumed.
-        /// </summary>
-        protected virtual void OnActivate(object sender, ActivatedEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Occurs when the application is being tombstoned or paused.
-        /// </summary>
-        protected virtual void OnDeactivate(object sender, DeactivatedEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Occurs when the application is closing.
-        /// </summary>
-        protected virtual void OnClose(object sender, ClosingEventArgs e)
         {
         }
     }
