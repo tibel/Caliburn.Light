@@ -94,17 +94,17 @@
     <Compile Include="Behaviors\AttachedCollection.cs" />
     <Compile Include="Behaviors\Parameter.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
-    <Compile Include="FrameAdapter.cs" />
-    <Compile Include="INavigationService.cs" />
-    <Compile Include="IPhoneService.cs" />
     <Compile Include="BootstrapperBase.cs" />
-    <Compile Include="IWindowManager.cs" />
-    <Compile Include="NavigationServiceHelper.cs" />
-    <Compile Include="PhoneApplicationServiceAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FrameAdapter.cs" />
+    <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Services\IPhoneService.cs" />
+    <Compile Include="Services\IWindowManager.cs" />
+    <Compile Include="Services\NavigationServiceHelper.cs" />
+    <Compile Include="Services\PhoneApplicationServiceAdapter.cs" />
+    <Compile Include="Services\UriBuilder.cs" />
+    <Compile Include="Services\WindowManager.cs" />
     <Compile Include="TypeDescriptor.cs" />
-    <Compile Include="UriBuilder.cs" />
-    <Compile Include="WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Caliburn.Light.snk">
@@ -125,6 +125,7 @@
       <Name>Caliburn.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <ProjectExtensions />
