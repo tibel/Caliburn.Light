@@ -111,11 +111,11 @@
     <Compile Include="Behaviors\AttachedCollection.cs" />
     <Compile Include="Behaviors\Parameter.cs" />
     <Compile Include="BootstrapperBase.cs" />
-    <Compile Include="IWindowManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WindowManager.cs" />
+    <Compile Include="Services\IWindowManager.cs" />
+    <Compile Include="Services\WindowManager.cs" />
     <None Include="..\Caliburn.Light.snk">
       <Link>Properties\Caliburn.Light.snk</Link>
     </None>
@@ -128,6 +128,7 @@
       <Name>Caliburn.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
