@@ -53,16 +53,9 @@ namespace Caliburn.Light
         ///   Navigates to the specified content.
         /// </summary>
         /// <param name="sourcePageType"> The <see cref="System.Type" /> to navigate to. </param>
-        /// <returns> Whether or not navigation succeeded. </returns>
-        bool Navigate(Type sourcePageType);
-
-        /// <summary>
-        ///   Navigates to the specified content.
-        /// </summary>
-        /// <param name="sourcePageType"> The <see cref="System.Type" /> to navigate to. </param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
-        bool Navigate(Type sourcePageType, object parameter);
+        bool Navigate(Type sourcePageType, object parameter = null);
 
         /// <summary>
         ///   Navigates forward.

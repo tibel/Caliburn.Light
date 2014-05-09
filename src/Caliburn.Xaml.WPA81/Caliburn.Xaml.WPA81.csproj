@@ -74,6 +74,12 @@
     <Compile Include="..\Caliburn.Xaml.WIN81\INavigationService.cs">
       <Link>INavigationService.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\NavigationServiceHelper.cs">
+      <Link>NavigationServiceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.WIN81\UriBuilder.cs">
+      <Link>UriBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml\Behaviors\CallMethodAction.cs">
       <Link>Behaviors\CallMethodAction.cs</Link>
     </Compile>

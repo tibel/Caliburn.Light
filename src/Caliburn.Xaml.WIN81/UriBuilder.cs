@@ -14,6 +14,7 @@ namespace Caliburn.Light
     {
         private readonly Dictionary<string, string> _queryString = new Dictionary<string, string>();
         private INavigationService _navigationService;
+        private Type _viewType;
 
         /// <summary>
         /// Adds a query string parameter to the Uri.
@@ -54,7 +55,7 @@ namespace Caliburn.Light
             }
 
             var uri = BuildUri();
-            _navigationService.Navigate(uri);
+            _navigationService.Navigate(_viewType, uri.AbsoluteUri);
         }
 
         /// <summary>
@@ -64,15 +65,17 @@ namespace Caliburn.Light
         public Uri BuildUri()
         {
             var viewModelType = typeof (TViewModel);
-            var viewType = ViewLocator.LocateTypeForModelType(viewModelType, null, null);
-            if (viewType == null)
+            _viewType = ViewLocator.LocateTypeForModelType(viewModelType, null, null);
+            if (_viewType == null)
             {
                 throw new InvalidOperationException(string.Format("No view was found for {0}. See the log for searched views.", viewModelType.FullName));
             }
 
-            var packUri = ViewLocator.DeterminePackUriFromType(viewModelType, viewType);
+            var packUri = ViewLocator.DeterminePackUriFromType(viewModelType, _viewType);
             var qs = BuildQueryString();
-            return new Uri(packUri + qs, UriKind.Relative);
+
+            // We need a value uri here otherwise there are problems using uri as a parameter
+            return new Uri("caliburn://" + packUri + qs, UriKind.Absolute);
         }
 
         private string BuildQueryString()

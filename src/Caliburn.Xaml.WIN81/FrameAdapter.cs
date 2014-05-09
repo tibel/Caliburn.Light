@@ -14,7 +14,6 @@ namespace Caliburn.Light
     /// </summary>
     public class FrameAdapter : INavigationService
     {
-
         private static readonly ILogger Log = LogManager.GetLogger(typeof (FrameAdapter));
         private const string FrameStateKey = "FrameState";
         private const string ParameterKey = "ParameterKey";
@@ -236,20 +235,12 @@ namespace Caliburn.Light
         ///   Navigates to the specified content.
         /// </summary>
         /// <param name="sourcePageType"> The <see cref="System.Type" /> to navigate to. </param>
-        /// <returns> Whether or not navigation succeeded. </returns>
-        public bool Navigate(Type sourcePageType)
-        {
-            return _frame.Navigate(sourcePageType);
-        }
-
-        /// <summary>
-        ///   Navigates to the specified content.
-        /// </summary>
-        /// <param name="sourcePageType"> The <see cref="System.Type" /> to navigate to. </param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
-        public bool Navigate(Type sourcePageType, object parameter)
+        public bool Navigate(Type sourcePageType, object parameter = null)
         {
+            if (parameter == null)
+                return _frame.Navigate(sourcePageType);
             return _frame.Navigate(sourcePageType, parameter);
         }
 
@@ -375,7 +366,7 @@ namespace Caliburn.Light
 
         private static ApplicationDataContainer GetSettingsContainer()
         {
-            return ApplicationData.Current.LocalSettings.CreateContainer("Caliburn.Micro",
+            return ApplicationData.Current.LocalSettings.CreateContainer("Caliburn.Light",
                 ApplicationDataCreateDisposition.Always);
         }
     }
