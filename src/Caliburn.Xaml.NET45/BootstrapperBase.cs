@@ -14,22 +14,12 @@ namespace Caliburn.Light
     /// </summary>
     public abstract class BootstrapperBase : IServiceLocator
     {
-        private readonly bool _useApplication;
         private bool _isInitialized;
 
         /// <summary>
         /// The application.
         /// </summary>
         protected Application Application { get; set; }
-
-        /// <summary>
-        /// Creates an instance of the bootstrapper.
-        /// </summary>
-        /// <param name="useApplication">Set this to false when hosting Caliburn.Micro inside and Office or WinForms application. The default is true.</param>
-        protected BootstrapperBase(bool useApplication = true)
-        {
-            _useApplication = useApplication;
-        }
 
         /// <summary>
         /// Initialize the framework.
@@ -88,11 +78,9 @@ namespace Caliburn.Light
         {
             SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-            if (_useApplication)
-            {
-                Application = Application.Current;
+            Application = Application.Current;
+            if (Application != null)
                 PrepareApplication();
-            }
 
             Configure();
             IoC.Initialize(this);

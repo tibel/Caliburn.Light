@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.WPA81", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.SimpleMDI", "samples\Demo.SimpleMDI\Demo.SimpleMDI.csproj", "{61F9A687-E395-4216-B50A-6F5068721390}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WinFormsInterop", "samples\Demo.WinFormsInterop\Demo.WinFormsInterop.csproj", "{7517D9E9-7929-422A-9177-59FD86E1B00F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{61F9A687-E395-4216-B50A-6F5068721390}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61F9A687-E395-4216-B50A-6F5068721390}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61F9A687-E395-4216-B50A-6F5068721390}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7517D9E9-7929-422A-9177-59FD86E1B00F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7517D9E9-7929-422A-9177-59FD86E1B00F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7517D9E9-7929-422A-9177-59FD86E1B00F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7517D9E9-7929-422A-9177-59FD86E1B00F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +71,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B8A3BEE1-22A5-41B0-8C9A-7EDFFA0C1DBC} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{61F9A687-E395-4216-B50A-6F5068721390} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
+		{7517D9E9-7929-422A-9177-59FD86E1B00F} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 	EndGlobalSection
 EndGlobal
