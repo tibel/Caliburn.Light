@@ -99,9 +99,11 @@
     <Compile Include="IPhoneService.cs" />
     <Compile Include="BootstrapperBase.cs" />
     <Compile Include="IWindowManager.cs" />
+    <Compile Include="NavigationServiceHelper.cs" />
     <Compile Include="PhoneApplicationServiceAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeDescriptor.cs" />
+    <Compile Include="UriBuilder.cs" />
     <Compile Include="WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>

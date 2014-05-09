@@ -19,7 +19,7 @@ namespace Caliburn.Light
         /// <summary>
         /// The application.
         /// </summary>
-        protected Application Application { get; set; }
+        protected Application Application { get; private set; }
 
         /// <summary>
         /// Initialize the framework.

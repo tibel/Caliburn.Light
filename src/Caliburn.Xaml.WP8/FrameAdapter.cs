@@ -126,10 +126,7 @@ namespace Caliburn.Light
             foreach (var pair in page.NavigationContext.QueryString)
             {
                 var property = viewModelType.GetProperty(pair.Key);
-                if (property == null)
-                {
-                    continue;
-                }
+                if (property == null) continue;
 
                 property.SetValue(
                     viewModel,

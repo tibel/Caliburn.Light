@@ -20,7 +20,17 @@ namespace Caliburn.Light
         /// <summary>
         /// The application.
         /// </summary>
-        protected Application Application { get; set; }
+        protected Application Application { get; private set; }
+
+        /// <summary>
+        /// The phone application service.
+        /// </summary>
+        protected PhoneApplicationService PhoneService { get; private set; }
+
+        /// <summary>
+        /// The root frame used for navigation.
+        /// </summary>
+        protected PhoneApplicationFrame RootFrame { get; private set; }
 
         /// <summary>
         /// Initialize the framework.
@@ -38,9 +48,11 @@ namespace Caliburn.Light
                 TypeResolver.Reset();
                 SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-                Application = Application.Current;
-                if (Application != null)
+                if (!DesignerProperties.IsInDesignTool)
+                {
+                    Application = Application.Current;
                     PrepareApplication();
+                }
 
                 Configure();
             }
@@ -69,7 +81,8 @@ namespace Caliburn.Light
             Application.ApplicationLifetimeObjects.Add(PhoneService);
 
             RootFrame = CreatePhoneApplicationFrame();
-            RootFrame.Navigated += OnNavigated;
+            RootFrame.Navigated += CompleteInitializePhoneApplication;
+            RootFrame.Navigated += CheckForResetNavigation;
         }
 
         /// <summary>
@@ -117,20 +130,27 @@ namespace Caliburn.Light
         {
         }
 
-        /// <summary>
-        /// The phone application service.
-        /// </summary>
-        protected PhoneApplicationService PhoneService { get; private set; }
-
-        /// <summary>
-        /// The root frame used for navigation.
-        /// </summary>
-        protected PhoneApplicationFrame RootFrame { get; private set; }
-
-        private void OnNavigated(object sender, NavigationEventArgs e)
+        private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
         {
+            RootFrame.Navigated -= CompleteInitializePhoneApplication;
             if (!ReferenceEquals(Application.RootVisual, RootFrame))
                 Application.RootVisual = RootFrame;
+        }
+
+        private void CheckForResetNavigation(object sender, NavigationEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.Reset)
+                RootFrame.Navigated += ClearBackStackAfterReset;
+        }
+
+        private void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
+        {
+            RootFrame.Navigated -= ClearBackStackAfterReset;
+
+            if (e.NavigationMode != NavigationMode.New && e.NavigationMode != NavigationMode.Refresh)
+                return;
+
+            while (RootFrame.RemoveBackEntry() != null) { }
         }
 
         /// <summary>

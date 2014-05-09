@@ -1,0 +1,12 @@
+﻿<Application
+    x:Class="Demo.HelloWP8.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Demo.HelloWP8">
+
+    <!--Application Resources-->
+    <Application.Resources>
+        <local:LocalizedStrings x:Key="LocalizedStrings"/>
+        <local:AppBootstrapper x:Key="Bootstrapper" />
+    </Application.Resources>
+</Application>
