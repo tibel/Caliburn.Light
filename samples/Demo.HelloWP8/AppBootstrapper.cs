@@ -32,6 +32,7 @@ namespace Demo.HelloWP8
             }
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
+            _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterPerRequest<MainPageViewModel>();
             _container.RegisterPerRequest<SecondPageViewModel>();
         }
