@@ -76,7 +76,19 @@ namespace Caliburn.Light
         {
             if (AssociatedObject != null && Command != null)
             {
-                var canExecute = Command.CanExecute(CommandParameter);
+                var resolvedParameter = CommandParameter;
+
+                var specialValue = resolvedParameter as ISpecialValue;
+                if (specialValue != null)
+                {
+                    var context = new CoroutineExecutionContext
+                    {
+                        Source = AssociatedObject,
+                    };
+                    resolvedParameter = specialValue.Resolve(context);
+                }
+
+                var canExecute = Command.CanExecute(resolvedParameter);
 
 #if SILVERLIGHT || NETFX_CORE
                 var control = AssociatedObject as Control;
@@ -97,7 +109,20 @@ namespace Caliburn.Light
         {
             if (Command != null)
             {
-                Command.Execute(CommandParameter ?? parameter);
+                var resolvedParameter = CommandParameter;
+
+                var specialValue = resolvedParameter as ISpecialValue;
+                if (specialValue != null)
+                {
+                    var context = new CoroutineExecutionContext
+                    {
+                        Source = AssociatedObject,
+                        EventArgs = parameter,
+                    };
+                    resolvedParameter = specialValue.Resolve(context);
+                }
+
+                Command.Execute(resolvedParameter ?? parameter);
             }
         }
 

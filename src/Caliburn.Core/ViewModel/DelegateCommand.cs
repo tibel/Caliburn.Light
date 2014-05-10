@@ -109,12 +109,8 @@ namespace Caliburn.Light
             var coTask = returnValue as ICoTask;
             if (coTask != null)
             {
-                var context = new CoroutineExecutionContext
-                {
-                    Source = this,
-                    Target = target,
-                };
-
+                var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
+                context.Target = target;
                 coTask.ExecuteAsync(context);
             }
         }
