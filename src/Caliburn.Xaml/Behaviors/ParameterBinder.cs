@@ -10,7 +10,7 @@ namespace Caliburn.Light
     /// <summary>
     /// A service that is capable of properly binding <see cref="IHaveParameters.Parameters"/> to a method's parameters.
     /// </summary>
-    public static class ParameterBinder //MessageBinder
+    public static class ParameterBinder
     {
         /// <summary>
         /// Finds the best matching method on the target.
@@ -76,10 +76,11 @@ namespace Caliburn.Light
         /// <summary>
         /// Determines the parameters that a method should be invoked with.
         /// </summary>
+        /// <param name="context">The coroutine execution context.</param>
         /// <param name="parameters">The available parameters.</param>
         /// <param name="requiredParameters">The parameters required to complete the invocation.</param>
         /// <returns>The actual parameter values.</returns>
-        public static object[] DetermineParameters(AttachedCollection<Parameter> parameters, ParameterInfo[] requiredParameters)
+        public static object[] DetermineParameters(CoroutineExecutionContext context, AttachedCollection<Parameter> parameters, ParameterInfo[] requiredParameters)
         {
             var providedValues = parameters.OfType<Parameter>().Select(x => x.Value).ToArray();
             var finalValues = new object[requiredParameters.Length];
@@ -88,7 +89,12 @@ namespace Caliburn.Light
             {
                 var parameterType = requiredParameters[i].ParameterType;
                 var parameterValue = providedValues[i];
-                finalValues[i] = CoerceValue(parameterType, parameterValue, null);
+
+                var specialValue = parameterValue as ISpecialValue;
+                if (specialValue != null)
+                    parameterValue = specialValue.Resolve(context);
+
+                finalValues[i] = CoerceValue(parameterType, parameterValue, context);
             }
 
             return finalValues;
@@ -101,7 +107,7 @@ namespace Caliburn.Light
         /// <param name="providedValue">The provided value.</param>
         /// <param name="context">An optional context value which can be used during conversion.</param>
         /// <returns>The coerced value.</returns>
-        public static object CoerceValue(Type destinationType, object providedValue, object context)
+        public static object CoerceValue(Type destinationType, object providedValue, object context = null)
         {
             if (providedValue == null)
                 return GetDefaultValue(destinationType);

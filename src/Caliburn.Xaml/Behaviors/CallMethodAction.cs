@@ -196,8 +196,14 @@ namespace Caliburn.Light
             var canExecute = true;
             if (_guard != null)
             {
+                var context = new CoroutineExecutionContext
+                {
+                    Source = AssociatedObject,
+                    Target = Target,
+                };
+
                 var guardFunction = DynamicDelegate.From(_guard);
-                canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(Parameters, _guard.GetParameters()));
+                canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(context, Parameters, _guard.GetParameters()));
             }
 
 #if SILVERLIGHT || NETFX_CORE
@@ -218,7 +224,14 @@ namespace Caliburn.Light
         {
             if (Target == null) return;
 
-            var parameterValues = ParameterBinder.DetermineParameters(Parameters, _method.GetParameters());
+            var context = new CoroutineExecutionContext
+            {
+                Source = AssociatedObject,
+                Target = Target,
+                EventArgs = parameter,
+            };
+
+            var parameterValues = ParameterBinder.DetermineParameters(context, Parameters, _method.GetParameters());
             var returnValue = DynamicDelegate.From(_method)(Target, parameterValues);
             if (returnValue == null) return;
 
@@ -232,15 +245,7 @@ namespace Caliburn.Light
 
             var coTask = returnValue as ICoTask;
             if (coTask != null)
-            {
-                var context = new CoroutineExecutionContext
-                {
-                    Source = this,
-                    Target = Target,
-                };
-
                 coTask.ExecuteAsync(context);
-            }
         }
     }
 }
