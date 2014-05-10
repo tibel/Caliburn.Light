@@ -80,8 +80,17 @@
     <Compile Include="..\Caliburn.Xaml.Universal\Services\INavigationService.cs">
       <Link>Services\INavigationService.cs</Link>
     </Compile>
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\ISharingService.cs">
+      <Link>Services\ISharingService.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\ISupportSharing.cs">
+      <Link>Services\ISupportSharing.cs</Link>
+    </Compile>
     <Compile Include="..\Caliburn.Xaml.Universal\Services\NavigationServiceHelper.cs">
       <Link>Services\NavigationServiceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\SharingService.cs">
+      <Link>Services\SharingService.cs</Link>
     </Compile>
     <Compile Include="..\Caliburn.Xaml.Universal\Services\UriBuilder.cs">
       <Link>Services\UriBuilder.cs</Link>
