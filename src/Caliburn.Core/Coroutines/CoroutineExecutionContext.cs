@@ -9,6 +9,7 @@ namespace Caliburn.Light
     {
         private const string SourceKey = "source";
         private const string TargetKey = "target";
+        private const string EventArgsKey = "eventargs";
 
         private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
 
@@ -44,6 +45,15 @@ namespace Caliburn.Light
         {
             get { return this[TargetKey]; }
             set { this[TargetKey] = value; }
+        }
+
+        /// <summary>
+        /// Any event arguments associated with the coroutine invocation.
+        /// </summary>
+        public object EventArgs
+        {
+            get { return this[EventArgsKey]; }
+            set { this[EventArgsKey] = value; }
         }
     }
 }
