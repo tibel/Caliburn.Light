@@ -29,13 +29,15 @@
 
   <files>
     <file src="..\src\Caliburn.Core\bin\Release\Caliburn.*" target="lib\portable-net45+win8+wp8+wpa81" />
-	<file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net45" />
-	<file src="..\src\Caliburn.Xaml.WIN81\bin\Release\Caliburn.*" target="lib\win81" />
-	<file src="..\src\Caliburn.Xaml.WP8\bin\Release\Caliburn.*" target="lib\wp8" />
-	<file src="..\src\Caliburn.Xaml.WPA81\bin\Release\Caliburn.*" target="lib\wpa81" />
-	
-	<file src="tools\**" target="tools" />
-	
+    <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net45" />
+    <file src="..\src\Caliburn.Xaml.WP8\bin\Release\Caliburn.*" target="lib\wp8" />
+
+    <file src="..\src\Caliburn.Xaml.Universal\bin\Release\Caliburn.*" target="lib\portable-win81+wpa81" />
+    <file src="..\src\Caliburn.Xaml.WIN81\bin\Release\Caliburn.*" target="lib\win81" />
+    <file src="..\src\Caliburn.Xaml.WPA81\bin\Release\Caliburn.*" target="lib\wpa81" />
+
+    <file src="tools\**" target="tools" />
+
     <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
   </files>
 </package>

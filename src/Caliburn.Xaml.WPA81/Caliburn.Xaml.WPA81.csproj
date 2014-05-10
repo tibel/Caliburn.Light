@@ -44,40 +44,46 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\AttachedCollection.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\AttachedCollection.cs">
       <Link>Behaviors\AttachedCollection.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\EventTrigger.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\EventTrigger.cs">
       <Link>Behaviors\EventTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\IAttachedObject.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\IAction.cs">
+      <Link>Behaviors\IAction.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\IAttachedObject.cs">
       <Link>Behaviors\IAttachedObject.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\Parameter.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\IBehavior.cs">
+      <Link>Behaviors\IBehavior.cs</Link>
+    </Compile>
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\Parameter.cs">
       <Link>Behaviors\Parameter.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\TriggerAction.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\TriggerAction.cs">
       <Link>Behaviors\TriggerAction.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Behaviors\TriggerBase.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Behaviors\TriggerBase.cs">
       <Link>Behaviors\TriggerBase.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\BooleanToVisibilityConverter.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\BooleanToVisibilityConverter.cs">
       <Link>BooleanToVisibilityConverter.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\CaliburnApplication.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\CaliburnApplication.cs">
       <Link>CaliburnApplication.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Services\FrameAdapter.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\FrameAdapter.cs">
       <Link>Services\FrameAdapter.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Services\INavigationService.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\INavigationService.cs">
       <Link>Services\INavigationService.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Services\NavigationServiceHelper.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\NavigationServiceHelper.cs">
       <Link>Services\NavigationServiceHelper.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml.WIN81\Services\UriBuilder.cs">
+    <Compile Include="..\Caliburn.Xaml.Universal\Services\UriBuilder.cs">
       <Link>Services\UriBuilder.cs</Link>
     </Compile>
     <Compile Include="..\Caliburn.Xaml\Behaviors\CallMethodAction.cs">

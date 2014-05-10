@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WinFormsInterop", "sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloWP8", "samples\Demo.HelloWP8\Demo.HelloWP8.csproj", "{3CCE968D-A7A0-4FFE-A278-115A719C0498}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.Universal", "src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.csproj", "{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,10 @@ Global
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
