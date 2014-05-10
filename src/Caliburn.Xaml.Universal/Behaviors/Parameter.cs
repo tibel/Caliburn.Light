@@ -1,11 +1,13 @@
 ﻿using System;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
 
 namespace Caliburn.Light
 {
     /// <summary>
     /// Represents a parameter of a TriggerAction.
     /// </summary>
+    [ContentProperty(Name = "Value")]
     public class Parameter : DependencyObject, IAttachedObject
     {
         /// <summary>

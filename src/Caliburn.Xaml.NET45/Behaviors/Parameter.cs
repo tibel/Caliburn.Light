@@ -2,12 +2,14 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Interactivity;
+using System.Windows.Markup;
 
 namespace Caliburn.Light
 {
     /// <summary>
     /// Represents a parameter of a TriggerAction.
     /// </summary>
+    [ContentProperty("Value")]
     public class Parameter : Freezable, IAttachedObject
     {
         /// <summary>
