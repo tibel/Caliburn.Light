@@ -12,7 +12,7 @@ namespace Demo.WinFormsInterop
             get { return _name; }
             set
             {
-                if (Set(ref _name, value))
+                if (SetProperty(ref _name, value))
                     RaisePropertyChanged(() => CanSayHello);
             }
         }

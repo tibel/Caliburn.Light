@@ -9,7 +9,7 @@ namespace Demo.HelloWP8
         public int NumberOfTabs
         {
             get { return _numberOfTabs; }
-            set { Set(ref _numberOfTabs, value); }
+            set { SetProperty(ref _numberOfTabs, value); }
         }
     }
 }

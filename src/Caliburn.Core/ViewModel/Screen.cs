@@ -28,7 +28,7 @@ namespace Caliburn.Light
         public virtual object Parent
         {
             get { return _parent; }
-            set { Set(ref _parent, value); }
+            set { SetProperty(ref _parent, value); }
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Caliburn.Light
         public virtual string DisplayName
         {
             get { return _displayName; }
-            set { Set(ref _displayName, value); }
+            set { SetProperty(ref _displayName, value); }
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Caliburn.Light
         public bool IsActive
         {
             get { return _isActive; }
-            private set { Set(ref _isActive, value); }
+            private set { SetProperty(ref _isActive, value); }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Caliburn.Light
         public bool IsInitialized
         {
             get { return _isInitialized; }
-            private set { Set(ref _isInitialized, value); }
+            private set { SetProperty(ref _isInitialized, value); }
         }
 
         /// <summary>

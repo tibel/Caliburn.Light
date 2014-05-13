@@ -83,7 +83,7 @@ namespace Caliburn.Light
         /// <param name="propertyName">The name of the property that changed.</param>
         /// <returns>True if the PropertyChanged event has been raised, false otherwise. 
         /// The event is not raised if the old value is equal to the new value.</returns>
-        protected bool Set<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, newValue))
                 return false;
