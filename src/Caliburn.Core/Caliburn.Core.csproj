@@ -51,6 +51,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Action\ISpecialValue.cs" />
+    <Compile Include="Action\ParameterBinder.cs" />
     <Compile Include="Validation\IValidationRule.cs" />
     <Compile Include="ViewModel\BindableCollection.cs" />
     <Compile Include="ViewModel\BindableObject.cs" />
@@ -117,7 +119,7 @@
     <Compile Include="Validation\ValidationAdapter.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationRule.cs" />
-    <Compile Include="ViewModel\DelegateCommand.cs" />
+    <Compile Include="Action\DelegateCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Weakly">

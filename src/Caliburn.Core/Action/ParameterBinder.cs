@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +7,7 @@ using System.Reflection;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A service that is capable of properly binding <see cref="IHaveParameters.Parameters"/> to a method's parameters.
+    /// A service that is capable of properly binding a method using the specified parameters.
     /// </summary>
     public static class ParameterBinder
     {
@@ -121,16 +120,6 @@ namespace Caliburn.Light
 
             try
             {
-#if !NETFX_CORE
-                var converter = TypeDescriptor.GetConverter(destinationType);
-                if (converter.CanConvertFrom(providedType))
-                    return converter.ConvertFrom(providedValue);
-
-                converter = TypeDescriptor.GetConverter(providedType);
-                if (converter.CanConvertTo(destinationType))
-                    return converter.ConvertTo(providedValue, destinationType);
-#endif
-
                 if (destinationType.GetTypeInfo().IsEnum)
                 {
                     var stringValue = providedValue as string;

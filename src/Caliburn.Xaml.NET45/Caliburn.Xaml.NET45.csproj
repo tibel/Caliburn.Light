@@ -69,12 +69,6 @@
     <Compile Include="..\Caliburn.Xaml\Behaviors\InvokeCommandAction.cs">
       <Link>Behaviors\InvokeCommandAction.cs</Link>
     </Compile>
-    <Compile Include="..\Caliburn.Xaml\Behaviors\ISpecialValue.cs">
-      <Link>Behaviors\ISpecialValue.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\Behaviors\ParameterBinder.cs">
-      <Link>Behaviors\ParameterBinder.cs</Link>
-    </Compile>
     <Compile Include="..\Caliburn.Xaml\Bind.cs">
       <Link>Bind.cs</Link>
     </Compile>
