@@ -14,11 +14,12 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class DelegateCommand : ICommand
     {
-        private readonly WeakReference _targetReference;
+        private readonly object _target;
         private readonly MethodInfo _method;
-        private readonly WeakFunc<bool> _canExecute;
-        private readonly WeakEventSource _canExecuteChangedSource = new WeakEventSource();
+        private readonly MethodInfo _guard;
         private readonly string _guardName;
+        private readonly IDisposable _propertyChangedRegistration;
+        private readonly WeakEventSource _canExecuteChangedSource = new WeakEventSource();
 
         /// <summary>
         /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
@@ -55,29 +56,29 @@ namespace Caliburn.Light
 
         private DelegateCommand(object target, MethodInfo method)
         {
-            _targetReference = new WeakReference(target);
+            _target = target;
             _method = method;
 
             _guardName = "Can" + _method.Name;
-            var property = target.GetType().GetRuntimeProperty(_guardName);
-            if (property == null) return;
 
-            var inpc = target as INotifyPropertyChanged;
+            _guard = ParameterBinder.FindGuardMethod(_target, _method);
+            if (_guard != null) return;
+
+            var inpc = _target as INotifyPropertyChanged;
             if (inpc == null) return;
 
-            _canExecute = new WeakFunc<bool>(inpc, property.GetMethod);
-            WeakEventHandler.Register<PropertyChangedEventArgs>(inpc, "PropertyChanged", OnPropertyChanged);
+            var property = _target.GetType().GetRuntimeProperty(_guardName);
+            if (property == null) return;
+
+            _guard = property.GetMethod;
+            _propertyChangedRegistration = WeakEventHandler.Register<PropertyChangedEventArgs>(inpc, "PropertyChanged", OnPropertyChanged);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == _guardName)
             {
-                if (UIContext.CheckAccess())
-                    _canExecuteChangedSource.Raise(this, EventArgs.Empty);
-                else
-                    Task.Factory.StartNew(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty),
-                        CancellationToken.None, TaskCreationOptions.None, UIContext.TaskScheduler);
+                RaiseCanExecuteChanged();
             }
         }
 
@@ -87,32 +88,26 @@ namespace Caliburn.Light
         /// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to null.</param>
         public void Execute(object parameter)
         {
-            var target = _targetReference.Target;
-            if (target == null) return;
+            var function = DynamicDelegate.From(_method);
 
-            var execute = DynamicDelegate.From(_method);
-            var returnValue = execute(target, new object[0]);
+            var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
+            context.Target = _target;
+
+            var finalValues = ParameterBinder.DetermineParameters(context, new[] { parameter }, _method.GetParameters());
+            var returnValue = function(_target, finalValues);
             if (returnValue == null) return;
 
             var enumerable = returnValue as IEnumerable<ICoTask>;
             if (enumerable != null)
-            {
                 returnValue = enumerable.GetEnumerator();
-            }
 
             var enumerator = returnValue as IEnumerator<ICoTask>;
             if (enumerator != null)
-            {
                 returnValue = enumerator.AsCoTask();
-            }
 
             var coTask = returnValue as ICoTask;
             if (coTask != null)
-            {
-                var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
-                context.Target = target;
                 coTask.ExecuteAsync(context);
-            }
         }
 
         /// <summary>
@@ -122,7 +117,15 @@ namespace Caliburn.Light
         /// <returns>true if this command can be executed; otherwise, false.</returns>
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null || _canExecute.Invoke();
+            if (_guard == null) return true;
+
+            var function = DynamicDelegate.From(_guard);
+
+            var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
+            context.Target = _target;
+
+            var finalValues = ParameterBinder.DetermineParameters(context, new[] {parameter}, _guard.GetParameters());
+            return (bool) function(_target, finalValues);
         }
 
         /// <summary>
@@ -132,6 +135,19 @@ namespace Caliburn.Light
         {
             add { _canExecuteChangedSource.Add(value); }
             remove { _canExecuteChangedSource.Remove(value); }
+        }
+
+        /// <summary>
+        /// Raises <see cref="CanExecuteChanged"/> on the UI thread so every command invoker can requery to check if the command can execute.
+        /// <remarks>Note that this will trigger the execution of <see cref="CanExecute"/> once for each invoker.</remarks>
+        /// </summary>
+        public void RaiseCanExecuteChanged()
+        {
+            if (UIContext.CheckAccess())
+                _canExecuteChangedSource.Raise(this, EventArgs.Empty);
+            else
+                Task.Factory.StartNew(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty),
+                    CancellationToken.None, TaskCreationOptions.None, UIContext.TaskScheduler);
         }
     }
 }
