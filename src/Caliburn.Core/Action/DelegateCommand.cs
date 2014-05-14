@@ -12,6 +12,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Wraps a ViewModel method (with guard) in an <see cref="ICommand"/>.
     /// </summary>
+    /// <remarks>When using a property as guard then <see cref="CanExecuteChanged"/> is raised automatically.</remarks>
     public sealed class DelegateCommand : ICommand
     {
         private readonly object _target;
@@ -34,10 +35,33 @@ namespace Caliburn.Light
         /// <summary>
         /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
         /// </summary>
+        /// <typeparam name="T">The type of the parameter.</typeparam>
+        /// <param name="action">The action.</param>
+        /// <returns>The new <see cref="DelegateCommand"/>.</returns>
+        public static DelegateCommand Create<T>(Action<T> action)
+        {
+            return CreateInternal(action);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
+        /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
         public static DelegateCommand Create<TResult>(Func<TResult> action)
+        {
+            return CreateInternal(action);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the parameter.</typeparam>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action.</param>
+        /// <returns>The new <see cref="DelegateCommand"/>.</returns>
+        public static DelegateCommand Create<T, TResult>(Func<T, TResult> action)
         {
             return CreateInternal(action);
         }
@@ -48,8 +72,6 @@ namespace Caliburn.Light
                 throw new ArgumentNullException("action");
             if (action.Target == null)
                 throw new ArgumentException("Method cannot be static.", "action");
-            if (action.GetMethodInfo().IsClosure())
-                throw new ArgumentException("A closure cannot be used.", "action");
 
             return new DelegateCommand(action.Target, action.GetMethodInfo());
         }
