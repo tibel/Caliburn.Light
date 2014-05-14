@@ -148,7 +148,7 @@ namespace Caliburn.Light
 
             if (Target == null || string.IsNullOrEmpty(MethodName)) return;
 
-            _method = ParameterBinder.FindBestMethod(Target, MethodName, Parameters);
+            _method = ParameterBinder.FindBestMethod(Target, MethodName, Parameters.Count);
             if (_method == null) return;
 
             _guardName = "Can" + _method.Name;
@@ -203,7 +203,8 @@ namespace Caliburn.Light
                 };
 
                 var guardFunction = DynamicDelegate.From(_guard);
-                canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(context, Parameters, _guard.GetParameters()));
+                var providedValues = Parameters.OfType<Parameter>().Select(x => x.Value).ToArray();
+                canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(context, providedValues, _guard.GetParameters()));
             }
 
 #if SILVERLIGHT || NETFX_CORE
@@ -231,7 +232,8 @@ namespace Caliburn.Light
                 EventArgs = parameter,
             };
 
-            var parameterValues = ParameterBinder.DetermineParameters(context, Parameters, _method.GetParameters());
+            var providedValues = Parameters.OfType<Parameter>().Select(x => x.Value).ToArray();
+            var parameterValues = ParameterBinder.DetermineParameters(context, providedValues, _method.GetParameters());
             var returnValue = DynamicDelegate.From(_method)(Target, parameterValues);
             if (returnValue == null) return;
 

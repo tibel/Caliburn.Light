@@ -17,14 +17,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="methodName">The method name.</param>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="numberOfParameters">The number of parameters.</param>
         /// <returns>The matching method, if available.</returns>
-        public static MethodInfo FindBestMethod(object target, string methodName, AttachedCollection<Parameter> parameters)
+        public static MethodInfo FindBestMethod(object target, string methodName, int numberOfParameters)
         {
             return (from method in target.GetType().GetRuntimeMethods()
                     where method.Name == methodName
                     let methodParameters = method.GetParameters()
-                    where parameters.Count == methodParameters.Length
+                    where numberOfParameters == methodParameters.Length
                     select method).FirstOrDefault();
         }
 
@@ -77,12 +77,11 @@ namespace Caliburn.Light
         /// Determines the parameters that a method should be invoked with.
         /// </summary>
         /// <param name="context">The coroutine execution context.</param>
-        /// <param name="parameters">The available parameters.</param>
+        /// <param name="providedValues">The available parameter values.</param>
         /// <param name="requiredParameters">The parameters required to complete the invocation.</param>
         /// <returns>The actual parameter values.</returns>
-        public static object[] DetermineParameters(CoroutineExecutionContext context, AttachedCollection<Parameter> parameters, ParameterInfo[] requiredParameters)
+        public static object[] DetermineParameters(CoroutineExecutionContext context, object[] providedValues, ParameterInfo[] requiredParameters)
         {
-            var providedValues = parameters.OfType<Parameter>().Select(x => x.Value).ToArray();
             var finalValues = new object[requiredParameters.Length];
 
             for (var i = 0; i < requiredParameters.Length; i++)
@@ -147,15 +146,7 @@ namespace Caliburn.Light
                     if (stringValue != null)
                         return new Guid(stringValue);
                 }
-            }
-            catch (Exception ex)
-            {
-                LogManager.GetLogger(typeof(ParameterBinder)).Error("Failed to CoerceValue. {0}", ex);
-                return GetDefaultValue(destinationType);
-            }
 
-            try
-            {
                 return Convert.ChangeType(providedValue, destinationType, CultureInfo.CurrentCulture);
             }
             catch (Exception ex)
