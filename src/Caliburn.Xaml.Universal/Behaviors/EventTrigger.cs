@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Weakly;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 
@@ -116,7 +117,7 @@ namespace Caliburn.Light
 
             var declaredMethod = typeof(EventTrigger).GetTypeInfo().GetDeclaredMethod("OnEvent");
             _eventHandler = declaredMethod.CreateDelegate(info.EventHandlerType, this);
-            _isWindowsRuntimeEvent = IsWindowsRuntimeType(info.EventHandlerType);
+            _isWindowsRuntimeEvent = info.EventHandlerType.IsWindowsRuntimeType();
             if (_isWindowsRuntimeEvent)
             {
                 WindowsRuntimeMarshal.AddEventHandler(
@@ -186,11 +187,6 @@ namespace Caliburn.Light
 
             eventTrigger.UnregisterEvent((string)args.OldValue);
             eventTrigger.RegisterEvent((string)args.NewValue);
-        }
-
-        private static bool IsWindowsRuntimeType(Type type)
-        {
-            return type != null && type.AssemblyQualifiedName.EndsWith("ContentType=WindowsRuntime", StringComparison.Ordinal);
         }
     }
 }
