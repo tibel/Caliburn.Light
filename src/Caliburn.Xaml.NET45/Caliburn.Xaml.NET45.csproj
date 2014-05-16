@@ -60,48 +60,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Caliburn.Xaml\Behaviors\CallMethodAction.cs">
-      <Link>Behaviors\CallMethodAction.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\Behaviors\IHaveParameters.cs">
-      <Link>Behaviors\IHaveParameters.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\Behaviors\InvokeCommandAction.cs">
-      <Link>Behaviors\InvokeCommandAction.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\Bind.cs">
-      <Link>Bind.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\NameTransformer.cs">
-      <Link>NameTransformer.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\RegExHelper.cs">
-      <Link>RegExHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\TypeMappingConfiguration.cs">
-      <Link>TypeMappingConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\TypeResolver.cs">
-      <Link>TypeResolver.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\View.cs">
-      <Link>View.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\ViewAdapter.cs">
-      <Link>ViewAdapter.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\ViewHelper.cs">
-      <Link>ViewHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\ViewLocator.cs">
-      <Link>ViewLocator.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\ViewModelBinder.cs">
-      <Link>ViewModelBinder.cs</Link>
-    </Compile>
-    <Compile Include="..\Caliburn.Xaml\ViewModelLocator.cs">
-      <Link>ViewModelLocator.cs</Link>
-    </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
@@ -126,6 +84,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\Caliburn.Xaml\Caliburn.Xaml.projitems" Label="Shared" Condition="Exists('..\Caliburn.Xaml\Caliburn.Xaml.projitems')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

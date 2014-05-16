@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3322d6ee-fd8d-4eee-8ecc-0a481d7b6658</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Caliburn.Light</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\AttachedCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\EventTrigger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IAttachedObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\Parameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BooleanToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CaliburnApplication.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\FrameAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\INavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ISharingService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ISupportSharing.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationServiceHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\SharingService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\UriBuilder.cs" />
+  </ItemGroup>
+</Project>

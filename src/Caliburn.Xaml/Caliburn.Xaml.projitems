@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>1123c3c4-3504-468b-ba87-322effaaa76e</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Caliburn.Light</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\CallMethodAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IHaveParameters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\InvokeCommandAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bind.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NameTransformer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RegExHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeMappingConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModelBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModelLocator.cs" />
+  </ItemGroup>
+</Project>

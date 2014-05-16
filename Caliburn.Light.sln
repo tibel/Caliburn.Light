@@ -28,11 +28,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WinFormsInterop", "sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloWP8", "samples\Demo.HelloWP8\Demo.HelloWP8.csproj", "{3CCE968D-A7A0-4FFE-A278-115A719C0498}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Xaml.Universal", "src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.csproj", "{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloEventAggregator", "samples\Demo.HelloEventAggregator\Demo.HelloEventAggregator.csproj", "{907F95A2-5978-41E3-9AD1-54D63B9BBC53}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Caliburn.Xaml", "src\Caliburn.Xaml\Caliburn.Xaml.shproj", "{1123C3C4-3504-468B-BA87-322EFFAAA76E}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Caliburn.Xaml.Universal", "src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.shproj", "{3322D6EE-FD8D-4EEE-8ECC-0A481D7B6658}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
+		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{3322d6ee-fd8d-4eee-8ecc-0a481d7b6658}*SharedItemsImports = 13
+		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{751cef13-946e-48a3-94f5-07b92fc4120e}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{1123c3c4-3504-468b-ba87-322effaaa76e}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
@@ -148,16 +160,6 @@ Global
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498}.Release|x86.ActiveCfg = Release|x86
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498}.Release|x86.Build.0 = Release|x86
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498}.Release|x86.Deploy.0 = Release|x86
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|ARM.ActiveCfg = Release|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|x64.ActiveCfg = Release|Any CPU
-		{8780FA8D-91C7-48C2-859E-FC6C7D9F81AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
