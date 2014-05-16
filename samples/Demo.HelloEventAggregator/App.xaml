@@ -1,0 +1,8 @@
+﻿<cal:CaliburnApplication
+    x:Class="Demo.HelloEventAggregator.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cal="using:Caliburn.Light"
+    xmlns:local="using:Demo.HelloEventAggregator">
+
+</cal:CaliburnApplication>
