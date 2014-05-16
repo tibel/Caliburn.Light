@@ -41,14 +41,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloSpecialValues", "samples\Demo.HelloSpecialValues\Demo.HelloSpecialValues.csproj", "{6308C2A5-ECEA-42F4-8469-A59E195CC83A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{3322d6ee-fd8d-4eee-8ecc-0a481d7b6658}*SharedItemsImports = 13
-		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{751cef13-946e-48a3-94f5-07b92fc4120e}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{1123c3c4-3504-468b-ba87-322effaaa76e}*SharedItemsImports = 13
 	EndGlobalSection
@@ -191,6 +193,26 @@ Global
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53}.Release|x86.ActiveCfg = Release|x86
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53}.Release|x86.Build.0 = Release|x86
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53}.Release|x86.Deploy.0 = Release|x86
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|ARM.ActiveCfg = Debug|ARM
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|ARM.Build.0 = Debug|ARM
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|ARM.Deploy.0 = Debug|ARM
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|x86.ActiveCfg = Debug|x86
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|x86.Build.0 = Debug|x86
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Debug|x86.Deploy.0 = Debug|x86
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|ARM.ActiveCfg = Release|ARM
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|ARM.Build.0 = Release|ARM
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|ARM.Deploy.0 = Release|ARM
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x64.ActiveCfg = Release|Any CPU
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x86.ActiveCfg = Release|x86
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x86.Build.0 = Release|x86
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,5 +223,6 @@ Global
 		{7517D9E9-7929-422A-9177-59FD86E1B00F} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{3CCE968D-A7A0-4FFE-A278-115A719C0498} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
+		{6308C2A5-ECEA-42F4-8469-A59E195CC83A} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 	EndGlobalSection
 EndGlobal
