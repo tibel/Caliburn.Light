@@ -110,9 +110,7 @@ namespace Caliburn.Light
             if (providedValue == null)
                 return GetDefaultValue(destinationType);
 
-            var providedType = providedValue.GetType();
-
-            if (destinationType.GetTypeInfo().IsAssignableFrom(providedType.GetTypeInfo()))
+            if (destinationType.GetTypeInfo().IsAssignableFrom(providedValue.GetType().GetTypeInfo()))
                 return providedValue;
 
             if (CustomConverters.ContainsKey(destinationType))
