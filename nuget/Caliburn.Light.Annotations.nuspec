@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Caliburn.Light.Annotations</id>
+    <title>Caliburn.Light Annotations</title>
+    <version>1.0.0</version>
+    <authors>Thomas Ibel</authors>
+    <description>External Annotations for Caliburn.Light.</description>
+    <language>en-US</language>
+    <licenseUrl>https://github.com/tibel/Caliburn.Light/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
+    <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright Thomas Ibel 2014</copyright>
+    <tags>Caliburn.Light Annotations</tags>
+
+    <dependencies>
+      <group>
+        <dependency id="ReSharper" version="8.0" />
+      </group>
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="annotations\**\*.*" target="ReSharper\vAny\annotations\" />
+  </files>
+</package>
