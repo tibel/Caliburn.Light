@@ -117,7 +117,7 @@ namespace Caliburn.Light
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="task">The task.</param>
         /// <returns>The coroutine that encapsulates the task.</returns>
-        public static ICoTask AsCoTask<TResult>(this Task<TResult> task)
+        public static ICoTask<TResult> AsCoTask<TResult>(this Task<TResult> task)
         {
             return new TaskDecoratorCoTask<TResult>(task);
         }
