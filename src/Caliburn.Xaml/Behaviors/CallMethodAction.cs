@@ -70,16 +70,15 @@ namespace Caliburn.Light
         /// </summary>
         public AttachedCollection<Parameter> Parameters
         {
-            get
-            {
-                var parametersCollection = (AttachedCollection<Parameter>) GetValue(ParametersProperty);
-                if (parametersCollection == null)
-                {
-                    parametersCollection = new AttachedCollection<Parameter>();
-                    SetValue(ParametersProperty, parametersCollection);
-                }
-                return parametersCollection;
-            }
+            get { return (AttachedCollection<Parameter>) GetValue(ParametersProperty); }
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="CallMethodAction"/>.
+        /// </summary>
+        public CallMethodAction()
+        {
+            SetValue(ParametersProperty, new AttachedCollection<Parameter>());
         }
 
         private static void OnMethodNameChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)

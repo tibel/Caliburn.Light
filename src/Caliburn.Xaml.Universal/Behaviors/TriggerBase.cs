@@ -19,6 +19,11 @@ namespace Caliburn.Light
 
         private DependencyObject _associatedObject;
 
+        protected TriggerBase()
+        {
+            SetValue(ActionsProperty, new AttachedCollection<TriggerAction>());
+        }
+
         /// <summary>
         /// Attaches to the specified object.
         /// </summary>
@@ -66,16 +71,7 @@ namespace Caliburn.Light
         /// </summary>
         public AttachedCollection<TriggerAction> Actions
         {
-            get
-            {
-                var actionCollection = (AttachedCollection<TriggerAction>)GetValue(ActionsProperty);
-                if (actionCollection == null)
-                {
-                    actionCollection = new AttachedCollection<TriggerAction>();
-                    SetValue(ActionsProperty, actionCollection);
-                }
-                return actionCollection;
-            }
+            get { return (AttachedCollection<TriggerAction>) GetValue(ActionsProperty); }
         }
     }
 }
