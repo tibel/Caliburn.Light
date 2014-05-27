@@ -72,9 +72,12 @@ namespace Caliburn.Light
         /// <summary>
         /// Updates the Enabled state of the target element based on the CanExecute method of the command.
         /// </summary>
-        protected virtual void UpdateEnabledState()
+        protected void UpdateEnabledState()
         {
-            if (AssociatedObject != null && Command != null)
+            if (AssociatedObject == null) return;
+
+            var canExecute = true;
+            if (Command != null)
             {
                 var resolvedParameter = CommandParameter;
 
@@ -88,17 +91,18 @@ namespace Caliburn.Light
                     resolvedParameter = specialValue.Resolve(context);
                 }
 
-                var canExecute = Command.CanExecute(resolvedParameter);
+                canExecute = Command.CanExecute(resolvedParameter);
+            }
 
 #if SILVERLIGHT || NETFX_CORE
-                var control = AssociatedObject as Control;
+            var control = AssociatedObject as Control;
+            if (control != null && !ViewHelper.HasBinding(control, Control.IsEnabledProperty))
+                control.IsEnabled = canExecute;
 #else
-                var control = AssociatedObject as UIElement;
+            var control = AssociatedObject as FrameworkElement;
+            if (control != null && !ViewHelper.HasBinding(control, UIElement.IsEnabledProperty))
+                control.IsEnabled = canExecute;
 #endif
-
-                if (control != null)
-                    control.IsEnabled = canExecute;
-            }
         }
 
         /// <summary>

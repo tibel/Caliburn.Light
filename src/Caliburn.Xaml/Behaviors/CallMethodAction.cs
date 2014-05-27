@@ -208,12 +208,13 @@ namespace Caliburn.Light
 
 #if SILVERLIGHT || NETFX_CORE
             var control = AssociatedObject as Control;
-#else
-            var control = AssociatedObject as UIElement;
-#endif
-
-            if (control != null)
+            if (control != null && !ViewHelper.HasBinding(control, Control.IsEnabledProperty))
                 control.IsEnabled = canExecute;
+#else
+            var control = AssociatedObject as FrameworkElement;
+            if (control != null && !ViewHelper.HasBinding(control, UIElement.IsEnabledProperty))
+                control.IsEnabled = canExecute;
+#endif
         }
 
         /// <summary>
