@@ -45,12 +45,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloSpecialValues", "
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
+		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{3322d6ee-fd8d-4eee-8ecc-0a481d7b6658}*SharedItemsImports = 13
-		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
+		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{751cef13-946e-48a3-94f5-07b92fc4120e}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{1123c3c4-3504-468b-ba87-322effaaa76e}*SharedItemsImports = 13
 	EndGlobalSection

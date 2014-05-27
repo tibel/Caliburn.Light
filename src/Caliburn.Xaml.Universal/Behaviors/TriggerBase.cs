@@ -19,6 +19,9 @@ namespace Caliburn.Light
 
         private DependencyObject _associatedObject;
 
+        /// <summary>
+        /// Creates an instance of <see cref="TriggerBase"/>.
+        /// </summary>
         protected TriggerBase()
         {
             SetValue(ActionsProperty, new AttachedCollection<TriggerAction>());
