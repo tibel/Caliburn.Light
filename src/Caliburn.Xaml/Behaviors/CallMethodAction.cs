@@ -222,7 +222,10 @@ namespace Caliburn.Light
         /// <param name="parameter">The parameter to the action. If the action does not require a parameter, the parameter may be set to a null reference.</param>
         protected override void Invoke(object parameter)
         {
-            if (Target == null) return;
+            if (Target == null)
+                throw new InvalidOperationException(string.Format("No target found for method {0}.", MethodName));
+            if (_method == null)
+                throw new InvalidOperationException(string.Format("Method {0} not found on target of type {1}.", MethodName, Target.GetType()));
 
             var context = new CoroutineExecutionContext
             {
