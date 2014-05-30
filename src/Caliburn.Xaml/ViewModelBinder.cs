@@ -22,7 +22,7 @@ namespace Caliburn.Light
         {
             Log.Info("Binding {0} and {1}.", view, viewModel);
 
-            var noDataContext = (bool)view.GetValue(Light.Bind.NoDataContextProperty);
+            var noDataContext = Light.Bind.GetNoDataContext(view);
 
             var frameworkElement = view as FrameworkElement;
             if (frameworkElement != null && !noDataContext)

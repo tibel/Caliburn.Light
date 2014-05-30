@@ -27,8 +27,18 @@ namespace Caliburn.Light
             DependencyProperty.RegisterAttached("ModelWithoutContext", typeof (object), typeof (Bind),
                 new PropertyMetadata(null, OnModelWithoutContextChanged));
 
-        internal static readonly DependencyProperty NoDataContextProperty =
+        private static readonly DependencyProperty NoDataContextProperty =
             DependencyProperty.RegisterAttached("NoDataContext", typeof (bool), typeof (Bind), null);
+
+        /// <summary>
+        /// Gets whether or not the DataContext should be set on the view.
+        /// </summary>
+        /// <param name="dependencyObject">The view.</param>
+        /// <returns>Whether or not the DataContext should be set.</returns>
+        public static bool GetNoDataContext(DependencyObject dependencyObject)
+        {
+            return (bool) dependencyObject.GetValue(NoDataContextProperty);
+        }
 
         /// <summary>
         /// Gets the model to bind to.
