@@ -1,4 +1,5 @@
-﻿using Microsoft.Xaml.Interactivity;
+﻿using System;
+using Microsoft.Xaml.Interactivity;
 using Windows.UI.Xaml;
 
 namespace Caliburn.Light
@@ -57,6 +58,9 @@ namespace Caliburn.Light
         /// </returns>
         public object Execute(object sender, object parameter)
         {
+            if (AssociatedObject == null)
+                throw new InvalidOperationException("AssociatedObject was not set before Execute.");
+
             Invoke(parameter);
             return null;
         }
