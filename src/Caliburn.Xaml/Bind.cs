@@ -150,7 +150,7 @@ namespace Caliburn.Light
             var enabled = (bool) e.NewValue;
             if (!enabled) return;
 
-            BindingOperations.SetBinding(d, DesignDataContextProperty, new Binding());
+            BindingHelper.SetBinding(d, DesignDataContextProperty, new Binding());
         }
 
         private static void OnDesignDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

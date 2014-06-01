@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IHaveParameters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\InvokeCommandAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bind.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindingHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RegExHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TypeMappingConfiguration.cs" />

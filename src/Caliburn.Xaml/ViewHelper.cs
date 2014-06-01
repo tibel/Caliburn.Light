@@ -174,13 +174,10 @@ namespace Caliburn.Light
         /// <summary>
         /// Determines whether a particular dependency property already has a binding on the provided element.
         /// </summary>
+        [Obsolete("Use BindingHelper.IsDataBound() instead.")]
         public static bool HasBinding(FrameworkElement element, DependencyProperty property)
         {
-#if SILVERLIGHT || NETFX_CORE
-            return element.GetBindingExpression(property) != null;
-#else
-            return BindingOperations.GetBindingBase(element, property) != null;
-#endif
+            return BindingHelper.IsDataBound(element, property);
         }
     }
 }
