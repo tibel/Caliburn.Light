@@ -49,7 +49,7 @@ namespace Caliburn.Light
         /// <returns></returns>
         public static ValidationResult Failure(IFormatProvider provider, string format, params object[] args)
         {
-            var formattedMessage = String.Format(provider, format, args);
+            var formattedMessage = string.Format(provider, format, args);
             return new ValidationResult(false, formattedMessage);
         }
     }

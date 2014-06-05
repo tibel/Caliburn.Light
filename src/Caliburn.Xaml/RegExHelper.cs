@@ -30,7 +30,7 @@ namespace Caliburn.Light
         /// <returns>Regular expression capture group with the specified group name</returns>
         public static string GetCaptureGroup(string groupName, string regEx)
         {
-            return String.Concat(@"(?<", groupName, ">", regEx, ")");
+            return string.Concat(@"(?<", groupName, ">", regEx, ")");
         }
 
         /// <summary>

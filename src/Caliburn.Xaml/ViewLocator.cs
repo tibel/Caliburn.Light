@@ -56,17 +56,17 @@ namespace Caliburn.Light
         /// <param name="config">An instance of TypeMappingConfiguration that provides the settings for configuration</param>
         public static void ConfigureTypeMappings(TypeMappingConfiguration config)
         {
-            if (String.IsNullOrEmpty(config.DefaultSubNamespaceForViews))
+            if (string.IsNullOrEmpty(config.DefaultSubNamespaceForViews))
             {
                 throw new ArgumentException("DefaultSubNamespaceForViews field cannot be blank.");
             }
 
-            if (String.IsNullOrEmpty(config.DefaultSubNamespaceForViewModels))
+            if (string.IsNullOrEmpty(config.DefaultSubNamespaceForViewModels))
             {
                 throw new ArgumentException("DefaultSubNamespaceForViewModels field cannot be blank.");
             }
 
-            if (String.IsNullOrEmpty(config.NameFormat))
+            if (string.IsNullOrEmpty(config.NameFormat))
             {
                 throw new ArgumentException("NameFormat field cannot be blank.");
             }
@@ -111,7 +111,7 @@ namespace Caliburn.Light
             }
 
             //Check for <Namespace>.<BaseName><ViewSuffix> construct
-            AddNamespaceMapping(String.Empty, String.Empty, viewSuffix);
+            AddNamespaceMapping(string.Empty, string.Empty, viewSuffix);
 
             //Check for <Namespace>.ViewModels.<NameSpace>.<BaseName><ViewSuffix> construct
             AddSubNamespaceMapping(_defaultSubNsViewModels, _defaultSubNsViews, viewSuffix);
@@ -195,7 +195,7 @@ namespace Caliburn.Light
 
             //Start pattern search from beginning of string ("^")
             //unless original string was blank (i.e. special case to indicate "append target to source")
-            if (!String.IsNullOrEmpty(nsSource))
+            if (!string.IsNullOrEmpty(nsSource))
             {
                 nsencoded = "^" + nsencoded;
             }
@@ -230,9 +230,9 @@ namespace Caliburn.Light
             var nsencoded = RegExHelper.NamespaceToRegEx(nsSource + ".");
 
             string rxbeforetgt, rxaftersrc, rxaftertgt;
-            var rxbeforesrc = rxbeforetgt = rxaftersrc = rxaftertgt = String.Empty;
+            var rxbeforesrc = rxbeforetgt = rxaftersrc = rxaftertgt = string.Empty;
 
-            if (!String.IsNullOrEmpty(nsSource))
+            if (!string.IsNullOrEmpty(nsSource))
             {
                 if (!nsSource.StartsWith("*"))
                 {
@@ -248,9 +248,9 @@ namespace Caliburn.Light
             }
 
             var rxmid = RegExHelper.GetCaptureGroup("subns", nsencoded);
-            var nsreplace = String.Concat(rxbeforesrc, rxmid, rxaftersrc);
+            var nsreplace = string.Concat(rxbeforesrc, rxmid, rxaftersrc);
 
-            var nsTargetsRegEx = nsTargets.Select(t => String.Concat(rxbeforetgt, t, ".", rxaftertgt)).ToArray();
+            var nsTargetsRegEx = nsTargets.Select(t => string.Concat(rxbeforetgt, t, ".", rxaftertgt)).ToArray();
             AddTypeMapping(nsreplace, null, nsTargetsRegEx, viewSuffix);
         }
 
@@ -326,16 +326,16 @@ namespace Caliburn.Light
             }
 
             var contextstr = ContextSeparator + context;
-            string grpsuffix = String.Empty;
+            string grpsuffix = string.Empty;
             if (_useNameSuffixesInMappings)
             {
                 //Create RegEx for matching any of the synonyms registered
-                var synonymregex = "(" + String.Join("|", ViewSuffixList.ToArray()) + ")";
+                var synonymregex = "(" + string.Join("|", ViewSuffixList.ToArray()) + ")";
                 grpsuffix = RegExHelper.GetCaptureGroup("suffix", synonymregex);
             }
 
             const string grpbase = @"\${basename}";
-            var patternregex = String.Format(_nameFormat, grpbase, grpsuffix) + "$";
+            var patternregex = string.Format(_nameFormat, grpbase, grpsuffix) + "$";
 
             //Strip out any synonym by just using contents of base capture group with context string
             var replaceregex = "${basename}" + contextstr;
