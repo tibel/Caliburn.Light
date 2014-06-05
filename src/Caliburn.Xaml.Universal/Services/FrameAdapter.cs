@@ -6,6 +6,9 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+#if WINDOWS_PHONE_APP
+using Windows.Phone.UI.Input;
+#endif
 
 namespace Caliburn.Light
 {
@@ -19,7 +22,6 @@ namespace Caliburn.Light
         private const string ParameterKey = "ParameterKey";
 
         private readonly Frame _frame;
-        private event NavigatingCancelEventHandler ExternalNavigatingHandler = delegate { };
         private object _currentParameter;
 
         /// <summary>
@@ -34,8 +36,8 @@ namespace Caliburn.Light
             _frame.Navigated += OnNavigated;
 
 #if WINDOWS_PHONE_APP
-            _frame.Loaded += (sender, args) => { Windows.Phone.UI.Input.HardwareButtons.BackPressed += OnHardwareBackPressed; };
-            _frame.Unloaded += (sender, args) => { Windows.Phone.UI.Input.HardwareButtons.BackPressed -= OnHardwareBackPressed; };
+            _frame.Loaded += (sender, args) => { HardwareButtons.BackPressed += OnHardwareBackPressed; };
+            _frame.Unloaded += (sender, args) => { HardwareButtons.BackPressed -= OnHardwareBackPressed; };
 #endif
         }
 
@@ -46,7 +48,9 @@ namespace Caliburn.Light
         /// <param name="e"> The event args. </param>
         protected virtual void OnNavigating(object sender, NavigatingCancelEventArgs e)
         {
-            ExternalNavigatingHandler(sender, e);
+            var handler = Navigating;
+            if (handler != null)
+                handler(sender, e);
 
             if (e.Cancel)
                 return;
@@ -85,7 +89,6 @@ namespace Caliburn.Light
         /// <param name="e"> The event args. </param>
         protected virtual void OnNavigated(object sender, NavigationEventArgs e)
         {
-
             if (e.Content == null)
                 return;
 
@@ -139,32 +142,25 @@ namespace Caliburn.Light
             {
                 var uri = new Uri((string) parameter);
 
-                if (!String.IsNullOrEmpty(uri.Query))
+                if (!string.IsNullOrEmpty(uri.Query))
                 {
                     var decorder = new WwwFormUrlDecoder(uri.Query);
 
                     foreach (var pair in decorder)
                     {
                         var property = viewModelType.GetRuntimeProperty(pair.Name);
-
-                        if (property == null)
-                        {
-                            continue;
-                        }
+                        if (property == null) continue;
 
                         property.SetValue(viewModel,
-                            ParameterBinder.CoerceValue(property.PropertyType, pair.Value, null));
+                            ParameterBinder.CoerceValue(property.PropertyType, pair.Value));
                     }
                 }
             }
             else
             {
                 var property = viewModelType.GetRuntimeProperty("Parameter");
-
-                if (property == null)
-                    return;
-
-                property.SetValue(viewModel, ParameterBinder.CoerceValue(property.PropertyType, parameter, null));
+                if (property == null) return;
+                property.SetValue(viewModel, ParameterBinder.CoerceValue(property.PropertyType, parameter));
             }
         }
 
@@ -190,11 +186,7 @@ namespace Caliburn.Light
         /// <summary>
         ///   Raised prior to navigation.
         /// </summary>
-        public event NavigatingCancelEventHandler Navigating
-        {
-            add { ExternalNavigatingHandler += value; }
-            remove { ExternalNavigatingHandler -= value; }
-        }
+        public event NavigatingCancelEventHandler Navigating;
 
         /// <summary>
         ///   Raised when navigation fails.
@@ -332,16 +324,13 @@ namespace Caliburn.Light
                 ? container.Values[ParameterKey]
                 : null;
 
-            if (String.IsNullOrEmpty(frameState))
+            if (string.IsNullOrEmpty(frameState))
                 return false;
 
             _frame.SetNavigationState(frameState);
 
             var view = _frame.Content as Page;
-            if (view == null)
-            {
-                return false;
-            }
+            if (view == null) return false;
 
             BindViewModel(view);
 
@@ -349,13 +338,31 @@ namespace Caliburn.Light
                 Window.Current.Content = _frame;
 
             Window.Current.Activate();
-
             return true;
         }
 
 #if WINDOWS_PHONE_APP
-        private void OnHardwareBackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        /// <summary>
+        /// Occurs when the user presses the hardware Back button.
+        /// </summary>
+        public event EventHandler<BackPressedEventArgs> BackPressed;
+
+        /// <summary>
+        ///  Occurs when the user presses the hardware Back button. Allows the handlers to cancel the default behavior.
+        /// </summary>
+        /// <param name="e">The event arguments</param>
+        protected virtual void OnBackPressed(BackPressedEventArgs e)
         {
+            var handler = BackPressed;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        private void OnHardwareBackPressed(object sender, BackPressedEventArgs e)
+        {
+            OnBackPressed(e);
+            if (e.Handled) return;
+
             if (CanGoBack)
             {
                 e.Handled = true;

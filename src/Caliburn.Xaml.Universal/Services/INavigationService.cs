@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Navigation;
+#if WINDOWS_PHONE_APP
+using Windows.Phone.UI.Input;
+#endif
 
 namespace Caliburn.Light
 {
@@ -76,6 +79,13 @@ namespace Caliburn.Light
         /// Gets a collection of PageStackEntry instances representing the forward navigation history of the Frame.
         /// </summary>
         IList<PageStackEntry> ForwardStack { get; }
+
+#if WINDOWS_PHONE_APP
+        /// <summary>
+        /// Occurs when the user presses the hardware Back button.
+        /// </summary>
+        event EventHandler<BackPressedEventArgs> BackPressed;
+#endif
 
         /// <summary>
         /// Stores the frame navigation state in local settings if it can.

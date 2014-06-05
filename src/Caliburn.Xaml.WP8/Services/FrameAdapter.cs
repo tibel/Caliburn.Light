@@ -13,7 +13,6 @@ namespace Caliburn.Light
     public class FrameAdapter : INavigationService
     {
         private readonly Frame _frame;
-        private NavigatingCancelEventHandler _externalNavigatingHandler;
 
         /// <summary>
         ///   Creates an instance of <see cref="FrameAdapter" />
@@ -33,7 +32,7 @@ namespace Caliburn.Light
         /// <param name="e"> The event args. </param>
         protected virtual void OnNavigating(object sender, NavigatingCancelEventArgs e)
         {
-            var handler = _externalNavigatingHandler;
+            var handler = Navigating;
             if (handler != null)
                 handler(sender, e);
 
@@ -82,18 +81,11 @@ namespace Caliburn.Light
         /// <param name="e"> The event args. </param>
         protected virtual void OnNavigated(object sender, NavigationEventArgs e)
         {
-            if (e.Uri.IsAbsoluteUri || e.Content == null)
-            {
-                return;
-            }
+            if (e.Uri.IsAbsoluteUri || e.Content == null) return;
 
             ViewLocator.InitializeComponent(e.Content);
-
             var viewModel = ViewModelLocator.LocateForView(e.Content);
-            if (viewModel == null)
-            {
-                return;
-            }
+            if (viewModel == null) return;
 
             var page = e.Content as PhoneApplicationPage;
             if (page == null)
@@ -241,11 +233,7 @@ namespace Caliburn.Light
         /// <summary>
         ///   Raised prior to navigation.
         /// </summary>
-        public event NavigatingCancelEventHandler Navigating
-        {
-            add { _externalNavigatingHandler += value; }
-            remove { _externalNavigatingHandler -= value; }
-        }
+        public event NavigatingCancelEventHandler Navigating;
 
         /// <summary>
         ///   Raised when navigation fails.
