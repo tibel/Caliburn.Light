@@ -357,21 +357,21 @@ namespace Caliburn.Light
         public static Func<Type, DependencyObject, object, Type> LocateTypeForModelType =
             (modelType, displayLocation, context) =>
             {
-                var viewTypeName = modelType.FullName;
+                var modelTypeName = modelType.FullName;
 
                 if (UIContext.IsInDesignTool)
                 {
-                    viewTypeName = ModifyModelTypeAtDesignTime(viewTypeName);
+                    modelTypeName = ModifyModelTypeAtDesignTime(modelTypeName);
                 }
 
-                viewTypeName = viewTypeName.Substring(
+                modelTypeName = modelTypeName.Substring(
                     0,
-                    viewTypeName.IndexOf('`') < 0
-                        ? viewTypeName.Length
-                        : viewTypeName.IndexOf('`')
+                    modelTypeName.IndexOf('`') < 0
+                        ? modelTypeName.Length
+                        : modelTypeName.IndexOf('`')
                     );
 
-                var viewTypeList = TransformName(viewTypeName, context);
+                var viewTypeList = TransformName(modelTypeName, context);
                 var viewType = TypeResolver.FindByName(viewTypeList);
 
                 if (viewType == null)
