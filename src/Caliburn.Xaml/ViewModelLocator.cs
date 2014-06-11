@@ -3,8 +3,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Collections.Generic;
-using Weakly;
 #if NETFX_CORE
+using Weakly;
 using Windows.UI.Xaml;
 #endif
 

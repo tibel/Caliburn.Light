@@ -3,11 +3,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using Weakly;
 #if !NETFX_CORE
 using System.Windows;
 using System.Windows.Controls;
 #else
+using Weakly;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif

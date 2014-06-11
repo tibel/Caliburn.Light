@@ -3,7 +3,6 @@
 using Windows.UI.Xaml;
 #else
 using System.Windows;
-using System.Windows.Controls;
 #endif
 
 namespace Caliburn.Light
