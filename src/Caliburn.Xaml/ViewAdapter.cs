@@ -107,7 +107,7 @@ namespace Caliburn.Light
                 }
             }
 
-            LogManager.GetLogger(typeof(Screen)).Info("TryClose requires a parent IConductor or a view with a Close method or IsOpen property.");
+            LogManager.GetLogger(typeof(ViewAdapter)).Info("TryClose requires a parent IConductor or a view with a Close method or IsOpen property.");
         }
     }
 }

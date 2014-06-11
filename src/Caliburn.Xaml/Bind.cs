@@ -155,19 +155,16 @@ namespace Caliburn.Light
 
         private static void OnDesignDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!UIContext.IsInDesignTool || e.NewValue == null) return;
+            if (!UIContext.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue) return;
 
             var enabled = (bool) d.GetValue(AtDesignTimeProperty);
             if (!enabled) return;
 
-            var view = d as FrameworkElement;
-            if (view == null) return;
+            var fe = d as FrameworkElement;
+            if (fe == null) return;
 
-            var context = string.IsNullOrEmpty(view.Name)
-                ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                : view.Name;
-
-            ViewModelBinder.Bind(e.NewValue, view, context);
+            fe.SetValue(NoDataContextProperty, true);
+            SetModelCore(e.NewValue, fe);
         }
     }
 }
