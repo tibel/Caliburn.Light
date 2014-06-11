@@ -88,7 +88,7 @@ namespace Caliburn.Light
             var fe = d as FrameworkElement;
             if (fe == null) return;
 
-            ViewHelper.ExecuteOnLoad(fe, (sender, args) => SetModelCore(e.NewValue, fe));
+            SetModelCore(e.NewValue, fe);
         }
 
         private static void OnModelWithoutContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -100,7 +100,7 @@ namespace Caliburn.Light
             if (fe == null) return;
 
             fe.SetValue(NoDataContextProperty, true);
-            ViewHelper.ExecuteOnLoad(fe, (sender, args) => SetModelCore(e.NewValue, fe));
+            SetModelCore(e.NewValue, fe);
         }
 
         private static void SetModelCore(object viewModel, FrameworkElement view)
