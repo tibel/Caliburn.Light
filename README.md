@@ -24,6 +24,8 @@ Caliburn.Light is available through NuGet:
   Sets the DataContext and attaches the view to the view-model.
 - `Bind.ModelWithoutContext` (use inside of DataTemplate)  
   Attaches the view to the view-model only.
+- `Bind.AtDesignTime`
+  To enable view-model binding inside the Visual Studio designer or Blend.
 
 ### ViewModel-First
 - `View.Model`  
