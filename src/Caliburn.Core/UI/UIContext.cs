@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -27,11 +28,6 @@ namespace Caliburn.Light
             _viewAdapter = viewAdapter;
         }
 
-        private static IViewAdapter ViewAdapter
-        {
-            get { return _viewAdapter ?? NullViewAdapter.Instance; }
-        }
-
         /// <summary>
         /// Indicates whether or not the framework is running in the context of a designer.
         /// </summary>
@@ -39,6 +35,8 @@ namespace Caliburn.Light
         {
             get { return _isInDesignTool; }
         }
+
+        #region Thread
 
         /// <summary>
         /// Determines whether the calling thread is the thread associated with the UI context. 
@@ -55,6 +53,25 @@ namespace Caliburn.Light
         public static TaskScheduler TaskScheduler
         {
             get { return _taskScheduler ?? TaskScheduler.Current; }
+        }
+
+        /// <summary>
+        /// Queues the specified work to run on the UI thread and returns a <see cref="Task"/> handle for that work.
+        /// </summary>
+        /// <param name="action">The work to execute asynchronously.</param>
+        /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
+        public static Task Run(Action action)
+        {
+            return Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler);
+        }
+
+        #endregion
+
+        #region View
+
+        private static IViewAdapter ViewAdapter
+        {
+            get { return _viewAdapter ?? NullViewAdapter.Instance; }
         }
 
         /// <summary>
@@ -98,5 +115,7 @@ namespace Caliburn.Light
         {
             ViewAdapter.TryClose(viewModel, views, dialogResult);
         }
+
+        #endregion
     }
 }

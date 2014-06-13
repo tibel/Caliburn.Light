@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Weakly;
 
@@ -168,8 +166,7 @@ namespace Caliburn.Light
             if (UIContext.CheckAccess())
                 _canExecuteChangedSource.Raise(this, EventArgs.Empty);
             else
-                Task.Factory.StartNew(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty),
-                    CancellationToken.None, TaskCreationOptions.None, UIContext.TaskScheduler);
+                UIContext.Run(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty));
         }
     }
 }

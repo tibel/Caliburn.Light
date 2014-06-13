@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Weakly;
 
@@ -156,8 +155,7 @@ namespace Caliburn.Light
 
                 if (_threadOption == ThreadOption.BackgroundThread)
                 {
-                    Task.Factory.StartNew(() => InvokeInternal(target, message),
-                        CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+                    Task.Run(() => InvokeInternal(target, message));
                 }
                 else if (_threadOption == ThreadOption.PublisherThread ||
                     _threadOption == ThreadOption.UIThread && UIContext.CheckAccess())
@@ -166,8 +164,7 @@ namespace Caliburn.Light
                 }
                 else if (_threadOption == ThreadOption.UIThread)
                 {
-                    Task.Factory.StartNew(() => InvokeInternal(target, message),
-                        CancellationToken.None, TaskCreationOptions.None, UIContext.TaskScheduler);
+                    UIContext.Run(() => InvokeInternal(target, message));
                 }
             }
 
