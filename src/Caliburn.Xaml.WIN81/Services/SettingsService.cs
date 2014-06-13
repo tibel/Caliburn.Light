@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Weakly;
 using Windows.UI.ApplicationSettings;
@@ -45,7 +46,7 @@ namespace Caliburn.Light
         /// <param name="args">The <see cref="SettingsPaneCommandsRequestedEventArgs" /> instance containing the event data.</param>
         private void OnCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
         {
-            var settingsCommands = _commands.Select((c, i) => new SettingsCommand(i, c.Label, h => OnCommandSelected(c)));
+            var settingsCommands = _commands.Select(c => new SettingsCommand(Guid.NewGuid(), c.Label, h => OnCommandSelected(c)));
             settingsCommands.ForEach(args.Request.ApplicationCommands.Add);
         }
 
