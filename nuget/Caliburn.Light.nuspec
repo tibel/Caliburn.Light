@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>1.2.4</version>
+    <version>1.3.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Micro, a powerful framework designed for building applications across all XAML platforms.</description>
     <language>en-US</language>
@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>Bugfixes</releaseNotes>
+    <releaseNotes>Optimize EventAggregator and remove obsolete methods</releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags>Caliburn MVVM WPF WP8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command</tags>
 
