@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Collections.Generic;
-#if NETFX_CORE
 using Weakly;
+#if NETFX_CORE
 using Windows.UI.Xaml;
+#else
+using System.Windows;
 #endif
 
 namespace Caliburn.Light
@@ -157,9 +158,9 @@ namespace Caliburn.Light
                 };
             }
 
-            nsTargetsRegEx.ToList().ForEach(t => func(t));
+            nsTargetsRegEx.ForEach(t => func(t));
 
-            string suffix = _useNameSuffixesInMappings ? viewSuffix : string.Empty;
+            var suffix = _useNameSuffixesInMappings ? viewSuffix : string.Empty;
 
             var srcfilterregx = string.IsNullOrEmpty(nsSourceFilterRegEx)
                 ? null

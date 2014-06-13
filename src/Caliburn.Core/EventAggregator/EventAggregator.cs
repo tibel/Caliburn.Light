@@ -12,7 +12,7 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private readonly List<Handler> _handlers = new List<Handler>(); 
+        private readonly List<Handler> _handlers = new List<Handler>();
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
@@ -79,8 +79,7 @@ namespace Caliburn.Light
 
             lock (_handlers)
             {
-                _handlers.RemoveAll(
-                    h => h.IsDead || (h.MessageType == typeof(TMessage) && h.Target == handler.Target && h.Method == handler.GetMethodInfo()));
+                _handlers.RemoveAll(h => h.IsDead || h.Equals(typeof(TMessage), handler));
             }
         }
 
@@ -88,7 +87,6 @@ namespace Caliburn.Light
         /// Publishes a message.
         /// </summary>
         /// <param name="message">The message instance.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void Publish(object message)
         {
             if (message == null)
@@ -99,24 +97,42 @@ namespace Caliburn.Light
             {
                 _handlers.RemoveAll(h => h.IsDead);
                 var messageType = message.GetType();
-                selectedHandlers = _handlers.Where(h => h.MessageType.GetTypeInfo().IsAssignableFrom(messageType.GetTypeInfo())).ToList();
+                selectedHandlers = _handlers.FindAll(h => h.CanHandle(messageType));
             }
 
-            selectedHandlers.ForEach(h => h.Invoke(message));
+            if (selectedHandlers.Count == 0) return;
+            var isUIThread = UIContext.CheckAccess();
+
+            selectedHandlers
+                .Where(h => h.ThreadOption == ThreadOption.PublisherThread ||
+                            isUIThread && h.ThreadOption == ThreadOption.UIThread)
+                .ForEach(h => h.Invoke(message));
+
+            if (!isUIThread)
+            {
+                var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
+                if (uiThreadHandlers.Count > 0)
+                    UIContext.Run(() => uiThreadHandlers.ForEach(h => h.Invoke(message)));
+            }
+
+            var backgroundHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
+            if (backgroundHandlers.Count > 0)
+                Task.Run(() => backgroundHandlers.ForEach(h => h.Invoke(message)));
         }
 
         private sealed class Handler
         {
-            private readonly Type _messageType;
             private readonly WeakReference _reference;
             private readonly MethodInfo _method;
-            private readonly ThreadOption _threadOption;
+            private readonly Type _messageType;
+
+            public readonly ThreadOption ThreadOption;
 
             public Handler(Type messageType, object target, MethodInfo method, ThreadOption threadOption)
             {
                 _messageType = messageType;
                 _method = method;
-                _threadOption = threadOption;
+                ThreadOption = threadOption;
 
                 if (target != null)
                 {
@@ -124,24 +140,21 @@ namespace Caliburn.Light
                 }
             }
 
-            public Type MessageType
+            public bool Equals(Type messageType, Delegate messageHandler)
             {
-                get { return _messageType; }
-            }
-
-            public object Target
-            {
-                get { return (_reference != null) ? _reference.Target : null; }
-            }
-
-            public MethodInfo Method
-            {
-                get { return _method; }
+                return _messageType == messageType &&
+                       ((_reference != null) ? _reference.Target : null) == messageHandler.Target &&
+                       _method == messageHandler.GetMethodInfo();
             }
 
             public bool IsDead
             {
-                get { return _reference != null && _reference.Target == null; }
+                get { return _reference != null && !_reference.IsAlive; }
+            }
+
+            public bool CanHandle(Type messageType)
+            {
+                return _messageType.GetTypeInfo().IsAssignableFrom(messageType.GetTypeInfo());
             }
 
             public void Invoke(object message)
@@ -153,23 +166,6 @@ namespace Caliburn.Light
                     if (target == null) return;
                 }
 
-                if (_threadOption == ThreadOption.BackgroundThread)
-                {
-                    Task.Run(() => InvokeInternal(target, message));
-                }
-                else if (_threadOption == ThreadOption.PublisherThread ||
-                    _threadOption == ThreadOption.UIThread && UIContext.CheckAccess())
-                {
-                    InvokeInternal(target, message);
-                }
-                else if (_threadOption == ThreadOption.UIThread)
-                {
-                    UIContext.Run(() => InvokeInternal(target, message));
-                }
-            }
-
-            private void InvokeInternal(object target, object message)
-            {
                 var returnValue = DynamicDelegate.From(_method).Invoke(target, new[] { message });
                 if (returnValue == null) return;
 
