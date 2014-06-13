@@ -169,14 +169,5 @@ namespace Caliburn.Light
             var contentPropertyName = (contentPropertyAttribute == null) ? DefaultContentPropertyName : contentPropertyAttribute.Name;
             return type.GetRuntimeProperty(contentPropertyName);
         }
-
-        /// <summary>
-        /// Determines whether a particular dependency property already has a binding on the provided element.
-        /// </summary>
-        [Obsolete("Use BindingHelper.IsDataBound() instead.")]
-        public static bool HasBinding(FrameworkElement element, DependencyProperty property)
-        {
-            return BindingHelper.IsDataBound(element, property);
-        }
     }
 }
