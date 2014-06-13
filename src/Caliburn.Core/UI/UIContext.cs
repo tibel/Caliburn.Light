@@ -62,7 +62,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
         public static Task Run(Action action)
         {
-            return Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler);
+            return Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, TaskScheduler);
         }
 
         #endregion
