@@ -5,14 +5,9 @@ namespace Caliburn.Light
     /// <summary>
     /// Represents a container for the results of a validation request.
     /// </summary>
-    public class ValidationResult
+    public sealed class ValidationResult
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationResult"/> class.
-        /// </summary>
-        /// <param name="isValid">if the </param>
-        /// <param name="errorDescription">The error description.</param>
-        public ValidationResult(bool isValid, string errorDescription)
+        private ValidationResult(bool isValid, string errorDescription)
         {
             IsValid = isValid;
             ErrorDescription = errorDescription;

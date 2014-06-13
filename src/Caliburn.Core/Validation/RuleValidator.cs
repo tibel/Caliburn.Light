@@ -10,7 +10,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Helper for rule based validation.
     /// </summary>
-    public class RuleValidator : IValidator
+    public sealed class RuleValidator : IValidator
     {
         private readonly IDictionary<string, IList<IValidationRule>> _rules =
             new Dictionary<string, IList<IValidationRule>>();
