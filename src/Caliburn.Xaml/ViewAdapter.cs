@@ -37,7 +37,7 @@ namespace Caliburn.Light
         {
             var element = view as FrameworkElement;
             if (element != null)
-                ViewHelper.ExecuteOnFirstLoad(element, (s, e) => handler(s));
+                ViewHelper.ExecuteOnFirstLoad(element, handler);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Caliburn.Light
         {
             var element = view as FrameworkElement;
             if (element != null)
-                ViewHelper.ExecuteOnLayoutUpdated(element, (s, e) => handler(s));
+                ViewHelper.ExecuteOnLayoutUpdated(element, handler);
         }
 
         /// <summary>

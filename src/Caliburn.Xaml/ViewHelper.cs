@@ -62,7 +62,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="handler">The handler.</param>
-        public static void ExecuteOnFirstLoad(FrameworkElement element, RoutedEventHandler handler)
+        public static void ExecuteOnFirstLoad(FrameworkElement element, Action<FrameworkElement> handler)
         {
             if ((bool) element.GetValue(PreviouslyAttachedProperty)) return;
             element.SetValue(PreviouslyAttachedProperty, true);
@@ -75,19 +75,19 @@ namespace Caliburn.Light
         /// <param name="element">The element.</param>
         /// <param name="handler">The handler.</param>
         /// <returns>true if the handler was executed immediately; false otherwise</returns>
-        public static bool ExecuteOnLoad(FrameworkElement element, RoutedEventHandler handler)
+        public static bool ExecuteOnLoad(FrameworkElement element, Action<FrameworkElement> handler)
         {
             if (IsElementLoaded(element))
             {
-                handler(element, new RoutedEventArgs());
+                handler(element);
                 return true;
             }
 
             RoutedEventHandler loaded = null;
-            loaded = (s, e) =>
+            loaded = delegate
             {
                 element.Loaded -= loaded;
-                handler(s, e);
+                handler(element);
             };
             element.Loaded += loaded;
             return false;
@@ -98,13 +98,13 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="handler">The handler.</param>
-        public static void ExecuteOnUnload(FrameworkElement element, RoutedEventHandler handler)
+        public static void ExecuteOnUnload(FrameworkElement element, Action<FrameworkElement> handler)
         {
             RoutedEventHandler unloaded = null;
-            unloaded = (s, e) =>
+            unloaded = delegate
             {
                 element.Unloaded -= unloaded;
-                handler(s, e);
+                handler(element);
             };
             element.Unloaded += unloaded;
         }
@@ -114,18 +114,17 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="handler">The handler.</param>
+        public static void ExecuteOnLayoutUpdated(FrameworkElement element, Action<FrameworkElement> handler)
+        {
 #if NETFX_CORE
-        public static void ExecuteOnLayoutUpdated(FrameworkElement element, EventHandler<object> handler) {
             EventHandler<object> onLayoutUpdate = null;
 #else
-        public static void ExecuteOnLayoutUpdated(FrameworkElement element, EventHandler handler)
-        {
             EventHandler onLayoutUpdate = null;
 #endif
-            onLayoutUpdate = (s, e) =>
+            onLayoutUpdate = delegate
             {
                 element.LayoutUpdated -= onLayoutUpdate;
-                handler(s, e);
+                handler(element);
             };
             element.LayoutUpdated += onLayoutUpdate;
         }
