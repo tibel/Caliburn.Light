@@ -173,9 +173,7 @@ namespace Caliburn.Light
                 if (Dispatcher.HasThreadAccess)
                     UpdateEnabledState();
                 else
-                {
-                    var dummy = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateEnabledState);
-                }
+                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateEnabledState).AsTask();
 #else
                 if (Dispatcher.CheckAccess())
                     UpdateEnabledState();
