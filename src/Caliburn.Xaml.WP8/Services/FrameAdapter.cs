@@ -122,7 +122,7 @@ namespace Caliburn.Light
 
                 property.SetValue(
                     viewModel,
-                    ParameterBinder.CoerceValue(property.PropertyType, pair.Value, page.NavigationContext),
+                    ParameterBinder.CoerceValue(property.PropertyType, pair.Value),
                     null
                     );
             }

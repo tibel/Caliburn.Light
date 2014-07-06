@@ -113,8 +113,9 @@ namespace Caliburn.Light
             if (destinationType.GetTypeInfo().IsAssignableFrom(providedValue.GetType().GetTypeInfo()))
                 return providedValue;
 
-            if (CustomConverters.ContainsKey(destinationType))
-                return CustomConverters[destinationType](providedValue, context);
+            Func<object, object, object> customConverter;
+            if (CustomConverters.TryGetValue(destinationType, out customConverter))
+                return customConverter(providedValue, context);
 
             try
             {
