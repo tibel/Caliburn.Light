@@ -5,7 +5,7 @@ namespace Caliburn.Light
     /// <summary>
     /// A base implementation of <see cref = "IScreen" />.
     /// </summary>
-    public class Screen : ViewAware, IScreen, IChild
+    public class Screen : ViewAware, IScreen, IChild, IHaveDisplayName
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(Screen));
 
