@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,10 +23,23 @@ namespace Caliburn.Light
         /// <param name="viewAdapter">The adapter to interact with view elements.</param>
         public static void Initialize(bool isInDesignTool, IViewAdapter viewAdapter)
         {
-            _managedThreadId = Environment.CurrentManagedThreadId;
-            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            Initialize(isInDesignTool, viewAdapter, Environment.CurrentManagedThreadId, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        /// <summary>
+        /// Initializes the <see cref="UIContext"/>.
+        /// </summary>
+        /// <param name="isInDesignTool">Whether or not the framework is running in the context of a designer.</param>
+        /// <param name="viewAdapter">The adapter to interact with view elements. Can be null if not needed.</param>
+        /// <param name="managedThreadId">The Id of the UI thread. Use null to allow any thread.</param>
+        /// <param name="taskScheduler">The <see cref="TaskScheduler"/> associated with the UI context. Can be null if not needed.</param>
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static void Initialize(bool isInDesignTool, IViewAdapter viewAdapter, int? managedThreadId, TaskScheduler taskScheduler)
+        {
             _isInDesignTool = isInDesignTool;
             _viewAdapter = viewAdapter;
+            _managedThreadId = managedThreadId;
+            _taskScheduler = taskScheduler;
         }
 
         /// <summary>
