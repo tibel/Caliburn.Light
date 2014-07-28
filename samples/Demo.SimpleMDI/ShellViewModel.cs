@@ -2,7 +2,7 @@
 
 namespace Demo.SimpleMDI
 {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
+    public class ShellViewModel : Conductor<Screen>.Collection.OneActive
     {
         int _count = 1;
 

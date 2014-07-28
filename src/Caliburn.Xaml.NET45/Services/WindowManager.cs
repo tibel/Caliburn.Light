@@ -132,7 +132,7 @@ namespace Caliburn.Light
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Window.TitleProperty))
             {
-                var binding = new Binding("DisplayName") {Mode = BindingMode.TwoWay};
+                var binding = new Binding("DisplayName") {Mode = BindingMode.OneWay};
                 view.SetBinding(Window.TitleProperty, binding);
             }
 
@@ -217,7 +217,7 @@ namespace Caliburn.Light
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Page.TitleProperty))
             {
-                var binding = new Binding("DisplayName") {Mode = BindingMode.TwoWay};
+                var binding = new Binding("DisplayName") {Mode = BindingMode.OneWay};
                 view.SetBinding(Page.TitleProperty, binding);
             }
 
