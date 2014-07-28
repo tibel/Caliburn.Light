@@ -8,7 +8,7 @@ namespace Caliburn.Light
     /// A base class for various implementations of <see cref="IConductor"/>.
     /// </summary>
     /// <typeparam name="T">The type that is being conducted.</typeparam>
-    public abstract class ConductorBase<T> : Screen, IConductor, IParent<T> where T : class
+    public abstract class ConductorBase<T> : Screen, IConductor where T : class
     {
         private ICloseStrategy<T> _closeStrategy;
 
