@@ -25,7 +25,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="action">The action.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand Create(Action action)
+        public static DelegateCommand FromAction(Action action)
         {
             return CreateInternal(action);
         }
@@ -36,32 +36,32 @@ namespace Caliburn.Light
         /// <typeparam name="T">The type of the parameter.</typeparam>
         /// <param name="action">The action.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand Create<T>(Action<T> action)
+        public static DelegateCommand FromAction<T>(Action<T> action)
         {
             return CreateInternal(action);
         }
 
         /// <summary>
-        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
+        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="function"/>.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="action">The action.</param>
+        /// <param name="function">The function.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand Create<TResult>(Func<TResult> action)
+        public static DelegateCommand FromFunc<TResult>(Func<TResult> function)
         {
-            return CreateInternal(action);
+            return CreateInternal(function);
         }
 
         /// <summary>
-        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="action"/>.
+        /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="function"/>.
         /// </summary>
         /// <typeparam name="T">The type of the parameter.</typeparam>
         /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="action">The action.</param>
+        /// <param name="function">The function.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand Create<T, TResult>(Func<T, TResult> action)
+        public static DelegateCommand FromFunc<T, TResult>(Func<T, TResult> function)
         {
-            return CreateInternal(action);
+            return CreateInternal(function);
         }
 
         private static DelegateCommand CreateInternal(Delegate action)
