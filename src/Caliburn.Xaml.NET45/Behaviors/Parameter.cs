@@ -55,7 +55,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// When implemented in a derived class, creates a new instance of the <see cref="T:System.Windows.Freezable"/> derived class.
+        /// Creates a new instance.
         /// </summary>
         /// <returns>The new instance.</returns>
         protected override Freezable CreateInstanceCore()

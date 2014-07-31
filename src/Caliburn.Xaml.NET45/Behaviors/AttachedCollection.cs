@@ -24,6 +24,15 @@ namespace Caliburn.Light
         }
 
         /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <returns>The new instance.</returns>
+        protected override Freezable CreateInstanceCore()
+        {
+            return new AttachedCollection<T>();
+        }
+
+        /// <summary>
         /// Attached the collection.
         /// </summary>
         /// <param name="dependencyObject">The dependency object to attach the collection to.</param>
@@ -72,7 +81,7 @@ namespace Caliburn.Light
                 item.Detach();
         }
 
-        void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
