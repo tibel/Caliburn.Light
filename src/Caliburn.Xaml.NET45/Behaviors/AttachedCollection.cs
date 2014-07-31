@@ -86,14 +86,14 @@ namespace Caliburn.Light
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    e.NewItems.OfType<T>().Where(x => !Contains(x)).ForEach(OnItemAdded);
+                    e.NewItems.Cast<T>().Where(x => !Contains(x)).ForEach(OnItemAdded);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    e.OldItems.OfType<T>().ForEach(OnItemRemoved);
+                    e.OldItems.Cast<T>().ForEach(OnItemRemoved);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    e.OldItems.OfType<T>().ForEach(OnItemRemoved);
-                    e.NewItems.OfType<T>().Where(x => !Contains(x)).ForEach(OnItemAdded);
+                    e.OldItems.Cast<T>().ForEach(OnItemRemoved);
+                    e.NewItems.Cast<T>().Where(x => !Contains(x)).ForEach(OnItemAdded);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     this.ForEach(OnItemRemoved);

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using Weakly;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -29,7 +29,7 @@ namespace Caliburn.Light
         public void Attach(DependencyObject dependencyObject)
         {
             _associatedObject = dependencyObject;
-            this.OfType<T>().ForEach(x => x.Attach(_associatedObject));
+            this.ForEach(x => ((T)x).Attach(_associatedObject));
         }
 
         /// <summary>
@@ -37,14 +37,11 @@ namespace Caliburn.Light
         /// </summary>
         public void Detach()
         {
-            this.OfType<T>().ForEach(x => x.Detach());
+            this.ForEach(x => ((T)x).Detach());
             _associatedObject = null;
         }
 
-        /// <summary>
-        /// The currently attached object.
-        /// </summary>
-        public DependencyObject AssociatedObject
+        DependencyObject IAttachedObject.AssociatedObject
         {
             get { return _associatedObject; }
         }
@@ -53,22 +50,20 @@ namespace Caliburn.Light
         /// Called when an item is added from the collection.
         /// </summary>
         /// <param name="item">The item that was added.</param>
-        protected void OnItemAdded(DependencyObject item)
+        protected void OnItemAdded(T item)
         {
-            var attachable = item as T;
-            if (_associatedObject != null && attachable != null)
-                attachable.Attach(_associatedObject);
+            if (_associatedObject != null)
+                item.Attach(_associatedObject);
         }
 
         /// <summary>
         /// Called when an item is removed from the collection.
         /// </summary>
         /// <param name="item">The item that was removed.</param>
-        protected void OnItemRemoved(DependencyObject item)
+        protected void OnItemRemoved(T item)
         {
-            var attachable = item as T;
-            if (attachable != null && attachable.AssociatedObject != null)
-                attachable.Detach();
+            if (item.AssociatedObject != null)
+                item.Detach();
         }
 
         private void OnVectorChanged(IObservableVector<DependencyObject> sender, IVectorChangedEventArgs e)
@@ -76,16 +71,26 @@ namespace Caliburn.Light
             switch (e.CollectionChange)
             {
                 case CollectionChange.ItemInserted:
-                    OnItemAdded(this[(int)e.Index]);
+                case CollectionChange.ItemChanged:
+                    var item = this[(int) e.Index];
+                    VerifyType(item);
+                    OnItemAdded((T)item);
                     break;
                 case CollectionChange.ItemRemoved:
-                    OnItemRemoved(this[(int)e.Index]);
+                    OnItemRemoved((T)this[(int)e.Index]);
                     break;
                 case CollectionChange.Reset:
-                    this.ForEach(OnItemRemoved);
-                    this.ForEach(OnItemAdded);
+                    this.ForEach(VerifyType);
+                    this.ForEach(x => OnItemRemoved((T)x));
+                    this.ForEach(x => OnItemAdded((T)x));
                     break;
             }
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        private static void VerifyType(DependencyObject item)
+        {
+            if (!(item is T)) throw new InvalidOperationException("An invalid item was added to the collection.");
         }
     }
 }
