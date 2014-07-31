@@ -5,13 +5,13 @@ namespace Caliburn.Light
     /// <summary>
     /// A base implementation of <see cref = "IScreen" />.
     /// </summary>
-    public class Screen : ViewAware, IScreen, IChild, IHaveDisplayName
+    public class Screen : ViewAware, IScreen, IHaveDisplayName
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(Screen));
 
         private bool _isActive;
         private bool _isInitialized;
-        private object _parent;
+
         private string _displayName;
 
         /// <summary>
@@ -20,15 +20,6 @@ namespace Caliburn.Light
         public Screen()
         {
             _displayName = GetType().FullName;
-        }
-
-        /// <summary>
-        /// Gets or Sets the Parent <see cref = "IConductor" />
-        /// </summary>
-        public virtual object Parent
-        {
-            get { return _parent; }
-            set { SetProperty(ref _parent, value); }
         }
 
         /// <summary>
