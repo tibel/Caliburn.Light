@@ -1,5 +1,4 @@
-﻿using System;
-using Weakly;
+﻿using Weakly;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 
@@ -9,7 +8,7 @@ namespace Caliburn.Light
     /// A collection that can exist as part of a behavior.
     /// </summary>
     /// <typeparam name="T">The type of item in the attached collection.</typeparam>
-    public class AttachedCollection<T> : DependencyObjectCollection, IAttachedObject
+    public class AttachedCollection<T> : DependencyObjectCollection<T>, IAttachedObject
         where T : DependencyObject, IAttachedObject
     {
         private DependencyObject _associatedObject;
@@ -72,25 +71,16 @@ namespace Caliburn.Light
             {
                 case CollectionChange.ItemInserted:
                 case CollectionChange.ItemChanged:
-                    var item = this[(int) e.Index];
-                    VerifyType(item);
-                    OnItemAdded((T)item);
+                    OnItemAdded((T)this[(int)e.Index]);
                     break;
                 case CollectionChange.ItemRemoved:
                     OnItemRemoved((T)this[(int)e.Index]);
                     break;
                 case CollectionChange.Reset:
-                    this.ForEach(VerifyType);
                     this.ForEach(x => OnItemRemoved((T)x));
                     this.ForEach(x => OnItemAdded((T)x));
                     break;
             }
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        private static void VerifyType(DependencyObject item)
-        {
-            if (!(item is T)) throw new InvalidOperationException("An invalid item was added to the collection.");
         }
     }
 }
