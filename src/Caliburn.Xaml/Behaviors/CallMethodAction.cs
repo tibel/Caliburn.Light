@@ -102,7 +102,7 @@ namespace Caliburn.Light
         {
             base.OnAttached();
             Parameters.Attach(AssociatedObject);
-            Parameters.OfType<Parameter>().ForEach(x => x.MakeAwareOf(this));
+            Parameters.ForEach(x => ((Parameter)x).MakeAwareOf(this));
 
             UpdateMethodInfo();
             UpdateEnabledState();
@@ -200,7 +200,7 @@ namespace Caliburn.Light
                 };
 
                 var guardFunction = DynamicDelegate.From(_guard);
-                var providedValues = Parameters.OfType<Parameter>().Select(x => x.Value).ToArray();
+                var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
                 canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(context, providedValues, _guard.GetParameters()));
             }
 
@@ -233,7 +233,7 @@ namespace Caliburn.Light
                 EventArgs = parameter,
             };
 
-            var providedValues = Parameters.OfType<Parameter>().Select(x => x.Value).ToArray();
+            var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
             var parameterValues = ParameterBinder.DetermineParameters(context, providedValues, _method.GetParameters());
             var returnValue = DynamicDelegate.From(_method)(Target, parameterValues);
             if (returnValue == null) return;

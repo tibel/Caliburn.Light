@@ -167,7 +167,7 @@ namespace Caliburn.Light
             if (DesignMode.DesignModeEnabled)
                 return;
 
-            foreach (var action in Actions.OfType<IAction>())
+            foreach (var action in Actions.Cast<IAction>())
             {
                 action.Execute(_resolvedSource, eventArgs);
             }
