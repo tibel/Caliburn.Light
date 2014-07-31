@@ -5,31 +5,12 @@ namespace Caliburn.Light
     /// <summary>
     /// A base implementation of <see cref = "IScreen" />.
     /// </summary>
-    public class Screen : ViewAware, IScreen, IHaveDisplayName
+    public class Screen : ViewAware, IScreen
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(Screen));
 
         private bool _isActive;
         private bool _isInitialized;
-
-        private string _displayName;
-
-        /// <summary>
-        /// Creates an instance of the screen.
-        /// </summary>
-        public Screen()
-        {
-            _displayName = GetType().FullName;
-        }
-
-        /// <summary>
-        /// Gets or Sets the Display Name
-        /// </summary>
-        public virtual string DisplayName
-        {
-            get { return _displayName; }
-            set { SetProperty(ref _displayName, value); }
-        }
 
         /// <summary>
         /// Indicates whether or not this instance is currently active.
