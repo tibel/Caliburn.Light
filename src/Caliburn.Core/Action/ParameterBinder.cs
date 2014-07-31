@@ -58,13 +58,12 @@ namespace Caliburn.Light
 
         /// <summary>
         /// Custom converters used by the framework registered by destination type for which they will be selected.
-        /// The converter is passed the existing value to convert and a "context" object.
         /// </summary>
-        public static readonly IDictionary<Type, Func<object, object, object>> CustomConverters =
-            new Dictionary<Type, Func<object, object, object>>
+        public static readonly IDictionary<Type, Func<object, object>> CustomConverters =
+            new Dictionary<Type, Func<object, object>>
             {
                 {
-                    typeof (DateTime), (value, context) => {
+                    typeof (DateTime), value => {
                         DateTime result;
                         DateTime.TryParse(value.ToString(), out result);
                         return result;
@@ -92,7 +91,7 @@ namespace Caliburn.Light
                 if (specialValue != null)
                     parameterValue = specialValue.Resolve(context);
 
-                finalValues[i] = CoerceValue(parameterType, parameterValue, context);
+                finalValues[i] = CoerceValue(parameterType, parameterValue);
             }
 
             return finalValues;
@@ -103,9 +102,8 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="destinationType">The destination type.</param>
         /// <param name="providedValue">The provided value.</param>
-        /// <param name="context">An optional context value which can be used during conversion.</param>
         /// <returns>The coerced value.</returns>
-        public static object CoerceValue(Type destinationType, object providedValue, object context = null)
+        public static object CoerceValue(Type destinationType, object providedValue)
         {
             if (providedValue == null)
                 return GetDefaultValue(destinationType);
@@ -113,35 +111,27 @@ namespace Caliburn.Light
             if (destinationType.GetTypeInfo().IsAssignableFrom(providedValue.GetType().GetTypeInfo()))
                 return providedValue;
 
-            Func<object, object, object> customConverter;
+            Func<object, object> customConverter;
             if (CustomConverters.TryGetValue(destinationType, out customConverter))
-                return customConverter(providedValue, context);
+                return customConverter(providedValue);
 
-            try
+            if (destinationType.GetTypeInfo().IsEnum)
             {
-                if (destinationType.GetTypeInfo().IsEnum)
-                {
-                    var stringValue = providedValue as string;
-                    if (stringValue != null)
-                        return Enum.Parse(destinationType, stringValue, true);
+                var stringValue = providedValue as string;
+                if (stringValue != null)
+                    return Enum.Parse(destinationType, stringValue, true);
 
-                    return Enum.ToObject(destinationType, providedValue);
-                }
-
-                if (typeof(Guid).GetTypeInfo().IsAssignableFrom(destinationType.GetTypeInfo()))
-                {
-                    var stringValue = providedValue as string;
-                    if (stringValue != null)
-                        return new Guid(stringValue);
-                }
-
-                return Convert.ChangeType(providedValue, destinationType, CultureInfo.CurrentCulture);
+                return Enum.ToObject(destinationType, providedValue);
             }
-            catch (Exception ex)
+
+            if (typeof(Guid).GetTypeInfo().IsAssignableFrom(destinationType.GetTypeInfo()))
             {
-                LogManager.GetLogger(typeof(ParameterBinder)).Error("Failed to CoerceValue. {0}", ex);
-                return GetDefaultValue(destinationType);
+                var stringValue = providedValue as string;
+                if (stringValue != null)
+                    return new Guid(stringValue);
             }
+
+            return Convert.ChangeType(providedValue, destinationType, CultureInfo.CurrentCulture);
         }
 
         /// <summary>
