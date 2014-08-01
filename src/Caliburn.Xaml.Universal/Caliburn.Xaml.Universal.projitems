@@ -9,12 +9,12 @@
     <Import_RootNamespace>Caliburn.Light</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\AttachedCollection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\DependencyObjectCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\EventTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IAttachedObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\Parameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\ParameterCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerActionCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CaliburnApplication.cs" />

@@ -33,9 +33,14 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the <see cref="DependencyObject" /> to which the <seealso cref="TriggerAction" /> is attached.
         /// </summary>
-        public DependencyObject AssociatedObject
+        protected DependencyObject AssociatedObject
         {
             get { return _associatedObject; }
+        }
+
+        DependencyObject IAttachedObject.AssociatedObject
+        {
+            get { return AssociatedObject; }
         }
 
         /// <summary>

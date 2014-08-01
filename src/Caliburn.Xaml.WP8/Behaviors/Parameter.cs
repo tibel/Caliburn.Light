@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Interactivity;
 using System.Windows.Markup;
 
 namespace Caliburn.Light
@@ -10,7 +9,7 @@ namespace Caliburn.Light
     /// Represents a parameter of a TriggerAction.
     /// </summary>
     [ContentProperty("Value")]
-    public class Parameter : DependencyObject, IAttachedObject
+    public class Parameter : DependencyObject
     {
         /// <summary>
         /// Identifies the <seealso cref="Parameter.Value"/> dependency property.
@@ -18,7 +17,6 @@ namespace Caliburn.Light
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof (object),
             typeof (Parameter), new PropertyMetadata(null, OnValueChanged));
 
-        private DependencyObject _associatedObject;
         private WeakReference _owner;
 
         /// <summary>
@@ -29,21 +27,6 @@ namespace Caliburn.Light
         {
             get { return GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
-        }
-
-        void IAttachedObject.Attach(DependencyObject dependencyObject)
-        {
-            _associatedObject = dependencyObject;
-        }
-
-        void IAttachedObject.Detach()
-        {
-            _associatedObject = null;
-        }
-
-        DependencyObject IAttachedObject.AssociatedObject
-        {
-            get { return _associatedObject; }
         }
 
         /// <summary>

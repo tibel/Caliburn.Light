@@ -1,21 +1,18 @@
 ﻿using System;
-using Weakly;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Represents a collection of <see cref="T:DependencyObject"/> instances of a specified type.
+    /// Represents a collection of <see cref="T:Parameter"/> instances.
     /// </summary>
-    /// <typeparam name="T">The type of items in the collection.</typeparam>
-    public class DependencyObjectCollection<T> : DependencyObjectCollection
-        where T : DependencyObject
+    public sealed class ParameterCollection : DependencyObjectCollection
     {
         /// <summary>
-        /// Creates an instance of <see cref="DependencyObjectCollection&lt;T&gt;"/>
+        /// Creates an instance of <see cref="ParameterCollection"/>
         /// </summary>
-        public DependencyObjectCollection()
+        public ParameterCollection()
         {
             VectorChanged += OnVectorChanged;
         }
@@ -29,7 +26,10 @@ namespace Caliburn.Light
                     VerifyType(sender[(int)e.Index]);
                     break;
                 case CollectionChange.Reset:
-                    sender.ForEach(VerifyType);
+                    foreach (var item in sender)
+                    {
+                        VerifyType(item);
+                    }
                     break;
             }
         }
@@ -37,7 +37,7 @@ namespace Caliburn.Light
         // ReSharper disable once UnusedParameter.Local
         private static void VerifyType(DependencyObject item)
         {
-            if (!(item is T)) throw new InvalidOperationException("An invalid item was added to the collection.");
+            if (!(item is Parameter)) throw new InvalidOperationException("An invalid item was added to the collection.");
         }
     }
 }

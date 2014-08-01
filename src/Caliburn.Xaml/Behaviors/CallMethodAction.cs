@@ -45,7 +45,7 @@ namespace Caliburn.Light
         /// Identifies the <seealso cref="CallMethodAction.Parameters"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters",
-            typeof(AttachedCollection<Parameter>), typeof(CallMethodAction), new PropertyMetadata(null));
+            typeof(ParameterCollection), typeof(CallMethodAction), new PropertyMetadata(null));
 
         /// <summary>
         /// The object that exposes the method of interest. This is a dependency property.
@@ -68,9 +68,9 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the collection of parameters associated with the action. This is a dependency property.
         /// </summary>
-        public AttachedCollection<Parameter> Parameters
+        public ParameterCollection Parameters
         {
-            get { return (AttachedCollection<Parameter>) GetValue(ParametersProperty); }
+            get { return (ParameterCollection)GetValue(ParametersProperty); }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Caliburn.Light
         /// </summary>
         public CallMethodAction()
         {
-            SetValue(ParametersProperty, new AttachedCollection<Parameter>());
+            SetValue(ParametersProperty, new ParameterCollection());
         }
 
         private static void OnMethodNameChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -101,7 +101,6 @@ namespace Caliburn.Light
         protected override void OnAttached()
         {
             base.OnAttached();
-            Parameters.Attach(AssociatedObject);
             Parameters.ForEach(x => ((Parameter)x).MakeAwareOf(this));
 
             UpdateMethodInfo();
@@ -113,7 +112,6 @@ namespace Caliburn.Light
         /// </summary>
         protected override void OnDetaching()
         {
-            Parameters.Detach();
             ResetMethodInfo();
             base.OnDetaching();
         }

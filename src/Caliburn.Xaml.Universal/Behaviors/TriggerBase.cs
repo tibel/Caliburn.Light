@@ -15,7 +15,7 @@ namespace Caliburn.Light
         /// Identifies the <seealso cref="TriggerBase.Actions"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register("Actions",
-            typeof(AttachedCollection<TriggerAction>), typeof(TriggerBase), new PropertyMetadata(null));
+            typeof(TriggerActionCollection), typeof(TriggerBase), new PropertyMetadata(null));
 
         private DependencyObject _associatedObject;
 
@@ -24,7 +24,7 @@ namespace Caliburn.Light
         /// </summary>
         protected TriggerBase()
         {
-            SetValue(ActionsProperty, new AttachedCollection<TriggerAction>());
+            SetValue(ActionsProperty, new TriggerActionCollection());
         }
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the collection of actions associated with the behavior. This is a dependency property.
         /// </summary>
-        public AttachedCollection<TriggerAction> Actions
+        public TriggerActionCollection Actions
         {
-            get { return (AttachedCollection<TriggerAction>) GetValue(ActionsProperty); }
+            get { return (TriggerActionCollection)GetValue(ActionsProperty); }
         }
     }
 }

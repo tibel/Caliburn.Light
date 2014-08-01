@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Interactivity;
 using System.Windows.Markup;
 
 namespace Caliburn.Light
@@ -10,7 +9,7 @@ namespace Caliburn.Light
     /// Represents a parameter of a TriggerAction.
     /// </summary>
     [ContentProperty("Value")]
-    public class Parameter : Freezable, IAttachedObject
+    public class Parameter : Freezable
     {
         /// <summary>
         /// Identifies the <seealso cref="Parameter.Value"/> dependency property.
@@ -18,7 +17,6 @@ namespace Caliburn.Light
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof (object),
             typeof (Parameter), new PropertyMetadata(null, OnValueChanged));
 
-        private DependencyObject _associatedObject;
         private WeakReference _owner;
 
         /// <summary>
@@ -29,29 +27,6 @@ namespace Caliburn.Light
         {
             get { return GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
-        }
-
-        void IAttachedObject.Attach(DependencyObject dependencyObject)
-        {
-            WritePreamble();
-            _associatedObject = dependencyObject;
-            WritePostscript();
-        }
-
-        void IAttachedObject.Detach()
-        {
-            WritePreamble();
-            _associatedObject = null;
-            WritePostscript();
-        }
-
-        DependencyObject IAttachedObject.AssociatedObject
-        {
-            get
-            {
-                ReadPreamble();
-                return _associatedObject;
-            }
         }
 
         /// <summary>
@@ -77,7 +52,9 @@ namespace Caliburn.Light
         /// <param name="owner">The owner of the parameter.</param>
         public void MakeAwareOf(IHaveParameters owner)
         {
+            WritePreamble();
             _owner = (owner != null) ? new WeakReference(owner) : null;
+            WritePostscript();
         }
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -12,7 +12,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Represents the parameters of the action.
         /// </summary>
-        AttachedCollection<Parameter> Parameters { get; }
+        ParameterCollection Parameters { get; }
 
         /// <summary>
         /// Forces an update of the IsEnabled state.
