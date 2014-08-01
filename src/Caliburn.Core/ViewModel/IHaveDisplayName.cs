@@ -6,8 +6,8 @@
     public interface IHaveDisplayName
     {
         /// <summary>
-        /// Gets or Sets the Display Name
+        /// Gets the Display Name
         /// </summary>
-        string DisplayName { get; set; }
+        string DisplayName { get; }
     }
 }
