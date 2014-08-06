@@ -11,7 +11,15 @@
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>Optimize EventAggregator and remove obsolete methods</releaseNotes>
+    <releaseNotes>
+    * UIContext: add Initialize overload with more parameters
+    * Screen: Remove IHaveDisplayName (DisplayName property)
+    * Screen: Remove IChild (Parent property)
+    * DelegateCommand: replace Create by FromAction and FromFunc methods
+    * ParameterBinder: Remove context from CustomConverters
+    * Replace AttachedCollection&lt;T&gt; with ParameterCollection
+    * Remove IChild&lt;TParent&gt; and IParent&lt;out T&gt;
+    </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags>Caliburn MVVM WPF WP8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command</tags>
 
@@ -29,7 +37,7 @@
 
   <files>
     <file src="..\src\Caliburn.Core\bin\Release\Caliburn.*" target="lib\portable-net45+win8+wp8+wpa81" />
-	
+
     <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net45" />
     <file src="..\src\Caliburn.Xaml.WP8\bin\Release\Caliburn.*" target="lib\wp8" />
     <file src="..\src\Caliburn.Xaml.WIN81\bin\Release\Caliburn.*" target="lib\win81" />
