@@ -82,7 +82,7 @@ namespace Caliburn.Light
 
         private static void OnModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (UIContext.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
+            if (ViewHelper.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
                 return;
 
             var fe = d as FrameworkElement;
@@ -93,7 +93,7 @@ namespace Caliburn.Light
 
         private static void OnModelWithoutContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (UIContext.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
+            if (ViewHelper.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
                 return;
 
             var fe = d as FrameworkElement;
@@ -145,7 +145,7 @@ namespace Caliburn.Light
 
         private static void OnAtDesignTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!UIContext.IsInDesignTool) return;
+            if (!ViewHelper.IsInDesignTool) return;
 
             var enabled = (bool) e.NewValue;
             if (!enabled) return;
@@ -155,7 +155,7 @@ namespace Caliburn.Light
 
         private static void OnDesignDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!UIContext.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue) return;
+            if (!ViewHelper.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue) return;
 
             var enabled = (bool) d.GetValue(AtDesignTimeProperty);
             if (!enabled) return;

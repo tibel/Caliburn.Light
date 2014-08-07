@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Reflection;
 #if NETFX_CORE
+using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 #else
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -19,8 +21,31 @@ namespace Caliburn.Light
     /// </summary>
     public static class ViewHelper
     {
-        private static readonly DependencyProperty PreviouslyAttachedProperty =
-            DependencyProperty.RegisterAttached("PreviouslyAttached", typeof (bool), typeof (ViewHelper), null);
+        private static bool? _isInDesignTool;
+
+        /// <summary>
+        /// Gets a value that indicates whether the process is running in design mode.
+        /// </summary>
+        public static bool IsInDesignTool
+        {
+            get
+            {
+                if (!_isInDesignTool.HasValue)
+                {
+#if NETFX_CORE
+                    _isInDesignTool = DesignMode.DesignModeEnabled;
+#elif SILVERLIGHT
+	                _isInDesignTool = DesignerProperties.IsInDesignTool;
+#else
+                    var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
+                        typeof (FrameworkElement));
+                    _isInDesignTool = (bool)descriptor.Metadata.DefaultValue;
+#endif
+                }
+
+                return _isInDesignTool.Value;
+            }
+        }
 
         private static readonly DependencyProperty IsGeneratedProperty =
             DependencyProperty.RegisterAttached("IsGenerated", typeof (bool), typeof (ViewHelper), null);
@@ -56,6 +81,9 @@ namespace Caliburn.Light
         {
             view.SetValue(IsGeneratedProperty, value);
         }
+
+        private static readonly DependencyProperty PreviouslyAttachedProperty =
+            DependencyProperty.RegisterAttached("PreviouslyAttached", typeof (bool), typeof (ViewHelper), null);
 
         /// <summary>
         /// Executes the handler the fist time the element is loaded.

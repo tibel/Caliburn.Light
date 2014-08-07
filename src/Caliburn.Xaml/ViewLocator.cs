@@ -359,7 +359,7 @@ namespace Caliburn.Light
             {
                 var modelTypeName = modelType.FullName;
 
-                if (UIContext.IsInDesignTool)
+                if (ViewHelper.IsInDesignTool)
                 {
                     modelTypeName = ModifyModelTypeAtDesignTime(modelTypeName);
                 }
