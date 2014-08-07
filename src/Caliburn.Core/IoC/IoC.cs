@@ -17,6 +17,7 @@ namespace Caliburn.Light
         /// <param name="serviceLocator">The service locator.</param>
         public static void Initialize(IServiceLocator serviceLocator)
         {
+            LogManager.GetLogger(typeof(IoC)).Info("Initialize");
             _serviceLocator = serviceLocator;
         }
 

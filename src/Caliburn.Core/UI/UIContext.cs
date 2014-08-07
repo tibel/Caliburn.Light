@@ -36,6 +36,7 @@ namespace Caliburn.Light
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static void Initialize(bool isInDesignTool, IViewAdapter viewAdapter, int? managedThreadId, TaskScheduler taskScheduler)
         {
+            LogManager.GetLogger(typeof(UIContext)).Info("Initialize");
             _isInDesignTool = isInDesignTool;
             _viewAdapter = viewAdapter;
             _managedThreadId = managedThreadId;
