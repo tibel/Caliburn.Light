@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -29,16 +28,12 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
-                typeof (FrameworkElement));
-            var isInDesignTool = (bool)descriptor.Metadata.DefaultValue;
-
             // set SynchronizationContext so that we can create the TaskScheduler
             // this is needed here as the dispatcher-loop is not yet running and therefor
             // the Dispatcher has not set the SynchronizationContext yet.
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-            UIContext.Initialize(isInDesignTool, new ViewAdapter());
+            UIContext.Initialize(ViewHelper.IsInDesignTool, new ViewAdapter());
             IoC.Initialize(this);
 
             try

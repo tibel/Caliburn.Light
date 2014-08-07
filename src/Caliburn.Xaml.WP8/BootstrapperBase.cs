@@ -2,7 +2,6 @@
 using Microsoft.Phone.Shell;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Navigation;
@@ -40,7 +39,7 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            UIContext.Initialize(DesignerProperties.IsInDesignTool, new ViewAdapter());
+            UIContext.Initialize(ViewHelper.IsInDesignTool, new ViewAdapter());
             IoC.Initialize(this);
 
             try
@@ -48,7 +47,7 @@ namespace Caliburn.Light
                 TypeResolver.Reset();
                 SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-                if (!DesignerProperties.IsInDesignTool)
+                if (!ViewHelper.IsInDesignTool)
                 {
                     Application = Application.Current;
                     PrepareApplication();
