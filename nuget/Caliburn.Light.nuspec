@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Micro, a powerful framework designed for building applications across all XAML platforms.</description>
     <language>en-US</language>
@@ -11,15 +11,7 @@
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>
-    * UIContext: add Initialize overload with more parameters
-    * Screen: Remove IHaveDisplayName (DisplayName property)
-    * Screen: Remove IChild (Parent property)
-    * DelegateCommand: replace Create by FromAction and FromFunc methods
-    * ParameterBinder: Remove context from CustomConverters
-    * Replace AttachedCollection&lt;T&gt; with ParameterCollection
-    * Remove IChild&lt;TParent&gt; and IParent&lt;out T&gt;
-    </releaseNotes>
+    <releaseNotes>Change initialization of UIContext</releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags>Caliburn MVVM WPF WP8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command</tags>
 

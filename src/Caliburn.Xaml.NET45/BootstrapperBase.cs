@@ -33,7 +33,7 @@ namespace Caliburn.Light
             // the Dispatcher has not set the SynchronizationContext yet.
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-            UIContext.Initialize(ViewHelper.IsInDesignTool, new ViewAdapter());
+            UIContext.Initialize(new ViewAdapter());
             IoC.Initialize(this);
 
             try

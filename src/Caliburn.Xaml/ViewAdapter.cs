@@ -15,6 +15,14 @@ namespace Caliburn.Light
     public sealed class ViewAdapter : IViewAdapter
     {
         /// <summary>
+        /// Indicates whether or not the framework is running in the context of a designer.
+        /// </summary>
+        public bool IsInDesignTool
+        {
+            get { return ViewHelper.IsInDesignTool; }
+        }
+
+        /// <summary>
         /// Used to retrieve the root, non-framework-created view.
         /// </summary>
         /// <param name="view">The view to search.</param>

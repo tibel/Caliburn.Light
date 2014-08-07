@@ -11,6 +11,11 @@ namespace Caliburn.Light
         {
         }
 
+        public bool IsInDesignTool
+        {
+            get { return false; }
+        }
+
         public object GetFirstNonGeneratedView(object view)
         {
             return view;

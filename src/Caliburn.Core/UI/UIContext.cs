@@ -13,42 +13,30 @@ namespace Caliburn.Light
     {
         private static int? _managedThreadId;
         private static TaskScheduler _taskScheduler;
-        private static bool _isInDesignTool = true;
         private static IViewAdapter _viewAdapter;
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
-        /// <param name="isInDesignTool">Whether or not the framework is running in the context of a designer.</param>
         /// <param name="viewAdapter">The adapter to interact with view elements.</param>
-        public static void Initialize(bool isInDesignTool, IViewAdapter viewAdapter)
+        public static void Initialize(IViewAdapter viewAdapter)
         {
-            Initialize(isInDesignTool, viewAdapter, Environment.CurrentManagedThreadId, TaskScheduler.FromCurrentSynchronizationContext());
+            Initialize(viewAdapter, Environment.CurrentManagedThreadId, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
-        /// <param name="isInDesignTool">Whether or not the framework is running in the context of a designer.</param>
         /// <param name="viewAdapter">The adapter to interact with view elements. Can be null if not needed.</param>
         /// <param name="managedThreadId">The Id of the UI thread. Use null to allow any thread.</param>
         /// <param name="taskScheduler">The <see cref="TaskScheduler"/> associated with the UI context. Can be null if not needed.</param>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static void Initialize(bool isInDesignTool, IViewAdapter viewAdapter, int? managedThreadId, TaskScheduler taskScheduler)
+        public static void Initialize(IViewAdapter viewAdapter, int? managedThreadId, TaskScheduler taskScheduler)
         {
             LogManager.GetLogger(typeof(UIContext)).Info("Initialize");
-            _isInDesignTool = isInDesignTool;
             _viewAdapter = viewAdapter;
             _managedThreadId = managedThreadId;
             _taskScheduler = taskScheduler;
-        }
-
-        /// <summary>
-        /// Indicates whether or not the framework is running in the context of a designer.
-        /// </summary>
-        public static bool IsInDesignTool
-        {
-            get { return _isInDesignTool; }
         }
 
         #region Thread
@@ -87,6 +75,14 @@ namespace Caliburn.Light
         private static IViewAdapter ViewAdapter
         {
             get { return _viewAdapter ?? NullViewAdapter.Instance; }
+        }
+
+        /// <summary>
+        /// Indicates whether or not the framework is running in the context of a designer.
+        /// </summary>
+        public static bool IsInDesignTool
+        {
+            get { return ViewAdapter.IsInDesignTool; }
         }
 
         /// <summary>

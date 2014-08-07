@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Caliburn.Light;
 
 namespace Demo.Validation
 {
@@ -11,8 +10,6 @@ namespace Demo.Validation
         public MainWindow()
         {
             InitializeComponent();
-
-            UIContext.Initialize(false, null);
 
             var company = new Company
             {

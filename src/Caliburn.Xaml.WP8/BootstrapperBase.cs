@@ -39,7 +39,7 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            UIContext.Initialize(ViewHelper.IsInDesignTool, new ViewAdapter());
+            UIContext.Initialize(new ViewAdapter());
             IoC.Initialize(this);
 
             try
@@ -47,7 +47,7 @@ namespace Caliburn.Light
                 TypeResolver.Reset();
                 SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-                if (!ViewHelper.IsInDesignTool)
+                if (!UIContext.IsInDesignTool)
                 {
                     Application = Application.Current;
                     PrepareApplication();

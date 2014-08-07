@@ -28,7 +28,7 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            UIContext.Initialize(ViewHelper.IsInDesignTool, new ViewAdapter());
+            UIContext.Initialize(new ViewAdapter());
             IoC.Initialize(this);
 
             try
@@ -36,7 +36,7 @@ namespace Caliburn.Light
                 TypeResolver.Reset();
                 SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-                if (!ViewHelper.IsInDesignTool)
+                if (!UIContext.IsInDesignTool)
                     PrepareApplication();
 
                 Configure();
@@ -60,7 +60,7 @@ namespace Caliburn.Light
             // scenarios when the app has multiple windows open (though contract 
             // activation, this keeps Excute up to date with the currently activated window
 
-            args.Window.Activated += (s, e) => UIContext.Initialize(ViewHelper.IsInDesignTool, new ViewAdapter());
+            args.Window.Activated += (s, e) => UIContext.Initialize(new ViewAdapter());
         }
 
         /// <summary>

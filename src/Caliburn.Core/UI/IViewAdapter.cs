@@ -9,6 +9,11 @@ namespace Caliburn.Light
     public interface IViewAdapter
     {
         /// <summary>
+        /// Indicates whether or not the framework is running in the context of a designer.
+        /// </summary>
+        bool IsInDesignTool { get; }
+
+        /// <summary>
         /// Used to retrieve the root, non-framework-created view.
         /// </summary>
         /// <param name="view">The view to search.</param>
