@@ -103,6 +103,10 @@
       <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
       <Name>Caliburn.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Caliburn.Xaml.NET45\Caliburn.Xaml.NET45.csproj">
+      <Project>{f289ff4d-21e1-4e33-8e92-4677a17543d4}</Project>
+      <Name>Caliburn.Xaml.NET45</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
