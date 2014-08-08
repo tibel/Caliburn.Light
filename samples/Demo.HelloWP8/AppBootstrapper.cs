@@ -1,7 +1,6 @@
 ﻿using Caliburn.Light;
 using Demo.HelloWP8.Resources;
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Markup;
 
@@ -20,6 +19,7 @@ namespace Demo.HelloWP8
         protected override void Configure()
         {
             _container = new SimpleContainer();
+            IoC.Initialize(_container);
 
             if (!UIContext.IsInDesignTool)
             {
@@ -35,21 +35,6 @@ namespace Demo.HelloWP8
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterPerRequest<MainPageViewModel>();
             _container.RegisterPerRequest<SecondPageViewModel>();
-        }
-
-        public override object GetInstance(Type service, string key)
-        {
-            return _container.GetInstance(service, key);
-        }
-
-        public override IEnumerable<object> GetAllInstances(Type service)
-        {
-            return _container.GetAllInstances(service);
-        }
-
-        protected void BuildUp(object instance)
-        {
-            _container.InjectProperties(instance);
         }
     }
 }

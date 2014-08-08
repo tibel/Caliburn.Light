@@ -1,6 +1,4 @@
 ﻿using Caliburn.Light;
-using System;
-using System.Collections.Generic;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml.Controls;
 
@@ -19,26 +17,12 @@ namespace Demo.HelloEventAggregator
         protected override void Configure()
         {
             _container = new SimpleContainer();
+            IoC.Initialize(_container);
 
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<MainPageViewModel>();
             _container.RegisterPerRequest<PublisherViewModel>();
             _container.RegisterPerRequest<SubscriberViewModel>();
-        }
-
-        public override object GetInstance(Type service, string key)
-        {
-            return _container.GetInstance(service, key);
-        }
-
-        public override IEnumerable<object> GetAllInstances(Type service)
-        {
-            return _container.GetAllInstances(service);
-        }
-
-        public override void InjectProperties(object instance)
-        {
-            _container.InjectProperties(instance);
         }
 
         protected override void PrepareViewFirst(Frame rootFrame)

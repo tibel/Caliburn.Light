@@ -11,7 +11,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Encapsulates the app and its available services.
     /// </summary>
-    public abstract class CaliburnApplication : Application, IServiceLocator
+    public abstract class CaliburnApplication : Application
     {
         private bool _isInitialized;
 
@@ -29,7 +29,6 @@ namespace Caliburn.Light
             _isInitialized = true;
 
             UIContext.Initialize(new ViewAdapter());
-            IoC.Initialize(this);
 
             try
             {
@@ -87,35 +86,6 @@ namespace Caliburn.Light
         protected virtual IEnumerable<Assembly> SelectAssemblies()
         {
             return new[] {GetType().GetTypeInfo().Assembly};
-        }
-
-        /// <summary>
-        /// Override this to provide an IoC specific implementation.
-        /// </summary>
-        /// <param name="service">The service to locate.</param>
-        /// <param name="key">The key to locate.</param>
-        /// <returns>The located service.</returns>
-        public virtual object GetInstance(Type service, string key)
-        {
-            return Activator.CreateInstance(service);
-        }
-
-        /// <summary>
-        /// Override this to provide an IoC specific implementation
-        /// </summary>
-        /// <param name="service">The service to locate.</param>
-        /// <returns>The located services.</returns>
-        public virtual IEnumerable<object> GetAllInstances(Type service)
-        {
-            return new[] {GetInstance(service, null)};
-        }
-
-        /// <summary>
-        /// Override this to provide an IoC specific implementation.
-        /// </summary>
-        /// <param name="instance">The instance to perform injection on.</param>
-        public virtual void InjectProperties(object instance)
-        {
         }
 
         /// <summary>

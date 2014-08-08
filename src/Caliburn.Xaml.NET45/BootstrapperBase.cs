@@ -11,7 +11,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Inherit from this class in order to customize the configuration of the framework.
     /// </summary>
-    public abstract class BootstrapperBase : IServiceLocator
+    public abstract class BootstrapperBase
     {
         private bool _isInitialized;
 
@@ -34,7 +34,6 @@ namespace Caliburn.Light
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
             UIContext.Initialize(new ViewAdapter());
-            IoC.Initialize(this);
 
             try
             {
@@ -78,37 +77,6 @@ namespace Caliburn.Light
         protected virtual IEnumerable<Assembly> SelectAssemblies()
         {
             return new[] {GetType().Assembly};
-        }
-
-        /// <summary>
-        /// Override this to provide an IoC specific implementation.
-        /// </summary>
-        /// <param name="service">The service to locate.</param>
-        /// <param name="key">The key to locate.</param>
-        /// <returns>The located service.</returns>
-        public virtual object GetInstance(Type service, string key)
-        {
-            if (service == typeof (IWindowManager))
-                return new WindowManager();
-            return Activator.CreateInstance(service);
-        }
-
-        /// <summary>
-        /// Override this to provide an IoC specific implementation
-        /// </summary>
-        /// <param name="service">The service to locate.</param>
-        /// <returns>The located services.</returns>
-        public virtual IEnumerable<object> GetAllInstances(Type service)
-        {
-            return new[] {GetInstance(service, null)};
-        }
-
-        /// <summary>
-        /// Override this to provide an IoC specific implementation.
-        /// </summary>
-        /// <param name="instance">The instance to perform injection on.</param>
-        public virtual void InjectProperties(object instance)
-        {
         }
 
         /// <summary>

@@ -11,7 +11,10 @@
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>Change initialization of UIContext</releaseNotes>
+    <releaseNotes>
+- Change initialization of UIContext
+- Change initialization of IoC
+    </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags>Caliburn MVVM WPF WP8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command</tags>
 

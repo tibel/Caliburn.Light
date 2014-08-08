@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Caliburn.Light
 {
@@ -18,7 +19,11 @@ namespace Caliburn.Light
 
         public IEnumerable<object> GetAllInstances(Type service)
         {
-            return new[] { GetInstance(service, null) };
+            var typeInfo = service.GetTypeInfo();
+            if (typeInfo.IsAbstract || typeInfo.IsInterface)
+                return new object[0];
+
+            return new[] { Activator.CreateInstance(service) };
         }
 
         public void InjectProperties(object instance)
