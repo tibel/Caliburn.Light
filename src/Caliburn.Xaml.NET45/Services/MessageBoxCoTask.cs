@@ -4,102 +4,14 @@ using System.Windows;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Available message results.
-    /// </summary>
-    public enum MessageResult
-    {
-        /// <summary>
-        /// No result available.
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        /// Message is acknowledged.
-        /// </summary>
-        OK = 1,
-
-        /// <summary>
-        /// Message is canceled.
-        /// </summary>
-        Cancel = 2,
-
-        /// <summary>
-        /// Message is acknowledged with yes.
-        /// </summary>
-        Yes = 6,
-
-        /// <summary>
-        /// Message is acknowledged with no.
-        /// </summary>
-        No = 7
-    }
-
-    /// <summary>
-    /// Available message buttons.
-    /// </summary>
-    public enum MessageButton
-    {
-        /// <summary>
-        /// OK button.
-        /// </summary>
-        OK = 0,
-
-        /// <summary>
-        /// OK and Cancel buttons.
-        /// </summary>
-        OKCancel = 1,
-
-        /// <summary>
-        /// Yes, No and Cancel buttons.
-        /// </summary>
-        YesNoCancel = 3,
-
-        /// <summary>
-        /// Yes and No buttons.
-        /// </summary>
-        YesNo = 4,
-    }
-
-    /// <summary>
-    /// Available message images.
-    /// </summary>
-    public enum MessageImage
-    {
-        /// <summary>
-        /// Show no image.
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        /// Error image.
-        /// </summary>
-        Error = 16,
-
-        /// <summary>
-        /// Question image.
-        /// </summary>
-        Question = 32,
-
-        /// <summary>
-        /// Warning image.
-        /// </summary>
-        Warning = 48,
-
-        /// <summary>
-        /// Information image.
-        /// </summary>
-        Information = 64,
-    }
-
-    /// <summary>
     /// A Caliburn.Light CoTask that lets you show messages.
     /// </summary>
-    public class MessageBoxCoTask : CoTask, ICoTask<MessageResult>
+    public class MessageBoxCoTask : CoTask, ICoTask<MessageBoxResult>
     {
         private readonly string _message;
         private string _caption = string.Empty;
-        private MessageButton _button = MessageButton.OK;
-        private MessageImage _image = MessageImage.None;
+        private MessageBoxButton _button = MessageBoxButton.OK;
+        private MessageBoxImage _image = MessageBoxImage.None;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageBoxCoTask"/> class.
@@ -111,13 +23,13 @@ namespace Caliburn.Light
                 throw new ArgumentNullException("message");
 
             _message = message;
-            Result = MessageResult.None;
+            Result = MessageBoxResult.None;
         }
 
         /// <summary>
         /// Gets the message
         /// </summary>
-        public MessageResult Result { get; protected set; }
+        public MessageBoxResult Result { get; protected set; }
 
         /// <summary>
         /// Sets the caption.
@@ -135,7 +47,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="buttons">The button.</param>
         /// <returns></returns>
-        public MessageBoxCoTask Buttons(MessageButton buttons = MessageButton.OK)
+        public MessageBoxCoTask Buttons(MessageBoxButton buttons = MessageBoxButton.OK)
         {
             _button = buttons;
             return this;
@@ -146,28 +58,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="icon">The image.</param>
         /// <returns></returns>
-        public MessageBoxCoTask Image(MessageImage icon = MessageImage.None)
+        public MessageBoxCoTask Image(MessageBoxImage icon = MessageBoxImage.None)
         {
             _image = icon;
             return this;
-        }
-
-        private static MessageResult TranslateMessageBoxResult(MessageBoxResult result)
-        {
-            var value = result.ToString();
-            return (MessageResult) Enum.Parse(typeof (MessageResult), value, true);
-        }
-
-        private static MessageBoxImage TranslateMessageImage(MessageImage image)
-        {
-            var value = image.ToString();
-            return (MessageBoxImage) Enum.Parse(typeof (MessageBoxImage), value, true);
-        }
-
-        private static MessageBoxButton TranslateMessageButton(MessageButton button)
-        {
-            var value = button.ToString();
-            return (MessageBoxButton) Enum.Parse(typeof (MessageBoxButton), value, true);
         }
 
         /// <summary>
@@ -176,21 +70,16 @@ namespace Caliburn.Light
         /// <param name="context">The context.</param>
         public override void BeginExecute(CoroutineExecutionContext context)
         {
-            MessageBoxResult result;
-            var messageBoxButton = TranslateMessageButton(_button);
-            var messageBoxImage = TranslateMessageImage(_image);
-
             var activeWindow = CoTaskHelper.GetActiveWindow(context);
             if (activeWindow != null)
             {
-                result = MessageBox.Show(activeWindow, _message, _caption, messageBoxButton, messageBoxImage);
+                Result = MessageBox.Show(activeWindow, _message, _caption, _button, _image);
             }
             else
             {
-                result = MessageBox.Show(_message, _caption, messageBoxButton, messageBoxImage);
+                Result = MessageBox.Show(_message, _caption, _button, _image);
             }
 
-            Result = TranslateMessageBoxResult(result);
             OnCompleted(new CoTaskCompletedEventArgs(null, false));
         }
     }
