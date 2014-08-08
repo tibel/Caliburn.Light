@@ -41,16 +41,16 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="Name:" Grid.Row="0" VerticalAlignment="Center" Margin="3" />
-        <TextBox Text="{Binding CName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="0" Grid.Column="1"  />
+        <TextBox Text="{Binding CName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="0" Grid.Column="1"  />
 
         <TextBlock Text="Address:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="3" />
-        <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="1" Grid.Column="1" />
+        <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="1" Grid.Column="1" />
 
         <TextBlock Text="Contact:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="3" />
-        <TextBox Text="{Binding Contact, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="2" Grid.Column="1" />
+        <TextBox Text="{Binding Contact, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="2" Grid.Column="1" />
 
         <TextBlock Text="Website:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="3" />
-        <TextBox Text="{Binding Website, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="3" Grid.Column="1" />
+        <TextBox Text="{Binding Website, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="3" Grid.Column="1" />
 
         <Button Command="{Binding SaveCommand}" Content="Save" Grid.Row="4" Grid.Column="1" Height="25" Margin="0,10,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" />
     </Grid>

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using Caliburn.Light;
+using System;
+using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using Caliburn.Light;
 
 namespace Demo.Validation
 {
-    public class MainViewModel : BindableObject, IDataErrorInfo
+    public class MainViewModel : BindableObject, INotifyDataErrorInfo
     {
         private readonly Company _company;
 
@@ -88,18 +89,24 @@ namespace Demo.Validation
 
         private readonly ValidationAdapter _validation;
 
-        public string Error
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public IEnumerable GetErrors(string propertyName)
         {
-            get { throw new NotImplementedException(); }
+            return _validation.GetPropertyError(propertyName);
         }
 
-        public string this[string columnName]
+        public bool HasErrors
         {
-            get { return string.Join(Environment.NewLine, _validation.GetPropertyError(columnName)); }
+            get { return _validation.HasErrors; }
         }
-
+       
         private void OnErrorsChanged(string propertyName)
         {
+            var handler = ErrorsChanged;
+            if (handler != null)
+                handler(this, new DataErrorsChangedEventArgs(propertyName));
+
             RaisePropertyChanged("CanSave");
         }
 
