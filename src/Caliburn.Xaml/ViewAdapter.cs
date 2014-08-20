@@ -74,7 +74,7 @@ namespace Caliburn.Light
                 var conductor = child.Parent as IConductor;
                 if (conductor != null)
                 {
-                    conductor.CloseItem(viewModel);
+                    conductor.DeactivateItem(viewModel, true);
                     return;
                 }
             }

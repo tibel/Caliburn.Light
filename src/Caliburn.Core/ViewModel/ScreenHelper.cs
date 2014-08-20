@@ -30,16 +30,6 @@ namespace Caliburn.Light
                 deactivator.Deactivate(close);
         }
 
-        /// <summary>
-        /// Closes the specified item.
-        /// </summary>
-        /// <param name="conductor">The conductor.</param>
-        /// <param name="item">The item to close.</param>
-        public static void CloseItem(this IConductor conductor, object item)
-        {
-            conductor.DeactivateItem(item, true);
-        }
-
         ///<summary>
         /// Activates a child whenever the specified parent is activated.
         ///</summary>
