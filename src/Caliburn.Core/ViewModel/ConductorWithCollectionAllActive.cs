@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Reflection;
 using Weakly;
 
 namespace Caliburn.Light
@@ -20,17 +19,6 @@ namespace Caliburn.Light
             public class AllActive : ConductorBase<T>
             {
                 private readonly BindableCollection<T> _items = new BindableCollection<T>();
-                private readonly bool _openPublicItems;
-
-                /// <summary>
-                /// Initializes a new instance of the <see cref="Conductor&lt;T&gt;.Collection.AllActive"/> class.
-                /// </summary>
-                /// <param name="openPublicItems">if set to <c>true</c> opens public items that are properties of this class.</param>
-                public AllActive(bool openPublicItems)
-                    : this()
-                {
-                    _openPublicItems = openPublicItems;
-                }
 
                 /// <summary>
                 /// Initializes a new instance of the <see cref="Conductor&lt;T&gt;.Collection.AllActive"/> class.
@@ -103,24 +91,6 @@ namespace Caliburn.Light
 
                         callback(canClose);
                     });
-                }
-
-                /// <summary>
-                /// Called when initializing.
-                /// </summary>
-                protected override void OnInitialize()
-                {
-                    if (_openPublicItems)
-                    {
-                        GetType().GetRuntimeProperties()
-                            .Where(
-                                x =>
-                                    x.Name != "Parent" &&
-                                    typeof (T).GetTypeInfo().IsAssignableFrom(x.PropertyType.GetTypeInfo()))
-                            .Select(x => x.GetValue(this, null))
-                            .Cast<T>()
-                            .ForEach(ActivateItem);
-                    }
                 }
 
                 /// <summary>
