@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Weakly;
 
 namespace Caliburn.Light
@@ -78,19 +78,21 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Called to check whether or not this instance can close.
                 /// </summary>
-                /// <param name="callback">The implementor calls this action with the result of the close check.</param>
-                public override void CanClose(Action<bool> callback)
+                /// <returns>A task containing the result of the close check.</returns>
+                public override async Task<bool> CanCloseAsync()
                 {
-                    CloseStrategy.Execute(_items.ToList(), (canClose, closable) =>
-                    {
-                        if (!canClose && closable.Any())
-                        {
-                            closable.OfType<IDeactivate>().ForEach(x => x.Deactivate(true));
-                            _items.RemoveRange(closable);
-                        }
+                    var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
 
-                        callback(canClose);
-                    });
+                    var canClose = result.Item1;
+                    var closeable = result.Item2;
+
+                    if (!canClose && closeable.Any())
+                    {
+                        closeable.OfType<IDeactivate>().ForEach(x => x.Deactivate(true));
+                        _items.RemoveRange(closeable);
+                    }
+
+                    return canClose;
                 }
 
                 /// <summary>
@@ -116,18 +118,16 @@ namespace Caliburn.Light
                 /// </summary>
                 /// <param name="item">The item to close.</param>
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-                public override void DeactivateItem(T item, bool close)
+                public override async void DeactivateItem(T item, bool close)
                 {
                     if (item == null)
                         return;
 
                     if (close)
                     {
-                        CloseStrategy.Execute(new[] {item}, (canClose, closable) =>
-                        {
-                            if (canClose)
-                                CloseItemCore(item);
-                        });
+                        var result = await CloseStrategy.ExecuteAsync(new[] {item});
+                        if (result.Item1)
+                            CloseItemCore(item);
                     }
                     else
                     {

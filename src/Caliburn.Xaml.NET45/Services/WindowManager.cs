@@ -331,7 +331,7 @@ namespace Caliburn.Light
                 _deactivateFromViewModel = false;
             }
 
-            private void OnClosing(object sender, CancelEventArgs e)
+            private async void OnClosing(object sender, CancelEventArgs e)
             {
                 if (e.Cancel)
                     return;
@@ -342,38 +342,22 @@ namespace Caliburn.Light
                     return;
                 }
 
-                bool runningAsync = false, shouldEnd = false;
-
-                ((ICloseGuard)Model).CanClose(canClose =>
+                var task = ((ICloseGuard)Model).CanCloseAsync();
+                if (!task.IsCompleted)
                 {
-                    OnUIThread(() =>
+                    e.Cancel = true;
+                    var canClose = await task;
+                    if (canClose)
                     {
-                        if (runningAsync && canClose)
-                        {
-                            _actuallyClosing = true;
-                            View.Close();
-                        }
-                        else
-                        {
-                            e.Cancel = !canClose;
-                        }
-
-                        shouldEnd = true;
-                    });
-                });
-
-                if (shouldEnd)
-                    return;
-
-                runningAsync = e.Cancel = true;
-            }
-
-            private void OnUIThread(Action action)
-            {
-                if (View.Dispatcher.CheckAccess())
-                    action();
+                        _actuallyClosing = true;
+                        View.Close();
+                    }
+                }
                 else
-                    View.Dispatcher.BeginInvoke(action);
+                {
+                    var canClose = task.Result;
+                    e.Cancel = !canClose;
+                }
             }
         }
     }

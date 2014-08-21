@@ -52,20 +52,19 @@ namespace Caliburn.Light
             if (handler != null)
                 handler(sender, e);
 
-            if (e.Cancel)
-                return;
+            if (e.Cancel) return;
 
             var view = _frame.Content as FrameworkElement;
-
-            if (view == null)
-                return;
+            if (view == null) return;
 
             var guard = view.DataContext as ICloseGuard;
-
             if (guard != null)
             {
-                var shouldCancel = false;
-                guard.CanClose(result => { shouldCancel = !result; });
+                var task = guard.CanCloseAsync();
+                if (!task.IsCompleted)
+                    throw new NotSupportedException("Async task is not supported.");
+
+                var shouldCancel = !task.Result;
 
                 if (shouldCancel)
                 {

@@ -26,13 +26,10 @@ namespace Caliburn.Light
         /// Executes the coTask using the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        public override void BeginExecute(CoroutineExecutionContext context)
+        public override async void BeginExecute(CoroutineExecutionContext context)
         {
-            if (_innerTask.IsCompleted)
-                OnCompleted(_innerTask);
-            else
-                _innerTask.ContinueWith(OnCompleted,
-                    UIContext.CheckAccess() ? UIContext.TaskScheduler : TaskScheduler.Current);
+            await _innerTask;
+            OnCompleted(_innerTask);
         }
 
         /// <summary>

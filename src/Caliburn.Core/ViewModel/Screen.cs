@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -126,13 +127,15 @@ namespace Caliburn.Light
         {
         }
 
+        private static readonly Task<bool> TrueTask = Task.FromResult(true);
+
         /// <summary>
         /// Called to check whether or not this instance can close.
         /// </summary>
-        /// <param name = "callback">The implementor calls this action with the result of the close check.</param>
-        public virtual void CanClose(Action<bool> callback)
+        /// <returns>A task containing the result of the close check.</returns>
+        public virtual Task<bool> CanCloseAsync()
         {
-            callback(true);
+            return TrueTask;
         }
 
         /// <summary>
