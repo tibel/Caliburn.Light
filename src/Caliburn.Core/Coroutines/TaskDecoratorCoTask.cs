@@ -28,7 +28,12 @@ namespace Caliburn.Light
         /// <param name="context">The context.</param>
         public override async void BeginExecute(CoroutineExecutionContext context)
         {
-            await _innerTask;
+            try
+            {
+                await _innerTask;
+            }
+            catch { }
+
             OnCompleted(_innerTask);
         }
 

@@ -48,9 +48,7 @@ namespace Caliburn.Light
                 if (!task.IsCompleted)
                     throw new NotSupportedException("Async task is not supported.");
 
-                var shouldCancel = !task.Result;
-
-                if (shouldCancel)
+                if (!task.Result)
                 {
                     e.Cancel = true;
                     return;

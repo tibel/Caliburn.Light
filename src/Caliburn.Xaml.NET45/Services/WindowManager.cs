@@ -343,7 +343,12 @@ namespace Caliburn.Light
                 }
 
                 var task = ((ICloseGuard)Model).CanCloseAsync();
-                if (!task.IsCompleted)
+                if (task.IsCompleted)
+                {
+                    var canClose = task.Result;
+                    e.Cancel = !canClose;
+                }
+                else
                 {
                     e.Cancel = true;
                     var canClose = await task;
@@ -352,11 +357,6 @@ namespace Caliburn.Light
                         _actuallyClosing = true;
                         View.Close();
                     }
-                }
-                else
-                {
-                    var canClose = task.Result;
-                    e.Cancel = !canClose;
                 }
             }
         }

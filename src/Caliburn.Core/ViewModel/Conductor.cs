@@ -27,7 +27,8 @@ namespace Caliburn.Light
             var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
             if (result.Item1)
                 ChangeActiveItem(item, true);
-            else OnActivationProcessed(item, false);
+            else
+                OnActivationProcessed(item, false);
         }
 
         /// <summary>

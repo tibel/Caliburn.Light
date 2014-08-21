@@ -123,15 +123,15 @@ namespace Caliburn.Light
                     if (item == null)
                         return;
 
-                    if (close)
+                    if (!close)
+                    {
+                        ScreenHelper.TryDeactivate(item, false);
+                    }
+                    else
                     {
                         var result = await CloseStrategy.ExecuteAsync(new[] {item});
                         if (result.Item1)
                             CloseItemCore(item);
-                    }
-                    else
-                    {
-                        ScreenHelper.TryDeactivate(item, false);
                     }
                 }
 
