@@ -32,6 +32,7 @@ namespace Caliburn.Light
             {
                 await _innerTask;
             }
+            // ReSharper disable once EmptyGeneralCatchClause
             catch { }
 
             OnCompleted(_innerTask);

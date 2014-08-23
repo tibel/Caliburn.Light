@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Caliburn.Light;
+﻿using Caliburn.Light;
+using System.Threading.Tasks;
 
 namespace Demo.SimpleMDI
 {

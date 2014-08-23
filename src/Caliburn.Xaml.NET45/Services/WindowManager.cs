@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -331,7 +332,7 @@ namespace Caliburn.Light
                 _deactivateFromViewModel = false;
             }
 
-            private async void OnClosing(object sender, CancelEventArgs e)
+            private void OnClosing(object sender, CancelEventArgs e)
             {
                 if (e.Cancel)
                     return;
@@ -351,12 +352,17 @@ namespace Caliburn.Light
                 else
                 {
                     e.Cancel = true;
-                    var canClose = await task;
-                    if (canClose)
-                    {
-                        _actuallyClosing = true;
-                        View.Close();
-                    }
+                    CloseAsync(task);
+                }
+            }
+
+            private async void CloseAsync(Task<bool> task)
+            {
+                var canClose = await task;
+                if (canClose)
+                {
+                    _actuallyClosing = true;
+                    View.Close();
                 }
             }
         }
