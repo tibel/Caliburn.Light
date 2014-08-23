@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Weakly;
 
 namespace Caliburn.Light
@@ -88,7 +88,7 @@ namespace Caliburn.Light
                 /// </summary>
                 /// <param name="item">The item to close.</param>
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-                public override void DeactivateItem(T item, bool close)
+                public override async void DeactivateItem(T item, bool close)
                 {
                     if (item == null) return;
 
@@ -98,13 +98,9 @@ namespace Caliburn.Light
                     }
                     else
                     {
-                        CloseStrategy.Execute(new[] {item}, (canClose, closable) =>
-                        {
-                            if (canClose)
-                            {
-                                CloseItemCore(item);
-                            }
-                        });
+                        var result = await CloseStrategy.ExecuteAsync(new[] {item});
+                        if (result.Item1)
+                            CloseItemCore(item);
                     }
                 }
 
@@ -152,39 +148,41 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Called to check whether or not this instance can close.
                 /// </summary>
-                /// <param name="callback">The implementor calls this action with the result of the close check.</param>
-                public override void CanClose(Action<bool> callback)
+                /// <returns>A task containing the result of the close check.</returns>
+                public override async Task<bool> CanCloseAsync()
                 {
-                    CloseStrategy.Execute(_items.ToList(), (canClose, closable) =>
+                    var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
+
+                    var canClose = result.Item1;
+                    var closable = result.Item2;
+
+                    if (!canClose && closable.Any())
                     {
-                        if (!canClose && closable.Any())
+                        if (closable.Contains(ActiveItem))
                         {
-                            if (closable.Contains(ActiveItem))
+                            var list = _items.ToList();
+                            var next = ActiveItem;
+                            do
                             {
-                                var list = _items.ToList();
-                                var next = ActiveItem;
-                                do
-                                {
-                                    var previous = next;
-                                    next = DetermineNextItemToActivate(list, list.IndexOf(previous));
-                                    list.Remove(previous);
-                                } while (closable.Contains(next));
+                                var previous = next;
+                                next = DetermineNextItemToActivate(list, list.IndexOf(previous));
+                                list.Remove(previous);
+                            } while (closable.Contains(next));
 
-                                var previousActive = ActiveItem;
-                                ChangeActiveItem(next, true);
-                                _items.Remove(previousActive);
+                            var previousActive = ActiveItem;
+                            ChangeActiveItem(next, true);
+                            _items.Remove(previousActive);
 
-                                var stillToClose = closable.ToList();
-                                stillToClose.Remove(previousActive);
-                                closable = stillToClose;
-                            }
-
-                            closable.OfType<IDeactivate>().ForEach(x => x.Deactivate(true));
-                            _items.RemoveRange(closable);
+                            var stillToClose = closable.ToList();
+                            stillToClose.Remove(previousActive);
+                            closable = stillToClose;
                         }
 
-                        callback(canClose);
-                    });
+                        closable.OfType<IDeactivate>().ForEach(x => x.Deactivate(true));
+                        _items.RemoveRange(closable);
+                    }
+
+                    return canClose;
                 }
 
                 /// <summary>

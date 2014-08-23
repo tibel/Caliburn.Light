@@ -1,4 +1,5 @@
-﻿using Caliburn.Light;
+﻿using System.Threading.Tasks;
+using Caliburn.Light;
 
 namespace Demo.SimpleMDI
 {
@@ -28,6 +29,12 @@ namespace Demo.SimpleMDI
         public override string ToString()
         {
             return DisplayName;
+        }
+
+        public override async Task<bool> CanCloseAsync()
+        {
+            await Task.Delay(500);
+            return true;
         }
     }
 }

@@ -31,7 +31,8 @@ namespace Caliburn.Light
             // set SynchronizationContext so that we can create the TaskScheduler
             // this is needed here as the dispatcher-loop is not yet running and therefor
             // the Dispatcher has not set the SynchronizationContext yet.
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+            if (SynchronizationContext.Current == null)
+                SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
             UIContext.Initialize(new ViewAdapter());
 
@@ -104,6 +105,7 @@ namespace Caliburn.Light
         /// <param name="e">The event args.</param>
         protected virtual void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
+            LogManager.GetLogger(GetType()).Error("An exception was unhandled by user code. {0}", e.Exception);
         }
 
         /// <summary>

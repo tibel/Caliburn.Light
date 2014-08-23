@@ -38,23 +38,24 @@ namespace Caliburn.Light
 
             if (e.Cancel) return;
 
-            var fe = _frame.Content as FrameworkElement;
-            if (fe == null) return;
+            var view = _frame.Content as FrameworkElement;
+            if (view == null) return;
 
-            var guard = fe.DataContext as ICloseGuard;
+            var guard = view.DataContext as ICloseGuard;
             if (guard != null && !e.Uri.IsAbsoluteUri)
             {
-                var shouldCancel = false;
-                guard.CanClose(result => { shouldCancel = !result; });
+                var task = guard.CanCloseAsync();
+                if (!task.IsCompleted)
+                    throw new NotSupportedException("Async task is not supported.");
 
-                if (shouldCancel)
+                if (!task.Result)
                 {
                     e.Cancel = true;
                     return;
                 }
             }
 
-            var deactivator = fe.DataContext as IDeactivate;
+            var deactivator = view.DataContext as IDeactivate;
 
             // If we are navigating to the same page there is no need to deactivate
             // e.g. When the app is activated with Fast Switch

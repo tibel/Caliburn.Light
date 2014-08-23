@@ -171,15 +171,11 @@ namespace Caliburn.Light
 
                 var enumerable = returnValue as IEnumerable<ICoTask>;
                 if (enumerable != null)
-                {
                     returnValue = enumerable.GetEnumerator();
-                }
 
                 var enumerator = returnValue as IEnumerator<ICoTask>;
                 if (enumerator != null)
-                {
                     returnValue = enumerator.AsCoTask();
-                }
 
                 var coTask = returnValue as ICoTask;
                 if (coTask != null)
@@ -190,8 +186,17 @@ namespace Caliburn.Light
                         Target = target,
                     };
 
-                    coTask.ExecuteAsync(context);
+                    returnValue = coTask.ExecuteAsync(context);
                 }
+
+                var task = returnValue as Task;
+                if (task != null)
+                    PropagateExceptions(task);
+            }
+
+            private static async void PropagateExceptions(Task task)
+            {
+                await task.ConfigureAwait(false);
             }
         }
     }

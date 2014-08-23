@@ -1,5 +1,6 @@
 ﻿using Caliburn.Light;
 using System;
+using System.Threading.Tasks;
 using Windows.UI.Popups;
 
 namespace Demo.HelloSpecialValues
@@ -22,7 +23,7 @@ namespace Demo.HelloSpecialValues
             };
         }
 
-        public async void CharacterSelected(CharacterViewModel character)
+        public async Task CharacterSelected(CharacterViewModel character)
         {
             var dialog = new MessageDialog(string.Format("{0} selected.", character.Name), "Character Selected");
             await dialog.ShowAsync();

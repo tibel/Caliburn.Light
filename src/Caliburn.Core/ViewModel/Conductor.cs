@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -12,7 +12,7 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        public override void ActivateItem(T item)
+        public override async void ActivateItem(T item)
         {
             if (item != null && ReferenceEquals(item, ActiveItem))
             {
@@ -24,12 +24,11 @@ namespace Caliburn.Light
                 return;
             }
 
-            CloseStrategy.Execute(new[] {ActiveItem}, (canClose, items) =>
-            {
-                if (canClose)
-                    ChangeActiveItem(item, true);
-                else OnActivationProcessed(item, false);
-            });
+            var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
+            if (result.Item1)
+                ChangeActiveItem(item, true);
+            else
+                OnActivationProcessed(item, false);
         }
 
         /// <summary>
@@ -37,27 +36,26 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="item">The item to close.</param>
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-        public override void DeactivateItem(T item, bool close)
+        public override async void DeactivateItem(T item, bool close)
         {
             if (item == null || !ReferenceEquals(item, ActiveItem))
             {
                 return;
             }
 
-            CloseStrategy.Execute(new[] {ActiveItem}, (canClose, items) =>
-            {
-                if (canClose)
-                    ChangeActiveItem(default(T), close);
-            });
+            var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
+            if (result.Item1)
+                ChangeActiveItem(default(T), close);
         }
 
         /// <summary>
         /// Called to check whether or not this instance can close.
         /// </summary>
-        /// <param name="callback">The implementor calls this action with the result of the close check.</param>
-        public override void CanClose(Action<bool> callback)
+        /// <returns>A task containing the result of the close check.</returns>
+        public override async Task<bool> CanCloseAsync()
         {
-            CloseStrategy.Execute(new[] {ActiveItem}, (canClose, items) => callback(canClose));
+            var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
+            return result.Item1;
         }
 
         /// <summary>

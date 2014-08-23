@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -14,7 +16,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Creates an instance of the class.
         /// </summary>
-        /// <param name="closeConductedItemsWhenConductorCannotClose">Indicates that even if all conducted items are not closable, those that are should be closed. The default is FALSE.</param>
+        /// <param name="closeConductedItemsWhenConductorCannotClose">Indicates that even if all conducted items are not closable, those that are should be closed.</param>
         public DefaultCloseStrategy(bool closeConductedItemsWhenConductorCannotClose = false)
         {
             _closeConductedItemsWhenConductorCannotClose = closeConductedItemsWhenConductorCannotClose;
@@ -24,69 +26,33 @@ namespace Caliburn.Light
         /// Executes the strategy.
         /// </summary>
         /// <param name="toClose">Items that are requesting close.</param>
-        /// <param name="callback">The action to call when all enumeration is complete and the close results are aggregated.
-        /// The bool indicates whether close can occur. The enumerable indicates which children should close if the parent cannot.</param>
-        public void Execute(IEnumerable<T> toClose, Action<bool, IEnumerable<T>> callback)
+        /// <returns>A task containing the aggregated close results.
+        /// The bool indicates whether close can occur. The enumerable indicates which children should close if the parent cannot.</returns>
+        public async Task<Tuple<bool, IEnumerable<T>>> ExecuteAsync(IEnumerable<T> toClose)
         {
-            Evaluate(new EvaluationState(toClose.GetEnumerator(), callback));
-        }
+            var closables = new List<T>();
+            var result = true;
 
-        private void Evaluate(EvaluationState state)
-        {
-            var guardPending = false;
-            do
+            foreach (var item in toClose)
             {
-                if (!state.Enumerator.MoveNext())
+                var guard = item as ICloseGuard;
+                if (guard == null)
                 {
-                    state.Enumerator.Dispose();
-                    state.Callback(state.FinalResult, _closeConductedItemsWhenConductorCannotClose ? state.Closable : new List<T>());
-                    break;
-                }
-
-                var current = state.Enumerator.Current;
-                var guard = current as ICloseGuard;
-                if (guard != null)
-                {
-                    guardPending = true;
-                    guard.CanClose(canClose =>
-                    {
-                        guardPending = false;
-                        if (canClose)
-                        {
-                            state.Closable.Add(current);
-                        }
-
-                        state.FinalResult = state.FinalResult && canClose;
-
-                        if (state.GuardMustCallEvaluate)
-                        {
-                            state.GuardMustCallEvaluate = false;
-                            Evaluate(state);
-                        }
-                    });
-                    state.GuardMustCallEvaluate = state.GuardMustCallEvaluate || guardPending;
+                    closables.Add(item);
                 }
                 else
                 {
-                    state.Closable.Add(current);
-                }
-            } while (!guardPending);
-        }
+                    var canClose = await guard.CanCloseAsync();
+                    if (canClose)
+                    {
+                        closables.Add(item);
+                    }
 
-        private sealed class EvaluationState
-        {
-            public EvaluationState(IEnumerator<T> enumerator, Action<bool, IEnumerable<T>> callback)
-            {
-                Enumerator = enumerator;
-                Callback = callback;
+                    result = result && canClose;
+                }
             }
 
-            public readonly IEnumerator<T> Enumerator;
-            public readonly Action<bool, IEnumerable<T>> Callback;
-
-            public readonly List<T> Closable = new List<T>();
-            public bool FinalResult = true;
-            public bool GuardMustCallEvaluate;
+            return new Tuple<bool, IEnumerable<T>>(result, _closeConductedItemsWhenConductorCannotClose ? closables : Enumerable.Empty<T>());
         }
     }
 }

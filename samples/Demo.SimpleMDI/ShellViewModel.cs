@@ -1,4 +1,5 @@
 ﻿using Caliburn.Light;
+using System.Threading.Tasks;
 
 namespace Demo.SimpleMDI
 {
@@ -11,6 +12,12 @@ namespace Demo.SimpleMDI
             var tab = IoC.GetInstance<TabViewModel>();
             tab.DisplayName = "Tab " + _count++;
             ActivateItem(tab);
+        }
+
+        public override async Task<bool> CanCloseAsync()
+        {
+            await Task.Delay(1000);
+            return true;
         }
     }
 }

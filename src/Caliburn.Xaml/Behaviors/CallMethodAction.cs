@@ -1,9 +1,10 @@
 ﻿using Weakly;
-using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 #if !NETFX_CORE
 using System.Windows;
 using System.Windows.Controls;
@@ -11,8 +12,8 @@ using System.Windows.Interactivity;
 using System.Windows.Markup;
 #else
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 #endif
 
@@ -246,7 +247,16 @@ namespace Caliburn.Light
 
             var coTask = returnValue as ICoTask;
             if (coTask != null)
-                coTask.ExecuteAsync(context);
+                returnValue = coTask.ExecuteAsync(context);
+
+            var task = returnValue as Task;
+            if (task != null)
+                PropagateExceptions(task);
+        }
+
+        private static async void PropagateExceptions(Task task)
+        {
+            await task.ConfigureAwait(false);
         }
     }
 }

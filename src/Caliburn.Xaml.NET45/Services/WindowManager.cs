@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -342,38 +343,27 @@ namespace Caliburn.Light
                     return;
                 }
 
-                bool runningAsync = false, shouldEnd = false;
-
-                ((ICloseGuard)Model).CanClose(canClose =>
+                var task = ((ICloseGuard)Model).CanCloseAsync();
+                if (task.IsCompleted)
                 {
-                    OnUIThread(() =>
-                    {
-                        if (runningAsync && canClose)
-                        {
-                            _actuallyClosing = true;
-                            View.Close();
-                        }
-                        else
-                        {
-                            e.Cancel = !canClose;
-                        }
-
-                        shouldEnd = true;
-                    });
-                });
-
-                if (shouldEnd)
-                    return;
-
-                runningAsync = e.Cancel = true;
+                    var canClose = task.Result;
+                    e.Cancel = !canClose;
+                }
+                else
+                {
+                    e.Cancel = true;
+                    CloseAsync(task);
+                }
             }
 
-            private void OnUIThread(Action action)
+            private async void CloseAsync(Task<bool> task)
             {
-                if (View.Dispatcher.CheckAccess())
-                    action();
-                else
-                    View.Dispatcher.BeginInvoke(action);
+                var canClose = await task;
+                if (canClose)
+                {
+                    _actuallyClosing = true;
+                    View.Close();
+                }
             }
         }
     }
