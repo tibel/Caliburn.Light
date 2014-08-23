@@ -31,7 +31,8 @@ namespace Caliburn.Light
             // set SynchronizationContext so that we can create the TaskScheduler
             // this is needed here as the dispatcher-loop is not yet running and therefor
             // the Dispatcher has not set the SynchronizationContext yet.
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+            if (SynchronizationContext.Current == null)
+                SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
             UIContext.Initialize(new ViewAdapter());
 
