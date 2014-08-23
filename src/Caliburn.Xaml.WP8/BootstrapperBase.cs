@@ -140,6 +140,7 @@ namespace Caliburn.Light
         /// <param name="e">The event args.</param>
         protected virtual void OnUnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            LogManager.GetLogger(GetType()).Error("An exception was unhandled by user code. {0}", e.ExceptionObject);
         }
     }
 }
