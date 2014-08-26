@@ -186,7 +186,7 @@ namespace Caliburn.Light
                         Target = target,
                     };
 
-                    returnValue = coTask.ExecuteAsync(context);
+                    returnValue = coTask.OverrideCancel().ExecuteAsync(context);
                 }
 
                 var task = returnValue as Task;

@@ -128,7 +128,7 @@ namespace Caliburn.Light
 
             var coTask = returnValue as ICoTask;
             if (coTask != null)
-                returnValue = coTask.ExecuteAsync(context);
+                returnValue = coTask.OverrideCancel().ExecuteAsync(context);
 
             var task = returnValue as Task;
             if (task != null)
