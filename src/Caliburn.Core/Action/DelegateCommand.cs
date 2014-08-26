@@ -176,7 +176,7 @@ namespace Caliburn.Light
             if (UIContext.CheckAccess())
                 _canExecuteChangedSource.Raise(this, EventArgs.Empty);
             else
-                UIContext.Run(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty));
+                PropagateExceptions(UIContext.Run(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty)));
         }
     }
 }
