@@ -65,7 +65,39 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
         public static Task Run(Action action)
         {
-            return Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, TaskScheduler);
+            return Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler);
+        }
+
+        /// <summary>
+        /// Queues the specified work to run on the UI thread and returns a proxy for the <see cref="Task&lt;TResult&gt;"/> returned by function.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result returned by the proxy task.</typeparam>
+        /// <param name="function">The work to execute asynchronously</param>
+        /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents a proxy for the <see cref="Task&lt;TResult&gt;"/> returned by function.</returns>
+        public static Task<TResult> Run<TResult>(Func<Task<TResult>> function)
+        {
+            return Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler).Unwrap();
+        }
+
+        /// <summary>
+        /// Queues the specified work to run on the UI thread and returns a proxy for the task returned by function.
+        /// </summary>
+        /// <param name="function">The work to execute asynchronously</param>
+        /// <returns>A task that represents a proxy for the task returned by function.</returns>
+        public static Task Run(Func<Task> function)
+        {
+            return Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler).Unwrap();
+        }
+
+        /// <summary>
+        /// Queues the specified work to run on the UI thread and returns a <see cref="Task&lt;TResult&gt;"/> handle for that work.
+        /// </summary>
+        /// <typeparam name="TResult">The result type of the task.</typeparam>
+        /// <param name="function">The work to execute asynchronously</param>
+        /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents the work queued to execute in the UI thread.</returns>
+        public static Task<TResult> Run<TResult>(Func<TResult> function)
+        {
+            return Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler);
         }
 
         #endregion
