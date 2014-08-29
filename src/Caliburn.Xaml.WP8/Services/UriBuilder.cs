@@ -26,7 +26,7 @@ namespace Caliburn.Light
         {
             if (value is ValueType || !ReferenceEquals(null, value))
             {
-                _queryString[property.GetMemberInfo().Name] = value.ToString();
+                _queryString[ExpressionHelper.GetMemberInfo(property).Name] = value.ToString();
             }
 
             return this;
