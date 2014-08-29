@@ -132,12 +132,7 @@ namespace Caliburn.Light
 
             var task = returnValue as Task;
             if (task != null)
-                PropagateExceptions(task);
-        }
-
-        private static async void PropagateExceptions(Task task)
-        {
-            await task.ConfigureAwait(false);
+                task.ObserveException();
         }
 
         /// <summary>
@@ -176,7 +171,7 @@ namespace Caliburn.Light
             if (UIContext.CheckAccess())
                 _canExecuteChangedSource.Raise(this, EventArgs.Empty);
             else
-                PropagateExceptions(UIContext.Run(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty)));
+                UIContext.Run(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty)).ObserveException();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Weakly;
 using Windows.System;
 
 namespace Caliburn.Light
@@ -31,9 +32,9 @@ namespace Caliburn.Light
         /// <summary>
         /// Called when the command was selected in the Settings Charm.
         /// </summary>
-        public override async void OnSelected()
+        public override void OnSelected()
         {
-            await Launcher.LaunchUriAsync(Uri);
+            Launcher.LaunchUriAsync(Uri).AsTask().ObserveException();
         }
     }
 }

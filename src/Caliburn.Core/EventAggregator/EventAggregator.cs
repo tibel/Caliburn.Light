@@ -112,17 +112,12 @@ namespace Caliburn.Light
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    PropagateExceptions(UIContext.Run(() => uiThreadHandlers.ForEach(h => h.Invoke(message))));
+                    UIContext.Run(() => uiThreadHandlers.ForEach(h => h.Invoke(message))).ObserveException();
             }
 
             var backgroundHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundHandlers.Count > 0)
-                PropagateExceptions(Task.Run(() => backgroundHandlers.ForEach(h => h.Invoke(message))));
-        }
-
-        private static async void PropagateExceptions(Task task)
-        {
-            await task.ConfigureAwait(false);
+                Task.Run(() => backgroundHandlers.ForEach(h => h.Invoke(message))).ObserveException();
         }
 
         private sealed class Handler
@@ -196,7 +191,7 @@ namespace Caliburn.Light
 
                 var task = returnValue as Task;
                 if (task != null)
-                    PropagateExceptions(task);
+                    task.ObserveException();
             }
         }
     }

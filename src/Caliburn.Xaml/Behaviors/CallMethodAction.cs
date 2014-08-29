@@ -172,7 +172,7 @@ namespace Caliburn.Light
                 if (Dispatcher.HasThreadAccess)
                     UpdateEnabledState();
                 else
-                    PropagateExceptions(Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateEnabledState).AsTask());
+                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, UpdateEnabledState).AsTask().ObserveException();
 #else
                 if (Dispatcher.CheckAccess())
                     UpdateEnabledState();
@@ -251,12 +251,7 @@ namespace Caliburn.Light
 
             var task = returnValue as Task;
             if (task != null)
-                PropagateExceptions(task);
-        }
-
-        private static async void PropagateExceptions(Task task)
-        {
-            await task.ConfigureAwait(false);
+                task.ObserveException();
         }
     }
 }
