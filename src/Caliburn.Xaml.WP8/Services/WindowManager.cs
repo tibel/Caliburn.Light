@@ -47,7 +47,7 @@ namespace Caliburn.Light
 
             ViewModelBinder.Bind(rootModel, host, null);
 
-            ApplySettings(host, settings);
+            ViewHelper.ApplySettings(host, settings);
 
             var activatable = rootModel as IActivate;
             if (activatable != null)
@@ -105,21 +105,8 @@ namespace Caliburn.Light
         protected virtual Popup CreatePopup(object rootModel, IDictionary<string, object> settings)
         {
             var popup = new Popup();
-            ApplySettings(popup, settings);
+            ViewHelper.ApplySettings(popup, settings);
             return popup;
-        }
-
-        private static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
-        {
-            if (settings == null) return;
-
-            var type = target.GetType();
-            foreach (var pair in settings)
-            {
-                var propertyInfo = type.GetProperty(pair.Key);
-                if (propertyInfo != null)
-                    propertyInfo.SetValue(target, pair.Value, null);
-            }
         }
 
         private static Transform SafeTransformToVisual(UIElement element, UIElement visual)

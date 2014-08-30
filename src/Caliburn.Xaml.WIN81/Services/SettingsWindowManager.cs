@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -71,7 +70,7 @@ namespace Caliburn.Light
             if (!viewSettings.ContainsKey("IconSource") && _defaultIconSource != null)
                 viewSettings["IconSource"] = _defaultIconSource;
 
-            ApplySettings(settingsFlyout, viewSettings);
+            ViewHelper.ApplySettings(settingsFlyout, viewSettings);
 
             var deactivator = viewModel as IDeactivate;
             if (deactivator != null)
@@ -91,19 +90,6 @@ namespace Caliburn.Light
                 activator.Activate();
 
             settingsFlyout.Show();
-        }
-
-        private static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
-        {
-            if (settings == null) return;
-
-            var type = target.GetType();
-            foreach (var pair in settings)
-            {
-                var propertyInfo = type.GetRuntimeProperty(pair.Key);
-                if (propertyInfo != null)
-                    propertyInfo.SetValue(target, pair.Value, null);
-            }
         }
     }
 }

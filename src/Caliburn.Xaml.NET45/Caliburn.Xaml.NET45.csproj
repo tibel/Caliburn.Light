@@ -74,6 +74,7 @@
     <Compile Include="Services\MessageBoxCoTask.cs" />
     <Compile Include="Services\OpenFileDialogCoTask.cs" />
     <Compile Include="Services\SaveFileDialogCoTask.cs" />
+    <Compile Include="Services\WindowConductor.cs" />
     <Compile Include="Services\WindowManager.cs" />
     <None Include="..\Caliburn.Light.snk">
       <Link>Properties\Caliburn.Light.snk</Link>
