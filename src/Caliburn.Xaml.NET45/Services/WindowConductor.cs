@@ -13,6 +13,7 @@ namespace Caliburn.Light
         private bool _deactivatingFromView;
         private bool _deactivateFromViewModel;
         private bool _actuallyClosing;
+        private bool _canClosePending;
 
         public WindowConductor(object model, Window view)
         {
@@ -76,27 +77,52 @@ namespace Caliburn.Light
                 return;
             }
 
-            var task = ((ICloseGuard)Model).CanCloseAsync();
+            e.Cancel = !EvaluateCanClose();
+        }
+
+        private bool EvaluateCanClose()
+        {
+            if (_canClosePending)
+                return false;
+
+            _canClosePending = true;
+            Task<bool> task;
+            try
+            {
+                task = ((ICloseGuard)Model).CanCloseAsync();
+            }
+            catch
+            {
+                _canClosePending = false;
+                throw;
+            }
+
             if (task.IsCompleted)
             {
-                var canClose = task.Result;
-                e.Cancel = !canClose;
+                _canClosePending = false;
+                return task.Result;
             }
-            else
-            {
-                e.Cancel = true;
-                CloseViewAsync(task);
-            }
+            
+            CloseViewAsync(task);
+            return false;
         }
 
         private async void CloseViewAsync(Task<bool> task)
         {
-            var canClose = await task;
-            if (canClose)
+            bool canClose;
+            try
             {
-                _actuallyClosing = true;
-                View.Close();
+                canClose = await task;
             }
+            finally
+            {
+                _canClosePending = false;
+            }
+
+            if (!canClose) return;
+            _actuallyClosing = true;
+            View.Close();
+            _actuallyClosing = false;
         }
     }
 }
