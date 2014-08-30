@@ -7,6 +7,7 @@ namespace Demo.SimpleMDI
     {
         private object _parent;
         private string _displayName;
+        private bool _canClosePending;
 
         /// <summary>
         /// Gets or Sets the Parent <see cref = "IConductor" />
@@ -33,7 +34,12 @@ namespace Demo.SimpleMDI
 
         public override async Task<bool> CanCloseAsync()
         {
+            if (_canClosePending) return false;
+            _canClosePending = true;
+
             await Task.Delay(500);
+
+            _canClosePending = false;
             return true;
         }
     }
