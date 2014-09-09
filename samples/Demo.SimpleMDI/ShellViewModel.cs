@@ -5,7 +5,8 @@ namespace Demo.SimpleMDI
 {
     public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
     {
-        int _count = 1;
+        private int _count = 1;
+        private bool _canClosePending;
 
         public void OpenTab()
         {
@@ -16,7 +17,12 @@ namespace Demo.SimpleMDI
 
         public override async Task<bool> CanCloseAsync()
         {
+            if (_canClosePending) return false;
+            _canClosePending = true;
+
             await Task.Delay(1000);
+
+            _canClosePending = false;
             return true;
         }
     }

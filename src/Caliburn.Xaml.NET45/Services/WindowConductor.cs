@@ -5,20 +5,27 @@ using System.Windows;
 
 namespace Caliburn.Light
 {
-    internal class WindowConductor
+    /// <summary>
+    /// Condcuts a window with its view-model.
+    /// </summary>
+    public sealed class WindowConductor
     {
-        public readonly Window View;
-        public readonly object Model;
+        private readonly Window _view;
+        private readonly object _model;
 
         private bool _deactivatingFromView;
         private bool _deactivateFromViewModel;
         private bool _actuallyClosing;
-        private bool _canClosePending;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowConductor"/> class.
+        /// </summary>
+        /// <param name="model">The view model.</param>
+        /// <param name="view">The view.</param>
         public WindowConductor(object model, Window view)
         {
-            Model = model;
-            View = view;
+            _model = model;
+            _view = view;
 
             var activatable = model as IActivate;
             if (activatable != null)
@@ -36,16 +43,32 @@ namespace Caliburn.Light
                 view.Closing += OnViewClosing;
         }
 
+        /// <summary>
+        /// Gets the view-model.
+        /// </summary>
+        public object Model
+        {
+            get { return _model; }
+        }
+
+        /// <summary>
+        /// Gets the view.
+        /// </summary>
+        public Window View
+        {
+            get { return _view; }
+        }
+
         private void OnViewClosed(object sender, EventArgs e)
         {
-            View.Closed -= OnViewClosed;
-            View.Closing -= OnViewClosing;
+            _view.Closed -= OnViewClosed;
+            _view.Closing -= OnViewClosing;
 
             if (_deactivateFromViewModel)
                 return;
 
             _deactivatingFromView = true;
-            ((IDeactivate)Model).Deactivate(true);
+            ((IDeactivate)_model).Deactivate(true);
             _deactivatingFromView = false;
         }
 
@@ -54,14 +77,14 @@ namespace Caliburn.Light
             if (!e.WasClosed)
                 return;
 
-            ((IDeactivate)Model).Deactivated -= OnDeactivated;
+            ((IDeactivate)_model).Deactivated -= OnDeactivated;
 
             if (_deactivatingFromView)
                 return;
 
             _deactivateFromViewModel = true;
             _actuallyClosing = true;
-            View.Close();
+            _view.Close();
             _actuallyClosing = false;
             _deactivateFromViewModel = false;
         }
@@ -82,26 +105,9 @@ namespace Caliburn.Light
 
         private bool EvaluateCanClose()
         {
-            if (_canClosePending)
-                return false;
-
-            _canClosePending = true;
-            Task<bool> task;
-            try
-            {
-                task = ((ICloseGuard)Model).CanCloseAsync();
-            }
-            catch
-            {
-                _canClosePending = false;
-                throw;
-            }
-
+            var task = ((ICloseGuard)_model).CanCloseAsync();
             if (task.IsCompleted)
-            {
-                _canClosePending = false;
                 return task.Result;
-            }
             
             CloseViewAsync(task);
             return false;
@@ -109,19 +115,11 @@ namespace Caliburn.Light
 
         private async void CloseViewAsync(Task<bool> task)
         {
-            bool canClose;
-            try
-            {
-                canClose = await task;
-            }
-            finally
-            {
-                _canClosePending = false;
-            }
+            var canClose = await task;
 
             if (!canClose) return;
             _actuallyClosing = true;
-            View.Close();
+            _view.Close();
             _actuallyClosing = false;
         }
     }

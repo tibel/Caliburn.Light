@@ -199,7 +199,7 @@ namespace Caliburn.Light
         /// <param name="context">The context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The page.</returns>
-        public virtual Page CreatePage(object rootModel, object context, IDictionary<string, object> settings)
+        protected virtual Page CreatePage(object rootModel, object context, IDictionary<string, object> settings)
         {
             var view = EnsurePage(rootModel, ViewLocator.LocateForModel(rootModel, null, context));
             ViewModelBinder.Bind(rootModel, view, context);
