@@ -112,7 +112,7 @@ namespace Caliburn.Light
             return new MultipleFilesCoTask(title);
         }
 
-        private class OneFileCoTask : OpenFileDialogCoTask<FileInfo>
+        private sealed class OneFileCoTask : OpenFileDialogCoTask<FileInfo>
         {
             public OneFileCoTask(string title)
                 : base(false, title)
@@ -128,7 +128,7 @@ namespace Caliburn.Light
             }
         }
 
-        private class MultipleFilesCoTask : OpenFileDialogCoTask<IEnumerable<FileInfo>>
+        private sealed class MultipleFilesCoTask : OpenFileDialogCoTask<IEnumerable<FileInfo>>
         {
             public MultipleFilesCoTask(string title)
                 : base(true, title)

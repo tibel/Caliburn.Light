@@ -6,7 +6,7 @@ namespace Caliburn.Light
     /// <summary>
     /// A Caliburn.Light CoTask that lets you save a file.
     /// </summary>
-    public class SaveFileDialogCoTask : CoTask, ICoTask<FileInfo>
+    public sealed class SaveFileDialogCoTask : CoTask, ICoTask<FileInfo>
     {
         private readonly string _title;
         private string _fileName;
@@ -19,13 +19,13 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the opened file(s).
         /// </summary>
-        public FileInfo Result { get; protected set; }
+        public FileInfo Result { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SaveFileDialogCoTask"/> class.
         /// </summary>
         /// <param name="title">The title of the dialog.</param>
-        protected SaveFileDialogCoTask(string title = null)
+        private SaveFileDialogCoTask(string title = null)
         {
             _title = title;
         }

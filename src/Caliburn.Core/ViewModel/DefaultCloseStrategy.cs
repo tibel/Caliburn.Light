@@ -9,7 +9,7 @@ namespace Caliburn.Light
     /// Used to gather the results from multiple child elements which may or may not prevent closing.
     /// </summary>
     /// <typeparam name="T">The type of child element.</typeparam>
-    public sealed class DefaultCloseStrategy<T> : ICloseStrategy<T>
+    public sealed class DefaultCloseStrategy<T> : ICloseStrategy<T> where T : class
     {
         private readonly bool _closeConductedItemsWhenConductorCannotClose;
 

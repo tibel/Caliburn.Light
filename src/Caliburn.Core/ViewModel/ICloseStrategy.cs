@@ -8,7 +8,7 @@ namespace Caliburn.Light
     /// Used to gather the results from multiple child elements which may or may not prevent closing.
     /// </summary>
     /// <typeparam name="T">The type of child element.</typeparam>
-    public interface ICloseStrategy<T>
+    public interface ICloseStrategy<T> where T : class
     {
         /// <summary>
         /// Executes the strategy.

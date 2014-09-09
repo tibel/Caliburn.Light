@@ -6,7 +6,7 @@ namespace Caliburn.Light
     /// <summary>
     /// A Caliburn.Light CoTask that lets you show messages.
     /// </summary>
-    public class MessageBoxCoTask : CoTask, ICoTask<MessageBoxResult>
+    public sealed class MessageBoxCoTask : CoTask, ICoTask<MessageBoxResult>
     {
         private readonly string _message;
         private string _caption = string.Empty;
@@ -29,7 +29,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the message
         /// </summary>
-        public MessageBoxResult Result { get; protected set; }
+        public MessageBoxResult Result { get; private set; }
 
         /// <summary>
         /// Sets the caption.
