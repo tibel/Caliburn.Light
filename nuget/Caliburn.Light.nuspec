@@ -12,7 +12,8 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-Bugfixes
+- use ObserveException()
+- add UIContext.Run() overloads similar to Task.Run()
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags>Caliburn MVVM WPF WP8 Win8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
