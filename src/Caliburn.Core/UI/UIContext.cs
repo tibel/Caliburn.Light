@@ -51,6 +51,17 @@ namespace Caliburn.Light
         }
 
         /// <summary>
+        /// Verifies that the calling thread has access to the UI context.
+        /// </summary>
+        public static void VerifyAccess()
+        {
+            if (!CheckAccess())
+            {
+                throw new InvalidOperationException("The calling thread does not have access to the UI context.");
+            }
+        }
+
+        /// <summary>
         /// The <see cref="TaskScheduler"/> associated with the UI context.
         /// </summary>
         public static TaskScheduler TaskScheduler
