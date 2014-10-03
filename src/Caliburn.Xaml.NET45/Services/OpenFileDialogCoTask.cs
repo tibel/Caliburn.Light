@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Win32;
 
 namespace Caliburn.Light
 {
@@ -46,11 +47,20 @@ namespace Caliburn.Light
             openFileDialog.Filter = _fileTypeFilter;
             openFileDialog.Title = _title;
 
-            if (!string.IsNullOrEmpty(_initialDirectory) && Directory.Exists(_initialDirectory))
-                openFileDialog.InitialDirectory = _initialDirectory;
-
             var activeWindow = CoTaskHelper.GetActiveWindow(context);
-            var fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
+
+            bool fileSelected;
+            try
+            {
+                openFileDialog.InitialDirectory = _initialDirectory;
+                fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
+            }
+            catch (FileNotFoundException)
+            {
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
+            }
+
             OnCompleted(openFileDialog, new CoTaskCompletedEventArgs(null, !fileSelected));
         }
 

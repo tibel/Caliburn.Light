@@ -1,5 +1,6 @@
-﻿using System.IO;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 
 namespace Caliburn.Light
 {
@@ -48,11 +49,19 @@ namespace Caliburn.Light
             saveFileDialog.CreatePrompt = _promptForCreate;
             saveFileDialog.OverwritePrompt = _promptForOverwrite;
 
-            if (!string.IsNullOrEmpty(_initialDirectory) && Directory.Exists(_initialDirectory))
-                saveFileDialog.InitialDirectory = _initialDirectory;
-
             var activeWindow = CoTaskHelper.GetActiveWindow(context);
-            var fileSelected = saveFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
+
+            bool fileSelected;
+            try
+            {
+                saveFileDialog.InitialDirectory = _initialDirectory;
+                fileSelected = saveFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
+            }
+            catch (FileNotFoundException)
+            {
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                fileSelected = saveFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
+            }
 
             if (fileSelected)
                 Result = new FileInfo(saveFileDialog.FileName);
