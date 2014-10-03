@@ -51,8 +51,9 @@ namespace Caliburn.Light
         /// <param name="viewModel">The settings view model.</param>
         /// <param name="commandLabel">The settings command label.</param>
         /// <param name="viewSettings">The optional dialog settings.</param>
+        /// <param name="independent">Whether to show the settings flyout as an independent one.</param>
         public void ShowSettingsFlyout(object viewModel, string commandLabel,
-            IDictionary<string, object> viewSettings = null)
+            IDictionary<string, object> viewSettings = null, bool independent = false)
         {
             var view = ViewLocator.LocateForModel(viewModel, null, null);
             ViewModelBinder.Bind(viewModel, view, null);
@@ -89,7 +90,10 @@ namespace Caliburn.Light
             if (activator != null)
                 activator.Activate();
 
-            settingsFlyout.Show();
+            if (independent)
+                settingsFlyout.ShowIndependent();
+            else
+                settingsFlyout.Show();
         }
     }
 }
