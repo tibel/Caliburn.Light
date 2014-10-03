@@ -9,7 +9,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Regular expression pattern for valid name
         /// </summary>
-        public const string NameRegEx = @"[A-Za-z_]\w*";
+        public const string NameRegEx = @"[\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}_][\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}_]*";
 
         /// <summary>
         /// Regular expression pattern for subnamespace (including dot)
