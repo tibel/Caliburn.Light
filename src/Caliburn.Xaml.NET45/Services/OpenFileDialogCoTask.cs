@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,9 +54,9 @@ namespace Caliburn.Light
                 openFileDialog.InitialDirectory = _initialDirectory;
                 fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
             }
-            catch (FileNotFoundException)
+            catch
             {
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                openFileDialog.InitialDirectory = null;
                 fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
             }
 
