@@ -39,23 +39,25 @@ namespace Caliburn.Light
         public override void BeginExecute(CoroutineExecutionContext context)
         {
             var openFileDialog = new OpenFileDialog();
+            openFileDialog.RestoreDirectory = true;
             openFileDialog.CheckFileExists = true;
             openFileDialog.CheckPathExists = true;
 
             openFileDialog.Multiselect = _multiselect;
             openFileDialog.Filter = _fileTypeFilter;
             openFileDialog.Title = _title;
+            openFileDialog.InitialDirectory = _initialDirectory;
 
             var activeWindow = CoTaskHelper.GetActiveWindow(context);
 
             bool fileSelected;
             try
             {
-                openFileDialog.InitialDirectory = _initialDirectory;
                 fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
             }
             catch
             {
+                if (string.IsNullOrEmpty(openFileDialog.InitialDirectory)) throw;
                 openFileDialog.InitialDirectory = null;
                 fileSelected = openFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
             }

@@ -37,6 +37,7 @@ namespace Caliburn.Light
         public override void BeginExecute(CoroutineExecutionContext context)
         {
             var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.RestoreDirectory = true;
             saveFileDialog.AddExtension = true;
             saveFileDialog.CheckPathExists = true;
 
@@ -47,17 +48,18 @@ namespace Caliburn.Light
             saveFileDialog.FileName = _fileName;
             saveFileDialog.CreatePrompt = _promptForCreate;
             saveFileDialog.OverwritePrompt = _promptForOverwrite;
+            saveFileDialog.InitialDirectory = _initialDirectory;
 
             var activeWindow = CoTaskHelper.GetActiveWindow(context);
 
             bool fileSelected;
             try
             {
-                saveFileDialog.InitialDirectory = _initialDirectory;
                 fileSelected = saveFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
             }
             catch
             {
+                if (string.IsNullOrEmpty(saveFileDialog.InitialDirectory)) throw;
                 saveFileDialog.InitialDirectory = null;
                 fileSelected = saveFileDialog.ShowDialog(activeWindow).GetValueOrDefault();
             }
