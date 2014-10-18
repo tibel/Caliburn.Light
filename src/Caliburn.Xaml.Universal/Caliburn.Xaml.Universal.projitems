@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\EventTrigger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\ExecutionContextResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IAttachedObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\Parameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\ParameterCollection.cs" />

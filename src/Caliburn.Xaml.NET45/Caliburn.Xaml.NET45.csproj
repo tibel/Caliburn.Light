@@ -63,6 +63,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Behaviors\ExecutionContextResolver.cs" />
     <Compile Include="Behaviors\Parameter.cs" />
     <Compile Include="Behaviors\ParameterCollection.cs" />
     <Compile Include="BootstrapperBase.cs" />
