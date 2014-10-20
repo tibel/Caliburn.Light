@@ -124,7 +124,7 @@ namespace Caliburn.Light
 
             if (service == null)
             {
-                throw new InvalidOperationException("Could not locate any instances.");
+                throw new InvalidOperationException(string.Format("Could not locate an instance for key '{0}'.", key));
             }
 
             var serviceType = service.GetTypeInfo();
@@ -152,7 +152,7 @@ namespace Caliburn.Light
                 return array;
             }
 
-            throw new InvalidOperationException("Could not locate any instances.");
+            throw new InvalidOperationException(string.Format("Could not locate an instance for type '{0}' and key {1}.", serviceType, key));
         }
 
         /// <summary>
