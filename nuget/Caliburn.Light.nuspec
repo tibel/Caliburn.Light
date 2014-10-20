@@ -14,6 +14,9 @@
     <releaseNotes>
 - Deal with unicode in names
 - Added an independent flag to ShowSettingsFlyout (win81)
+- Added UIContext.VerifyAccess()
+- Changed handling of InitialDirectory in FileOpen and FileSave CoTasks (net45)
+- Added ExecutionContextResolver
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014</copyright>
     <tags>Caliburn MVVM WPF WP8 Win8 WinRT Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
