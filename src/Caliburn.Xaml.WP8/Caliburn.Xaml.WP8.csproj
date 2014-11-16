@@ -60,6 +60,7 @@
     <Compile Include="Services\PhoneApplicationServiceAdapter.cs" />
     <Compile Include="Services\UriBuilder.cs" />
     <Compile Include="Services\WindowManager.cs" />
+    <Compile Include="UpdateSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Caliburn.Light.snk">
