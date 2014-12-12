@@ -148,6 +148,18 @@ namespace Caliburn.Light
         }
 
         /// <summary>
+        /// Overrides <see cref="CoTaskCompletedEventArgs.WasCancelled"/> of the decorated <paramref name="coTask"/> instance.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="coTask">The CoTask to decorate.</param>
+        /// <param name="cancelResult">The canceled result value.</param>
+        /// <returns></returns>
+        public static ICoTask<TResult> OverrideCancel<TResult>(this ICoTask<TResult> coTask, TResult cancelResult = default(TResult))
+        {
+            return new OverrideCancelCoTaskDecorator<TResult>(coTask, cancelResult);
+        }
+
+        /// <summary>
         /// Rescues <typeparamref name="TException"/> from the decorated <paramref name="coTask"/> by executing a <paramref name="rescue"/> coroutine.
         /// </summary>
         /// <typeparam name = "TException">The type of the exception we want to perform the rescue on.</typeparam>
