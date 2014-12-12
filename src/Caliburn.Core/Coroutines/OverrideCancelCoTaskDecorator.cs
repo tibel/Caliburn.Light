@@ -60,7 +60,7 @@ namespace Caliburn.Light
         protected override void OnInnerResultCompleted(CoroutineExecutionContext context, ICoTask innerCoTask,
             CoTaskCompletedEventArgs args)
         {
-            if (args.Error != null)
+            if (args.Error == null)
                 Result = args.WasCancelled ? _cancelResult : ((ICoTask<TResult>)innerCoTask).Result;
 
             OnCompleted(new CoTaskCompletedEventArgs(args.Error, false));
