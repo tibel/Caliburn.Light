@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light.Annotations</id>
     <title>Caliburn.Light Annotations</title>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <authors>Thomas Ibel</authors>
     <description>External Annotations for Caliburn.Light</description>
     <language>en-US</language>
@@ -17,12 +17,12 @@
 
     <dependencies>
       <group>
-        <dependency id="ReSharper" version="8.0" />
+        <dependency id="Wave" version="[1.0]" />
       </group>
     </dependencies>
   </metadata>
 
   <files>
-    <file src="annotations\**\*.*" target="ReSharper\vAny\annotations\" />
+    <file src="annotations\**\*.*" target="DotFiles\Extensions\Caliburn.Light.Annotations\annotations\" />
   </files>
 </package>
