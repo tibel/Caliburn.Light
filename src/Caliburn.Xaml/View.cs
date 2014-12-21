@@ -75,11 +75,10 @@ namespace Caliburn.Light
             else
             {
                 var context = GetContext(targetLocation);
-
                 var view = ViewLocator.LocateForModel(args.NewValue, targetLocation, context);
-                SetContentProperty(targetLocation, view);
-
                 ViewModelBinder.Bind(args.NewValue, view, context);
+
+                SetContentProperty(targetLocation, view);
             }
         }
 
@@ -91,9 +90,9 @@ namespace Caliburn.Light
             if (model == null) return;
 
             var view = ViewLocator.LocateForModel(model, targetLocation, e.NewValue);
-            SetContentProperty(targetLocation, view);
-
             ViewModelBinder.Bind(model, view, e.NewValue);
+
+            SetContentProperty(targetLocation, view);
         }
 
         private static void SetContentProperty(object targetLocation, object view)
