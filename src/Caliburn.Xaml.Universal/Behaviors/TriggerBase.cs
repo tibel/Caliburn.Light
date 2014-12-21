@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xaml.Interactivity;
+using System;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
@@ -35,6 +36,9 @@ namespace Caliburn.Light
         {
             if (associatedObject == _associatedObject || DesignMode.DesignModeEnabled)
                 return;
+
+            if (_associatedObject != null)
+                throw new InvalidOperationException("Cannot attach Trigger multiple times.");
 
             _associatedObject = associatedObject;
             Actions.Attach(associatedObject);
