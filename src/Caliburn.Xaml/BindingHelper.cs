@@ -1,4 +1,7 @@
-﻿#if NETFX_CORE
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+#if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 #else
@@ -66,6 +69,37 @@ namespace Caliburn.Light
             if (bindingExpressionBase == null) return;
             bindingExpressionBase.UpdateTarget();
 #endif
+        }
+
+        private static readonly Dictionary<Type, List<DependencyProperty>> DependencyPropertyCache =
+            new Dictionary<Type, List<DependencyProperty>>();
+
+        /// <summary>
+        /// Gets the dependency properties from <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to inspect.</param>
+        /// <returns>The dependency properties.</returns>
+        public static IEnumerable<DependencyProperty> GetDependencyProperties(Type type)
+        {
+            List<DependencyProperty> properties;
+            if (!DependencyPropertyCache.TryGetValue(type, out properties))
+            {
+                properties = new List<DependencyProperty>();
+                for (; type != null && type != typeof (DependencyObject); type = type.GetTypeInfo().BaseType)
+                {
+                    foreach (var fieldInfo in type.GetRuntimeFields())
+                    {
+                        if (fieldInfo.IsPublic && fieldInfo.FieldType == typeof (DependencyProperty))
+                        {
+                            var dependencyProperty = fieldInfo.GetValue(null) as DependencyProperty;
+                            if (dependencyProperty != null)
+                                properties.Add(dependencyProperty);
+                        }
+                    }
+                }
+                DependencyPropertyCache[type] = properties;
+            }
+            return properties;
         }
     }
 }
