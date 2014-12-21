@@ -9,6 +9,7 @@
     <Import_RootNamespace>Caliburn.Light</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\DataTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\EventTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\ExecutionContextResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IAttachedObject.cs" />
@@ -17,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerActionCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TriggerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\TypeConverterHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CaliburnApplication.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FrameAdapter.cs" />
