@@ -35,7 +35,7 @@ namespace Caliburn.Light
             if (deactivatable != null)
             {
                 view.Closed += OnViewClosed;
-                deactivatable.Deactivated += OnDeactivated;
+                deactivatable.Deactivated += OnModelDeactivated;
             }
 
             var guard = model as ICloseGuard;
@@ -59,6 +59,20 @@ namespace Caliburn.Light
             get { return _view; }
         }
 
+        private void OnViewClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+                return;
+
+            if (_actuallyClosing)
+            {
+                _actuallyClosing = false;
+                return;
+            }
+
+            e.Cancel = !EvaluateCanClose();
+        }
+
         private void OnViewClosed(object sender, EventArgs e)
         {
             _view.Closed -= OnViewClosed;
@@ -72,12 +86,12 @@ namespace Caliburn.Light
             _deactivatingFromView = false;
         }
 
-        private void OnDeactivated(object sender, DeactivationEventArgs e)
+        private void OnModelDeactivated(object sender, DeactivationEventArgs e)
         {
             if (!e.WasClosed)
                 return;
 
-            ((IDeactivate)_model).Deactivated -= OnDeactivated;
+            ((IDeactivate)_model).Deactivated -= OnModelDeactivated;
 
             if (_deactivatingFromView)
                 return;
@@ -87,20 +101,6 @@ namespace Caliburn.Light
             _view.Close();
             _actuallyClosing = false;
             _deactivateFromViewModel = false;
-        }
-
-        private void OnViewClosing(object sender, CancelEventArgs e)
-        {
-            if (e.Cancel)
-                return;
-
-            if (_actuallyClosing)
-            {
-                _actuallyClosing = false;
-                return;
-            }
-
-            e.Cancel = !EvaluateCanClose();
         }
 
         private bool EvaluateCanClose()
@@ -116,8 +116,9 @@ namespace Caliburn.Light
         private async void CloseViewAsync(Task<bool> task)
         {
             var canClose = await task;
+            if (!canClose)
+                return;
 
-            if (!canClose) return;
             _actuallyClosing = true;
             _view.Close();
             _actuallyClosing = false;
