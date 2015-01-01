@@ -103,8 +103,6 @@ namespace Caliburn.Light
             {
                 activator.Activate();
             }
-
-            GC.Collect();
         }
 
         /// <summary>

@@ -72,7 +72,6 @@ namespace Caliburn.Light
             }
 
             var deactivator = view.DataContext as IDeactivate;
-
             if (deactivator != null)
             {
                 deactivator.Deactivate(CanCloseOnNavigating(sender, e));
@@ -92,7 +91,6 @@ namespace Caliburn.Light
             _currentParameter = e.Parameter;
 
             var view = e.Content as Page;
-
             if (view == null)
             {
                 throw new ArgumentException("View '" + e.Content.GetType().FullName +
@@ -122,8 +120,6 @@ namespace Caliburn.Light
             {
                 activator.Activate();
             }
-
-            GC.Collect(); // Why?
         }
 
         /// <summary>
