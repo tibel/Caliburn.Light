@@ -64,20 +64,21 @@ namespace Caliburn.Light
             d.SetValue(ContextProperty, value);
         }
 
-        private static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs args)
+        private static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
         {
-            if (args.OldValue == args.NewValue) return;
+            if (e.OldValue == e.NewValue) return;
 
-            if (args.NewValue == null)
+            if (e.NewValue == null)
             {
                 SetContentProperty(targetLocation, null);
             }
             else
             {
                 var context = GetContext(targetLocation);
-                var view = ViewLocator.LocateForModel(args.NewValue, targetLocation, context);
-                ViewModelBinder.Bind(args.NewValue, view, context);
+                var view = ViewLocator.LocateForModel(e.NewValue, targetLocation, context);
 
+                RemoveFromParent(view);
+                ViewModelBinder.Bind(e.NewValue, view, context);
                 SetContentProperty(targetLocation, view);
             }
         }
@@ -90,23 +91,22 @@ namespace Caliburn.Light
             if (model == null) return;
 
             var view = ViewLocator.LocateForModel(model, targetLocation, e.NewValue);
-            ViewModelBinder.Bind(model, view, e.NewValue);
 
+            RemoveFromParent(view);
+            ViewModelBinder.Bind(model, view, e.NewValue);
             SetContentProperty(targetLocation, view);
         }
 
-        private static void SetContentProperty(object targetLocation, object view)
+        private static void RemoveFromParent(object view)
         {
             var fe = view as FrameworkElement;
             if (fe != null && fe.Parent != null)
             {
-                SetContentPropertyCore(fe.Parent, null);
+                SetContentProperty(fe.Parent, null);
             }
-
-            SetContentPropertyCore(targetLocation, view);
         }
 
-        private static void SetContentPropertyCore(object targetLocation, object view)
+        private static void SetContentProperty(object targetLocation, object view)
         {
             try
             {
