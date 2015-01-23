@@ -1,5 +1,4 @@
-﻿using System;
-#if NETFX_CORE
+﻿#if NETFX_CORE
 using Windows.UI.Xaml;
 #else
 using System.Windows;
@@ -108,15 +107,8 @@ namespace Caliburn.Light
 
         private static void SetContentProperty(object targetLocation, object view)
         {
-            try
-            {
-                var contentProperty = ViewHelper.FindContentProperty(targetLocation);
-                contentProperty.SetValue(targetLocation, view);
-            }
-            catch (Exception e)
-            {
-                LogManager.GetLogger(typeof(View)).Error("Failed to set Content property. {0}", e);
-            }
+            var contentProperty = ViewHelper.FindContentProperty(targetLocation);
+            contentProperty.SetValue(targetLocation, view);
         }
     }
 }
