@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -19,10 +20,9 @@ namespace Caliburn.Light
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
         /// </summary>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="handler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
-        void Subscribe<TMessage, TResult>(Func<TMessage, TResult> handler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        void SubscribeAsync<TMessage>(Func<TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread);
 
         /// <summary>
         /// Unsubscribes the specified handler.
@@ -35,9 +35,8 @@ namespace Caliburn.Light
         /// Unsubscribes the specified handler.
         /// </summary>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="handler">The handler to unsubscribe.</param>
-        void Unsubscribe<TMessage, TResult>(Func<TMessage, TResult> handler);
+        void UnsubscribeAsync<TMessage>(Func<TMessage, Task> handler);
 
         /// <summary>
         /// Publishes a message.

@@ -1,4 +1,5 @@
-﻿using Weakly;
+﻿using Weakly.Builders;
+using Weakly;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -161,7 +162,7 @@ namespace Caliburn.Light
             if (property == null) return;
 
             _guard = property.GetMethod;
-            _propertyChangedRegistration = WeakEventHandler.Register<PropertyChangedEventArgs>(inpc, "PropertyChanged", OnPropertyChanged);
+            _propertyChangedRegistration = inpc.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(s, e));
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -198,7 +199,7 @@ namespace Caliburn.Light
                     Target = Target,
                 };
 
-                var guardFunction = DynamicDelegate.From(_guard);
+                var guardFunction = Builder.DynamicDelegate.BuildDynamic(_guard);
                 var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
                 canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(context, providedValues, _guard.GetParameters()));
             }
@@ -234,20 +235,7 @@ namespace Caliburn.Light
 
             var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
             var parameterValues = ParameterBinder.DetermineParameters(context, providedValues, _method.GetParameters());
-            var returnValue = DynamicDelegate.From(_method)(Target, parameterValues);
-            if (returnValue == null) return;
-
-            var enumerable = returnValue as IEnumerable<ICoTask>;
-            if (enumerable != null)
-                returnValue = enumerable.GetEnumerator();
-
-            var enumerator = returnValue as IEnumerator<ICoTask>;
-            if (enumerator != null)
-                returnValue = enumerator.AsCoTask();
-
-            var coTask = returnValue as ICoTask;
-            if (coTask != null)
-                returnValue = coTask.ExecuteAsync(context);
+            var returnValue = Builder.DynamicDelegate.BuildDynamic(_method)(Target, parameterValues);
 
             var task = returnValue as Task;
             if (task != null)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Weakly;
+using Weakly.Builders;
 
 namespace Caliburn.Light
 {
@@ -29,10 +30,9 @@ namespace Caliburn.Light
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
         /// </summary>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="handler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
-        public void Subscribe<TMessage, TResult>(Func<TMessage, TResult> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        public void SubscribeAsync<TMessage>(Func<TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
         {
             SubscribeInternal<TMessage>(handler, threadOption);
         }
@@ -65,9 +65,8 @@ namespace Caliburn.Light
         /// Unsubscribes the specified handler.
         /// </summary>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="handler">The handler to unsubscribe.</param>
-        public void Unsubscribe<TMessage, TResult>(Func<TMessage, TResult> handler)
+        public void UnsubscribeAsync<TMessage>(Func<TMessage, Task> handler)
         {
             UnsubscribeInternal<TMessage>(handler);
         }
@@ -166,28 +165,7 @@ namespace Caliburn.Light
                     if (target == null) return;
                 }
 
-                var returnValue = DynamicDelegate.From(_method).Invoke(target, new[] { message });
-                if (returnValue == null) return;
-
-                var enumerable = returnValue as IEnumerable<ICoTask>;
-                if (enumerable != null)
-                    returnValue = enumerable.GetEnumerator();
-
-                var enumerator = returnValue as IEnumerator<ICoTask>;
-                if (enumerator != null)
-                    returnValue = enumerator.AsCoTask();
-
-                var coTask = returnValue as ICoTask;
-                if (coTask != null)
-                {
-                    var context = new CoroutineExecutionContext
-                    {
-                        Source = this,
-                        Target = target,
-                    };
-
-                    returnValue = coTask.ExecuteAsync(context);
-                }
+                var returnValue = Builder.DynamicDelegate.BuildDynamic(_method).Invoke(target, new[] { message });
 
                 var task = returnValue as Task;
                 if (task != null)

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Weakly;
+using Weakly.Builders;
 
 namespace Caliburn.Light
 {
@@ -26,7 +26,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="action">The action.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand FromAction(Action action)
+        public static DelegateCommand Create(Action action)
         {
             return CreateInternal(action);
         }
@@ -37,7 +37,7 @@ namespace Caliburn.Light
         /// <typeparam name="T">The type of the parameter.</typeparam>
         /// <param name="action">The action.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand FromAction<T>(Action<T> action)
+        public static DelegateCommand Create<T>(Action<T> action)
         {
             return CreateInternal(action);
         }
@@ -45,10 +45,9 @@ namespace Caliburn.Light
         /// <summary>
         /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="function"/>.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="function">The function.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand FromFunc<TResult>(Func<TResult> function)
+        public static DelegateCommand CreateAsync(Func<Task> function)
         {
             return CreateInternal(function);
         }
@@ -57,10 +56,9 @@ namespace Caliburn.Light
         /// Creates a new <see cref="DelegateCommand"/> from the specified <paramref name="function"/>.
         /// </summary>
         /// <typeparam name="T">The type of the parameter.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="function">The function.</param>
         /// <returns>The new <see cref="DelegateCommand"/>.</returns>
-        public static DelegateCommand FromFunc<T, TResult>(Func<T, TResult> function)
+        public static DelegateCommand CreateAsync<T>(Func<T, Task> function)
         {
             return CreateInternal(function);
         }
@@ -92,7 +90,7 @@ namespace Caliburn.Light
             if (property == null) return;
 
             _guard = property.GetMethod;
-            _propertyChangedRegistration = WeakEventHandler.Register<PropertyChangedEventArgs>(inpc, "PropertyChanged", OnPropertyChanged);
+            _propertyChangedRegistration = inpc.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(s, e));
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -109,26 +107,13 @@ namespace Caliburn.Light
         /// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to null.</param>
         public void Execute(object parameter)
         {
-            var function = DynamicDelegate.From(_method);
+            var function = Builder.DynamicDelegate.BuildDynamic(_method);
 
             var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
             context.Target = _target;
 
             var finalValues = ParameterBinder.DetermineParameters(context, new[] { parameter }, _method.GetParameters());
             var returnValue = function(_target, finalValues);
-            if (returnValue == null) return;
-
-            var enumerable = returnValue as IEnumerable<ICoTask>;
-            if (enumerable != null)
-                returnValue = enumerable.GetEnumerator();
-
-            var enumerator = returnValue as IEnumerator<ICoTask>;
-            if (enumerator != null)
-                returnValue = enumerator.AsCoTask();
-
-            var coTask = returnValue as ICoTask;
-            if (coTask != null)
-                returnValue = coTask.ExecuteAsync(context);
 
             var task = returnValue as Task;
             if (task != null)
@@ -144,7 +129,7 @@ namespace Caliburn.Light
         {
             if (_guard == null) return true;
 
-            var function = DynamicDelegate.From(_guard);
+            var function = Builder.DynamicDelegate.BuildDynamic(_guard);
 
             var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
             context.Target = _target;

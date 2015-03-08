@@ -158,7 +158,7 @@ namespace Caliburn.Light
         {
             ResetCommand();
             if (Command == null) return;
-            _canExecuteChangedRegistration = WeakEventHandler.Register<EventArgs>(Command, "CanExecuteChanged", OnCommandCanExecuteChanged);
+            _canExecuteChangedRegistration = Command.RegisterCanExecuteChangedWeak(this, (t, s, e) => t.OnCommandCanExecuteChanged(s, e));
         }
 
         private void OnCommandCanExecuteChanged(object sender, EventArgs e)
