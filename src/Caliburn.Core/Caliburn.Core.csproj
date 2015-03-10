@@ -53,6 +53,9 @@
     </Compile>
     <Compile Include="Action\ISpecialValue.cs" />
     <Compile Include="Action\ParameterBinder.cs" />
+    <Compile Include="EventAggregator\EventAggregator.cs" />
+    <Compile Include="EventAggregator\IEventAggregatorHandler.cs" />
+    <Compile Include="EventAggregator\EventAggregatorHandler.cs" />
     <Compile Include="Validation\IValidationRule.cs" />
     <Compile Include="ViewModel\BindableCollection.cs" />
     <Compile Include="ViewModel\BindableObject.cs" />
@@ -96,7 +99,6 @@
     <Compile Include="Coroutines\SequentialCoTask.cs" />
     <Compile Include="Coroutines\SimpleCoTask.cs" />
     <Compile Include="Coroutines\TaskDecoratorCoTask.cs" />
-    <Compile Include="EventAggregator\EventAggregator.cs" />
     <Compile Include="EventAggregator\IEventAggregator.cs" />
     <Compile Include="EventAggregator\ThreadOption.cs" />
     <Compile Include="IoC\IoC.cs" />

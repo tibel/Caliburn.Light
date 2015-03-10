@@ -12,31 +12,49 @@ namespace Caliburn.Light
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
         /// </summary>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
-        void Subscribe<TMessage>(Action<TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
+        IEventAggregatorHandler Subscribe<TMessage>(Action<TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
+
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
+        /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="target">The message handler target.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+            where TTarget : class;
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
         /// </summary>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
-        void SubscribeAsync<TMessage>(Func<TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
+        IEventAggregatorHandler SubscribeAsync<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
+
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
+        /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="target">The message handler target.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
+        IEventAggregatorHandler SubscribeAsync<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+            where TTarget : class;
 
         /// <summary>
         /// Unsubscribes the specified handler.
         /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="handler">The handler to unsubscribe.</param>
-        void Unsubscribe<TMessage>(Action<TMessage> handler);
-
-        /// <summary>
-        /// Unsubscribes the specified handler.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The handler to unsubscribe.</param>
-        void UnsubscribeAsync<TMessage>(Func<TMessage, Task> handler);
+        void Unsubscribe(IEventAggregatorHandler handler);
 
         /// <summary>
         /// Publishes a message.

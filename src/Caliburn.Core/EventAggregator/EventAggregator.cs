@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Weakly;
-using Weakly.Builders;
 
 namespace Caliburn.Light
 {
@@ -13,85 +12,88 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private readonly List<Handler> _handlers = new List<Handler>();
+        private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
-        /// <summary>
-        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
-        public void Subscribe<TMessage>(Action<TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        private static void VerifyTarget(object target)
         {
-            SubscribeInternal<TMessage>(handler, threadOption);
+            if (target == null)
+                throw new ArgumentNullException("target");
         }
 
-        /// <summary>
-        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
-        public void SubscribeAsync<TMessage>(Func<TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        private static void VerifyDelegate(Delegate weakHandler)
         {
-            SubscribeInternal<TMessage>(handler, threadOption);
+            if (weakHandler == null)
+                throw new ArgumentNullException("weakHandler");
+            if (weakHandler.GetMethodInfo().IsClosure())
+                throw new ArgumentException("A closure cannot be used to subscribe.", "weakHandler");
         }
 
-        private void SubscribeInternal<TMessage>(Delegate handler, ThreadOption threadOption)
+        private void AddHandler(IEventAggregatorHandler handler)
         {
-            if (handler == null)
-                throw new ArgumentNullException("handler");
-            if (handler.Target != null && handler.GetMethodInfo().IsClosure())
-                throw new ArgumentException("A closure cannot be used to subscribe.", "handler");
-
             lock (_handlers)
             {
                 _handlers.RemoveAll(h => h.IsDead);
-                _handlers.Add(new Handler(typeof(TMessage), handler.Target, handler.GetMethodInfo(), threadOption));
+                _handlers.Add(handler);
             }
         }
 
-        /// <summary>
-        /// Unsubscribes the specified handler.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The handler to unsubscribe.</param>
-        public void Unsubscribe<TMessage>(Action<TMessage> handler)
+        public IEventAggregatorHandler Subscribe<TMessage>(Action<TMessage> weakHandler, ThreadOption threadOption)
         {
-            UnsubscribeInternal<TMessage>(handler);
+            VerifyDelegate(weakHandler);
+
+            var handler = new EventAggregatorHandler<TMessage>(weakHandler, threadOption);
+            AddHandler(handler);
+            return handler;
         }
 
-        /// <summary>
-        /// Unsubscribes the specified handler.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="handler">The handler to unsubscribe.</param>
-        public void UnsubscribeAsync<TMessage>(Func<TMessage, Task> handler)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> weakHandler, ThreadOption threadOption)
+            where TTarget : class
         {
-            UnsubscribeInternal<TMessage>(handler);
+            VerifyTarget(target);
+            VerifyDelegate(weakHandler);
+
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, weakHandler, threadOption);
+            AddHandler(handler);
+            return handler;
         }
 
-        private void UnsubscribeInternal<TMessage>(Delegate handler)
+        public IEventAggregatorHandler SubscribeAsync<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption)
+        {
+            VerifyDelegate(weakHandler);
+
+            var handler = new EventAggregatorHandler<TMessage>(m => weakHandler(m).ObserveException(), threadOption);
+            AddHandler(handler);
+            return handler;
+        }
+
+        public IEventAggregatorHandler SubscribeAsync<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
+            where TTarget : class
+        {
+            VerifyTarget(target);
+            VerifyDelegate(weakHandler);
+
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, (t, m) => weakHandler(t, m).ObserveException(), threadOption);
+            AddHandler(handler);
+            return handler;
+        }
+
+        public void Unsubscribe(IEventAggregatorHandler handler)
         {
             if (handler == null)
                 throw new ArgumentNullException("handler");
 
             lock (_handlers)
             {
-                _handlers.RemoveAll(h => h.IsDead || h.Equals(typeof(TMessage), handler));
+                _handlers.RemoveAll(h => h.IsDead || ReferenceEquals(h, handler));
             }
         }
 
-        /// <summary>
-        /// Publishes a message.
-        /// </summary>
-        /// <param name="message">The message instance.</param>
         public void Publish(object message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            List<Handler> selectedHandlers;
+            List<IEventAggregatorHandler> selectedHandlers;
             lock (_handlers)
             {
                 _handlers.RemoveAll(h => h.IsDead);
@@ -105,72 +107,18 @@ namespace Caliburn.Light
             selectedHandlers
                 .Where(h => h.ThreadOption == ThreadOption.PublisherThread ||
                             isUIThread && h.ThreadOption == ThreadOption.UIThread)
-                .ForEach(h => h.Invoke(message));
+                .ForEach(h => h.Handle(message));
 
             if (!isUIThread)
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    UIContext.Run(() => uiThreadHandlers.ForEach(h => h.Invoke(message))).ObserveException();
+                    UIContext.Run(() => uiThreadHandlers.ForEach(h => h.Handle(message))).ObserveException();
             }
 
             var backgroundHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundHandlers.Count > 0)
-                Task.Run(() => backgroundHandlers.ForEach(h => h.Invoke(message))).ObserveException();
-        }
-
-        private sealed class Handler
-        {
-            private readonly WeakReference _reference;
-            private readonly MethodInfo _method;
-            private readonly Type _messageType;
-
-            public readonly ThreadOption ThreadOption;
-
-            public Handler(Type messageType, object target, MethodInfo method, ThreadOption threadOption)
-            {
-                _messageType = messageType;
-                _method = method;
-                ThreadOption = threadOption;
-
-                if (target != null)
-                {
-                    _reference = new WeakReference(target);
-                }
-            }
-
-            public bool Equals(Type messageType, Delegate messageHandler)
-            {
-                return _messageType == messageType &&
-                       ((_reference != null) ? _reference.Target : null) == messageHandler.Target &&
-                       _method == messageHandler.GetMethodInfo();
-            }
-
-            public bool IsDead
-            {
-                get { return _reference != null && !_reference.IsAlive; }
-            }
-
-            public bool CanHandle(Type messageType)
-            {
-                return _messageType.GetTypeInfo().IsAssignableFrom(messageType.GetTypeInfo());
-            }
-
-            public void Invoke(object message)
-            {
-                object target = null;
-                if (_reference != null)
-                {
-                    target = _reference.Target;
-                    if (target == null) return;
-                }
-
-                var returnValue = Builder.DynamicDelegate.BuildDynamic(_method).Invoke(target, new[] { message });
-
-                var task = returnValue as Task;
-                if (task != null)
-                    task.ObserveException();
-            }
+                Task.Run(() => backgroundHandlers.ForEach(h => h.Handle(message))).ObserveException();
         }
     }
 }
