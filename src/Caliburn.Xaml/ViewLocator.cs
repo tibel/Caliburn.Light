@@ -438,16 +438,21 @@ namespace Caliburn.Light
         /// </summary>
         public static Func<Type, Type, string> DeterminePackUriFromType = (viewModelType, viewType) =>
         {
-            var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
-            viewAssemblyName = viewAssemblyName.Remove(viewAssemblyName.IndexOf(','));
+            var viewAssemblyName = viewType.GetTypeInfo().Assembly.GetName().Name;
+            var appAssemblyName = Application.Current.GetType().GetTypeInfo().Assembly.GetName().Name;
 
-            var appAssemblyName = Application.Current.GetType().GetTypeInfo().Assembly.FullName;
-            appAssemblyName = appAssemblyName.Remove(appAssemblyName.IndexOf(','));
+            var viewTypeName = viewType.FullName;
+            if (viewTypeName.StartsWith(viewAssemblyName))
+                viewTypeName = viewTypeName.Substring(viewAssemblyName.Length);
 
-            var uri = viewType.FullName.Replace(viewAssemblyName, string.Empty).Replace(".", "/") + ".xaml";
-            if (appAssemblyName == viewAssemblyName) return uri;
+            var uri = viewTypeName.Replace('.', '/') + ".xaml";
 
-            return "/" + viewAssemblyName + ";component" + uri;
+            if (!appAssemblyName.Equals(viewAssemblyName))
+            {
+                return "/" + viewAssemblyName + ";component" + uri;
+            }
+
+            return uri;
         };
 
         /// <summary>
