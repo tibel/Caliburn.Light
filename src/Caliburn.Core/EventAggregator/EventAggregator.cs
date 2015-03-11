@@ -37,6 +37,13 @@ namespace Caliburn.Light
             }
         }
 
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
         public IEventAggregatorHandler Subscribe<TMessage>(Action<TMessage> weakHandler, ThreadOption threadOption)
         {
             VerifyDelegate(weakHandler);
@@ -46,6 +53,15 @@ namespace Caliburn.Light
             return handler;
         }
 
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
+        /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="target">The message handler target.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
         public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> weakHandler, ThreadOption threadOption)
             where TTarget : class
         {
@@ -57,6 +73,13 @@ namespace Caliburn.Light
             return handler;
         }
 
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
         public IEventAggregatorHandler SubscribeAsync<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption)
         {
             VerifyDelegate(weakHandler);
@@ -66,6 +89,15 @@ namespace Caliburn.Light
             return handler;
         }
 
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
+        /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="target">The message handler target.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
         public IEventAggregatorHandler SubscribeAsync<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
             where TTarget : class
         {
@@ -77,6 +109,10 @@ namespace Caliburn.Light
             return handler;
         }
 
+        /// <summary>
+        /// Unsubscribes the specified handler.
+        /// </summary>
+        /// <param name="handler">The handler to unsubscribe.</param>
         public void Unsubscribe(IEventAggregatorHandler handler)
         {
             if (handler == null)
@@ -88,6 +124,10 @@ namespace Caliburn.Light
             }
         }
 
+        /// <summary>
+        /// Publishes a message.
+        /// </summary>
+        /// <param name="message">The message instance.</param>
         public void Publish(object message)
         {
             if (message == null)
