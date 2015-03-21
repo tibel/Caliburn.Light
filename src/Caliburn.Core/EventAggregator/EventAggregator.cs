@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Weakly;
 
@@ -12,6 +11,7 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
+        private readonly NamedObject _staticTarget = new NamedObject("StaticTarget");
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
         private static void VerifyTarget(object target)
@@ -24,8 +24,8 @@ namespace Caliburn.Light
         {
             if (weakHandler == null)
                 throw new ArgumentNullException("weakHandler");
-            if (weakHandler.GetMethodInfo().IsClosure())
-                throw new ArgumentException("A closure cannot be used to subscribe.", "weakHandler");
+            if (weakHandler.Target != null)
+                throw new ArgumentException("An instance method or closure cannot be used to subscribe.", "weakHandler");
         }
 
         private void AddHandler(IEventAggregatorHandler handler)
@@ -48,7 +48,7 @@ namespace Caliburn.Light
         {
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<TMessage>(weakHandler, threadOption);
+            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => weakHandler(m), threadOption);
             AddHandler(handler);
             return handler;
         }
@@ -84,7 +84,7 @@ namespace Caliburn.Light
         {
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<TMessage>(m => weakHandler(m).ObserveException(), threadOption);
+            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => weakHandler(m).ObserveException(), threadOption);
             AddHandler(handler);
             return handler;
         }
