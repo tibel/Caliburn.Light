@@ -24,7 +24,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Weakly" version="[2.4.0,2.5)" />
+        <dependency id="Weakly" version="[2.4.1,2.5)" />
       </group>
     </dependencies>
   </metadata>
