@@ -39,14 +39,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloSpecialValues", "samples\Demo.HelloSpecialValues\Demo.HelloSpecialValues.csproj", "{6308C2A5-ECEA-42F4-8469-A59E195CC83A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.ExceptionHandling", "samples\Demo.ExceptionHandling\Demo.ExceptionHandling.csproj", "{150CF2E8-3F18-4553-A0D5-A974CB58F570}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{3322d6ee-fd8d-4eee-8ecc-0a481d7b6658}*SharedItemsImports = 13
-		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
 		src\Caliburn.Xaml.Universal\Caliburn.Xaml.Universal.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{c10464f7-3b8f-4ecd-b0b0-2b319e90b31b}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{1123c3c4-3504-468b-ba87-322effaaa76e}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -174,6 +176,16 @@ Global
 		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x86.ActiveCfg = Release|x86
 		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x86.Build.0 = Release|x86
 		{6308C2A5-ECEA-42F4-8469-A59E195CC83A}.Release|x86.Deploy.0 = Release|x86
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Release|Any CPU.Build.0 = Release|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Release|ARM.ActiveCfg = Release|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Release|x64.ActiveCfg = Release|Any CPU
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,5 +196,6 @@ Global
 		{7517D9E9-7929-422A-9177-59FD86E1B00F} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{907F95A2-5978-41E3-9AD1-54D63B9BBC53} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{6308C2A5-ECEA-42F4-8469-A59E195CC83A} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
+		{150CF2E8-3F18-4553-A0D5-A974CB58F570} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 	EndGlobalSection
 EndGlobal
