@@ -5,7 +5,7 @@
     <title>Caliburn.Light</title>
     <version>1.7.0</version>
     <authors>Thomas Ibel</authors>
-    <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across all XAML platforms.</description>
+    <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
     <licenseUrl>https://github.com/tibel/Caliburn.Light/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
