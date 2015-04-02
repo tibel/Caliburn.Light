@@ -13,10 +13,12 @@ namespace Demo.ExceptionHandling
         {
             ExecuteCommand = DelegateCommand.Create(OnExecute);
             UIContextRunCommand = DelegateCommand.Create(OnUIContextRun);
+            TaskRunCommand = DelegateCommand.Create(OnTaskRun);
         }
 
         public ICommand ExecuteCommand { get; private set; }
         public ICommand UIContextRunCommand { get; private set; }
+        public ICommand TaskRunCommand { get; private set; }
 
         private void OnExecute()
         {
@@ -33,6 +35,15 @@ namespace Demo.ExceptionHandling
                     Thread.Sleep(100);
                     throw new InvalidOperationException("Error on a background Task.");
                 })).ObserveException();
+            }).ObserveException();
+        }
+
+        private void OnTaskRun()
+        {
+            Task.Run(() =>
+            {
+                Thread.Sleep(100);
+                throw new InvalidOperationException("Error on a background Task.");
             }).ObserveException();
         }
     }
