@@ -14,11 +14,13 @@ namespace Demo.ExceptionHandling
             ExecuteCommand = DelegateCommand.Create(OnExecute);
             UIContextRunCommand = DelegateCommand.Create(OnUIContextRun);
             TaskRunCommand = DelegateCommand.Create(OnTaskRun);
+            AsyncCommand = DelegateCommand.CreateAsync(OnAsync);
         }
 
         public ICommand ExecuteCommand { get; private set; }
         public ICommand UIContextRunCommand { get; private set; }
         public ICommand TaskRunCommand { get; private set; }
+        public ICommand AsyncCommand { get; private set; }
 
         private void OnExecute()
         {
@@ -45,6 +47,12 @@ namespace Demo.ExceptionHandling
                 Thread.Sleep(100);
                 throw new InvalidOperationException("Error on a background Task.");
             }).ObserveException();
+        }
+
+        private async Task OnAsync()
+        {
+            await Task.Delay(100);
+            throw new InvalidOperationException("Error on async execute.");
         }
     }
 }

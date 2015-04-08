@@ -6,5 +6,6 @@
         <Button Content="Command.Execute" Command="{Binding ExecuteCommand, Mode=OneTime}" />
         <Button Content="UIContext.Run" Command="{Binding UIContextRunCommand, Mode=OneTime}" />
         <Button Content="Task.Run" Command="{Binding TaskRunCommand, Mode=OneTime}" />
+        <Button Content="Command.Async" Command="{Binding AsyncCommand, Mode=OneTime}" />
     </StackPanel>
 </Window>
