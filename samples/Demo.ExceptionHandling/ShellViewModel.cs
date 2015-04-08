@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -24,6 +25,7 @@ namespace Demo.ExceptionHandling
 
         private void OnExecute()
         {
+            Debug.Assert(UIContext.CheckAccess());
             throw new InvalidOperationException("Error on execute.");
         }
 
@@ -31,9 +33,11 @@ namespace Demo.ExceptionHandling
         {
             Task.Run(() =>
             {
+                Debug.Assert(!UIContext.CheckAccess());
                 Thread.Sleep(100);
                 UIContext.Run(new Action(() =>
                 {
+                    Debug.Assert(UIContext.CheckAccess());
                     Thread.Sleep(100);
                     throw new InvalidOperationException("Error on a background Task.");
                 })).ObserveException();
@@ -44,6 +48,7 @@ namespace Demo.ExceptionHandling
         {
             Task.Run(() =>
             {
+                Debug.Assert(!UIContext.CheckAccess());
                 Thread.Sleep(100);
                 throw new InvalidOperationException("Error on a background Task.");
             }).ObserveException();
@@ -51,7 +56,9 @@ namespace Demo.ExceptionHandling
 
         private async Task OnAsync()
         {
+            Debug.Assert(UIContext.CheckAccess());
             await Task.Delay(100);
+            Debug.Assert(UIContext.CheckAccess());
             throw new InvalidOperationException("Error on async execute.");
         }
     }
