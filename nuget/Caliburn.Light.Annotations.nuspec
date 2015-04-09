@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light.Annotations</id>
     <title>Caliburn.Light Annotations</title>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <authors>Thomas Ibel</authors>
     <description>External Annotations for Caliburn.Light</description>
     <language>en-US</language>
@@ -12,12 +12,12 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright Thomas Ibel 2014</copyright>
+    <copyright>Copyright Thomas Ibel 2014-2015</copyright>
     <tags>Caliburn.Light Annotations</tags>
 
     <dependencies>
       <group>
-        <dependency id="Wave" version="[1.0]" />
+        <dependency id="Wave" version="[2.0]" />
       </group>
     </dependencies>
   </metadata>
