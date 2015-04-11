@@ -12,7 +12,14 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-Avoids Expression compilation when possible
+- View-Model first: Bind before setting content
+- [Universal] add DataTrigger
+- change EventAggregator to work without Reflection
+- [WPF] better fallback for active window
+- remove WP8 and use NET451
+- [WPF] don't create Dispatcher upfront
+- hide UI scheduler
+- add AsyncSubsystem
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2015</copyright>
     <tags>Caliburn MVVM WPF WIN81 WPA81 Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
