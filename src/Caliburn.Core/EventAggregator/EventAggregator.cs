@@ -84,7 +84,7 @@ namespace Caliburn.Light
         {
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => weakHandler(m).ObserveException(), threadOption);
+            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => AsyncSubsystem.AddTask(weakHandler(m).ObserveException()), threadOption);
             AddHandler(handler);
             return handler;
         }
@@ -104,7 +104,7 @@ namespace Caliburn.Light
             VerifyTarget(target);
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, (t, m) => weakHandler(t, m).ObserveException(), threadOption);
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, (t, m) => AsyncSubsystem.AddTask(weakHandler(t, m).ObserveException()), threadOption);
             AddHandler(handler);
             return handler;
         }

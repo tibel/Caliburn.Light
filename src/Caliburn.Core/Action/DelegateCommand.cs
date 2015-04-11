@@ -117,7 +117,7 @@ namespace Caliburn.Light
 
             var task = returnValue as Task;
             if (task != null)
-                task.ObserveException();
+                AsyncSubsystem.AddTask(task.ObserveException());
         }
 
         /// <summary>
