@@ -67,9 +67,9 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void PrepareApplication()
         {
-            Resuming += OnResuming;
-            Suspending += OnSuspending;
-            UnhandledException += OnUnhandledException;
+            Resuming += (s, e) => OnResuming(e);
+            Suspending += (s, e) => OnSuspending(e);
+            UnhandledException += (s, e) => OnUnhandledException(e);
         }
 
         /// <summary>
@@ -91,29 +91,25 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior when the application transitions from Suspended state to Running state.
         /// </summary>
-        /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
-        protected virtual void OnResuming(object sender, object e)
+        protected virtual void OnResuming(object e)
         {
         }
 
         /// <summary>
         /// Override this to add custom behavior when the application transitions to Suspended state from some other state.
         /// </summary>
-        /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
-        protected virtual void OnSuspending(object sender, SuspendingEventArgs e)
+        protected virtual void OnSuspending(SuspendingEventArgs e)
         {
         }
 
         /// <summary>
         /// Override this to add custom behavior for unhandled exceptions.
         /// </summary>
-        /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
-        protected virtual void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        protected virtual void OnUnhandledException(UnhandledExceptionEventArgs e)
         {
-            LogManager.GetLogger(GetType()).Error("An exception was unhandled by user code. {0}", e.Exception);
         }
 
         /// <summary>
