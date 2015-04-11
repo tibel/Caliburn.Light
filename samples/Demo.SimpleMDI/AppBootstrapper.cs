@@ -24,7 +24,7 @@ namespace Demo.SimpleMDI
             _container.RegisterPerRequest<TabViewModel>();
         }
 
-        protected override void OnStartup(object sender, StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             DisplayRootViewFor<ShellViewModel>();
         }

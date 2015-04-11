@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Weakly;
@@ -28,14 +27,6 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            // set SynchronizationContext so that we can create the TaskScheduler
-            // this is needed here as the dispatcher-loop is not yet running and therefor
-            // the Dispatcher has not set the SynchronizationContext yet.
-            if (SynchronizationContext.Current == null)
-                SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
-
-            UIContext.Initialize(new ViewAdapter());
-
             try
             {
                 TypeResolver.Reset();
@@ -44,6 +35,8 @@ namespace Caliburn.Light
                 Application = Application.Current;
                 if (Application != null)
                     PrepareApplication();
+                else
+                    UIContext.Initialize(new ViewAdapter());
 
                 Configure();
             }
@@ -60,8 +53,8 @@ namespace Caliburn.Light
         protected virtual void PrepareApplication()
         {
             Application.Startup += OnStartup;
-            Application.DispatcherUnhandledException += OnUnhandledException;
-            Application.Exit += OnExit;
+            Application.DispatcherUnhandledException += (s, e) => OnUnhandledException(e);
+            Application.Exit += (s, e) => OnExit(e);
         }
 
         /// <summary>
@@ -80,32 +73,34 @@ namespace Caliburn.Light
             return new[] {GetType().Assembly};
         }
 
+        private void OnStartup(object sender, StartupEventArgs e)
+        {
+            UIContext.Initialize(new ViewAdapter());
+            OnStartup(e);
+        }
+
         /// <summary>
-        /// Override this to add custom behavior to execute after the application starts.
+        /// Override this to add custom behavior to execute when the application starts.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The args.</param>
-        protected virtual void OnStartup(object sender, StartupEventArgs e)
+        /// <param name="e">The event args.</param>
+        protected virtual void OnStartup(StartupEventArgs e)
         {
         }
 
         /// <summary>
-        /// Override this to add custom behavior on exit.
+        /// Override this to add custom behavior to execute before the application shuts down.
         /// </summary>
-        /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
-        protected virtual void OnExit(object sender, EventArgs e)
+        protected virtual void OnExit(ExitEventArgs e)
         {
         }
 
         /// <summary>
         /// Override this to add custom behavior for unhandled exceptions.
         /// </summary>
-        /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
-        protected virtual void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        protected virtual void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
-            LogManager.GetLogger(GetType()).Error("An exception was unhandled by user code. {0}", e.Exception);
         }
 
         /// <summary>

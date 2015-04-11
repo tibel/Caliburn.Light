@@ -20,12 +20,12 @@ namespace Demo.ExceptionHandling
             _container.RegisterPerRequest<ShellViewModel>();
         }
 
-        protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
             Debug.WriteLine(">>> Dispatcher - {0}", e.Exception);
         }
 
-        protected override void OnStartup(object sender, StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             DisplayRootViewFor<ShellViewModel>();
         }

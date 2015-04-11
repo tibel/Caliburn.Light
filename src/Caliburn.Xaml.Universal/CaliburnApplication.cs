@@ -35,7 +35,7 @@ namespace Caliburn.Light
                 TypeResolver.Reset();
                 SelectAssemblies().ForEach(TypeResolver.AddAssembly);
 
-                if (!UIContext.IsInDesignTool)
+                if (!ViewHelper.IsInDesignTool)
                     PrepareApplication();
 
                 Configure();
