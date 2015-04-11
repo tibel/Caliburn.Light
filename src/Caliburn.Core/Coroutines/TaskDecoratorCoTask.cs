@@ -44,7 +44,8 @@ namespace Caliburn.Light
         /// <param name="task">The completed task.</param>
         protected virtual void OnCompleted(Task task)
         {
-            OnCompleted(new CoTaskCompletedEventArgs(task.Exception, task.IsCanceled));
+            var error = (task.Exception != null) ? task.Exception.InnerException : null;
+            OnCompleted(new CoTaskCompletedEventArgs(error, task.IsCanceled));
         }
     }
 
