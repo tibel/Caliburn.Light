@@ -69,6 +69,8 @@ namespace Caliburn.Light
             get { return _taskScheduler ?? TaskScheduler.Current; }
         }
 
+        private const TaskCreationOptions CreationOptions = TaskCreationOptions.DenyChildAttach | TaskCreationOptions.HideScheduler;
+
         /// <summary>
         /// Queues the specified work to run on the UI thread and returns a <see cref="Task"/> handle for that work.
         /// </summary>
@@ -76,7 +78,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
         public static Task Run(Action action)
         {
-            return Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler);
+            return Task.Factory.StartNew(action, default(CancellationToken), CreationOptions, TaskScheduler);
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents a proxy for the <see cref="Task&lt;TResult&gt;"/> returned by function.</returns>
         public static Task<TResult> Run<TResult>(Func<Task<TResult>> function)
         {
-            return Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler).Unwrap();
+            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, TaskScheduler).Unwrap();
         }
 
         /// <summary>
@@ -97,7 +99,7 @@ namespace Caliburn.Light
         /// <returns>A task that represents a proxy for the task returned by function.</returns>
         public static Task Run(Func<Task> function)
         {
-            return Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler).Unwrap();
+            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, TaskScheduler).Unwrap();
         }
 
         /// <summary>
@@ -108,7 +110,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents the work queued to execute in the UI thread.</returns>
         public static Task<TResult> Run<TResult>(Func<TResult> function)
         {
-            return Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler);
+            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, TaskScheduler);
         }
 
         #endregion
