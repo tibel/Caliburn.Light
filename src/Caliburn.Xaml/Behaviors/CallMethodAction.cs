@@ -162,10 +162,10 @@ namespace Caliburn.Light
             if (property == null) return;
 
             _guard = property.GetMethod;
-            _propertyChangedRegistration = inpc.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(s, e));
+            _propertyChangedRegistration = inpc.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == _guardName)
             {
@@ -239,7 +239,7 @@ namespace Caliburn.Light
 
             var task = returnValue as Task;
             if (task != null)
-                AsyncSubsystem.AddTask(task.ObserveException());
+                task.ObserveException().Watch();
         }
     }
 }

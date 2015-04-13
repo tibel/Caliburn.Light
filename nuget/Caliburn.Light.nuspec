@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
@@ -19,7 +19,6 @@
 - remove WP8 and use NET451
 - [WPF] don't create Dispatcher upfront
 - hide UI scheduler
-- add AsyncSubsystem
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2015</copyright>
     <tags>Caliburn MVVM WPF WIN81 WPA81 Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
@@ -30,7 +29,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Weakly" version="[2.4.2,2.5)" />
+        <dependency id="Weakly" version="[2.5.0,2.6)" />
       </group>
     </dependencies>
   </metadata>

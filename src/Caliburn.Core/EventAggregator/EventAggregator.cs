@@ -14,12 +14,14 @@ namespace Caliburn.Light
         private readonly NamedObject _staticTarget = new NamedObject("StaticTarget");
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
+        // ReSharper disable once UnusedParameter.Local
         private static void VerifyTarget(object target)
         {
             if (target == null)
                 throw new ArgumentNullException("target");
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private static void VerifyDelegate(Delegate weakHandler)
         {
             if (weakHandler == null)
@@ -84,7 +86,7 @@ namespace Caliburn.Light
         {
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => AsyncSubsystem.AddTask(weakHandler(m).ObserveException()), threadOption);
+            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => weakHandler(m).ObserveException().Watch(), threadOption);
             AddHandler(handler);
             return handler;
         }
@@ -104,7 +106,7 @@ namespace Caliburn.Light
             VerifyTarget(target);
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, (t, m) => AsyncSubsystem.AddTask(weakHandler(t, m).ObserveException()), threadOption);
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, (t, m) => weakHandler(t, m).ObserveException().Watch(), threadOption);
             AddHandler(handler);
             return handler;
         }
