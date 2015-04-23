@@ -139,8 +139,7 @@ namespace Caliburn.Light
             lock (_handlers)
             {
                 _handlers.RemoveAll(h => h.IsDead);
-                var messageType = message.GetType();
-                selectedHandlers = _handlers.FindAll(h => h.CanHandle(messageType));
+                selectedHandlers = _handlers.FindAll(h => h.CanHandle(message));
             }
 
             if (selectedHandlers.Count == 0) return;
