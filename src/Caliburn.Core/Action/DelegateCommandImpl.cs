@@ -51,12 +51,18 @@ namespace Caliburn.Light
 
         private TParameter CoerceParameter(object parameter)
         {
+            if (parameter == null)
+                return default(TParameter);
+
             var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
             context.Target = _target;
 
             var specialValue = parameter as ISpecialValue;
             if (specialValue != null)
                 parameter = specialValue.Resolve(context);
+
+            if (parameter is TParameter)
+                return (TParameter) parameter;
 
             return (TParameter) ParameterBinder.CoerceValue(typeof (TParameter), parameter);
         }
