@@ -51,6 +51,9 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Action\DelegateCommandBuilder.cs" />
+    <Compile Include="Action\DelegateCommandImpl.cs" />
+    <Compile Include="Action\IDelegateCommand.cs" />
     <Compile Include="Action\ISpecialValue.cs" />
     <Compile Include="Action\ParameterBinder.cs" />
     <Compile Include="EventAggregator\EventAggregator.cs" />
