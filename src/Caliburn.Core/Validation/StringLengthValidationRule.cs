@@ -35,12 +35,32 @@ namespace Caliburn.Light
             var length = 0;
 
             if (!string.IsNullOrEmpty(value))
-                length = value.Trim().Length;
-
+                length = GetTrimmedLength(value);
+            
             if (length < _minimumLength || length > _maximumLength)
                 return ValidationResult.Failure(cultureInfo, _errorMessage, _minimumLength, _maximumLength, length);
 
             return ValidationResult.Success();
+        }
+
+        private static int GetTrimmedLength(string value)
+        {
+            //end will point to the first non-trimmed character on the right
+            //start will point to the first non-trimmed character on the Left
+            var end = value.Length - 1;
+            var start = 0;
+
+            for (; start < value.Length; start++)
+            {
+                if (!char.IsWhiteSpace(value[start])) break;
+            }
+
+            for (; end >= start; end--)
+            {
+                if (!char.IsWhiteSpace(value[end])) break;
+            }
+
+            return end - start + 1;
         }
     }
 }
