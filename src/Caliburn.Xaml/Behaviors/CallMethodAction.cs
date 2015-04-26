@@ -191,14 +191,8 @@ namespace Caliburn.Light
             var canExecute = true;
             if (_guard != null)
             {
-                var context = new CoroutineExecutionContext
-                {
-                    Source = AssociatedObject,
-                    Target = Target,
-                };
-
-                var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
-                canExecute = (bool)_guard.Invoke(Target, ParameterBinder.DetermineParameters(context, providedValues, _guard.GetParameters()));
+                var parameterValues = DetermineParameters(_guard);
+                canExecute = (bool)_guard.Invoke(Target, parameterValues);
             }
 
 #if SILVERLIGHT || NETFX_CORE
@@ -223,20 +217,48 @@ namespace Caliburn.Light
             if (_method == null)
                 throw new InvalidOperationException(string.Format("Method {0} not found on target of type {1}.", MethodName, Target.GetType()));
 
-            var context = new CoroutineExecutionContext
-            {
-                Source = AssociatedObject,
-                Target = Target,
-                EventArgs = parameter,
-            };
-
-            var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
-            var parameterValues = ParameterBinder.DetermineParameters(context, providedValues, _method.GetParameters());
+            var parameterValues = DetermineParameters(_method, parameter);
             var returnValue = _method.Invoke(Target, parameterValues);
 
             var task = returnValue as Task;
             if (task != null)
                 task.ObserveException().Watch();
+        }
+
+        private object[] DetermineParameters(MethodBase method, object eventArgs = null)
+        {
+            var requiredParameters = method.GetParameters();
+            if (requiredParameters.Length == 0)
+                return new object[0];
+
+            var parameterValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
+            if (requiredParameters.Length != parameterValues.Length)
+                throw new InvalidOperationException(string.Format("Inconsistent number of parameters for method {0}.", method.Name));
+
+            var context = (CoroutineExecutionContext) null;
+            for (var i = 0; i < requiredParameters.Length; i++)
+            {
+                var parameterType = requiredParameters[i].ParameterType;
+                var parameterValue = parameterValues[i];
+
+                var specialValue = parameterValue as ISpecialValue;
+                if (specialValue != null)
+                {
+                    if (context == null)
+                        context = new CoroutineExecutionContext
+                        {
+                            Source = AssociatedObject,
+                            Target = Target,
+                            EventArgs = eventArgs,
+                        };
+
+                    parameterValue = specialValue.Resolve(context);
+                }
+
+                parameterValues[i] = ParameterBinder.CoerceValue(parameterType, parameterValue);
+            }
+
+            return parameterValues;
         }
     }
 }
