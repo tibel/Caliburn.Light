@@ -1,7 +1,5 @@
-﻿using Weakly.Builders;
-using Weakly;
+﻿using Weakly;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -199,9 +197,8 @@ namespace Caliburn.Light
                     Target = Target,
                 };
 
-                var guardFunction = Builder.DynamicDelegate.BuildDynamic(_guard);
                 var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
-                canExecute = (bool)guardFunction(Target, ParameterBinder.DetermineParameters(context, providedValues, _guard.GetParameters()));
+                canExecute = (bool)_guard.Invoke(Target, ParameterBinder.DetermineParameters(context, providedValues, _guard.GetParameters()));
             }
 
 #if SILVERLIGHT || NETFX_CORE
@@ -235,7 +232,7 @@ namespace Caliburn.Light
 
             var providedValues = Parameters.Select(x => ((Parameter)x).Value).ToArray();
             var parameterValues = ParameterBinder.DetermineParameters(context, providedValues, _method.GetParameters());
-            var returnValue = Builder.DynamicDelegate.BuildDynamic(_method)(Target, parameterValues);
+            var returnValue = _method.Invoke(Target, parameterValues);
 
             var task = returnValue as Task;
             if (task != null)
