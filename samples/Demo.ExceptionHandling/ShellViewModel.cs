@@ -29,7 +29,7 @@ namespace Demo.ExceptionHandling
 
             AsyncCommand = DelegateCommand.For<ShellViewModel>()
                 .Target(this)
-                .ExecuteAsync(t => t.OnAsync())
+                .Execute(t => t.OnAsync())
                 .Build();
         }
 

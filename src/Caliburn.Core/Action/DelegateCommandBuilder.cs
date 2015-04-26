@@ -64,7 +64,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> ExecuteAsync(Func<TTarget, Task> execute)
+        public DelegateCommandBuilder<TTarget, TParameter> Execute(Func<TTarget, Task> execute)
         {
             VerifyExecute(execute);
             _execute = (t, p) => execute(t).ObserveException().Watch();
@@ -76,7 +76,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> ExecuteAsync(Func<TTarget, TParameter, Task> execute)
+        public DelegateCommandBuilder<TTarget, TParameter> Execute(Func<TTarget, TParameter, Task> execute)
         {
             VerifyExecute(execute);
             _execute = (t, p) => execute(t, p).ObserveException().Watch();
