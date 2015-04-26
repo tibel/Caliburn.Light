@@ -54,12 +54,13 @@ namespace Caliburn.Light
             if (parameter == null)
                 return default(TParameter);
 
-            var context = parameter as CoroutineExecutionContext ?? new CoroutineExecutionContext();
-            context.Target = _target;
+            var context = parameter as CoroutineExecutionContext;
+            if (context != null)
+                context.Target = _target;
 
             var specialValue = parameter as ISpecialValue;
             if (specialValue != null)
-                parameter = specialValue.Resolve(context);
+                parameter = specialValue.Resolve(new CoroutineExecutionContext { Target = _target });
 
             if (parameter is TParameter)
                 return (TParameter) parameter;
