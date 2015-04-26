@@ -82,7 +82,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler SubscribeAsync<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption)
+        public IEventAggregatorHandler Subscribe<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption)
         {
             VerifyDelegate(weakHandler);
 
@@ -100,7 +100,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler SubscribeAsync<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
             where TTarget : class
         {
             VerifyTarget(target);
