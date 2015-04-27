@@ -19,8 +19,8 @@ namespace Demo.Validation
             _validation.Validators.Add(new DataAnnotationsValidator(GetType()));
 
             _company = company;
-            SaveCommand = DelegateCommand.For<MainViewModel>()
-                .Target(this)
+            SaveCommand = DelegateCommand
+                .For(this)
                 .Execute(t => t.Save())
                 .CanExecute(t => t.CanSave)
                 .PropertyChanged(t => t.CanSave)
