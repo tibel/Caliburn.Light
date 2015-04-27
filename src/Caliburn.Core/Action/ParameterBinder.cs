@@ -72,32 +72,6 @@ namespace Caliburn.Light
             };
 
         /// <summary>
-        /// Determines the parameters that a method should be invoked with.
-        /// </summary>
-        /// <param name="context">The coroutine execution context.</param>
-        /// <param name="providedValues">The available parameter values.</param>
-        /// <param name="requiredParameters">The parameters required to complete the invocation.</param>
-        /// <returns>The actual parameter values.</returns>
-        public static object[] DetermineParameters(CoroutineExecutionContext context, object[] providedValues, ParameterInfo[] requiredParameters)
-        {
-            var finalValues = new object[requiredParameters.Length];
-
-            for (var i = 0; i < requiredParameters.Length; i++)
-            {
-                var parameterType = requiredParameters[i].ParameterType;
-                var parameterValue = providedValues[i];
-
-                var specialValue = parameterValue as ISpecialValue;
-                if (specialValue != null)
-                    parameterValue = specialValue.Resolve(context);
-
-                finalValues[i] = CoerceValue(parameterType, parameterValue);
-            }
-
-            return finalValues;
-        }
-
-        /// <summary>
         /// Coerces the provided value to the destination type.
         /// </summary>
         /// <param name="destinationType">The destination type.</param>

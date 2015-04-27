@@ -79,18 +79,7 @@ namespace Caliburn.Light
             var canExecute = true;
             if (Command != null)
             {
-                var resolvedParameter = CommandParameter;
-
-                var specialValue = resolvedParameter as ISpecialValue;
-                if (specialValue != null)
-                {
-                    var context = new CoroutineExecutionContext
-                    {
-                        Source = AssociatedObject,
-                    };
-                    resolvedParameter = specialValue.Resolve(context);
-                }
-
+                var resolvedParameter = DetermineParameter();
                 canExecute = Command.CanExecute(resolvedParameter);
             }
 
@@ -113,21 +102,27 @@ namespace Caliburn.Light
         {
             if (Command != null)
             {
-                var resolvedParameter = CommandParameter;
-
-                var specialValue = resolvedParameter as ISpecialValue;
-                if (specialValue != null)
-                {
-                    var context = new CoroutineExecutionContext
-                    {
-                        Source = AssociatedObject,
-                        EventArgs = parameter,
-                    };
-                    resolvedParameter = specialValue.Resolve(context);
-                }
-
-                Command.Execute(resolvedParameter ?? parameter);
+                var resolvedParameter = DetermineParameter(parameter);
+                Command.Execute(resolvedParameter);
             }
+        }
+
+        private object DetermineParameter(object eventArgs = null)
+        {
+            var resolvedParameter = CommandParameter;
+
+            var specialValue = resolvedParameter as ISpecialValue;
+            if (specialValue != null)
+            {
+                var context = new CoroutineExecutionContext
+                {
+                    Source = AssociatedObject,
+                    EventArgs = eventArgs,
+                };
+                resolvedParameter = specialValue.Resolve(context);
+            }
+
+            return resolvedParameter ?? eventArgs;
         }
 
         private IDisposable _canExecuteChangedRegistration;
@@ -158,12 +153,7 @@ namespace Caliburn.Light
         {
             ResetCommand();
             if (Command == null) return;
-            _canExecuteChangedRegistration = Command.RegisterCanExecuteChangedWeak(this, (t, s, e) => t.OnCommandCanExecuteChanged(s, e));
-        }
-
-        private void OnCommandCanExecuteChanged(object sender, EventArgs e)
-        {
-            UpdateEnabledState();
+            _canExecuteChangedRegistration = Command.RegisterCanExecuteChangedWeak(this, (t, s, e) => t.UpdateEnabledState());
         }
     }
 }

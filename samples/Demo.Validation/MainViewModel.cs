@@ -19,7 +19,12 @@ namespace Demo.Validation
             _validation.Validators.Add(new DataAnnotationsValidator(GetType()));
 
             _company = company;
-            SaveCommand = DelegateCommand.Create(Save);
+            SaveCommand = DelegateCommand
+                .For(this)
+                .Execute(t => t.Save())
+                .CanExecute(t => t.CanSave)
+                .PropertyChanged(t => t.CanSave)
+                .Build();
         }
 
         [Required(ErrorMessage = @"Name is required.")]

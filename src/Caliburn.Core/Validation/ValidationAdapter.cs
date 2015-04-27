@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Weakly;
-using Weakly.Builders;
 
 namespace Caliburn.Light
 {
@@ -91,8 +90,8 @@ namespace Caliburn.Light
                 if (!_validators.Any(validator => validator.CanValidateProperty(property.Name)))
                     continue;
 
-                var getter = Builder.PropertyAccessor.BuildGetter(property);
-                var errors = ValidatePropertyImpl(property.Name, getter(instance));
+                var value = property.GetValue(instance);
+                var errors = ValidatePropertyImpl(property.Name, value);
                 if (errors.Count > 0)
                     _validationErrors.Add(property.Name, errors);
             }
