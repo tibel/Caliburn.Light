@@ -12,7 +12,11 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-- fix EventAggregator
+- refactor DelegateCommand
+- no Expression compilation
+- add DelegateCommandBuilder
+- optimize StringLengthValidationRule
+- rename EventAggregator SubsribeAsync() to Subscribe()
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2015</copyright>
     <tags>Caliburn MVVM WPF WIN81 WPA81 Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
