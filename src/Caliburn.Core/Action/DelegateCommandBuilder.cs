@@ -117,7 +117,11 @@ namespace Caliburn.Light
             if (!string.IsNullOrEmpty(_propertyName) && _canExecute == null)
                 throw new InvalidOperationException("PropertyName is set but CanExecute is not.");
 
-            return new DelegateCommandImpl<TTarget, object>(_target, (t, p) => _execute(t), (t, p) => _canExecute(t), _propertyName);
+            Func<TTarget, object, bool> canExecute = null;
+            if (_canExecute != null)
+                canExecute = (t, p) => _canExecute(t);
+
+            return new DelegateCommandImpl<TTarget, object>(_target, (t, p) => _execute(t), canExecute, _propertyName);
         }
     }
 
