@@ -123,17 +123,20 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Attempts to inject query string parameters from the view into the view model.
+        /// Attempts to inject query string parameters from the view into the view model.
         /// </summary>
-        /// <param name="viewModel"> The view model.</param>
-        /// <param name="parameter"> The parameter.</param>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="parameter">The parameter.</param>
         protected virtual void TryInjectParameters(object viewModel, object parameter)
         {
             var viewModelType = viewModel.GetType();
 
-            if (parameter is string && ((string) parameter).StartsWith("caliburn://"))
+            var stringParameter = parameter as string;
+            var dictionaryParameter = parameter as IDictionary<string, object>;
+
+            if (stringParameter != null && stringParameter.StartsWith("caliburn://"))
             {
-                var uri = new Uri((string) parameter);
+                var uri = new Uri(stringParameter);
 
                 if (!string.IsNullOrEmpty(uri.Query))
                 {
@@ -149,11 +152,24 @@ namespace Caliburn.Light
                     }
                 }
             }
+            else if (dictionaryParameter != null)
+            {
+                foreach (var pair in dictionaryParameter)
+                {
+                    var property = viewModelType.GetRuntimeProperty(pair.Key);
+                    if (property == null) continue;
+
+                    property.SetValue(viewModel,
+                        ParameterBinder.CoerceValue(property.PropertyType, pair.Value));
+                }
+            }
             else
             {
                 var property = viewModelType.GetRuntimeProperty("Parameter");
                 if (property == null) return;
-                property.SetValue(viewModel, ParameterBinder.CoerceValue(property.PropertyType, parameter));
+
+                property.SetValue(viewModel,
+                    ParameterBinder.CoerceValue(property.PropertyType, parameter));
             }
         }
 
