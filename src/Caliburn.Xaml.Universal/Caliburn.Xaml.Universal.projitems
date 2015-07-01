@@ -27,6 +27,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\ISupportSharing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationServiceHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SharingService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\UriBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\NavigateHelper.cs" />
   </ItemGroup>
 </Project>

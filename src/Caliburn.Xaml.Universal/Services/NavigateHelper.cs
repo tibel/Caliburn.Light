@@ -10,7 +10,7 @@ namespace Caliburn.Light
     /// Builds a Uri in a strongly typed fashion, based on a ViewModel.
     /// </summary>
     /// <typeparam name="TViewModel"></typeparam>
-    public sealed class UriBuilder<TViewModel>
+    public sealed class NavigateHelper<TViewModel>
     {
         private readonly Dictionary<string, string> _queryString = new Dictionary<string, string>();
         private INavigationService _navigationService;
@@ -23,7 +23,7 @@ namespace Caliburn.Light
         /// <param name="property">The property.</param>
         /// <param name="value">The property value.</param>
         /// <returns>Itself</returns>
-        public UriBuilder<TViewModel> WithParam<TValue>(Expression<Func<TViewModel, TValue>> property, TValue value)
+        public NavigateHelper<TViewModel> WithParam<TValue>(Expression<Func<TViewModel, TValue>> property, TValue value)
         {
             if (value is ValueType || !ReferenceEquals(null, value))
             {
@@ -38,7 +38,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="navigationService">The navigation service.</param>
         /// <returns>Itself</returns>
-        public UriBuilder<TViewModel> AttachTo(INavigationService navigationService)
+        public NavigateHelper<TViewModel> AttachTo(INavigationService navigationService)
         {
             _navigationService = navigationService;
             return this;
