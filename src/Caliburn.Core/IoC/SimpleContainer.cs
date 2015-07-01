@@ -250,6 +250,7 @@ namespace Caliburn.Light
         private static ConstructorInfo SelectEligibleConstructor(Type type)
         {
             return (from c in type.GetTypeInfo().DeclaredConstructors
+                    where c.IsPublic
                     orderby c.GetParameters().Length descending
                     select c).FirstOrDefault();
         }
