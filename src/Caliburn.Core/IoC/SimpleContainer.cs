@@ -43,21 +43,21 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="key">The key.</param>
-        /// <returns>True if a handler is registere; false otherwise.</returns>
-        public bool HasHandler(Type service, string key)
+        /// <returns>True if a handler is registered; false otherwise.</returns>
+        public bool IsRegistered(Type service, string key = null)
         {
             return GetEntry(service, key) != null;
         }
 
         /// <summary>
-        /// Registers a custom handler for serving requests from the container.
+        /// Determines if a handler for the service/key has previously been registered.
         /// </summary>
-        /// <param name = "service">The service.</param>
-        /// <param name = "key">The key.</param>
-        /// <param name = "handler">The handler.</param>
-        public void RegisterHandler(Type service, string key, Func<SimpleContainer, object> handler)
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns>True if a handler is registered; false otherwise.</returns>
+        public bool IsRegistered<TService>(string key = null)
         {
-            GetOrCreateEntry(service, key).Add(handler);
+            return GetEntry(typeof(TService), key) != null;
         }
 
         /// <summary>
@@ -69,18 +69,62 @@ namespace Caliburn.Light
         public void RegisterSingleton(Type service, string key, Type implementation)
         {
             object singleton = null;
-            RegisterHandler(service, key, c => singleton ?? (singleton = c.BuildInstance(implementation)));
+            GetOrCreateEntry(service, key).Add(c => singleton ?? (singleton = c.BuildInstance(implementation)));
         }
 
         /// <summary>
-        /// Registers the instance with the container.
+        /// Registers the class so that it is created once, on first request, and the same instance is returned to all requestors thereafter.
+        /// </summary>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="key">The key.</param>
+        public void RegisterSingleton<TImplementation>(string key = null)
+        {
+            RegisterSingleton(typeof(TImplementation), key, typeof(TImplementation));
+        }
+
+        /// <summary>
+        /// Registers the class so that it is created once, on first request, and the same instance is returned to all requestors thereafter.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="key">The key.</param>
+        public void RegisterSingleton<TService, TImplementation>(string key = null)
+            where TImplementation : TService
+        {
+            RegisterSingleton(typeof(TService), key, typeof(TImplementation));
+        }
+
+        /// <summary>
+        /// Registers the class so that it is created once, on first request, and the same instance is returned to all requestors thereafter.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name = "key">The key.</param>
+        /// <param name = "handler">The handler.</param>
+        public void RegisterSingleton<TService>(string key, Func<SimpleContainer, TService> handler)
+        {
+            object singleton = null;
+            GetOrCreateEntry(typeof(TService), key).Add(c => singleton ?? (singleton = handler(c)));
+        }
+
+        /// <summary>
+        /// Registers an instance with the container.
         /// </summary>
         /// <param name = "service">The service.</param>
         /// <param name = "key">The key.</param>
-        /// <param name = "implementation">The implementation.</param>
-        public void RegisterInstance(Type service, string key, object implementation)
+        /// <param name = "instance">The instance.</param>
+        public void RegisterInstance(Type service, string key, object instance)
         {
-            RegisterHandler(service, key, c => implementation);
+            GetOrCreateEntry(service, key).Add(c => instance);
+        }
+
+        /// <summary>
+        /// Registers an instance with the container.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="instance">The instance.</param>
+        public void RegisterInstance<TService>(TService instance)
+        {
+            RegisterInstance(typeof(TService), null, instance);
         }
 
         /// <summary>
@@ -91,7 +135,51 @@ namespace Caliburn.Light
         /// <param name = "implementation">The implementation.</param>
         public void RegisterPerRequest(Type service, string key, Type implementation)
         {
-            RegisterHandler(service, key, c => c.BuildInstance(implementation));
+            GetOrCreateEntry(service, key).Add(c => c.BuildInstance(implementation));
+        }
+
+        /// <summary>
+        /// Registers the class so that a new instance is created on each request.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="key">The key.</param>
+        public void RegisterPerRequest<TService>(string key = null)
+        {
+            RegisterPerRequest<TService, TService>(key);
+        }
+
+        /// <summary>
+        /// Registers the class so that a new instance is created on each request.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="key">The key.</param>
+        public void RegisterPerRequest<TService, TImplementation>(string key = null)
+            where TImplementation : TService
+        {
+            RegisterPerRequest(typeof(TService), key, typeof(TImplementation));
+        }
+
+        /// <summary>
+        /// Registers a custom handler for serving requests from the container.
+        /// </summary>
+        /// <param name = "service">The service.</param>
+        /// <param name = "key">The key.</param>
+        /// <param name = "handler">The handler.</param>
+        public void RegisterPerRequest(Type service, string key, Func<SimpleContainer, object> handler)
+        {
+            GetOrCreateEntry(service, key).Add(handler);
+        }
+
+        /// <summary>
+        /// Registers a custom handler for serving requests from the container.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name = "key">The key.</param>
+        /// <param name = "handler">The handler.</param>
+        public void RegisterPerRequest<TService>(string key, Func<SimpleContainer, TService> handler)
+        {
+            GetOrCreateEntry(typeof(TService), key).Add(c => handler(c));
         }
 
         /// <summary>
@@ -99,13 +187,23 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name = "service">The service.</param>
         /// <param name = "key">The key.</param>
-        public void UnregisterHandler(Type service, string key)
+        public void UnregisterHandler(Type service, string key = null)
         {
             var entry = GetEntry(service, key);
             if (entry != null)
             {
                 _entries.Remove(entry);
             }
+        }
+
+        /// <summary>
+        /// Unregisters any handlers for the service/key that have previously been registered.
+        /// </summary>
+        /// <typeparam name="TService">The of the service.</typeparam>
+        /// <param name = "key">The key.</param>
+        public void UnregisterHandler<TService>(string key = null)
+        {
+            UnregisterHandler(typeof(TService), key);
         }
 
         /// <summary>
@@ -172,9 +270,8 @@ namespace Caliburn.Light
         /// <param name = "instance">The instance.</param>
         public void InjectProperties(object instance)
         {
-            var injectables = from property in instance.GetType().GetRuntimeProperties()
-                              where property.CanRead && property.CanWrite && property.PropertyType.GetTypeInfo().IsInterface
-                              select property;
+            var injectables = instance.GetType().GetRuntimeProperties()
+                .Where(p => p.CanRead && p.CanWrite && p.PropertyType.GetTypeInfo().IsInterface);
 
             foreach (var propertyInfo in injectables)
             {
@@ -249,10 +346,9 @@ namespace Caliburn.Light
 
         private static ConstructorInfo SelectEligibleConstructor(Type type)
         {
-            return (from c in type.GetTypeInfo().DeclaredConstructors
-                    where c.IsPublic
-                    orderby c.GetParameters().Length descending
-                    select c).FirstOrDefault();
+            return type.GetTypeInfo().DeclaredConstructors
+                .OrderByDescending(c => c.GetParameters().Length)
+                .FirstOrDefault(c => c.IsPublic);
         }
 
         private class ContainerEntry : List<Func<SimpleContainer, object>>
