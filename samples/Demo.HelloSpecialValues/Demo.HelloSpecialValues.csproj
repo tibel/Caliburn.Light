@@ -84,10 +84,6 @@
       <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
       <Name>Caliburn.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Caliburn.Xaml.WPA81\Caliburn.Xaml.WPA81.csproj">
-      <Project>{4d82beb8-2800-4dd3-8efd-edc2cc6665ce}</Project>
-      <Name>Caliburn.Xaml.WPA81</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
