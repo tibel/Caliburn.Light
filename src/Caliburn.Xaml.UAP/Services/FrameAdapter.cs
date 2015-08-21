@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-#if WINDOWS_PHONE_APP
-using Windows.Phone.UI.Input;
-#endif
 
 namespace Caliburn.Light
 {
@@ -35,10 +33,9 @@ namespace Caliburn.Light
             _frame.Navigating += OnNavigating;
             _frame.Navigated += OnNavigated;
 
-#if WINDOWS_PHONE_APP
-            _frame.Loaded += (sender, args) => { HardwareButtons.BackPressed += OnHardwareBackPressed; };
-            _frame.Unloaded += (sender, args) => { HardwareButtons.BackPressed -= OnHardwareBackPressed; };
-#endif
+            // This could leak memory if we're creating and destorying navigation services regularly.
+            var navigationManager = SystemNavigationManager.GetForCurrentView();
+            navigationManager.BackRequested += OnBackRequested;
         }
 
         /// <summary>
@@ -350,27 +347,28 @@ namespace Caliburn.Light
             return true;
         }
 
-#if WINDOWS_PHONE_APP
         /// <summary>
         /// Occurs when the user presses the hardware Back button.
         /// </summary>
-        public event EventHandler<BackPressedEventArgs> BackPressed;
+        public event EventHandler<BackRequestedEventArgs> BackRequested;
 
         /// <summary>
         ///  Occurs when the user presses the hardware Back button. Allows the handlers to cancel the default behavior.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        protected virtual void OnBackPressed(BackPressedEventArgs e)
+        protected virtual void OnBackRequested(BackRequestedEventArgs e)
         {
-            var handler = BackPressed;
+            var handler = BackRequested;
             if (handler != null)
                 handler(this, e);
         }
 
-        private void OnHardwareBackPressed(object sender, BackPressedEventArgs e)
+        private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
-            OnBackPressed(e);
-            if (e.Handled) return;
+            OnBackRequested(e);
+
+            if (e.Handled)
+                return;
 
             if (CanGoBack)
             {
@@ -378,7 +376,6 @@ namespace Caliburn.Light
                 GoBack();
             }
         }
-#endif
 
         private static ApplicationDataContainer GetSettingsContainer()
         {
