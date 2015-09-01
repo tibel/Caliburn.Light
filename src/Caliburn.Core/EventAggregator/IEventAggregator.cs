@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Weakly;
 
 namespace Caliburn.Light
 {
@@ -15,7 +16,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TMessage>(Action<TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        IEventAggregatorHandler Subscribe<TMessage>([EmptyCapture] Action<TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
@@ -26,7 +27,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Action<TTarget, TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
             where TTarget : class;
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        IEventAggregatorHandler Subscribe<TMessage>([EmptyCapture] Func<TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
@@ -47,7 +48,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The message handler to register.</param>
         /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
             where TTarget : class;
 
         /// <summary>

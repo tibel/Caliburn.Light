@@ -34,9 +34,13 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> Execute(Action<TTarget> execute)
+        public DelegateCommandBuilder<TTarget> Execute([EmptyCapture] Action<TTarget> execute)
         {
-            VerifyExecute(execute);
+            if (execute == null)
+                throw new ArgumentNullException("execute");
+            if (_execute != null)
+                throw new InvalidOperationException("Execute already set.");
+
             _execute = execute;
             return this;
         }
@@ -46,23 +50,15 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> Execute(Func<TTarget, Task> execute)
-        {
-            VerifyExecute(execute);
-            _execute = t => execute(t).ObserveException().Watch();
-            return this;
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        private void VerifyExecute(Delegate execute)
+        public DelegateCommandBuilder<TTarget> Execute([EmptyCapture] Func<TTarget, Task> execute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
-            if (execute.Target != null)
-                throw new ArgumentException("An instance method or closure cannot be used.", "execute");
-
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
+
+            _execute = t => execute(t).ObserveException().Watch();
+            return this;
         }
 
         /// <summary>
@@ -70,21 +66,16 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> CanExecute(Func<TTarget, bool> canExecute)
+        public DelegateCommandBuilder<TTarget> CanExecute([EmptyCapture] Func<TTarget, bool> canExecute)
         {
-            if ((Delegate) canExecute == null)
+            if (canExecute == null)
                 throw new ArgumentNullException("canExecute");
-            if (canExecute.Target != null)
-                throw new ArgumentException("An instance method or closure cannot be used.", "canExecute");
-
             if (_canExecute != null)
                 throw new InvalidOperationException("CanExecute already set.");
 
             _canExecute = canExecute;
             return this;
         }
-
-        // ReSharper disable once UnusedParameter.Local
 
         /// <summary>
         /// Sets the property to listen for change notifications.
@@ -155,9 +146,13 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> Execute(Action<TTarget, TParameter> execute)
+        public DelegateCommandBuilder<TTarget, TParameter> Execute([EmptyCapture] Action<TTarget, TParameter> execute)
         {
-            VerifyExecute(execute);
+            if (execute == null)
+                throw new ArgumentNullException("execute");
+            if (_execute != null)
+                throw new InvalidOperationException("Execute already set.");
+
             _execute = execute;
             return this;
         }
@@ -167,23 +162,15 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> Execute(Func<TTarget, TParameter, Task> execute)
-        {
-            VerifyExecute(execute);
-            _execute = (t, p) => execute(t, p).ObserveException().Watch();
-            return this;
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        private void VerifyExecute(Delegate execute)
+        public DelegateCommandBuilder<TTarget, TParameter> Execute([EmptyCapture] Func<TTarget, TParameter, Task> execute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
-            if (execute.Target != null)
-                throw new ArgumentException("An instance method or closure cannot be used.", "execute");
-
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
+
+            _execute = (t, p) => execute(t, p).ObserveException().Watch();
+            return this;
         }
 
         /// <summary>
@@ -191,9 +178,13 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> CanExecute(Func<TTarget, bool> canExecute)
+        public DelegateCommandBuilder<TTarget, TParameter> CanExecute([EmptyCapture] Func<TTarget, bool> canExecute)
         {
-            VerifyCanExecute(canExecute);
+            if (canExecute == null)
+                throw new ArgumentNullException("canExecute");
+            if (_canExecute != null)
+                throw new InvalidOperationException("CanExecute already set.");
+
             _canExecute = (t, p) => canExecute(t);
             return this;
         }
@@ -203,23 +194,15 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> CanExecute(Func<TTarget, TParameter, bool> canExecute)
-        {
-            VerifyCanExecute(canExecute);
-            _canExecute = canExecute;
-            return this;
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        private void VerifyCanExecute(Delegate canExecute)
+        public DelegateCommandBuilder<TTarget, TParameter> CanExecute([EmptyCapture] Func<TTarget, TParameter, bool> canExecute)
         {
             if (canExecute == null)
                 throw new ArgumentNullException("canExecute");
-            if (canExecute.Target != null)
-                throw new ArgumentException("An instance method or closure cannot be used.", "canExecute");
-
             if (_canExecute != null)
                 throw new InvalidOperationException("CanExecute already set.");
+
+            _canExecute = canExecute;
+            return this;
         }
 
         /// <summary>

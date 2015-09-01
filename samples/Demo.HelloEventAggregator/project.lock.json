@@ -1536,7 +1536,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -3169,7 +3169,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -4774,7 +4774,7 @@
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -6412,7 +6412,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -8017,7 +8017,7 @@
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -9655,7 +9655,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -11260,7 +11260,7 @@
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Weakly/2.5.0": {
+      "Weakly/2.6.0": {
         "compile": {
           "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll": {}
         },
@@ -14619,15 +14619,15 @@
         "[Content_Types].xml"
       ]
     },
-    "Weakly/2.5.0": {
-      "sha512": "kUWIS0vj+hY9JQ5MAH0uJmuA4CetaA0NxFyBUTY+rP8sgKhqCUDnUB6ueNhLIVdpoVcnmvXH3phThHhxRsdgNw==",
+    "Weakly/2.6.0": {
+      "sha512": "8kZfW9UvQWs3AxtGoEIjaOZNS58EiVm3f/DwcPpVGUwdNosZiH6mUzrK5s4N2HwLGqlWrXn6LyD0Sl5IC+svCg==",
       "type": "Package",
       "files": [
         "_rels/.rels",
         "Weakly.nuspec",
         "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.dll",
         "lib/portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10/Weakly.XML",
-        "package/services/metadata/core-properties/23514b4aa3084f72a42c3b24ed3c2101.psmdcp",
+        "package/services/metadata/core-properties/2d19cb3afa52469baedf16b55ab91fa1.psmdcp",
         "[Content_Types].xml"
       ]
     }

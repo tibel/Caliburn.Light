@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
@@ -12,11 +12,7 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-- refactor DelegateCommand
-- no Expression compilation
-- add DelegateCommandBuilder
-- optimize StringLengthValidationRule
-- rename EventAggregator SubsribeAsync() to Subscribe()
+First Roslyn compatible release
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2015</copyright>
     <tags>Caliburn MVVM WPF WIN81 WPA81 Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
@@ -27,7 +23,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Weakly" version="[2.5.0,2.6)" />
+        <dependency id="Weakly" version="[2.6.0,2.7)" />
       </group>
     </dependencies>
   </metadata>
@@ -36,8 +32,7 @@
     <file src="..\src\Caliburn.Core\bin\Release\Caliburn.*" target="lib\portable-net451+win81+wpa81" />
 
     <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net451" />
-    <file src="..\src\Caliburn.Xaml.WIN81\bin\Release\Caliburn.*" target="lib\win81" />
-    <file src="..\src\Caliburn.Xaml.WPA81\bin\Release\Caliburn.*" target="lib\wpa81" />
+    <file src="..\src\Caliburn.Xaml.UAP\bin\Release\Caliburn.*" target="lib\uap10.0" />
 
     <file src="tools\**" target="tools" />
 
