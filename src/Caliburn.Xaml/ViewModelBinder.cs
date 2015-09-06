@@ -18,7 +18,7 @@ namespace Caliburn.Light
         /// Binds the specified viewModel to the view.
         /// </summary>
         ///<remarks>Passes the the view model, view and creation context (or null for default) to use in applying binding.</remarks>
-        public static Action<object, DependencyObject, object> Bind = (viewModel, view, context) =>
+        public static Action<object, DependencyObject, string> Bind = (viewModel, view, context) =>
         {
             Log.Info("Binding {0} and {1}.", view, viewModel);
 

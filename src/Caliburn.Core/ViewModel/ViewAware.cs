@@ -9,17 +9,17 @@ namespace Caliburn.Light
     /// </summary>
     public class ViewAware : BindableObject, IViewAware
     {
-        private readonly IDictionary<object, object> _views = new WeakValueDictionary<object, object>();
+        private readonly IDictionary<string, object> _views = new WeakValueDictionary<string, object>();
 
         /// <summary>
         /// The default view context.
         /// </summary>
-        public static readonly object DefaultContext = new object();
+        public static readonly string DefaultContext = "__default__";
 
         /// <summary>
         /// The view chache for this instance.
         /// </summary>
-        protected IDictionary<object, object> Views
+        protected IDictionary<string, object> Views
         {
             get { return _views; }
         }
@@ -29,7 +29,7 @@ namespace Caliburn.Light
         /// </summary>
         public event EventHandler<ViewAttachedEventArgs> ViewAttached;
 
-        void IViewAware.AttachView(object view, object context)
+        void IViewAware.AttachView(object view, string context)
         {
             Views[context ?? DefaultContext] = view;
             var nonGeneratedView = UIContext.GetFirstNonGeneratedView(view);
@@ -53,7 +53,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="context">The context denoting which view to retrieve.</param>
         /// <returns>The view.</returns>
-        public object GetView(object context = null)
+        public object GetView(string context = null)
         {
             return Views.GetValueOrDefault(context ?? DefaultContext);
         }

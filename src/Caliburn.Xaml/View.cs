@@ -15,7 +15,7 @@ namespace Caliburn.Light
         /// A dependency property for assigning a context to a particular portion of the UI.
         /// </summary>
         public static readonly DependencyProperty ContextProperty = DependencyProperty.RegisterAttached("Context",
-            typeof (object), typeof (View), new PropertyMetadata(null, OnContextChanged));
+            typeof (string), typeof (View), new PropertyMetadata(null, OnContextChanged));
 
         /// <summary>
         /// A dependency property for attaching a model to the UI.
@@ -48,9 +48,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="d">The element the context is attached to.</param>
         /// <returns>The context.</returns>
-        public static object GetContext(DependencyObject d)
+        public static string GetContext(DependencyObject d)
         {
-            return d.GetValue(ContextProperty);
+            return (string) d.GetValue(ContextProperty);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="d">The element to attach the context to.</param>
         /// <param name="value">The context.</param>
-        public static void SetContext(DependencyObject d, object value)
+        public static void SetContext(DependencyObject d, string value)
         {
             d.SetValue(ContextProperty, value);
         }
@@ -89,10 +89,11 @@ namespace Caliburn.Light
             var model = GetModel(targetLocation);
             if (model == null) return;
 
-            var view = ViewLocator.LocateForModel(model, targetLocation, e.NewValue);
+            var context = (string) e.NewValue;
+            var view = ViewLocator.LocateForModel(model, targetLocation, context);
 
             RemoveFromParent(view);
-            ViewModelBinder.Bind(model, view, e.NewValue);
+            ViewModelBinder.Bind(model, view, context);
             SetContentProperty(targetLocation, view);
         }
 

@@ -20,7 +20,7 @@ namespace Caliburn.Light
         /// <param name="context">The context.</param>
         /// <param name="settings">The dialog popup settings.</param>
         /// <returns>The dialog result.</returns>
-        public virtual bool? ShowDialog(object rootModel, object context = null,
+        public virtual bool? ShowDialog(object rootModel, string context = null,
             IDictionary<string, object> settings = null)
         {
             return CreateWindow(rootModel, true, context, settings).ShowDialog();
@@ -32,7 +32,7 @@ namespace Caliburn.Light
         /// <param name="rootModel">The root model.</param>
         /// <param name="context">The context.</param>
         /// <param name="settings">The optional window settings.</param>
-        public virtual void ShowWindow(object rootModel, object context = null,
+        public virtual void ShowWindow(object rootModel, string context = null,
             IDictionary<string, object> settings = null)
         {
             NavigationWindow navWindow = null;
@@ -59,7 +59,7 @@ namespace Caliburn.Light
         /// <param name="rootModel">The root model.</param>
         /// <param name="context">The view context.</param>
         /// <param name="settings">The optional popup settings.</param>
-        public virtual void ShowPopup(object rootModel, object context = null,
+        public virtual void ShowPopup(object rootModel, string context = null,
             IDictionary<string, object> settings = null)
         {
             var popup = CreatePopup(rootModel, settings);
@@ -113,7 +113,7 @@ namespace Caliburn.Light
         /// <param name="context">The view context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The window.</returns>
-        protected virtual Window CreateWindow(object rootModel, bool isDialog, object context,
+        protected virtual Window CreateWindow(object rootModel, bool isDialog, string context,
             IDictionary<string, object> settings)
         {
             var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, null, context), isDialog);
@@ -199,7 +199,7 @@ namespace Caliburn.Light
         /// <param name="context">The context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The page.</returns>
-        protected virtual Page CreatePage(object rootModel, object context, IDictionary<string, object> settings)
+        protected virtual Page CreatePage(object rootModel, string context, IDictionary<string, object> settings)
         {
             var view = EnsurePage(rootModel, ViewLocator.LocateForModel(rootModel, null, context));
             ViewModelBinder.Bind(rootModel, view, context);

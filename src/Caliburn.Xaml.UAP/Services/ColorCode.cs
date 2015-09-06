@@ -7,12 +7,12 @@ using Windows.UI;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Helper to convert a color code to a <see cref="Color"/>.
+    /// Helper to convert a color code to a <see cref="T:Color"/>.
     /// </summary>
     public static class ColorCode
     {
         /// <summary>
-        /// Converts a HEX color code to a <see cref="Color"/>.
+        /// Converts a HEX color code to a <see cref="T:Color"/>.
         /// </summary>
         /// <param name="hexValue">The hexadecimal value.</param>
         /// <returns>The color.</returns>

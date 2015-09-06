@@ -406,7 +406,7 @@ namespace Caliburn.Light
         /// <remarks>
         ///   Pass the model instance, display location (or null) and the context (or null) as parameters and receive a view instance.
         /// </remarks>
-        public static Func<object, DependencyObject, object, UIElement> LocateForModel =
+        public static Func<object, DependencyObject, string, UIElement> LocateForModel =
             (model, displayLocation, context) =>
             {
                 var viewAware = model as IViewAware;
