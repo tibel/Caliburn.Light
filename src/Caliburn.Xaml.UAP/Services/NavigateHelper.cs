@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Weakly;
+using Windows.UI.Xaml;
 
 namespace Caliburn.Light
 {
@@ -71,7 +73,7 @@ namespace Caliburn.Light
                 throw new InvalidOperationException(string.Format("No view was found for {0}. See the log for searched views.", viewModelType.FullName));
             }
 
-            var packUri = ViewLocator.DeterminePackUriFromType(viewModelType, _viewType);
+            var packUri = DeterminePackUriFromType(_viewType);
             var qs = BuildQueryString();
 
             // We need a value uri here otherwise there are problems using uri as a parameter
@@ -89,6 +91,25 @@ namespace Caliburn.Light
                 .Aggregate("?", (current, pair) => current + (pair.Key + "=" + Uri.EscapeDataString(pair.Value) + "&"));
 
             return result.Remove(result.Length - 1);
+        }
+
+        private static string DeterminePackUriFromType(Type viewType)
+        {
+            var viewAssemblyName = viewType.GetTypeInfo().Assembly.GetName().Name;
+            var appAssemblyName = Application.Current.GetType().GetTypeInfo().Assembly.GetName().Name;
+
+            var viewTypeName = viewType.FullName;
+            if (viewTypeName.StartsWith(viewAssemblyName))
+                viewTypeName = viewTypeName.Substring(viewAssemblyName.Length);
+
+            var uri = viewTypeName.Replace('.', '/') + ".xaml";
+
+            if (!appAssemblyName.Equals(viewAssemblyName))
+            {
+                return "/" + viewAssemblyName + ";component" + uri;
+            }
+
+            return uri;
         }
     }
 }

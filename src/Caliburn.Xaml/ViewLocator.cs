@@ -434,28 +434,6 @@ namespace Caliburn.Light
             };
 
         /// <summary>
-        /// Transforms a view type into a pack uri.
-        /// </summary>
-        public static Func<Type, Type, string> DeterminePackUriFromType = (viewModelType, viewType) =>
-        {
-            var viewAssemblyName = viewType.GetTypeInfo().Assembly.GetName().Name;
-            var appAssemblyName = Application.Current.GetType().GetTypeInfo().Assembly.GetName().Name;
-
-            var viewTypeName = viewType.FullName;
-            if (viewTypeName.StartsWith(viewAssemblyName))
-                viewTypeName = viewTypeName.Substring(viewAssemblyName.Length);
-
-            var uri = viewTypeName.Replace('.', '/') + ".xaml";
-
-            if (!appAssemblyName.Equals(viewAssemblyName))
-            {
-                return "/" + viewAssemblyName + ";component" + uri;
-            }
-
-            return uri;
-        };
-
-        /// <summary>
         /// When a view does not contain a code-behind file, we need to automatically call InitializeCompoent.
         /// </summary>
         /// <param name = "element">The element to initialize</param>
