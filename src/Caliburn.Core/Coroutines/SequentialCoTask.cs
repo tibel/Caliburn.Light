@@ -63,7 +63,6 @@ namespace Caliburn.Light
                 try
                 {
                     var next = _enumerator.Current;
-                    IoC.InjectProperties(next);
                     next.Completed += ChildCompleted;
                     next.BeginExecute(_context);
                 }

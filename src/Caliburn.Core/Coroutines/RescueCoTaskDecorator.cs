@@ -53,7 +53,6 @@ namespace Caliburn.Light
             try
             {
                 rescueCoTask = _coroutine(exception);
-                IoC.InjectProperties(rescueCoTask);
             }
             catch (Exception ex)
             {

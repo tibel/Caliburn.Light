@@ -264,25 +264,6 @@ namespace Caliburn.Light
             return entry != null ? entry.Select(x => x(this)) : new object[0];
         }
 
-        /// <summary>
-        /// Pushes dependencies into an existing instance based on interface properties with setters.
-        /// </summary>
-        /// <param name = "instance">The instance.</param>
-        public void InjectProperties(object instance)
-        {
-            var injectables = instance.GetType().GetRuntimeProperties()
-                .Where(p => p.CanRead && p.CanWrite && p.PropertyType.GetTypeInfo().IsInterface);
-
-            foreach (var propertyInfo in injectables)
-            {
-                var injection = GetAllInstances(propertyInfo.PropertyType).ToArray();
-                if (injection.Any())
-                {
-                    propertyInfo.SetValue(instance, injection.First(), null);
-                }
-            }
-        }
-
         private ContainerEntry GetOrCreateEntry(Type service, string key)
         {
             var entry = GetEntry(service, key);

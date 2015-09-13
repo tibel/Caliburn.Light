@@ -17,10 +17,5 @@ namespace Caliburn.Light
         /// Gets all instances of a particular type.
         /// </summary>
         IEnumerable<object> GetAllInstances(Type service);
-
-        /// <summary>
-        /// Passes an existing instance to the IoC container to enable dependencies to be injected.
-        /// </summary>
-        void InjectProperties(object instance);
     }
 }

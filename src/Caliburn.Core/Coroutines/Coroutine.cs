@@ -55,7 +55,6 @@ namespace Caliburn.Light
 
             try
             {
-                IoC.InjectProperties(coTask);
                 coTask.Completed += completed;
                 coTask.BeginExecute(context ?? new CoroutineExecutionContext());
             }

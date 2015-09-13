@@ -25,9 +25,5 @@ namespace Caliburn.Light
 
             return new[] { Activator.CreateInstance(service) };
         }
-
-        public void InjectProperties(object instance)
-        {
-        }
     }
 }

@@ -67,13 +67,5 @@ namespace Caliburn.Light
         {
             return GetAllInstances(typeof(T)).Cast<T>();
         }
-
-        /// <summary>
-        /// Passes an existing instance to the IoC container to enable dependencies to be injected.
-        /// </summary>
-        public static void InjectProperties(object instance)
-        {
-            ServiceLocator.InjectProperties(instance);
-        }
     }
 }
