@@ -40,7 +40,8 @@ namespace Caliburn.Light
         /// <returns>Whether or not navigation succeeded.</returns>
         public static bool NavigateToViewModel(this INavigationService navigationService, Type viewModelType, object parameter = null)
         {
-            var viewType = ViewLocator.LocateTypeForModelType(viewModelType, null, null);
+            var viewModelTypeResolver = IoC.GetInstance<IViewModelTypeResolver>();
+            var viewType = viewModelTypeResolver.GetViewType(viewModelType, null);
             if (viewType == null)
             {
                 throw new InvalidOperationException(

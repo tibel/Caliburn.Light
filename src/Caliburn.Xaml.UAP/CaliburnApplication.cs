@@ -180,7 +180,8 @@ namespace Caliburn.Light
             Initialize();
 
             var viewModel = IoC.GetInstance(viewModelType);
-            var view = ViewLocator.LocateForModel(viewModel, null, null);
+            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            var view = viewModelLocator.LocateForModel(viewModel, null);
 
             ViewModelBinder.Bind(viewModel, view, null);
 

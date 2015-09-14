@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,20 @@ namespace Caliburn.Light
     /// </summary>
     public class WindowManager : IWindowManager
     {
+        private readonly IViewModelLocator _viewModelLocator;
+
+        /// <summary>
+        /// Creates an instance of <see cref="WindowManager"/>.
+        /// </summary>
+        /// <param name="viewModelLocator">The view-model locator.</param>
+        public WindowManager(IViewModelLocator viewModelLocator)
+        {
+            if (viewModelLocator == null)
+                throw new ArgumentNullException(nameof(viewModelLocator));
+
+            _viewModelLocator = viewModelLocator;
+        }
+
         /// <summary>
         /// Shows a modal dialog for the specified model.
         /// </summary>
@@ -63,7 +78,7 @@ namespace Caliburn.Light
             IDictionary<string, object> settings = null)
         {
             var popup = CreatePopup(rootModel, settings);
-            var view = ViewLocator.LocateForModel(rootModel, popup, context);
+            var view = _viewModelLocator.LocateForModel(rootModel, context);
 
             popup.Child = view;
             ViewHelper.SetIsGenerated(popup, true);
@@ -116,7 +131,7 @@ namespace Caliburn.Light
         protected virtual Window CreateWindow(object rootModel, bool isDialog, string context,
             IDictionary<string, object> settings)
         {
-            var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, null, context), isDialog);
+            var view = EnsureWindow(rootModel, _viewModelLocator.LocateForModel(rootModel, context), isDialog);
             ViewModelBinder.Bind(rootModel, view, context);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
@@ -201,7 +216,7 @@ namespace Caliburn.Light
         /// <returns>The page.</returns>
         protected virtual Page CreatePage(object rootModel, string context, IDictionary<string, object> settings)
         {
-            var view = EnsurePage(rootModel, ViewLocator.LocateForModel(rootModel, null, context));
+            var view = EnsurePage(rootModel, _viewModelLocator.LocateForModel(rootModel, context));
             ViewModelBinder.Bind(rootModel, view, context);
 
             var haveDisplayName = rootModel as IHaveDisplayName;

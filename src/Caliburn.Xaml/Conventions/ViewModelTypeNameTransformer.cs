@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 #if !NETFX_CORE
@@ -20,10 +19,8 @@ namespace Caliburn.Light
     /// <summary>
     /// A strategy for determining which view to use for a given model.
     /// </summary>
-    public static class ViewLocator
+    public static class ViewModelTypeNameTransformer
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof (ViewLocator));
-
         //These fields are used for configuring the default type mappings. They can be changed using ConfigureTypeMappings().
         private static string _defaultSubNsViews;
         private static string _defaultSubNsViewModels;
@@ -43,7 +40,7 @@ namespace Caliburn.Light
         /// </summary>
         public static string ContextSeparator = ".";
 
-        static ViewLocator()
+        static ViewModelTypeNameTransformer()
         {
             ConfigureTypeMappings(new TypeMappingConfiguration());
         }
@@ -266,32 +263,6 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Retrieves the view from the IoC container or tries to create it if not found.
-        /// </summary>
-        /// <remarks>
-        ///   Pass the type of view as a parameter and recieve an instance of the view.
-        /// </remarks>
-        public static Func<Type, UIElement> GetOrCreateViewType = viewType =>
-        {
-            var view = IoC.GetAllInstances(viewType).FirstOrDefault() as UIElement;
-            if (view != null)
-            {
-                InitializeComponent(view);
-                return view;
-            }
-
-            var viewTypeInfo = viewType.GetTypeInfo();
-            var uiElementInfo = typeof (UIElement).GetTypeInfo();
-
-            if (viewTypeInfo.IsInterface || viewTypeInfo.IsAbstract || !uiElementInfo.IsAssignableFrom(viewTypeInfo))
-                return new TextBlock {Text = string.Format("Cannot create {0}.", viewType.FullName)};
-
-            view = (UIElement) Activator.CreateInstance(viewType);
-            InitializeComponent(view);
-            return view;
-        };
-
-        /// <summary>
         /// Modifies the name of the type to be used at design time.
         /// </summary>
         public static Func<string, string> ModifyModelTypeAtDesignTime = modelTypeName =>
@@ -318,6 +289,18 @@ namespace Caliburn.Light
         /// </remarks>
         public static Func<string, object, IEnumerable<string>> TransformName = (typeName, context) =>
         {
+            if (ViewHelper.IsInDesignTool)
+            {
+                typeName = ModifyModelTypeAtDesignTime(typeName);
+            }
+
+            typeName = typeName.Substring(
+                0,
+                typeName.IndexOf('`') < 0
+                    ? typeName.Length
+                    : typeName.IndexOf('`')
+                );
+
             Func<string, string> getReplaceString;
             if (context == null)
             {
@@ -346,102 +329,5 @@ namespace Caliburn.Light
             //Return only the names for the context
             return NameTransformer.Transform(typeName, getReplaceString).Where(n => n.EndsWith(contextstr));
         };
-
-        /// <summary>
-        ///   Locates the view type based on the specified model type.
-        /// </summary>
-        /// <returns>The view.</returns>
-        /// <remarks>
-        ///   Pass the model type, display location (or null) and the context instance (or null) as parameters and receive a view type.
-        /// </remarks>
-        public static Func<Type, DependencyObject, object, Type> LocateTypeForModelType =
-            (modelType, displayLocation, context) =>
-            {
-                var modelTypeName = modelType.FullName;
-
-                if (ViewHelper.IsInDesignTool)
-                {
-                    modelTypeName = ModifyModelTypeAtDesignTime(modelTypeName);
-                }
-
-                modelTypeName = modelTypeName.Substring(
-                    0,
-                    modelTypeName.IndexOf('`') < 0
-                        ? modelTypeName.Length
-                        : modelTypeName.IndexOf('`')
-                    );
-
-                var viewTypeList = TransformName(modelTypeName, context);
-                var viewType = TypeResolver.FindByName(viewTypeList);
-
-                if (viewType == null)
-                {
-                    Log.Warn("View not found. Searched: {0}.", string.Join(", ", viewTypeList));
-                }
-
-                return viewType;
-            };
-
-        /// <summary>
-        ///   Locates the view for the specified model type.
-        /// </summary>
-        /// <returns>The view.</returns>
-        /// <remarks>
-        ///   Pass the model type, display location (or null) and the context instance (or null) as parameters and receive a view instance.
-        /// </remarks>
-        public static Func<Type, DependencyObject, object, UIElement> LocateForModelType =
-            (modelType, displayLocation, context) =>
-            {
-                var viewType = LocateTypeForModelType(modelType, displayLocation, context);
-
-                return viewType == null
-                    ? new TextBlock {Text = string.Format("Cannot find view for {0}.", modelType)}
-                    : GetOrCreateViewType(viewType);
-            };
-
-        /// <summary>
-        ///   Locates the view for the specified model instance.
-        /// </summary>
-        /// <returns>The view.</returns>
-        /// <remarks>
-        ///   Pass the model instance, display location (or null) and the context (or null) as parameters and receive a view instance.
-        /// </remarks>
-        public static Func<object, DependencyObject, string, UIElement> LocateForModel =
-            (model, displayLocation, context) =>
-            {
-                var viewAware = model as IViewAware;
-                if (viewAware != null)
-                {
-                    var view = viewAware.GetView(context) as UIElement;
-                    if (view != null)
-                    {
-#if !SILVERLIGHT && !NETFX_CORE
-                        var windowCheck = view as Window;
-                        if (windowCheck == null ||
-                            (!windowCheck.IsLoaded && !(new WindowInteropHelper(windowCheck).Handle == IntPtr.Zero)))
-                        {
-                            Log.Info("Using cached view for {0}.", model);
-                            return view;
-                        }
-#else
-                    Log.Info("Using cached view for {0}.", model);
-                    return view;
-#endif
-                    }
-                }
-
-                return LocateForModelType(model.GetType(), displayLocation, context);
-            };
-
-        /// <summary>
-        /// When a view does not contain a code-behind file, we need to automatically call InitializeCompoent.
-        /// </summary>
-        /// <param name = "element">The element to initialize</param>
-        public static void InitializeComponent(object element)
-        {
-            var method = element.GetType().GetTypeInfo().GetDeclaredMethod("InitializeComponent");
-            if (method == null) return;
-            method.Invoke(element, null);
-        }
     }
 }

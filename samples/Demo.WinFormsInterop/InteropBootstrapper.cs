@@ -15,7 +15,8 @@ namespace Demo.WinFormsInterop
         protected override void Configure()
         {
             var viewModel = IoC.GetInstance<MainViewModel>();
-            var view = ViewLocator.LocateForModel(viewModel, null, null);
+            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            var view = viewModelLocator.LocateForModel(viewModel, null);
 
             ViewModelBinder.Bind(viewModel, view, null);
 

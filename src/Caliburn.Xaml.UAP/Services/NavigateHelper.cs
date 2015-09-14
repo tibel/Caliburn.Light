@@ -67,7 +67,8 @@ namespace Caliburn.Light
         public Uri BuildUri()
         {
             var viewModelType = typeof (TViewModel);
-            _viewType = ViewLocator.LocateTypeForModelType(viewModelType, null, null);
+            var viewModelTypeResolver = IoC.GetInstance<IViewModelTypeResolver>();
+            _viewType = viewModelTypeResolver.GetViewType(viewModelType, null);
             if (_viewType == null)
             {
                 throw new InvalidOperationException(string.Format("No view was found for {0}. See the log for searched views.", viewModelType.FullName));

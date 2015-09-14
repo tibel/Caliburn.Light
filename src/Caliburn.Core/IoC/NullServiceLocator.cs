@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Caliburn.Light
@@ -21,7 +22,7 @@ namespace Caliburn.Light
         {
             var typeInfo = service.GetTypeInfo();
             if (typeInfo.IsAbstract || typeInfo.IsInterface)
-                return new object[0];
+                return Enumerable.Empty<object>();
 
             return new[] { Activator.CreateInstance(service) };
         }

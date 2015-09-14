@@ -20,8 +20,14 @@ namespace Demo.SimpleMDI
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
+            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterPerRequest<IServiceLocator>(null, c => c);
+            _container.RegisterSingleton<IViewModelTypeResolver, NameBasedViewModelTypeResolver>();
+
             _container.RegisterPerRequest<ShellViewModel>();
             _container.RegisterPerRequest<TabViewModel>();
+
+            _container.RegisterPerRequest<ShellView>();
         }
 
         protected override void OnStartup(StartupEventArgs e)

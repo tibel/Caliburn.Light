@@ -103,9 +103,8 @@ namespace Caliburn.Light
         /// <param name="view">The view.</param>
         protected virtual void BindViewModel(DependencyObject view)
         {
-            ViewLocator.InitializeComponent(view);
-
-            var viewModel = ViewModelLocator.LocateForView(view);
+            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            var viewModel = viewModelLocator.LocateForView(view as UIElement);
             if (viewModel == null)
                 return;
 

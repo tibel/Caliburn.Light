@@ -74,7 +74,8 @@ namespace Caliburn.Light
             else
             {
                 var context = GetContext(targetLocation);
-                var view = ViewLocator.LocateForModel(e.NewValue, targetLocation, context);
+                var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+                var view = viewModelLocator.LocateForModel(e.NewValue, context);
 
                 RemoveFromParent(view);
                 ViewModelBinder.Bind(e.NewValue, view, context);
@@ -90,7 +91,8 @@ namespace Caliburn.Light
             if (model == null) return;
 
             var context = (string) e.NewValue;
-            var view = ViewLocator.LocateForModel(model, targetLocation, context);
+            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            var view = viewModelLocator.LocateForModel(model, context);
 
             RemoveFromParent(view);
             ViewModelBinder.Bind(model, view, context);
