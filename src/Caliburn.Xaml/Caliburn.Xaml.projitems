@@ -28,5 +28,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModelTypeResolver.cs" />
   </ItemGroup>
 </Project>
