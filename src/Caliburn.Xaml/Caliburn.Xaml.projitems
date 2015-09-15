@@ -18,7 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\NameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\RegExHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\TypeMappingConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Conventions\TypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\ViewModelTypeNameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\ViewTypeNameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IViewModelLocator.cs" />
