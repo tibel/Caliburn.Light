@@ -16,8 +16,17 @@ namespace Demo.ExceptionHandling
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
-            _container.RegisterPerRequest<ShellView>();
+
+            var typeResolver = new ViewModelTypeResolver();
+            typeResolver.Register<ShellView, ShellViewModel>();
+
+            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
+            _container.RegisterPerRequest<IServiceLocator>(null, c => c);
+            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
+
             _container.RegisterPerRequest<ShellViewModel>();
+            _container.RegisterPerRequest<ShellView>();
         }
 
         protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
