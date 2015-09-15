@@ -14,11 +14,10 @@ namespace Demo.WinFormsInterop
 
         protected override void Configure()
         {
-            var viewModel = IoC.GetInstance<MainViewModel>();
-            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+            var viewModel = new MainViewModel();
+            var viewModelBinder = new ViewModelBinder();
 
-            var view = viewModelLocator.LocateForModel(viewModel, null);
+            var view = new MainView();
             viewModelBinder.Bind(viewModel, view, null);
 
             var activator = viewModel as IActivate;
