@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+#if NETFX_CORE
+using Windows.UI.Xaml;
+#else
+using System.Windows;
+#endif
 
 namespace Caliburn.Light
 {
@@ -49,6 +55,8 @@ namespace Caliburn.Light
         /// <typeparam name="TViewModel">The view-model type.</typeparam>
         /// <param name="context">The context instance (or null).</param>
         public void AddMapping<TView, TViewModel>(string context = null)
+            where TView : UIElement
+            where TViewModel : INotifyPropertyChanged
         {
             var viewType = typeof(TView);
             var modelType = typeof(TViewModel);
