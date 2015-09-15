@@ -2,12 +2,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using Weakly;
-#if NETFX_CORE
-using Windows.UI.Xaml;
-#else
-using System.Windows;
-#endif
 
 namespace Caliburn.Light
 {
@@ -156,7 +150,7 @@ namespace Caliburn.Light
                 };
             }
 
-            nsTargetsRegEx.ForEach(t => func(t));
+            foreach(var t in nsTargetsRegEx) { func(t); }
 
             var suffix = _useNameSuffixesInMappings ? viewSuffix : string.Empty;
 

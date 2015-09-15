@@ -2,17 +2,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-#if !NETFX_CORE
-using System.Windows;
-using System.Windows.Controls;
-#else
-using Weakly;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-#endif
-#if !SILVERLIGHT && !NETFX_CORE
-using System.Windows.Interop;
-#endif
 
 namespace Caliburn.Light
 {
