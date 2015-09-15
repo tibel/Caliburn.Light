@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Caliburn.Light
 {
@@ -29,8 +28,9 @@ namespace Caliburn.Light
         {
         }
 
-        public void TryClose(object viewModel, ICollection<object> views, bool? dialogResult)
+        public bool TryClose(object view, bool? dialogResult)
         {
+            return false;
         }
     }
 }
