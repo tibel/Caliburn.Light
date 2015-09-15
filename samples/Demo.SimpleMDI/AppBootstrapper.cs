@@ -22,6 +22,7 @@ namespace Demo.SimpleMDI
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
             _container.RegisterPerRequest<IServiceLocator>(null, c => c);
+            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             var typeResolver = new NameBasedViewModelTypeResolver();
             typeResolver.AddAssembly(typeof(AppBootstrapper).Assembly);

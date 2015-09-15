@@ -1,5 +1,4 @@
-﻿using System;
-#if NETFX_CORE
+﻿#if NETFX_CORE
 using Windows.UI.Xaml;
 #else
 using System.Windows;
@@ -10,15 +9,17 @@ namespace Caliburn.Light
     /// <summary>
     /// Binds a view to a view model.
     /// </summary>
-    public static class ViewModelBinder
+    public class ViewModelBinder : IViewModelBinder
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof (ViewModelBinder));
 
         /// <summary>
         /// Binds the specified viewModel to the view.
         /// </summary>
-        ///<remarks>Passes the the view model, view and creation context (or null for default) to use in applying binding.</remarks>
-        public static Action<object, DependencyObject, string> Bind = (viewModel, view, context) =>
+        /// <param name="viewModel">The view model</param>
+        /// <param name="view">The view.</param>
+        /// <param name="context">The creation context (or null for default).</param>
+        public void Bind(object viewModel, UIElement view, string context)
         {
             Log.Info("Binding {0} and {1}.", view, viewModel);
 
@@ -37,6 +38,6 @@ namespace Caliburn.Light
                 Log.Info("Attaching {0} to {1}.", view, viewAware);
                 viewAware.AttachView(view, context);
             }
-        };
+        }
     }
 }

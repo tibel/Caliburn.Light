@@ -92,10 +92,12 @@ namespace Caliburn.Light
         private static void SetContentCore(DependencyObject targetLocation, object model, string context)
         {
             var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            var view = viewModelLocator.LocateForModel(model, context);
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
 
+            var view = viewModelLocator.LocateForModel(model, context);
             RemoveFromParent(view);
-            ViewModelBinder.Bind(model, view, context);
+
+            viewModelBinder.Bind(model, view, context);
             SetContentProperty(targetLocation, view);
         }
 

@@ -15,17 +15,22 @@ namespace Caliburn.Light
     public class WindowManager : IWindowManager
     {
         private readonly IViewModelLocator _viewModelLocator;
+        private readonly IViewModelBinder _viewModelBinder;
 
         /// <summary>
         /// Creates an instance of <see cref="WindowManager"/>.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
-        public WindowManager(IViewModelLocator viewModelLocator)
+        /// <param name="viewModelBinder">The view-model binder.</param>
+        public WindowManager(IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder)
         {
             if (viewModelLocator == null)
                 throw new ArgumentNullException(nameof(viewModelLocator));
+            if (viewModelBinder == null)
+                throw new ArgumentNullException(nameof(viewModelBinder));
 
             _viewModelLocator = viewModelLocator;
+            _viewModelBinder = viewModelBinder;
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Caliburn.Light
             popup.Child = view;
             ViewHelper.SetIsGenerated(popup, true);
 
-            ViewModelBinder.Bind(rootModel, popup, null);
+            _viewModelBinder.Bind(rootModel, popup, context);
 
             var activatable = rootModel as IActivate;
             if (activatable != null)
@@ -94,7 +99,7 @@ namespace Caliburn.Light
             var deactivator = rootModel as IDeactivate;
             if (deactivator != null)
             {
-                popup.Closed += delegate { deactivator.Deactivate(true); };
+                popup.Closed += (s, e) => deactivator.Deactivate(true);
             }
 
             popup.IsOpen = true;
@@ -132,7 +137,7 @@ namespace Caliburn.Light
             IDictionary<string, object> settings)
         {
             var view = EnsureWindow(rootModel, _viewModelLocator.LocateForModel(rootModel, context), isDialog);
-            ViewModelBinder.Bind(rootModel, view, context);
+            _viewModelBinder.Bind(rootModel, view, context);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Window.TitleProperty))
@@ -217,7 +222,7 @@ namespace Caliburn.Light
         protected virtual Page CreatePage(object rootModel, string context, IDictionary<string, object> settings)
         {
             var view = EnsurePage(rootModel, _viewModelLocator.LocateForModel(rootModel, context));
-            ViewModelBinder.Bind(rootModel, view, context);
+            _viewModelBinder.Bind(rootModel, view, context);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Page.TitleProperty))

@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\TypeMappingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\ViewModelTypeNameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\ViewTypeNameTransformer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IViewModelBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IViewModelTypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)View.cs" />

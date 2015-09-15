@@ -101,15 +101,17 @@ namespace Caliburn.Light
         /// Binds the view model.
         /// </summary>
         /// <param name="view">The view.</param>
-        protected virtual void BindViewModel(DependencyObject view)
+        protected virtual void BindViewModel(UIElement view)
         {
             var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            var viewModel = viewModelLocator.LocateForView(view as UIElement);
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+
+            var viewModel = viewModelLocator.LocateForView(view);
             if (viewModel == null)
                 return;
 
             TryInjectParameters(viewModel, _currentParameter);
-            ViewModelBinder.Bind(viewModel, view, null);
+            viewModelBinder.Bind(viewModel, view, null);
 
             var activator = viewModel as IActivate;
             if (activator != null)

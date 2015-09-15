@@ -16,9 +16,10 @@ namespace Demo.WinFormsInterop
         {
             var viewModel = IoC.GetInstance<MainViewModel>();
             var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            var view = viewModelLocator.LocateForModel(viewModel, null);
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
 
-            ViewModelBinder.Bind(viewModel, view, null);
+            var view = viewModelLocator.LocateForModel(viewModel, null);
+            viewModelBinder.Bind(viewModel, view, null);
 
             var activator = viewModel as IActivate;
             if (activator != null)
