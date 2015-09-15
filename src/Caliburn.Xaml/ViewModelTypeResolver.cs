@@ -43,12 +43,12 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// 
+        /// Adds a view view-model mapping.
         /// </summary>
         /// <typeparam name="TView">The view type.</typeparam>
         /// <typeparam name="TViewModel">The view-model type.</typeparam>
-        /// <param name="context"></param>
-        public void Register<TView, TViewModel>(string context = null)
+        /// <param name="context">The context instance (or null).</param>
+        public void AddMapping<TView, TViewModel>(string context = null)
         {
             var viewType = typeof(TView);
             var modelType = typeof(TViewModel);
