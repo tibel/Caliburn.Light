@@ -51,12 +51,20 @@ namespace Caliburn.Light
         bool CanGoBack { get; }
 
         /// <summary>
-        ///   Navigates to the specified content.
+        /// Navigates to the specified view type.
         /// </summary>
-        /// <param name="sourcePageType"> The <see cref="System.Type" /> to navigate to. </param>
+        /// <param name="sourcePageType"> The view type to navigate to.</param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
         bool Navigate(Type sourcePageType, object parameter = null);
+
+        /// <summary>
+        /// Navigate to the specified model type.
+        /// </summary>
+        /// <param name="viewModelType">The model type to navigate to.</param>
+        /// <param name="parameter">The object parameter to pass to the target.</param>
+        /// <returns>Whether or not navigation succeeded.</returns>
+        bool NavigateToViewModel(Type viewModelType, object parameter = null);
 
         /// <summary>
         ///   Navigates forward.

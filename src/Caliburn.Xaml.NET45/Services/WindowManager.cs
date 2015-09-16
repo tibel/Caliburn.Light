@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,25 @@ namespace Caliburn.Light
     /// </summary>
     public class WindowManager : IWindowManager
     {
+        private readonly IViewModelLocator _viewModelLocator;
+        private readonly IViewModelBinder _viewModelBinder;
+
+        /// <summary>
+        /// Creates an instance of <see cref="WindowManager"/>.
+        /// </summary>
+        /// <param name="viewModelLocator">The view-model locator.</param>
+        /// <param name="viewModelBinder">The view-model binder.</param>
+        public WindowManager(IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder)
+        {
+            if (viewModelLocator == null)
+                throw new ArgumentNullException(nameof(viewModelLocator));
+            if (viewModelBinder == null)
+                throw new ArgumentNullException(nameof(viewModelBinder));
+
+            _viewModelLocator = viewModelLocator;
+            _viewModelBinder = viewModelBinder;
+        }
+
         /// <summary>
         /// Shows a modal dialog for the specified model.
         /// </summary>
@@ -63,12 +83,12 @@ namespace Caliburn.Light
             IDictionary<string, object> settings = null)
         {
             var popup = CreatePopup(rootModel, settings);
-            var view = ViewLocator.LocateForModel(rootModel, popup, context);
+            var view = _viewModelLocator.LocateForModel(rootModel, context);
 
             popup.Child = view;
             ViewHelper.SetIsGenerated(popup, true);
 
-            ViewModelBinder.Bind(rootModel, popup, null);
+            _viewModelBinder.Bind(rootModel, popup, context);
 
             var activatable = rootModel as IActivate;
             if (activatable != null)
@@ -79,7 +99,7 @@ namespace Caliburn.Light
             var deactivator = rootModel as IDeactivate;
             if (deactivator != null)
             {
-                popup.Closed += delegate { deactivator.Deactivate(true); };
+                popup.Closed += (s, e) => deactivator.Deactivate(true);
             }
 
             popup.IsOpen = true;
@@ -116,8 +136,8 @@ namespace Caliburn.Light
         protected virtual Window CreateWindow(object rootModel, bool isDialog, string context,
             IDictionary<string, object> settings)
         {
-            var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, null, context), isDialog);
-            ViewModelBinder.Bind(rootModel, view, context);
+            var view = EnsureWindow(rootModel, _viewModelLocator.LocateForModel(rootModel, context), isDialog);
+            _viewModelBinder.Bind(rootModel, view, context);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Window.TitleProperty))
@@ -201,8 +221,8 @@ namespace Caliburn.Light
         /// <returns>The page.</returns>
         protected virtual Page CreatePage(object rootModel, string context, IDictionary<string, object> settings)
         {
-            var view = EnsurePage(rootModel, ViewLocator.LocateForModel(rootModel, null, context));
-            ViewModelBinder.Bind(rootModel, view, context);
+            var view = EnsurePage(rootModel, _viewModelLocator.LocateForModel(rootModel, context));
+            _viewModelBinder.Bind(rootModel, view, context);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Page.TitleProperty))

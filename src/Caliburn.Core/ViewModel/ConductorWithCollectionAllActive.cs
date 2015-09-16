@@ -2,7 +2,6 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using Weakly;
 
 namespace Caliburn.Light
 {
@@ -30,17 +29,17 @@ namespace Caliburn.Light
                         switch (e.Action)
                         {
                             case NotifyCollectionChangedAction.Add:
-                                e.NewItems.OfType<IChild>().ForEach(x => x.Parent = this);
+                                foreach(var x in e.NewItems.OfType<IChild>()) { x.Parent = this; }
                                 break;
                             case NotifyCollectionChangedAction.Remove:
-                                e.OldItems.OfType<IChild>().ForEach(x => x.Parent = null);
+                                foreach (var x in e.OldItems.OfType<IChild>()) { x.Parent = null; }
                                 break;
                             case NotifyCollectionChangedAction.Replace:
-                                e.NewItems.OfType<IChild>().ForEach(x => x.Parent = this);
-                                e.OldItems.OfType<IChild>().ForEach(x => x.Parent = null);
+                                foreach (var x in e.NewItems.OfType<IChild>()) { x.Parent = this; }
+                                foreach (var x in e.OldItems.OfType<IChild>()) { x.Parent = null; }
                                 break;
                             case NotifyCollectionChangedAction.Reset:
-                                _items.OfType<IChild>().ForEach(x => x.Parent = this);
+                                foreach (var x in _items.OfType<IChild>()) { x.Parent = this; }
                                 break;
                         }
                     };
@@ -59,7 +58,7 @@ namespace Caliburn.Light
                 /// </summary>
                 protected override void OnActivate()
                 {
-                    _items.OfType<IActivate>().ForEach(x => x.Activate());
+                    foreach(var x in _items.OfType<IActivate>()) { x.Activate(); }
                 }
 
                 /// <summary>
@@ -68,7 +67,7 @@ namespace Caliburn.Light
                 /// <param name="close">Inidicates whether this instance will be closed.</param>
                 protected override void OnDeactivate(bool close)
                 {
-                    _items.OfType<IDeactivate>().ForEach(x => x.Deactivate(close));
+                    foreach (var x in _items.OfType<IDeactivate>()) { x.Deactivate(close); }
                     if (close)
                     {
                         _items.Clear();
@@ -88,7 +87,7 @@ namespace Caliburn.Light
 
                     if (!canClose && closeable.Any())
                     {
-                        closeable.OfType<IDeactivate>().ForEach(x => x.Deactivate(true));
+                        foreach (var x in closeable.OfType<IDeactivate>()) { x.Deactivate(true); }
                         _items.RemoveRange(closeable);
                     }
 

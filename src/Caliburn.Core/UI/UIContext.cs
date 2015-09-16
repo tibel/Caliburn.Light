@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -161,15 +160,14 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Tries to close the specified view model.
+        /// Tries to close the specified view.
         /// </summary>
-        /// <param name="viewModel">The view model to close.</param>
-        /// <param name="views">The associated views.</param>
+        /// <param name="view">The view to close.</param>
         /// <param name="dialogResult">The dialog result.</param>
-        /// <returns>An <see cref="Action"/> to close the view model.</returns>
-        public static void TryClose(object viewModel, ICollection<object> views, bool? dialogResult)
+        /// <returns>true, when close could be initiated; otherwise false.</returns>
+        public static bool TryClose(object view, bool? dialogResult)
         {
-            ViewAdapter.TryClose(viewModel, views, dialogResult);
+            return ViewAdapter.TryClose(view, dialogResult);
         }
 
         #endregion

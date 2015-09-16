@@ -143,21 +143,21 @@ namespace Caliburn.Light
             if (selectedHandlers.Count == 0) return;
             var isUIThread = UIContext.CheckAccess();
 
-            selectedHandlers
+            var currentThreadHandlers = selectedHandlers
                 .Where(h => h.ThreadOption == ThreadOption.PublisherThread ||
-                            isUIThread && h.ThreadOption == ThreadOption.UIThread)
-                .ForEach(h => h.Handle(message));
+                            isUIThread && h.ThreadOption == ThreadOption.UIThread);
+            foreach (var h in currentThreadHandlers) { h.Handle(message); }
 
             if (!isUIThread)
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    UIContext.Run(() => uiThreadHandlers.ForEach(h => h.Handle(message))).ObserveException();
+                    UIContext.Run(() => { foreach (var h in uiThreadHandlers) { h.Handle(message); } }).ObserveException();
             }
 
-            var backgroundHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
-            if (backgroundHandlers.Count > 0)
-                Task.Run(() => backgroundHandlers.ForEach(h => h.Handle(message))).ObserveException();
+            var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
+            if (backgroundThreadHandlers.Count > 0)
+                Task.Run(() => { foreach (var h in backgroundThreadHandlers) { h.Handle(message); } }).ObserveException();
         }
     }
 }

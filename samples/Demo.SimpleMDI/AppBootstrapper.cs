@@ -20,8 +20,23 @@ namespace Demo.SimpleMDI
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
+
+            var typeResolver = new ViewModelTypeResolver();
+            typeResolver.AddMapping<ShellView, ShellViewModel>();
+            typeResolver.AddMapping<TabView, TabViewModel>();
+
+            //var typeResolver = new NameBasedViewModelTypeResolver();
+            //typeResolver.AddAssembly(typeof(AppBootstrapper).Assembly);
+
+            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
+            _container.RegisterPerRequest<IServiceLocator>(null, c => c);
+            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
+
             _container.RegisterPerRequest<ShellViewModel>();
+            _container.RegisterPerRequest<ShellView>();
             _container.RegisterPerRequest<TabViewModel>();
+            _container.RegisterPerRequest<TabView>();
         }
 
         protected override void OnStartup(StartupEventArgs e)

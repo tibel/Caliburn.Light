@@ -101,7 +101,7 @@ namespace Caliburn.Light
         protected override void OnAttached()
         {
             base.OnAttached();
-            Parameters.ForEach(x => ((Parameter)x).MakeAwareOf(this));
+            foreach (var x in Parameters) { ((Parameter)x).MakeAwareOf(this); }
 
             UpdateMethodInfo();
             UpdateEnabledState();

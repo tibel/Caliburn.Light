@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
@@ -61,61 +60,44 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Tries to close the specified view model.
+        /// Tries to close the specified view.
         /// </summary>
-        /// <param name="viewModel">The view model to close.</param>
-        /// <param name="views">The associated views.</param>
+        /// <param name="view">The view to close.</param>
         /// <param name="dialogResult">The dialog result.</param>
-        public void TryClose(object viewModel, ICollection<object> views, bool? dialogResult)
+        /// <returns>true, when close could be initiated; otherwise false.</returns>
+        public bool TryClose(object view, bool? dialogResult)
         {
-            var child = viewModel as IChild;
-            if (child != null)
+            var viewType = view.GetType();
+            var closeMethod = viewType.GetRuntimeMethod("Close", new Type[0]);
+            if (closeMethod != null)
             {
-                var conductor = child.Parent as IConductor;
-                if (conductor != null)
+                var isClosed = false;
+                if (dialogResult != null)
                 {
-                    conductor.DeactivateItem(viewModel, true);
-                    return;
+                    var resultProperty = viewType.GetRuntimeProperty("DialogResult");
+                    if (resultProperty != null)
+                    {
+                        resultProperty.SetValue(view, dialogResult, null);
+                        isClosed = true;
+                    }
                 }
+
+                if (!isClosed)
+                {
+                    closeMethod.Invoke(view, null);
+                }
+
+                return true;
             }
 
-            foreach (var contextualView in views)
+            var isOpenProperty = viewType.GetRuntimeProperty("IsOpen");
+            if (isOpenProperty != null)
             {
-                var viewType = contextualView.GetType();
-                var closeMethod = viewType.GetRuntimeMethod("Close", new Type[0]);
-                if (closeMethod != null)
-                {
-#if !SILVERLIGHT && !NETFX_CORE
-                    var isClosed = false;
-                    if (dialogResult != null)
-                    {
-                        var resultProperty = contextualView.GetType().GetProperty("DialogResult");
-                        if (resultProperty != null)
-                        {
-                            resultProperty.SetValue(contextualView, dialogResult, null);
-                            isClosed = true;
-                        }
-                    }
-
-                    if (!isClosed)
-                    {
-                        closeMethod.Invoke(contextualView, null);
-                    }
-#else
-                    closeMethod.Invoke(contextualView, null);
-#endif
-                    return;
-                }
-
-                var isOpenProperty = viewType.GetRuntimeProperty("IsOpen");
-                if (isOpenProperty != null)
-                {
-                    isOpenProperty.SetValue(contextualView, false, null);
-                    return;
-                }
+                isOpenProperty.SetValue(view, false, null);
+                return true;
             }
 
-            LogManager.GetLogger(typeof(ViewAdapter)).Info("TryClose requires an IChild.Parent IConductor or a view with a Close method or IsOpen property.");
+            return false;
         }
     }
 }

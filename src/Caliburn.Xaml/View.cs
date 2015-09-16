@@ -74,11 +74,7 @@ namespace Caliburn.Light
             else
             {
                 var context = GetContext(targetLocation);
-                var view = ViewLocator.LocateForModel(e.NewValue, targetLocation, context);
-
-                RemoveFromParent(view);
-                ViewModelBinder.Bind(e.NewValue, view, context);
-                SetContentProperty(targetLocation, view);
+                SetContentCore(targetLocation, e.NewValue, context);
             }
         }
 
@@ -90,10 +86,18 @@ namespace Caliburn.Light
             if (model == null) return;
 
             var context = (string) e.NewValue;
-            var view = ViewLocator.LocateForModel(model, targetLocation, context);
+            SetContentCore(targetLocation, model, context);
+        }
 
+        private static void SetContentCore(DependencyObject targetLocation, object model, string context)
+        {
+            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+
+            var view = viewModelLocator.LocateForModel(model, context);
             RemoveFromParent(view);
-            ViewModelBinder.Bind(model, view, context);
+
+            viewModelBinder.Bind(model, view, context);
             SetContentProperty(targetLocation, view);
         }
 

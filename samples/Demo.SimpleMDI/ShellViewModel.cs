@@ -1,17 +1,27 @@
 ﻿using Caliburn.Light;
+using System;
 using System.Threading.Tasks;
 
 namespace Demo.SimpleMDI
 {
     public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
     {
-        private int _count = 1;
+        private readonly Func<TabViewModel> _createTabViewModel;
+        private int _count = 0;
         private bool _canClosePending;
+
+        public ShellViewModel(Func<TabViewModel> createTabViewModel)
+        {
+            if (createTabViewModel == null)
+                throw new ArgumentNullException(nameof(createTabViewModel));
+
+            _createTabViewModel = createTabViewModel;
+        }
 
         public void OpenTab()
         {
-            var tab = IoC.GetInstance<TabViewModel>();
-            tab.DisplayName = "Tab " + _count++;
+            var tab = _createTabViewModel();
+            tab.DisplayName = "Tab " + ++_count;
             ActivateItem(tab);
         }
 

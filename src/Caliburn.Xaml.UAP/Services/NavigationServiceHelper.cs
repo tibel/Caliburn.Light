@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Caliburn.Light
 {
     /// <summary>
@@ -32,25 +31,6 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Navigate to the specified model type.
-        /// </summary>
-        /// <param name="navigationService">The navigation service.</param>
-        /// <param name="viewModelType">The model type to navigate to.</param>
-        /// <param name="parameter">The object parameter to pass to the target.</param>
-        /// <returns>Whether or not navigation succeeded.</returns>
-        public static bool NavigateToViewModel(this INavigationService navigationService, Type viewModelType, object parameter = null)
-        {
-            var viewType = ViewLocator.LocateTypeForModelType(viewModelType, null, null);
-            if (viewType == null)
-            {
-                throw new InvalidOperationException(
-                    string.Format("No view was found for {0}. See the log for searched views.", viewModelType.FullName));
-            }
-
-            return navigationService.Navigate(viewType, parameter);
-        }
-
-        /// <summary>
         /// Creates a Uri builder based on a view model type.
         /// </summary>
         /// <typeparam name="TViewModel">The type of the view model.</typeparam>
@@ -58,7 +38,7 @@ namespace Caliburn.Light
         /// <returns>The builder.</returns>
         public static NavigateHelper<TViewModel> For<TViewModel>(this INavigationService navigationService)
         {
-            return new NavigateHelper<TViewModel>().AttachTo(navigationService);
+            return new NavigateHelper<TViewModel>(navigationService);
         }
     }
 }

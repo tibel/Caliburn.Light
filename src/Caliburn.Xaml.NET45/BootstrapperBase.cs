@@ -29,9 +29,6 @@ namespace Caliburn.Light
 
             try
             {
-                TypeResolver.Reset();
-                SelectAssemblies().ForEach(TypeResolver.AddAssembly);
-
                 Application = Application.Current;
                 if (Application != null)
                     PrepareApplication();
@@ -62,15 +59,6 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void Configure()
         {
-        }
-
-        /// <summary>
-        /// Override to tell the framework where to find assemblies to inspect for views, etc.
-        /// </summary>
-        /// <returns>A list of assemblies to inspect.</returns>
-        protected virtual IEnumerable<Assembly> SelectAssemblies()
-        {
-            return new[] {GetType().Assembly};
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
