@@ -1,4 +1,5 @@
 ﻿using Caliburn.Light;
+using System.Reflection;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml.Controls;
 
@@ -27,7 +28,17 @@ namespace Demo.HelloSpecialValues
             IoC.Initialize(_container);
 
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
+
+            var typeResolver = new NameBasedViewModelTypeResolver();
+            typeResolver.AddAssembly(typeof(App).GetTypeInfo().Assembly);
+
+            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
+            _container.RegisterPerRequest<IServiceLocator>(null, c => c);
+            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
+
             _container.RegisterSingleton<MainPageViewModel>();
+            _container.RegisterSingleton<MainPage>();
         }
 
         protected override void PrepareViewFirst(Frame rootFrame)
