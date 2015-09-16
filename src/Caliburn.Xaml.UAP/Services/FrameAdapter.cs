@@ -231,9 +231,9 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Navigates to the specified content.
+        /// Navigates to the specified view type.
         /// </summary>
-        /// <param name="sourcePageType"> The <see cref="System.Type" /> to navigate to. </param>
+        /// <param name="sourcePageType"> The view type to navigate to.</param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
         public bool Navigate(Type sourcePageType, object parameter = null)
@@ -241,6 +241,25 @@ namespace Caliburn.Light
             if (parameter == null)
                 return _frame.Navigate(sourcePageType);
             return _frame.Navigate(sourcePageType, parameter);
+        }
+
+        /// <summary>
+        /// Navigate to the specified model type.
+        /// </summary>
+        /// <param name="viewModelType">The model type to navigate to.</param>
+        /// <param name="parameter">The object parameter to pass to the target.</param>
+        /// <returns>Whether or not navigation succeeded.</returns>
+        public bool NavigateToViewModel(Type viewModelType, object parameter = null)
+        {
+            var viewModelTypeResolver = IoC.GetInstance<IViewModelTypeResolver>();
+            var viewType = viewModelTypeResolver.GetViewType(viewModelType, null);
+            if (viewType == null)
+            {
+                throw new InvalidOperationException(
+                    string.Format("No view was found for {0}. See the log for searched views.", viewModelType.FullName));
+            }
+
+            return Navigate(viewType, parameter);
         }
 
         /// <summary>
