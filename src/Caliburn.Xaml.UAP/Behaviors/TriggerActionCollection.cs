@@ -27,7 +27,7 @@ namespace Caliburn.Light
         public void Attach(DependencyObject dependencyObject)
         {
             _associatedObject = dependencyObject;
-            this.ForEach(x => ((TriggerAction)x).Attach(_associatedObject));
+            foreach (var x in this) { ((TriggerAction)x).Attach(_associatedObject); }
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Caliburn.Light
         /// </summary>
         public void Detach()
         {
-            this.ForEach(x => ((TriggerAction)x).Detach());
+            foreach (var x in this) { ((TriggerAction)x).Detach(); }
             _associatedObject = null;
         }
 
@@ -60,9 +60,9 @@ namespace Caliburn.Light
                     OnItemRemoved(sender[(int)e.Index]);
                     break;
                 case CollectionChange.Reset:
-                    sender.ForEach(VerifyType);
-                    sender.ForEach(OnItemRemoved);
-                    sender.ForEach(x => OnItemAdded(x, associatedObject));
+                    foreach (var x in sender) { VerifyType(x); }
+                    foreach (var x in sender) { OnItemRemoved(x); }
+                    foreach (var x in sender) { OnItemAdded(x, associatedObject); }
                     break;
             }
         }

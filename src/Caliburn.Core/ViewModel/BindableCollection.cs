@@ -104,7 +104,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException("collection");
 
             CheckReentrancy();
-            collection.ForEach(item => Items.Add(item));
+            foreach (var item in collection) { Items.Add(item); }
             OnCollectionRefreshed();
         }
 
@@ -118,7 +118,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException("collection");
 
             CheckReentrancy();
-            collection.ForEach(item => Items.Remove(item));
+            foreach (var item in collection) { Items.Remove(item); }
             OnCollectionRefreshed();
         }
     }
