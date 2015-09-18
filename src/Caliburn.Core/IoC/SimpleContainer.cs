@@ -46,7 +46,10 @@ namespace Caliburn.Light
         /// <returns>True if a handler is registered; false otherwise.</returns>
         public bool IsRegistered(Type service, string key = null)
         {
-            return GetEntry(service, key) != null;
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
+            return _entries.Any(x => x.Service == service && x.Key == key);
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace Caliburn.Light
         /// <returns>True if a handler is registered; false otherwise.</returns>
         public bool IsRegistered<TService>(string key = null)
         {
-            return GetEntry(typeof(TService), key) != null;
+            return IsRegistered(typeof(TService), key);
         }
 
         /// <summary>
@@ -187,13 +190,15 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name = "service">The service.</param>
         /// <param name = "key">The key.</param>
-        public void UnregisterHandler(Type service, string key = null)
+        /// <returns>true if handler is successfully removed; otherwise, false.</returns>
+        public bool UnregisterHandler(Type service, string key = null)
         {
-            var entry = GetEntry(service, key);
-            if (entry != null)
-            {
-                _entries.Remove(entry);
-            }
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
+            var entry = _entries.FirstOrDefault(x => x.Service == service && x.Key == key);
+            if (entry == null) return false;
+            return _entries.Remove(entry);
         }
 
         /// <summary>
@@ -201,9 +206,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TService">The of the service.</typeparam>
         /// <param name = "key">The key.</param>
-        public void UnregisterHandler<TService>(string key = null)
+        /// <returns>true if handler is successfully removed; otherwise, false.</returns>
+        public bool UnregisterHandler<TService>(string key = null)
         {
-            UnregisterHandler(typeof(TService), key);
+            return UnregisterHandler(typeof(TService), key);
         }
 
         /// <summary>
@@ -214,15 +220,14 @@ namespace Caliburn.Light
         /// <returns>The instance, or null if a handler is not found.</returns>
         public object GetInstance(Type service, string key)
         {
-            var entry = GetEntry(service, key);
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
+            var entry = _entries.FirstOrDefault(x => x.Service == service && x.Key == key)
+                ?? _entries.FirstOrDefault(x => x.Service == service);
             if (entry != null)
             {
                 return entry.Single()(this);
-            }
-
-            if (service == null)
-            {
-                throw new InvalidOperationException(string.Format("Could not locate an instance for key '{0}'.", key));
             }
 
             var serviceType = service.GetTypeInfo();
@@ -260,13 +265,23 @@ namespace Caliburn.Light
         /// <returns>All the instances or an empty enumerable if none are found.</returns>
         public IEnumerable<object> GetAllInstances(Type service)
         {
-            var entry = GetEntry(service, null);
-            return entry != null ? entry.Select(x => x(this)) : new object[0];
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
+            var instances = _entries
+                .Where(x => x.Service == service)
+                .SelectMany(e => e.Select(x => x(this)))
+                .ToArray();
+
+            return instances;
         }
 
         private ContainerEntry GetOrCreateEntry(Type service, string key)
         {
-            var entry = GetEntry(service, key);
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
+            var entry = _entries.FirstOrDefault(x => x.Service == service && x.Key == key);
             if (entry == null)
             {
                 entry = new ContainerEntry { Service = service, Key = key };
@@ -276,22 +291,6 @@ namespace Caliburn.Light
             return entry;
         }
 
-        private ContainerEntry GetEntry(Type service, string key)
-        {
-            if (service == null)
-            {
-                return _entries.FirstOrDefault(x => x.Key == key);
-            }
-
-            if (key == null)
-            {
-                return _entries.FirstOrDefault(x => x.Service == service && x.Key == null)
-                       ?? _entries.FirstOrDefault(x => x.Service == service);
-            }
-
-            return _entries.FirstOrDefault(x => x.Service == service && x.Key == key);
-        }
-
         /// <summary>
         /// Actually does the work of creating the instance and satisfying it's constructor dependencies.
         /// </summary>
@@ -299,7 +298,17 @@ namespace Caliburn.Light
         /// <returns></returns>
         protected object BuildInstance(Type type)
         {
-            var args = DetermineConstructorArgs(type);
+            var constructor = type.GetTypeInfo().DeclaredConstructors
+                .OrderByDescending(c => c.GetParameters().Length)
+                .FirstOrDefault(c => c.IsPublic);
+
+            if (constructor == null)
+                throw new InvalidOperationException(string.Format("Type '{0}' has no public constructor.", type));
+
+            var args = constructor.GetParameters()
+                .Select(info => GetInstance(info.ParameterType, null))
+                .ToArray();
+
             return ActivateInstance(type, args);
         }
 
@@ -312,24 +321,6 @@ namespace Caliburn.Light
         protected virtual object ActivateInstance(Type type, object[] args)
         {
             return (args.Length > 0) ? Activator.CreateInstance(type, args) : Activator.CreateInstance(type);
-        }
-
-        private object[] DetermineConstructorArgs(Type implementation)
-        {
-            var args = new List<object>();
-            var constructor = SelectEligibleConstructor(implementation);
-
-            if (constructor != null)
-                args.AddRange(constructor.GetParameters().Select(info => GetInstance(info.ParameterType, null)));
-
-            return args.ToArray();
-        }
-
-        private static ConstructorInfo SelectEligibleConstructor(Type type)
-        {
-            return type.GetTypeInfo().DeclaredConstructors
-                .OrderByDescending(c => c.GetParameters().Length)
-                .FirstOrDefault(c => c.IsPublic);
         }
 
         private class ContainerEntry : List<Func<SimpleContainer, object>>
