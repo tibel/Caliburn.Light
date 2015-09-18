@@ -4,18 +4,24 @@ using System.Collections.Generic;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// 
+    /// The generic Service Locator interface. 
+    /// This interface is used to retrieve services (instances identified by type and optional name) from a container.
     /// </summary>
     public interface IServiceLocator
     {
         /// <summary>
-        /// Gets an instance by type and key.
+        /// Requests an instance.
         /// </summary>
-        object GetInstance(Type service, string key);
+        /// <param name="service">The service.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>The instance.</returns>
+        object GetInstance(Type service, string key = null);
 
         /// <summary>
-        /// Gets all instances of a particular type.
+        /// Requests all instances of a given type.
         /// </summary>
+        /// <param name="service">The service.</param>
+        /// <returns>All the instances or an empty enumerable if none are found.</returns>
         IEnumerable<object> GetAllInstances(Type service);
     }
 }
