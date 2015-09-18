@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Weakly;
@@ -8,25 +10,18 @@ namespace Caliburn.Light
     /// <summary>
     /// Builds an <see cref="IDelegateCommand"/> in a strongly typed fashion.
     /// </summary>
-    /// <typeparam name="TTarget">The type of the command target.</typeparam>
-    public sealed class DelegateCommandBuilder<TTarget>
-        where TTarget : class
+    public sealed class DelegateCommandBuilder
     {
-        private readonly TTarget _target;
-        private Action<TTarget> _execute;
-        private Func<TTarget, bool> _canExecute;
-        private string _propertyName;
+        private Action _execute;
+        private Func<bool> _canExecute;
+        private INotifyPropertyChanged _target;
+        private string[] _propertyNames;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateCommandBuilder&lt;TTarget&gt;"/> class.
+        /// Initializes a new instance of the <see cref="DelegateCommandBuilder"/> class.
         /// </summary>
-        /// <param name="target">The command target.</param>
-        public DelegateCommandBuilder(TTarget target)
+        public DelegateCommandBuilder()
         {
-            if (target == null)
-                throw new ArgumentNullException("target");
-
-            _target = target;
         }
 
         /// <summary>
@@ -34,10 +29,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> Execute([EmptyCapture] Action<TTarget> execute)
+        public DelegateCommandBuilder OnExecute(Action execute)
         {
             if (execute == null)
-                throw new ArgumentNullException("execute");
+                throw new ArgumentNullException(nameof(execute));
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
@@ -50,14 +45,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> Execute([EmptyCapture] Func<TTarget, Task> execute)
+        public DelegateCommandBuilder OnExecute(Func<Task> execute)
         {
             if (execute == null)
-                throw new ArgumentNullException("execute");
+                throw new ArgumentNullException(nameof(execute));
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
-            _execute = t => execute(t).ObserveException().Watch();
+            _execute = () => execute().ObserveException().Watch();
             return this;
         }
 
@@ -66,10 +61,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> CanExecute([EmptyCapture] Func<TTarget, bool> canExecute)
+        public DelegateCommandBuilder OnCanExecute(Func<bool> canExecute)
         {
             if (canExecute == null)
-                throw new ArgumentNullException("canExecute");
+                throw new ArgumentNullException(nameof(canExecute));
             if (_canExecute != null)
                 throw new InvalidOperationException("CanExecute already set.");
 
@@ -78,20 +73,51 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Sets the property to listen for change notifications.
+        /// Sets the properties to listen for change notifications.
         /// </summary>
-        /// <param name="property">The property.</param>
+        /// <param name="target">The object to observe.</param>
+        /// <param name="propertyNames">The property names.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget> PropertyChanged(Expression<Func<TTarget, bool>> property)
+        public DelegateCommandBuilder Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (property == null)
-                throw new ArgumentNullException("property");
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (_target != null)
+                throw new InvalidOperationException("Observe already set.");
+            if (propertyNames == null)
+                throw new ArgumentNullException(nameof(propertyNames));
+            if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
+                throw new ArgumentException("List of properties is empty.", nameof(propertyNames));
 
-            if (!string.IsNullOrEmpty(_propertyName))
-                throw new InvalidOperationException("PropertyName already set.");
+            _target = target;
+            _propertyNames = propertyNames;
+            return this;
+        }
 
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
-            _propertyName = propertyName;
+        /// <summary>
+        /// Sets the properties to listen for change notifications.
+        /// </summary>
+        /// <param name="target">The object to observe.</param>
+        /// <param name="properties">The properties.</param>
+        /// <returns>Itself</returns>
+        public DelegateCommandBuilder Observe(INotifyPropertyChanged target, params Expression<Func<bool>>[] properties)
+        {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (_target != null)
+                throw new InvalidOperationException("Observe already set.");
+            if (properties == null)
+                throw new ArgumentNullException(nameof(properties));
+
+            var propertyNames = properties
+                .Select(p => ExpressionHelper.GetMemberInfo(p).Name)
+                .ToArray();
+
+            if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
+                throw new ArgumentException("List of properties is empty.", nameof(properties));
+            
+            _target = target;
+            _propertyNames = propertyNames;
             return this;
         }
 
@@ -101,44 +127,35 @@ namespace Caliburn.Light
         /// <returns>The newly build command.</returns>
         public IDelegateCommand Build()
         {
-            if (_target == null)
-                throw new InvalidOperationException("Target not set.");
             if (_execute == null)
                 throw new InvalidOperationException("Execute not set.");
-            if (!string.IsNullOrEmpty(_propertyName) && _canExecute == null)
-                throw new InvalidOperationException("PropertyName is set but CanExecute is not.");
+            if (_target != null && _canExecute == null)
+                throw new InvalidOperationException("CanExecute not set but Observe used.");
 
-            Func<TTarget, object, bool> canExecute = null;
+            Func<object, bool> canExecute = null;
             if (_canExecute != null)
-                canExecute = (t, p) => _canExecute(t);
+                canExecute = p => _canExecute();
 
-            return new DelegateCommandImpl<TTarget, object>(_target, (t, p) => _execute(t), canExecute, _propertyName);
+            return new DelegateCommandImpl<object>(p => _execute(), canExecute, _target, _propertyNames);
         }
     }
 
     /// <summary>
     /// Builds an <see cref="IDelegateCommand"/> in a strongly typed fashion.
     /// </summary>
-    /// <typeparam name="TTarget">The type of the command target.</typeparam>
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
-    public sealed class DelegateCommandBuilder<TTarget, TParameter>
-        where TTarget : class
+    public sealed class DelegateCommandBuilder<TParameter>
     {
-        private readonly TTarget _target;
-        private Action<TTarget, TParameter> _execute;
-        private Func<TTarget, TParameter, bool> _canExecute;
-        private string _propertyName;
+        private Action<TParameter> _execute;
+        private Func<TParameter, bool> _canExecute;
+        private INotifyPropertyChanged _target;
+        private string[] _propertyNames;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateCommandBuilder&lt;TTarget, TParameter&gt;"/> class.
+        /// Initializes a new instance of the <see cref="DelegateCommandBuilder&lt;TParameter&gt;"/> class.
         /// </summary>
-        /// <param name="target">The command target.</param>
-        public DelegateCommandBuilder(TTarget target)
+        public DelegateCommandBuilder()
         {
-            if (target == null)
-                throw new ArgumentNullException("target");
-
-            _target = target;
         }
 
         /// <summary>
@@ -146,10 +163,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> Execute([EmptyCapture] Action<TTarget, TParameter> execute)
+        public DelegateCommandBuilder<TParameter> OnExecute(Action<TParameter> execute)
         {
             if (execute == null)
-                throw new ArgumentNullException("execute");
+                throw new ArgumentNullException(nameof(execute));
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
@@ -162,14 +179,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> Execute([EmptyCapture] Func<TTarget, TParameter, Task> execute)
+        public DelegateCommandBuilder<TParameter> OnExecute(Func<TParameter, Task> execute)
         {
             if (execute == null)
-                throw new ArgumentNullException("execute");
+                throw new ArgumentNullException(nameof(execute));
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
-            _execute = (t, p) => execute(t, p).ObserveException().Watch();
+            _execute = p => execute(p).ObserveException().Watch();
             return this;
         }
 
@@ -178,14 +195,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> CanExecute([EmptyCapture] Func<TTarget, bool> canExecute)
+        public DelegateCommandBuilder<TParameter> OnCanExecute(Func<bool> canExecute)
         {
             if (canExecute == null)
-                throw new ArgumentNullException("canExecute");
+                throw new ArgumentNullException(nameof(canExecute));
             if (_canExecute != null)
                 throw new InvalidOperationException("CanExecute already set.");
 
-            _canExecute = (t, p) => canExecute(t);
+            _canExecute = p => canExecute();
             return this;
         }
 
@@ -194,10 +211,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> CanExecute([EmptyCapture] Func<TTarget, TParameter, bool> canExecute)
+        public DelegateCommandBuilder<TParameter> OnCanExecute(Func<TParameter, bool> canExecute)
         {
             if (canExecute == null)
-                throw new ArgumentNullException("canExecute");
+                throw new ArgumentNullException(nameof(canExecute));
             if (_canExecute != null)
                 throw new InvalidOperationException("CanExecute already set.");
 
@@ -206,20 +223,51 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Sets the property to listen for change notifications.
+        /// Sets the properties to listen for change notifications.
         /// </summary>
-        /// <param name="property">The property.</param>
+        /// <param name="target">The object to observe.</param>
+        /// <param name="propertyNames">The property names.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TTarget, TParameter> PropertyChanged(Expression<Func<TTarget, bool>> property)
+        public DelegateCommandBuilder<TParameter> Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (property == null)
-                throw new ArgumentNullException("property");
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (_target != null)
+                throw new InvalidOperationException("Observe already set.");
+            if (propertyNames == null)
+                throw new ArgumentNullException(nameof(propertyNames));
+            if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
+                throw new ArgumentException("List of properties is empty.", nameof(propertyNames));
 
-            if (!string.IsNullOrEmpty(_propertyName))
-                throw new InvalidOperationException("PropertyName already set.");
+            _target = target;
+            _propertyNames = propertyNames;
+            return this;
+        }
 
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
-            _propertyName = propertyName;
+        /// <summary>
+        /// Sets the properties to listen for change notifications.
+        /// </summary>
+        /// <param name="target">The object to observe.</param>
+        /// <param name="properties">The properties.</param>
+        /// <returns>Itself</returns>
+        public DelegateCommandBuilder<TParameter> Observe(INotifyPropertyChanged target, params Expression<Func<bool>>[] properties)
+        {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (_target != null)
+                throw new InvalidOperationException("Observe already set.");
+            if (properties == null)
+                throw new ArgumentNullException(nameof(properties));
+
+            var propertyNames = properties
+                .Select(p => ExpressionHelper.GetMemberInfo(p).Name)
+                .ToArray();
+
+            if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
+                throw new ArgumentException("List of properties is empty.", nameof(properties));
+
+            _target = target;
+            _propertyNames = propertyNames;
             return this;
         }
 
@@ -229,14 +277,12 @@ namespace Caliburn.Light
         /// <returns>The newly build command.</returns>
         public IDelegateCommand Build()
         {
-            if (_target == null)
-                throw new InvalidOperationException("Target not set.");
             if (_execute == null)
                 throw new InvalidOperationException("Execute not set.");
-            if (!string.IsNullOrEmpty(_propertyName) && _canExecute == null)
-                throw new InvalidOperationException("PropertyName is set but CanExecute is not.");
+            if (_target != null && _canExecute == null)
+                throw new InvalidOperationException("CanExecute not set but Observe used.");
 
-            return new DelegateCommandImpl<TTarget, TParameter>(_target, _execute, _canExecute, _propertyName);
+            return new DelegateCommandImpl<TParameter>(_execute, _canExecute, _target, _propertyNames);
         }
     }
 }

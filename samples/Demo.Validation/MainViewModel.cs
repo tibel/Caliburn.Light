@@ -20,10 +20,10 @@ namespace Demo.Validation
 
             _company = company;
             SaveCommand = DelegateCommand
-                .For(this)
-                .Execute(t => t.Save())
-                .CanExecute(t => t.CanSave)
-                .PropertyChanged(t => t.CanSave)
+                .NoParameter()
+                .OnExecute(() => Save())
+                .OnCanExecute(() => CanSave)
+                .Observe(this, nameof(CanSave))
                 .Build();
         }
 

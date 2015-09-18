@@ -13,23 +13,23 @@ namespace Demo.ExceptionHandling
         public ShellViewModel()
         {
             ExecuteCommand = DelegateCommand
-                .For(this)
-                .Execute(t => t.OnExecute())
+                .NoParameter()
+                .OnExecute(() => OnExecute())
                 .Build();
 
             UIContextRunCommand = DelegateCommand
-                .For(this)
-                .Execute(t => t.OnUIContextRun())
+                .NoParameter()
+                .OnExecute(() => OnUIContextRun())
                 .Build();
 
             TaskRunCommand = DelegateCommand
-                .For(this)
-                .Execute(t => t.OnTaskRun())
+                .NoParameter()
+                .OnExecute(() => OnTaskRun())
                 .Build();
 
             AsyncCommand = DelegateCommand
-                .For(this)
-                .Execute(t => t.OnAsync())
+                .NoParameter()
+                .OnExecute(() => OnAsync())
                 .Build();
         }
 
