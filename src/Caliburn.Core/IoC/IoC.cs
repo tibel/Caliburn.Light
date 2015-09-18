@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Caliburn.Light
 {
@@ -45,7 +44,7 @@ namespace Caliburn.Light
         /// <returns>The resolved instance.</returns>
         public static T GetInstance<T>(string key = null)
         {
-            return (T)GetInstance(typeof(T), key);
+            return ServiceLocator.GetInstance<T>(key);
         }
 
         /// <summary>
@@ -65,7 +64,7 @@ namespace Caliburn.Light
         /// <returns>The resolved instances.</returns>
         public static IEnumerable<T> GetAllInstances<T>()
         {
-            return GetAllInstances(typeof(T)).Cast<T>();
+            return ServiceLocator.GetAllInstances<T>();
         }
     }
 }
