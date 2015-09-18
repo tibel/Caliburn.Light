@@ -34,16 +34,12 @@ namespace Demo.HelloEventAggregator
             typeResolver.AddAssembly(typeof(App).GetTypeInfo().Assembly);
 
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
-            _container.RegisterPerRequest<IServiceLocator>(null, c => c);
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
             _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             _container.RegisterSingleton<MainPageViewModel>();
-            _container.RegisterSingleton<MainPage>();
             _container.RegisterPerRequest<PublisherViewModel>();
-            _container.RegisterPerRequest<PublisherView>();
             _container.RegisterPerRequest<SubscriberViewModel>();
-            _container.RegisterPerRequest<SubscriberView>();
         }
 
         protected override void PrepareViewFirst(Frame rootFrame)

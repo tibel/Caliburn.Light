@@ -20,22 +20,17 @@ namespace Caliburn.Light
         private static readonly ILogger Log = LogManager.GetLogger(typeof(ViewModelLocator));
 
         private readonly IViewModelTypeResolver _typeResolver;
-        private readonly IServiceLocator _serviceLocator;
 
         /// <summary>
         /// Creates an instance of <see cref="ViewModelLocator"/>.
         /// </summary>
         /// <param name="typeResolver">The type resolver.</param>
-        /// <param name="serviceLocator">The service locator.</param>
-        public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceLocator serviceLocator)
+        public ViewModelLocator(IViewModelTypeResolver typeResolver)
         {
             if (typeResolver == null)
                 throw new ArgumentNullException(nameof(typeResolver));
-            if (serviceLocator == null)
-                throw new ArgumentNullException(nameof(serviceLocator));
 
             _typeResolver = typeResolver;
-            _serviceLocator = serviceLocator;
         }
 
         /// <summary>
@@ -64,7 +59,7 @@ namespace Caliburn.Light
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
-            view = _serviceLocator.GetAllInstances(viewType).FirstOrDefault() as UIElement;
+            view = IoC.GetAllInstances(viewType).FirstOrDefault() as UIElement;
             if (view != null)
             {
                 return view;
@@ -131,7 +126,7 @@ namespace Caliburn.Light
                 return null;
             }
 
-            var model = _serviceLocator.GetInstance(modelType);
+            var model = IoC.GetInstance(modelType);
             if (model == null)
             {
                 Log.Error("Cannot locate {0}.", modelType);

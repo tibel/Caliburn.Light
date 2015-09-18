@@ -21,12 +21,10 @@ namespace Demo.ExceptionHandling
             typeResolver.AddMapping<ShellView, ShellViewModel>();
 
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
-            _container.RegisterPerRequest<IServiceLocator>(null, c => c);
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
             _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             _container.RegisterPerRequest<ShellViewModel>();
-            _container.RegisterPerRequest<ShellView>();
         }
 
         protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
