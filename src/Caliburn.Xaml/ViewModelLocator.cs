@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -64,12 +65,20 @@ namespace Caliburn.Light
             }
 
             view = _serviceLocator.GetAllInstances(viewType).FirstOrDefault() as UIElement;
-            if (view == null)
+            if (view != null)
+            {
+                return view;
+            }
+
+            var viewTypeInfo = viewType.GetTypeInfo();
+            var uiElementInfo = typeof(UIElement).GetTypeInfo();
+            if (viewTypeInfo.IsInterface || viewTypeInfo.IsAbstract || !uiElementInfo.IsAssignableFrom(viewTypeInfo))
             {
                 Log.Error("Cannot create {0}.", viewType);
                 return new TextBlock { Text = string.Format("Cannot create {0}.", viewType) };
             }
 
+            view = (UIElement)Activator.CreateInstance(viewType);
             return view;
         }
 
@@ -122,10 +131,10 @@ namespace Caliburn.Light
                 return null;
             }
 
-            var model = _serviceLocator.GetAllInstances(modelType).FirstOrDefault();
+            var model = _serviceLocator.GetInstance(modelType);
             if (model == null)
             {
-                Log.Error("Cannot create {0}.", modelType);
+                Log.Error("Cannot locate {0}.", modelType);
                 return null;
             }
 
