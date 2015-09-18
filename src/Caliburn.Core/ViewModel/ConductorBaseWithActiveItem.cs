@@ -42,7 +42,7 @@
                 ScreenHelper.TryActivate(newItem);
 
             _activeItem = newItem;
-            RaisePropertyChanged("ActiveItem");
+            RaisePropertyChanged(nameof(ActiveItem));
             OnActivationProcessed(_activeItem, true);
         }
     }

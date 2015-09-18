@@ -16,7 +16,7 @@ namespace Caliburn.Light
         public DelegateCoTask(Action action)
         {
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
 
             _toExecute = action;
         }
@@ -57,7 +57,7 @@ namespace Caliburn.Light
         public DelegateCoTask(Func<TResult> action)
         {
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
 
             _toExecute = action;
         }

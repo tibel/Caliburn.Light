@@ -112,7 +112,7 @@ namespace Demo.Validation
             if (handler != null)
                 handler(this, new DataErrorsChangedEventArgs(propertyName));
 
-            RaisePropertyChanged("CanSave");
+            RaisePropertyChanged(nameof(CanSave));
         }
 
         #endregion

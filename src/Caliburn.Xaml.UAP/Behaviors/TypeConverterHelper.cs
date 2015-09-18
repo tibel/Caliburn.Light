@@ -13,7 +13,7 @@ namespace Caliburn.Light
         public static object Convert(string value, string destinationTypeFullName)
         {
             if (string.IsNullOrEmpty(destinationTypeFullName))
-                throw new ArgumentNullException("destinationTypeFullName");
+                throw new ArgumentNullException(nameof(destinationTypeFullName));
 
             var scope = GetScope(destinationTypeFullName);
             if (string.Equals(scope, "System", StringComparison.Ordinal))

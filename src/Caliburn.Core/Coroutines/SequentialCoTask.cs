@@ -18,7 +18,7 @@ namespace Caliburn.Light
         public SequentialCoTask(IEnumerator<ICoTask> enumerator)
         {
             if (enumerator == null)
-                throw new ArgumentNullException("enumerator");
+                throw new ArgumentNullException(nameof(enumerator));
 
             _enumerator = enumerator;
         }

@@ -101,7 +101,7 @@ namespace Caliburn.Light
         public void AddRange(IEnumerable<T> collection)
         {
             if (collection == null)
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
 
             CheckReentrancy();
             foreach (var item in collection) { Items.Add(item); }
@@ -115,7 +115,7 @@ namespace Caliburn.Light
         public void RemoveRange(IEnumerable<T> collection)
         {
             if (collection == null)
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
 
             CheckReentrancy();
             foreach (var item in collection) { Items.Remove(item); }

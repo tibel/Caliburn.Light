@@ -21,7 +21,7 @@ namespace Caliburn.Light
             : base(coTask)
         {
             if (coroutine == null)
-                throw new ArgumentNullException("coroutine");
+                throw new ArgumentNullException(nameof(coroutine));
 
             _coroutine = coroutine;
             _cancelCoTask = cancelCoTask;

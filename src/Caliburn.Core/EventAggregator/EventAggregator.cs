@@ -18,14 +18,14 @@ namespace Caliburn.Light
         private static void VerifyTarget(object target)
         {
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException(nameof(target));
         }
 
         // ReSharper disable once UnusedParameter.Local
         private static void VerifyDelegate(Delegate weakHandler)
         {
             if (weakHandler == null)
-                throw new ArgumentNullException("weakHandler");
+                throw new ArgumentNullException(nameof(weakHandler));
         }
 
         private void AddHandler(IEventAggregatorHandler handler)
@@ -116,7 +116,7 @@ namespace Caliburn.Light
         public void Unsubscribe(IEventAggregatorHandler handler)
         {
             if (handler == null)
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
 
             lock (_handlers)
             {
@@ -131,7 +131,7 @@ namespace Caliburn.Light
         public void Publish(object message)
         {
             if (message == null)
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
 
             List<IEventAggregatorHandler> selectedHandlers;
             lock (_handlers)

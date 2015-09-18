@@ -17,7 +17,7 @@ namespace Caliburn.Light
         protected CoTaskDecorator(ICoTask coTask)
         {
             if (coTask == null)
-                throw new ArgumentNullException("coTask");
+                throw new ArgumentNullException(nameof(coTask));
 
             _innerCoTask = coTask;
         }

@@ -17,7 +17,7 @@ namespace Caliburn.Light
         public TaskDecoratorCoTask(Task task)
         {
             if (task == null)
-                throw new ArgumentNullException("task");
+                throw new ArgumentNullException(nameof(task));
 
             _innerTask = task;
         }

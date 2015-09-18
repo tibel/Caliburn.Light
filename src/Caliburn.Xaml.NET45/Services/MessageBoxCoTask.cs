@@ -20,7 +20,7 @@ namespace Caliburn.Light
         public MessageBoxCoTask(string message)
         {
             if (string.IsNullOrEmpty(message))
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
 
             _message = message;
             Result = MessageBoxResult.None;
