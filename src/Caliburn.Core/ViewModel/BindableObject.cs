@@ -71,7 +71,7 @@ namespace Caliburn.Light
         /// <param name = "property">The property expression.</param>
         protected void RaisePropertyChanged<TProperty>(Expression<Func<TProperty>> property)
         {
-            RaisePropertyChanged(ExpressionHelper.GetMemberInfo(property).Name);
+            RaisePropertyChanged(PropertySupport.ExtractPropertyName(property));
         }
 
         /// <summary>

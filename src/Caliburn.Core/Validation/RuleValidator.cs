@@ -40,7 +40,7 @@ namespace Caliburn.Light
         /// <param name="rule">The rule to add.</param>
         public void AddRule<TProperty>(Expression<Func<TProperty>> property, IValidationRule rule)
         {
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
+            var propertyName = PropertySupport.ExtractPropertyName(property);
             AddRule(propertyName, rule);
         }
 
@@ -60,7 +60,7 @@ namespace Caliburn.Light
         /// <param name="property">The property.</param>
         public void RemoveRules<TProperty>(Expression<Func<TProperty>> property)
         {
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
+            var propertyName = PropertySupport.ExtractPropertyName(property);
             RemoveRules(propertyName);
         }
 

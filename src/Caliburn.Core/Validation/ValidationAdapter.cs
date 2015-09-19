@@ -42,7 +42,7 @@ namespace Caliburn.Light
         /// <returns>True, if validation succeeded.</returns>
         public bool ValidateProperty<TProperty>(Expression<Func<TProperty>> property, object value)
         {
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
+            var propertyName = PropertySupport.ExtractPropertyName(property);
             return ValidateProperty(propertyName, value);
         }
 
@@ -121,7 +121,7 @@ namespace Caliburn.Light
         /// <returns>List of validation errors.</returns>
         public IEnumerable<string> GetPropertyError<TProperty>(Expression<Func<TProperty>> property)
         {
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
+            var propertyName = PropertySupport.ExtractPropertyName(property);
             return GetPropertyError(propertyName);
         }
 
@@ -146,7 +146,7 @@ namespace Caliburn.Light
         /// <returns>True, if the property has validation errors.</returns>
         public bool HasPropertyError<TProperty>(Expression<Func<TProperty>> property)
         {
-            var propertyName = ExpressionHelper.GetMemberInfo(property).Name;
+            var propertyName = PropertySupport.ExtractPropertyName(property);
             return HasPropertyError(propertyName);
         }
 

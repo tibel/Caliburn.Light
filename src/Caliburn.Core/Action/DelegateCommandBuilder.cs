@@ -100,7 +100,7 @@ namespace Caliburn.Light
         /// <param name="target">The object to observe.</param>
         /// <param name="properties">The properties.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder Observe(INotifyPropertyChanged target, params Expression<Func<bool>>[] properties)
+        public DelegateCommandBuilder Observe<TProperty>(INotifyPropertyChanged target, params Expression<Func<TProperty>>[] properties)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
@@ -110,7 +110,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(properties));
 
             var propertyNames = properties
-                .Select(p => ExpressionHelper.GetMemberInfo(p).Name)
+                .Select(p => PropertySupport.ExtractPropertyName(p))
                 .ToArray();
 
             if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
@@ -250,7 +250,7 @@ namespace Caliburn.Light
         /// <param name="target">The object to observe.</param>
         /// <param name="properties">The properties.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TParameter> Observe(INotifyPropertyChanged target, params Expression<Func<bool>>[] properties)
+        public DelegateCommandBuilder<TParameter> Observe<TProperty>(INotifyPropertyChanged target, params Expression<Func<TProperty>>[] properties)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
@@ -260,7 +260,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(properties));
 
             var propertyNames = properties
-                .Select(p => ExpressionHelper.GetMemberInfo(p).Name)
+                .Select(p => PropertySupport.ExtractPropertyName(p))
                 .ToArray();
 
             if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)

@@ -38,7 +38,7 @@ namespace Caliburn.Light
         {
             if (value is ValueType || !ReferenceEquals(null, value))
             {
-                _parameters[ExpressionHelper.GetMemberInfo(property).Name] = value.ToString();
+                _parameters[PropertySupport.ExtractPropertyName(property)] = value.ToString();
             }
 
             return this;
