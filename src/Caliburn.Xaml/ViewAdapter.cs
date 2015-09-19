@@ -2,8 +2,10 @@
 using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 #else
 using System.Windows;
+using System.Windows.Controls.Primitives;
 #endif
 
 namespace Caliburn.Light
@@ -66,6 +68,32 @@ namespace Caliburn.Light
         /// <param name="dialogResult">The dialog result.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
         public bool TryClose(object view, bool? dialogResult)
+        {
+            var window = view as Window;
+            if (window != null)
+            {
+#if !NETFX_CORE
+                if (dialogResult.HasValue)
+                    window.DialogResult = dialogResult;
+                else
+                    window.Close();
+#else
+                window.Close();
+#endif
+                return true;
+            }
+            
+            var popup = view as Popup;
+            if (popup != null)
+            {
+                popup.IsOpen = false;
+                return true;
+            }
+
+            return TryCloseFallback(view, dialogResult);
+        }
+
+        private bool TryCloseFallback(object view, bool? dialogResult)
         {
             var viewType = view.GetType();
             var closeMethod = viewType.GetRuntimeMethod("Close", new Type[0]);
