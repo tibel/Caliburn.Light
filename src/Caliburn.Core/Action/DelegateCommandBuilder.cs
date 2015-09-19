@@ -95,29 +95,24 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Sets the properties to listen for change notifications.
+        /// Sets the property to listen for change notifications.
         /// </summary>
         /// <param name="target">The object to observe.</param>
-        /// <param name="properties">The properties.</param>
+        /// <param name="property">The property.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder Observe<TProperty>(INotifyPropertyChanged target, params Expression<Func<TProperty>>[] properties)
+        public DelegateCommandBuilder Observe<TProperty>(INotifyPropertyChanged target, Expression<Func<TProperty>> property)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
             if (_target != null)
                 throw new InvalidOperationException("Observe already set.");
-            if (properties == null)
-                throw new ArgumentNullException(nameof(properties));
+            if (property == null)
+                throw new ArgumentNullException(nameof(property));
 
-            var propertyNames = properties
-                .Select(p => PropertySupport.ExtractPropertyName(p))
-                .ToArray();
-
-            if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
-                throw new ArgumentException("List of properties is empty.", nameof(properties));
-            
+            var propertyName = PropertySupport.ExtractPropertyName(property);
+                        
             _target = target;
-            _propertyNames = propertyNames;
+            _propertyNames = new[] { propertyName };
             return this;
         }
 
@@ -245,29 +240,24 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Sets the properties to listen for change notifications.
+        /// Sets the property to listen for change notifications.
         /// </summary>
         /// <param name="target">The object to observe.</param>
-        /// <param name="properties">The properties.</param>
+        /// <param name="property">The property.</param>
         /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TParameter> Observe<TProperty>(INotifyPropertyChanged target, params Expression<Func<TProperty>>[] properties)
+        public DelegateCommandBuilder<TParameter> Observe<TProperty>(INotifyPropertyChanged target, Expression<Func<TProperty>> property)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
             if (_target != null)
                 throw new InvalidOperationException("Observe already set.");
-            if (properties == null)
-                throw new ArgumentNullException(nameof(properties));
+            if (property == null)
+                throw new ArgumentNullException(nameof(property));
 
-            var propertyNames = properties
-                .Select(p => PropertySupport.ExtractPropertyName(p))
-                .ToArray();
-
-            if (propertyNames.Length == 0 || Array.IndexOf(propertyNames, string.Empty) >= 0)
-                throw new ArgumentException("List of properties is empty.", nameof(properties));
+            var propertyName = PropertySupport.ExtractPropertyName(property);
 
             _target = target;
-            _propertyNames = propertyNames;
+            _propertyNames = new[] { propertyName };
             return this;
         }
 
