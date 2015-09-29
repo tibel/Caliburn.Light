@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Caliburn.Light
 {
@@ -15,16 +14,12 @@ namespace Caliburn.Light
 
         public object GetInstance(Type service, string key)
         {
-            return Activator.CreateInstance(service);
+            throw new InvalidOperationException(string.Format("Could not locate an instance for type '{0}' and key {1}.", service, key));
         }
 
         public IEnumerable<object> GetAllInstances(Type service)
         {
-            var typeInfo = service.GetTypeInfo();
-            if (typeInfo.IsAbstract || typeInfo.IsInterface)
-                return Enumerable.Empty<object>();
-
-            return new[] { Activator.CreateInstance(service) };
+            return Enumerable.Empty<object>();
         }
     }
 }
