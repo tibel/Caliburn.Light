@@ -145,12 +145,12 @@ namespace Caliburn.Light
 
             if (Target == null || string.IsNullOrEmpty(MethodName)) return;
 
-            _method = ParameterBinder.FindBestMethod(Target, MethodName, Parameters.Count);
+            _method = FindBestMethod(Target, MethodName, Parameters.Count);
             if (_method == null) return;
 
             _guardName = "Can" + _method.Name;
 
-            _guard = ParameterBinder.FindGuardMethod(Target, _method);
+            _guard = FindGuardMethod(Target, _method);
             if (_guard != null) return;
 
             var inpc = Target as INotifyPropertyChanged;
@@ -259,6 +259,34 @@ namespace Caliburn.Light
             }
 
             return parameterValues;
+        }
+
+        private static MethodInfo FindBestMethod(object target, string methodName, int numberOfParameters)
+        {
+            return (from method in target.GetType().GetRuntimeMethods()
+                    where method.Name == methodName
+                    let methodParameters = method.GetParameters()
+                    where numberOfParameters == methodParameters.Length
+                    select method).FirstOrDefault();
+        }
+
+        private static MethodInfo FindGuardMethod(object target, MethodInfo method)
+        {
+            var guardName = "Can" + method.Name;
+            var targetType = target.GetType();
+            var guard = targetType.GetRuntimeMethods().SingleOrDefault(m => m.Name == guardName);
+
+            if (guard == null) return null;
+            if (guard.ContainsGenericParameters) return null;
+            if (typeof(bool) != guard.ReturnType) return null;
+
+            var guardPars = guard.GetParameters();
+            var actionPars = method.GetParameters();
+            if (guardPars.Length == 0) return guard;
+            if (guardPars.Length != actionPars.Length) return null;
+
+            var comparisons = guardPars.Zip(method.GetParameters(), (x, y) => x.ParameterType == y.ParameterType);
+            return comparisons.Any(x => !x) ? null : guard;
         }
     }
 }

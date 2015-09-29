@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 
 namespace Caliburn.Light
@@ -11,51 +10,6 @@ namespace Caliburn.Light
     /// </summary>
     public static class ParameterBinder
     {
-        /// <summary>
-        /// Finds the best matching method on the target.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <param name="numberOfParameters">The number of parameters.</param>
-        /// <returns>The matching method, if available.</returns>
-        public static MethodInfo FindBestMethod(object target, string methodName, int numberOfParameters)
-        {
-            return (from method in target.GetType().GetRuntimeMethods()
-                    where method.Name == methodName
-                    let methodParameters = method.GetParameters()
-                    where numberOfParameters == methodParameters.Length
-                    select method).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Try to find a candidate for guard function, having:
-        ///     - a name in the form "Can" + method name
-        ///     - no generic parameters
-        ///     - a bool return type
-        ///     - no parameters or a set of parameters corresponding to the method
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="method">The method</param>
-        /// <returns>A MethodInfo, if found; null otherwise</returns>
-        public static MethodInfo FindGuardMethod(object target, MethodInfo method)
-        {
-            var guardName = "Can" + method.Name;
-            var targetType = target.GetType();
-            var guard = targetType.GetRuntimeMethods().SingleOrDefault(m => m.Name == guardName);
-
-            if (guard == null) return null;
-            if (guard.ContainsGenericParameters) return null;
-            if (typeof(bool) != guard.ReturnType) return null;
-
-            var guardPars = guard.GetParameters();
-            var actionPars = method.GetParameters();
-            if (guardPars.Length == 0) return guard;
-            if (guardPars.Length != actionPars.Length) return null;
-
-            var comparisons = guardPars.Zip(method.GetParameters(), (x, y) => x.ParameterType == y.ParameterType);
-            return comparisons.Any(x => !x) ? null : guard;
-        }
-
         /// <summary>
         /// Custom converters used by the framework registered by destination type for which they will be selected.
         /// </summary>
