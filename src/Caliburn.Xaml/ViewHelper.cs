@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 #if NETFX_CORE
 using Windows.ApplicationModel;
@@ -196,24 +195,6 @@ namespace Caliburn.Light
             var contentPropertyAttribute = type.GetTypeInfo().GetCustomAttribute<ContentPropertyAttribute>(true);
             var contentPropertyName = (contentPropertyAttribute == null) ? DefaultContentPropertyName : contentPropertyAttribute.Name;
             return type.GetRuntimeProperty(contentPropertyName);
-        }
-
-        /// <summary>
-        /// Applies the <paramref name="settings"/> to the <paramref name="target"/>.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="settings">A list of property-name/value pairs.</param>
-        public static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
-        {
-            if (settings == null) return;
-
-            var type = target.GetType();
-            foreach (var pair in settings)
-            {
-                var propertyInfo = type.GetRuntimeProperty(pair.Key);
-                if (propertyInfo != null)
-                    propertyInfo.SetValue(target, pair.Value, null);
-            }
         }
     }
 }

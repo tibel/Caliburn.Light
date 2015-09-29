@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -121,7 +122,7 @@ namespace Caliburn.Light
                 settings.Add("AllowsTransparency", true);
 
             var popup = new Popup();
-            ViewHelper.ApplySettings(popup, settings);
+            ApplySettings(popup, settings);
             return popup;
         }
 
@@ -146,7 +147,7 @@ namespace Caliburn.Light
                 view.SetBinding(Window.TitleProperty, binding);
             }
 
-            ViewHelper.ApplySettings(view, settings);
+            ApplySettings(view, settings);
 
             var conductor = new WindowConductor(rootModel, view);
             return conductor.View;
@@ -231,7 +232,7 @@ namespace Caliburn.Light
                 view.SetBinding(Page.TitleProperty, binding);
             }
 
-            ViewHelper.ApplySettings(view, settings);
+            ApplySettings(view, settings);
 
             var activatable = rootModel as IActivate;
             if (activatable != null)
@@ -265,6 +266,19 @@ namespace Caliburn.Light
             }
 
             return page;
+        }
+
+        private static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
+        {
+            if (settings == null) return;
+
+            var type = target.GetType();
+            foreach (var pair in settings)
+            {
+                var propertyInfo = type.GetRuntimeProperty(pair.Key);
+                if (propertyInfo != null)
+                    propertyInfo.SetValue(target, pair.Value, null);
+            }
         }
     }
 }
