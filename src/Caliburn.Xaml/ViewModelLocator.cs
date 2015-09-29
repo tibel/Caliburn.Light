@@ -85,7 +85,7 @@ namespace Caliburn.Light
                 var view = viewAware.GetView(context) as UIElement;
                 if (view != null)
                 {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
                     var windowCheck = view as Window;
                     if (windowCheck == null ||
                         (!windowCheck.IsLoaded && !(new WindowInteropHelper(windowCheck).Handle == IntPtr.Zero)))

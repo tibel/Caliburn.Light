@@ -24,7 +24,7 @@ namespace Caliburn.Light
         /// <returns>True if the specified property is data-bound, otherwise False.</returns>
         public static bool IsDataBound(DependencyObject target, DependencyProperty property)
         {
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
             return target.ReadLocalValue(property) is BindingExpressionBase;
 #else
             return BindingOperations.IsDataBound(target, property);
@@ -60,7 +60,7 @@ namespace Caliburn.Light
         /// <param name="property">The dependency property to refresh.</param>
         public static void RefreshBinding(DependencyObject target, DependencyProperty property)
         {
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
             var bindingExpression = target.ReadLocalValue(property) as BindingExpression;
             if (bindingExpression == null || bindingExpression.ParentBinding == null) return;
             BindingOperations.SetBinding(target, property, bindingExpression.ParentBinding);

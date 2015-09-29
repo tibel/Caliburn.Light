@@ -34,8 +34,6 @@ namespace Caliburn.Light
                 {
 #if NETFX_CORE
                     _isInDesignTool = DesignMode.DesignModeEnabled;
-#elif SILVERLIGHT
-	                _isInDesignTool = DesignerProperties.IsInDesignTool;
 #else
                     var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
                         typeof (FrameworkElement));
@@ -172,11 +170,6 @@ namespace Caliburn.Light
             var content = Window.Current.Content;
             var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
             return parent != null || (content != null && element == content);
-#elif SILVERLIGHT
-            //var root = Application.Current.RootVisual;
-            var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
-            var children = VisualTreeHelper.GetChildrenCount(element);
-            return parent != null && children > 0;
 #else
             return element.IsLoaded;
 #endif

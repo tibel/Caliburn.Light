@@ -195,7 +195,7 @@ namespace Caliburn.Light
                 canExecute = (bool)_guard.Invoke(Target, parameterValues);
             }
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
             var control = AssociatedObject as Control;
             if (control != null && !BindingHelper.IsDataBound(control, Control.IsEnabledProperty))
                 control.IsEnabled = canExecute;
