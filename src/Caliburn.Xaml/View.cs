@@ -1,7 +1,9 @@
 ﻿#if NETFX_CORE
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 #else
 using System.Windows;
+using System.Windows.Controls;
 #endif
 
 namespace Caliburn.Light
@@ -101,7 +103,7 @@ namespace Caliburn.Light
             SetContentProperty(targetLocation, view);
         }
 
-        private static void RemoveFromParent(object view)
+        private static void RemoveFromParent(DependencyObject view)
         {
             var fe = view as FrameworkElement;
             if (fe != null && fe.Parent != null)
@@ -110,8 +112,15 @@ namespace Caliburn.Light
             }
         }
 
-        private static void SetContentProperty(object targetLocation, object view)
+        private static void SetContentProperty(DependencyObject targetLocation, DependencyObject view)
         {
+            var contentControl = targetLocation as ContentControl;
+            if (contentControl != null)
+            {
+                contentControl.Content = view;
+                return;
+            }
+
             var contentProperty = ViewHelper.FindContentProperty(targetLocation);
             contentProperty.SetValue(targetLocation, view);
         }
