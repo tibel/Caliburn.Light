@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Weakly;
 
 namespace Caliburn.Light
 {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
-using Weakly;
 
 namespace Caliburn.Light
 {
