@@ -27,6 +27,7 @@ namespace Demo.HelloSpecialValues
             _container = new SimpleContainer();
             IoC.Initialize(_container);
 
+            _container.RegisterSingleton<INavigationService, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
 
             var typeResolver = new NameBasedViewModelTypeResolver();
@@ -41,7 +42,8 @@ namespace Demo.HelloSpecialValues
 
         protected override void PrepareViewFirst(Frame rootFrame)
         {
-            _container.RegisterInstance<INavigationService>(new FrameAdapter(rootFrame));
+            _container.RegisterInstance(rootFrame);
+            _container.GetInstance<INavigationService>();
         }
 
         /// <summary>

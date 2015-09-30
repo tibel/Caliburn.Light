@@ -20,15 +20,34 @@ namespace Caliburn.Light
         private const string ParameterKey = "ParameterKey";
 
         private readonly Frame _frame;
+        private readonly IViewModelLocator _viewModelLocator;
+        private readonly IViewModelBinder _viewModelBinder;
+        private readonly IViewModelTypeResolver _viewModelTypeResolver;
+
         private object _currentParameter;
 
         /// <summary>
         /// Creates an instance of <see cref="FrameAdapter" />.
         /// </summary>
         /// <param name="frame">The frame to represent as a <see cref="INavigationService" />.</param>
-        public FrameAdapter(Frame frame)
+        /// <param name="viewModelLocator">The view-model locator.</param>
+        /// <param name="viewModelBinder">The view-model binder.</param>
+        /// <param name="viewModelTypeResolver">The view-model type resolver.</param>
+        public FrameAdapter(Frame frame, IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder, IViewModelTypeResolver viewModelTypeResolver)
         {
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+            if (viewModelLocator == null)
+                throw new ArgumentNullException(nameof(viewModelLocator));
+            if (viewModelBinder == null)
+                throw new ArgumentNullException(nameof(viewModelBinder));
+            if (viewModelTypeResolver == null)
+                throw new ArgumentNullException(nameof(viewModelTypeResolver));
+
             _frame = frame;
+            _viewModelLocator = viewModelLocator;
+            _viewModelBinder = viewModelBinder;
+            _viewModelTypeResolver = viewModelTypeResolver;
 
             _frame.Navigating += OnNavigating;
             _frame.Navigated += OnNavigated;
@@ -103,15 +122,12 @@ namespace Caliburn.Light
         /// <param name="view">The view.</param>
         protected virtual void BindViewModel(UIElement view)
         {
-            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
-
-            var viewModel = viewModelLocator.LocateForView(view);
+            var viewModel = _viewModelLocator.LocateForView(view);
             if (viewModel == null)
                 return;
 
             TryInjectParameters(viewModel, _currentParameter);
-            viewModelBinder.Bind(viewModel, view, null);
+            _viewModelBinder.Bind(viewModel, view, null);
 
             var activator = viewModel as IActivate;
             if (activator != null)
@@ -251,12 +267,10 @@ namespace Caliburn.Light
         /// <returns>Whether or not navigation succeeded.</returns>
         public bool NavigateToViewModel(Type viewModelType, object parameter = null)
         {
-            var viewModelTypeResolver = IoC.GetInstance<IViewModelTypeResolver>();
-            var viewType = viewModelTypeResolver.GetViewType(viewModelType, null);
+            var viewType = _viewModelTypeResolver.GetViewType(viewModelType, null);
             if (viewType == null)
             {
-                throw new InvalidOperationException(
-                    string.Format("No view was found for {0}. See the log for searched views.", viewModelType.FullName));
+                throw new InvalidOperationException(string.Format("No view was found for {0}.", viewModelType.FullName));
             }
 
             return Navigate(viewType, parameter);
