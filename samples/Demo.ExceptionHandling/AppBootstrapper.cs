@@ -16,14 +16,13 @@ namespace Demo.ExceptionHandling
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
-
-            var typeResolver = new ViewModelTypeResolver();
-            typeResolver.AddMapping<ShellView, ShellViewModel>();
-
-            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
             _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
+            var typeResolver = new ViewModelTypeResolver();
+            typeResolver.AddMapping<ShellView, ShellViewModel>();
+            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
+            
             _container.RegisterPerRequest<ShellViewModel>();
         }
 

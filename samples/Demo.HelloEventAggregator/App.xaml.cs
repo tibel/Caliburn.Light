@@ -30,13 +30,12 @@ namespace Demo.HelloEventAggregator
 
             _container.RegisterSingleton<INavigationService, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
+            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             var typeResolver = new NameBasedViewModelTypeResolver();
             typeResolver.AddAssembly(typeof(App).GetTypeInfo().Assembly);
-
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
-            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
-            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             _container.RegisterSingleton<MainPageViewModel>();
             _container.RegisterPerRequest<PublisherViewModel>();
