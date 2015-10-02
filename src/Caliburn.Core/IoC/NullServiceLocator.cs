@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Caliburn.Light
 {
@@ -14,12 +13,12 @@ namespace Caliburn.Light
 
         public object GetInstance(Type service, string key)
         {
-            throw new InvalidOperationException(string.Format("Could not locate an instance for type '{0}' and key {1}.", service, key));
+            throw new InvalidOperationException("IoC is not initialized.");
         }
 
         public IEnumerable<object> GetAllInstances(Type service)
         {
-            return Enumerable.Empty<object>();
+            throw new InvalidOperationException("IoC is not initialized.");
         }
     }
 }

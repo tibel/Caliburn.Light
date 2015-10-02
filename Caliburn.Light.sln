@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloEventAggregator",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloSpecialValues", "samples\Demo.HelloSpecialValues\Demo.HelloSpecialValues.csproj", "{3C72AAF5-9E31-409E-BCE7-C8EB45240B50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WpfDesignTime", "samples\Demo.WpfDesignTime\Demo.WpfDesignTime.csproj", "{474AC080-D5D8-4548-AAE6-D649EC0EA49E}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
@@ -165,6 +167,22 @@ Global
 		{3C72AAF5-9E31-409E-BCE7-C8EB45240B50}.Release|x86.ActiveCfg = Release|x86
 		{3C72AAF5-9E31-409E-BCE7-C8EB45240B50}.Release|x86.Build.0 = Release|x86
 		{3C72AAF5-9E31-409E-BCE7-C8EB45240B50}.Release|x86.Deploy.0 = Release|x86
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|ARM.Build.0 = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|x64.Build.0 = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Debug|x86.Build.0 = Debug|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|ARM.ActiveCfg = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|ARM.Build.0 = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|x64.ActiveCfg = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|x64.Build.0 = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|x86.ActiveCfg = Release|Any CPU
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,5 +194,6 @@ Global
 		{150CF2E8-3F18-4553-A0D5-A974CB58F570} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{79C7D215-C5CB-45F6-B100-770D26A8CCC5} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{3C72AAF5-9E31-409E-BCE7-C8EB45240B50} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
+		{474AC080-D5D8-4548-AAE6-D649EC0EA49E} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 	EndGlobalSection
 EndGlobal
