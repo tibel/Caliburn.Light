@@ -93,6 +93,13 @@ namespace Caliburn.Light
 
         private static void SetContentCore(DependencyObject targetLocation, object model, string context)
         {
+            if (ViewHelper.IsInDesignTool)
+            {
+                var placeholder = new TextBlock { Text = string.Format("View for {0}", model.GetType()) };
+                SetContentProperty(targetLocation, placeholder);
+                return;
+            }
+
             var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
             var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
 

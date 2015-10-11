@@ -7,7 +7,6 @@
              xmlns:local="clr-namespace:Demo.WpfDesignTime"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:ShellViewModel, IsDesignTimeCreatable=True}"
-	         cal:Bind.AtDesignTime="True"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
