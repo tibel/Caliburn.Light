@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>3.0.1-alpha</version>
+    <version>3.0.2-alpha</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
@@ -12,7 +12,7 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-Second alpha version of next major release
+Third alpha version of next major release
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2015</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
