@@ -10,12 +10,6 @@
     <StackPanel>
         <TextBlock Text="Enter your name:" />
         <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-        <Button Content="Say Hello">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Click">
-                    <cal:CallMethodAction TargetObject="{Binding}" MethodName="SayHello" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Button>
+        <Button Content="Say Hello" Command="{Binding SayHelloCommand, Mode=OneTime}" />
     </StackPanel>
 </UserControl>

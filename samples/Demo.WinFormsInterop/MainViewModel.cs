@@ -5,24 +5,26 @@ namespace Demo.WinFormsInterop
 {
     public class MainViewModel : BindableObject
     {
-        string _name;
+        private string _name;
+
+        public MainViewModel()
+        {
+            SayHelloCommand = DelegateCommand.NoParameter()
+                .OnExecute(() => SayHello())
+                .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
+                .Observe(this, nameof(Name))
+                .Build();
+        }
 
         public string Name
         {
             get { return _name; }
-            set
-            {
-                if (SetProperty(ref _name, value))
-                    RaisePropertyChanged(() => CanSayHello);
-            }
+            set { SetProperty(ref _name, value); }
         }
 
-        public bool CanSayHello
-        {
-            get { return !string.IsNullOrWhiteSpace(Name); }
-        }
+        public IDelegateCommand SayHelloCommand { get; private set; }
 
-        public void SayHello()
+        private void SayHello()
         {
             MessageBox.Show(string.Format("Hello {0}!", Name)); //Don't do this in real life :)
         }
