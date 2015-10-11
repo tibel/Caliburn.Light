@@ -13,12 +13,6 @@
 
     <StackPanel>
         <TextBox Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-        <Button Content="Publish">
-            <interactivity:Interaction.Behaviors>
-                <cal:EventTrigger EventName="Click">
-                    <cal:CallMethodAction MethodName="Publish" TargetObject="{Binding}" />
-                </cal:EventTrigger>
-            </interactivity:Interaction.Behaviors>
-        </Button>
+        <Button Content="Publish" Command="{Binding PublishCommand, Mode=OneTime}" />
     </StackPanel>
 </UserControl>

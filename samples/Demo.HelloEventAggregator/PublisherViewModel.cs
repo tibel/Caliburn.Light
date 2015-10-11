@@ -10,24 +10,23 @@ namespace Demo.HelloEventAggregator
         public PublisherViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
+
+            PublishCommand = DelegateCommand.NoParameter()
+                .OnExecute(() => Publish())
+                .OnCanExecute(() => !string.IsNullOrEmpty(Message))
+                .Observe(this, nameof(Message))
+                .Build();
         }
 
         public string Message
         {
             get { return _message; }
-            set
-            {
-                if (SetProperty(ref _message, value))
-                    RaisePropertyChanged(() => CanPublish);
-            }
+            set { SetProperty(ref _message, value); }
         }
 
-        public bool CanPublish
-        {
-            get { return !string.IsNullOrEmpty(_message); }
-        }
+        public IDelegateCommand PublishCommand { get; private set; }
 
-        public void Publish()
+        private void Publish()
         {
             _eventAggregator.Publish(Message);
             Message = null;
