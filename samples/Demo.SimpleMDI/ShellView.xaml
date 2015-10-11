@@ -6,14 +6,8 @@
         xmlns:local="clr-namespace:Demo.SimpleMDI"
         Title="Demo.SimpleMDI" Height="350" Width="525">
     <DockPanel>
-        <Button Content="Open Tab" DockPanel.Dock="Top">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Click">
-                    <cal:CallMethodAction TargetObject="{Binding}" MethodName="OpenTab" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Button>
-        
+        <Button Content="Open Tab" Command="{Binding OpenTabCommand, Mode=OneTime}" DockPanel.Dock="Top" />
+
         <TabControl x:Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
@@ -24,19 +18,9 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding DisplayName}" />
-                        
-                        <Button Content="X">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <cal:CallMethodAction TargetObject="{Binding Path=DataContext, ElementName=Items}"
-                                                           MethodName="DeactivateItem">
-                                        <cal:Parameter Value="{Binding}"/>
-                                        <cal:Parameter Value="true"/>
-                                    </cal:CallMethodAction>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </Button>
-                        
+
+                        <Button Content="X" Command="{Binding Path=DataContext.CloseTabCommand, ElementName=Items, Mode=OneTime}" CommandParameter="{Binding}" />
+
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
