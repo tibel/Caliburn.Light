@@ -21,15 +21,25 @@ namespace Demo.HelloSpecialValues
                 new CharacterViewModel("Sansa Stark", "ms-appx:///resources/images/sansa.jpg"),
                 new CharacterViewModel("Tyrion Lannister", "ms-appx:///resources/images/tyrion.jpg")
             };
+
+            CharacterSelectedCommand = DelegateCommand.WithParameter<CharacterViewModel>()
+                .OnExecute(p => CharacterSelected(p))
+                .Build();
         }
 
-        public async Task CharacterSelected(CharacterViewModel character)
+        private async Task CharacterSelected(CharacterViewModel character)
         {
             var dialog = new MessageDialog(string.Format("{0} selected.", character.Name), "Character Selected");
             await dialog.ShowAsync();
         }
 
         public BindableCollection<CharacterViewModel> Characters
+        {
+            get;
+            private set;
+        }
+
+        public IDelegateCommand CharacterSelectedCommand
         {
             get;
             private set;

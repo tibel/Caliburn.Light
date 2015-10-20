@@ -19,9 +19,11 @@
             </GridView.ItemTemplate>
             <interactivity:Interaction.Behaviors>
                 <cal:EventTrigger EventName="ItemClick">
-                    <cal:CallMethodAction MethodName="CharacterSelected" TargetObject="{Binding}">
-                        <cal:Parameter><local:ClickedItem/></cal:Parameter>
-                    </cal:CallMethodAction>
+                    <cal:InvokeCommandAction Command="{Binding CharacterSelectedCommand, Mode=OneTime}">
+                        <cal:InvokeCommandAction.CommandParameter>
+                            <local:ClickedItem/>
+                        </cal:InvokeCommandAction.CommandParameter>
+                    </cal:InvokeCommandAction>
                 </cal:EventTrigger>
             </interactivity:Interaction.Behaviors>
         </GridView>
