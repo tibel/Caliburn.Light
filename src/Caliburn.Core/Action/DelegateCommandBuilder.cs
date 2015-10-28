@@ -17,10 +17,7 @@ namespace Caliburn.Light
         private INotifyPropertyChanged _target;
         private string[] _propertyNames;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateCommandBuilder"/> class.
-        /// </summary>
-        public DelegateCommandBuilder()
+        internal DelegateCommandBuilder()
         {
         }
 
@@ -131,7 +128,7 @@ namespace Caliburn.Light
             if (_canExecute != null)
                 canExecute = p => _canExecute();
 
-            return new DelegateCommandImpl<object>(p => _execute(), canExecute, _target, _propertyNames);
+            return new DelegateCommandImpl<object>(p => p, p => _execute(), canExecute, _target, _propertyNames);
         }
     }
 
@@ -141,16 +138,30 @@ namespace Caliburn.Light
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class DelegateCommandBuilder<TParameter>
     {
+        private readonly Func<object, TParameter> _coerceParameter;
         private Action<TParameter> _execute;
         private Func<TParameter, bool> _canExecute;
         private INotifyPropertyChanged _target;
         private string[] _propertyNames;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateCommandBuilder&lt;TParameter&gt;"/> class.
-        /// </summary>
-        public DelegateCommandBuilder()
+        internal DelegateCommandBuilder(Func<object, TParameter> coerceParameter)
         {
+            _coerceParameter = coerceParameter ?? CoerceParameter;
+        }
+
+        private static TParameter CoerceParameter(object parameter)
+        {
+            if (parameter == null)
+                return default(TParameter);
+
+            var specialValue = parameter as ISpecialValue;
+            if (specialValue != null)
+                parameter = specialValue.Resolve(new CoroutineExecutionContext());
+
+            if (parameter is TParameter)
+                return (TParameter)parameter;
+
+            return (TParameter)ParameterBinder.CoerceValue(typeof(TParameter), parameter);
         }
 
         /// <summary>
@@ -272,7 +283,7 @@ namespace Caliburn.Light
             if (_target != null && _canExecute == null)
                 throw new InvalidOperationException("CanExecute not set but Observe used.");
 
-            return new DelegateCommandImpl<TParameter>(_execute, _canExecute, _target, _propertyNames);
+            return new DelegateCommandImpl<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
         }
     }
 }

@@ -6,14 +6,16 @@ namespace Caliburn.Light
 {
     internal sealed class DelegateCommandImpl<TParameter> : IDelegateCommand
     {
+        private readonly Func<object, TParameter> _coerceParameter;
         private readonly Action<TParameter> _execute;
         private readonly Func<TParameter, bool> _canExecute;
         private readonly string[] _propertyNames;
         private readonly IDisposable _propertyChangedRegistration;
         private readonly WeakEventSource _canExecuteChangedSource = new WeakEventSource();
 
-        public DelegateCommandImpl(Action<TParameter> execute, Func<TParameter, bool> canExecute, INotifyPropertyChanged target, string[] propertyNames)
+        public DelegateCommandImpl(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute, INotifyPropertyChanged target, string[] propertyNames)
         {
+            _coerceParameter = coerceParameter;
             _execute = execute;
             _canExecute = canExecute;
             _propertyNames = propertyNames;
@@ -34,30 +36,15 @@ namespace Caliburn.Light
 
         public void Execute(object parameter)
         {
-            var value = CoerceParameter(parameter);
+            var value = _coerceParameter(parameter);
             _execute(value);
         }
 
         public bool CanExecute(object parameter)
         {
             if (_canExecute == null) return true;
-            var value = CoerceParameter(parameter);
+            var value = _coerceParameter(parameter);
             return _canExecute(value);
-        }
-
-        private TParameter CoerceParameter(object parameter)
-        {
-            if (parameter == null)
-                return default(TParameter);
-
-            var specialValue = parameter as ISpecialValue;
-            if (specialValue != null)
-                parameter = specialValue.Resolve(new CoroutineExecutionContext());
-
-            if (parameter is TParameter)
-                return (TParameter) parameter;
-
-            return (TParameter) ParameterBinder.CoerceValue(typeof (TParameter), parameter);
         }
 
         public event EventHandler CanExecuteChanged

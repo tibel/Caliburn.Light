@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace Caliburn.Light
 {
     /// <summary>
@@ -19,10 +20,11 @@ namespace Caliburn.Light
         /// Gets a <see cref="DelegateCommandBuilder&lt;TParameter&gt;"/>.
         /// </summary>
         /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
+        /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <returns>The command builder.</returns>
-        public static DelegateCommandBuilder<TParameter> WithParameter<TParameter>()
+        public static DelegateCommandBuilder<TParameter> WithParameter<TParameter>(Func<object, TParameter> coerceParameter = null)
         {
-            return new DelegateCommandBuilder<TParameter>();
+            return new DelegateCommandBuilder<TParameter>(coerceParameter);
         }
     }
 }
