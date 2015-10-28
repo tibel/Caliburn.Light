@@ -12,5 +12,12 @@ namespace Caliburn.Light
         /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
         /// </summary>
         void RaiseCanExecuteChanged();
+
+        /// <summary>
+        /// Defines the method to be called when using x:Bind event binding.
+        /// </summary>
+        /// <param name="sender">The object where the handler is attached.</param>
+        /// <param name="eventArgs">Event data for the event.</param>
+        void OnEvent(object sender, object eventArgs);
     }
 }

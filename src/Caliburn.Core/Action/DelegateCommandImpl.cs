@@ -34,6 +34,11 @@ namespace Caliburn.Light
             }
         }
 
+        public void OnEvent(object sender, object eventArgs)
+        {
+            Execute(eventArgs);
+        }
+
         public void Execute(object parameter)
         {
             var value = _coerceParameter(parameter);
