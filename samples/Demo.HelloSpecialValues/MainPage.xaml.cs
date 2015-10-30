@@ -17,6 +17,11 @@ namespace Demo.HelloSpecialValues
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
+        public MainPageViewModel Model
+        {
+            get { return DataContext as MainPageViewModel; }
+        }
+
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>

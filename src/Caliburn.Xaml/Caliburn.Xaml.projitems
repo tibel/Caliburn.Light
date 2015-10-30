@@ -9,9 +9,6 @@
     <Import_RootNamespace>Caliburn.Light</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\CallMethodAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\IHaveParameters.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Behaviors\InvokeCommandAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BindingHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\NameBasedViewModelTypeResolver.cs" />

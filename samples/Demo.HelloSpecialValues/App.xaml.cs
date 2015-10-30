@@ -24,6 +24,8 @@ namespace Demo.HelloSpecialValues
 
         protected override void Configure()
         {
+            ParameterBinder.CustomConverters.Add(typeof(CharacterViewModel), p => ((ItemClickEventArgs)p).ClickedItem);
+
             _container = new SimpleContainer();
             IoC.Initialize(_container);
 

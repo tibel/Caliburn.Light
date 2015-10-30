@@ -129,16 +129,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Behaviors\DataTrigger.cs" />
-    <Compile Include="Behaviors\EventTrigger.cs" />
     <Compile Include="Behaviors\ExecutionContextResolver.cs" />
-    <Compile Include="Behaviors\IAttachedObject.cs" />
-    <Compile Include="Behaviors\Parameter.cs" />
-    <Compile Include="Behaviors\ParameterCollection.cs" />
-    <Compile Include="Behaviors\TriggerAction.cs" />
-    <Compile Include="Behaviors\TriggerActionCollection.cs" />
-    <Compile Include="Behaviors\TriggerBase.cs" />
-    <Compile Include="Behaviors\TypeConverterHelper.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
     <Compile Include="CaliburnApplication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -156,11 +147,6 @@
       <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
       <Name>Caliburn.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0">
-      <Name>Behaviors SDK %28XAML%29</Name>
-    </SDKReference>
   </ItemGroup>
   <Import Project="..\Caliburn.Xaml\Caliburn.Xaml.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

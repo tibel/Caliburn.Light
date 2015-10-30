@@ -6,26 +6,16 @@
     xmlns:local="using:Demo.HelloSpecialValues"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <GridView ItemsSource="{Binding Characters}" SelectionMode="None" IsSwipeEnabled="False" IsItemClickEnabled="True" Margin="20">
+        <GridView ItemsSource="{Binding Characters}" SelectionMode="None" IsSwipeEnabled="False" IsItemClickEnabled="True" Margin="20" ItemClick="{x:Bind Model.CharacterSelectedCommand.OnEvent}">
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <local:CharacterView cal:Bind.ModelWithoutContext="{Binding}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
-            <interactivity:Interaction.Behaviors>
-                <cal:EventTrigger EventName="ItemClick">
-                    <cal:InvokeCommandAction Command="{Binding CharacterSelectedCommand, Mode=OneTime}">
-                        <cal:InvokeCommandAction.CommandParameter>
-                            <local:ClickedItem/>
-                        </cal:InvokeCommandAction.CommandParameter>
-                    </cal:InvokeCommandAction>
-                </cal:EventTrigger>
-            </interactivity:Interaction.Behaviors>
         </GridView>
     </Grid>
 </Page>
