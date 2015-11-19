@@ -376,7 +376,7 @@ namespace Caliburn.Light
 
             var window = Window.Current;
 
-            if (!ReferenceEquals(window.Content, null))
+            if (ReferenceEquals(window.Content, null))
                 window.Content = _frame;
 
             window.Activate();
