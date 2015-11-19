@@ -374,10 +374,12 @@ namespace Caliburn.Light
 
             BindViewModel(view);
 
-            if (!ReferenceEquals(Window.Current.Content, _frame))
-                Window.Current.Content = _frame;
+            var window = Window.Current;
 
-            Window.Current.Activate();
+            if (!ReferenceEquals(window.Content, null))
+                window.Content = _frame;
+
+            window.Activate();
             return true;
         }
 

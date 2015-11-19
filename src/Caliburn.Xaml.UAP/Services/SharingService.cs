@@ -48,11 +48,13 @@ namespace Caliburn.Light
         /// <returns>The current view</returns>
         protected virtual FrameworkElement GetCurrentView()
         {
-            var frame = Window.Current.Content as Frame;
+            var content = Window.Current.Content;
+
+            var frame = content as Frame;
             if (frame != null)
                 return frame.Content as FrameworkElement;
 
-            return Window.Current.Content as FrameworkElement;
+            return content as FrameworkElement;
         }
     }
 }

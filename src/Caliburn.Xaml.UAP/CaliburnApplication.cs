@@ -139,11 +139,12 @@ namespace Caliburn.Light
 
             RootFrame.Navigate(viewType, paramter);
 
-            // Seems stupid but observed weird behaviour when resetting the Content
-            if (!ReferenceEquals(Window.Current.Content, RootFrame))
-                Window.Current.Content = RootFrame;
+            var window = Window.Current;
 
-            Window.Current.Activate();
+            if (!ReferenceEquals(window.Content, null))
+                window.Content = RootFrame;
+
+            window.Activate();
         }
 
         /// <summary>
@@ -175,8 +176,9 @@ namespace Caliburn.Light
             if (activator != null)
                 activator.Activate();
 
-            Window.Current.Content = view;
-            Window.Current.Activate();
+            var window = Window.Current;
+            window.Content = view;
+            window.Activate();
         }
 
         /// <summary>
