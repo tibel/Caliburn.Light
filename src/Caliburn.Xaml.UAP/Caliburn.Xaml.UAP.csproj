@@ -140,7 +140,7 @@
     <Compile Include="Services\NavigateHelper.cs" />
     <Compile Include="Services\NavigationServiceHelper.cs" />
     <Compile Include="Services\SharingService.cs" />
-    <Content Include="Properties\Caliburn.Xaml.UAP.rd.xml" />
+    <EmbeddedResource Include="Properties\Caliburn.Xaml.UAP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Core\Caliburn.Core.csproj">

@@ -45,7 +45,6 @@
     <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net451" />
 
     <file src="..\src\Caliburn.Xaml.UAP\bin\Release\Caliburn.*" target="lib\uap10.0" />
-    <file src="..\src\Caliburn.Xaml.UAP\bin\Release\Caliburn.Xaml\Properties\Caliburn.Xaml.UAP.rd.xml" target="lib\uap10.0\Caliburn.Xaml\Properties\Caliburn.Xaml.UAP.rd.xml" />
 
     <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
   </files>
