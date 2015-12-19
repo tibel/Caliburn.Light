@@ -14,15 +14,11 @@ namespace Demo.Validation
 
         public MainViewModel(Company company)
         {
-            var ruleValidator = new RuleValidator<MainViewModel>();
-            _validation = new ValidationAdapter(ruleValidator, OnErrorsChanged);
-
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(CName), m => m.CName, 1, 100, "Name is required."));
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Address), m => m.Address, 1, 100, "Address is required."));
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Website), m => m.Website, 1, 100, "Website is required."));
-            ruleValidator.AddRule(new RegexValidationRule<MainViewModel>(nameof(Website), m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid."));
-
             _company = company;
+
+            _validation = new ValidationAdapter(OnErrorsChanged);
+            _validation.Validator = SetupValidator();
+            
             SaveCommand = DelegateCommand
                 .NoParameter()
                 .OnExecute(() => Save())
@@ -112,6 +108,16 @@ namespace Demo.Validation
                 handler(this, new DataErrorsChangedEventArgs(propertyName));
 
             RaisePropertyChanged(nameof(CanSave));
+        }
+
+        private static IValidator SetupValidator()
+        {
+            var ruleValidator = new RuleValidator<MainViewModel>();
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(CName), m => m.CName, 1, 100, "Name is required."));
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Address), m => m.Address, 1, 100, "Address is required."));
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Website), m => m.Website, 1, 100, "Website is required."));
+            ruleValidator.AddRule(new RegexValidationRule<MainViewModel>(nameof(Website), m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid."));
+            return ruleValidator;
         }
 
         #endregion

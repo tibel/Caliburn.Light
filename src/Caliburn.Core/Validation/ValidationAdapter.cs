@@ -1,41 +1,42 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A container for all <see cref="IValidator"/> instances used by an object.
+    /// A validation helper for implementing <see cref="INotifyDataErrorInfo"/>.
     /// </summary>
     public sealed class ValidationAdapter
     {
-        private readonly IValidator _validator;
         private readonly Action<string> _onErrorsChanged;
         private readonly Dictionary<string, ICollection<string>> _errors = new Dictionary<string, ICollection<string>>();
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationAdapter"/> class.
         /// </summary>
-        /// <param name="validator">The validator.</param>
         /// <param name="onErrorsChanged">Called when a property was validated.</param>
-        public ValidationAdapter(IValidator validator, Action<string> onErrorsChanged = null)
+        public ValidationAdapter(Action<string> onErrorsChanged = null)
         {
-            if (validator == null)
-                throw new ArgumentNullException(nameof(validator));
-
-            _validator = validator;
             _onErrorsChanged = onErrorsChanged;
         }
 
         /// <summary>
-        /// Validates the property.
+        /// Gets or sets the used validator.
+        /// </summary>
+        public IValidator Validator { get; set; }
+
+        /// <summary>
+        /// Validates property <paramref name="propertyName"/> of the specified instance.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>True, if validation succeeded.</returns>
         public bool ValidateProperty(object instance, string propertyName)
         {
-            var errors = _validator.ValidateProperty(instance, propertyName, CultureInfo.CurrentCulture);
+            var validator = Validator ?? NullValidator.Instance;
+            var errors = validator.ValidateProperty(instance, propertyName, CultureInfo.CurrentCulture);
 
             if (errors.Count == 0)
                 _errors.Remove(propertyName);
@@ -55,9 +56,12 @@ namespace Caliburn.Light
         {
             _errors.Clear();
 
-            foreach (var propertyName in _validator.ValidatableProperties)
+            var validator = Validator ?? NullValidator.Instance;
+            var cultureInfo = CultureInfo.CurrentCulture;
+
+            foreach (var propertyName in validator.ValidatableProperties)
             {
-                var errors = _validator.ValidateProperty(instance, propertyName, CultureInfo.CurrentCulture);
+                var errors = validator.ValidateProperty(instance, propertyName, cultureInfo);
 
                 if (errors.Count == 0)
                     _errors.Remove(propertyName);

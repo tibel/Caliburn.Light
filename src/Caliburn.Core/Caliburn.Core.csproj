@@ -61,6 +61,7 @@
     <Compile Include="EventAggregator\EventAggregatorHandler.cs" />
     <Compile Include="PropertySupport.cs" />
     <Compile Include="Validation\DelegateValidationRule.cs" />
+    <Compile Include="Validation\NullValidator.cs" />
     <Compile Include="Validation\PropertyValidationRule.cs" />
     <Compile Include="Validation\RegexValidationRule.cs" />
     <Compile Include="ViewModel\BindableCollection.cs" />
