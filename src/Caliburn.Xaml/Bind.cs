@@ -43,7 +43,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the model to bind to.
         /// </summary>
-        /// <param name = "dependencyObject">The dependency object to bind to.</param>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
         /// <returns>The model.</returns>
         public static object GetModelWithoutContext(DependencyObject dependencyObject)
         {
@@ -53,8 +53,8 @@ namespace Caliburn.Light
         /// <summary>
         /// Sets the model to bind to.
         /// </summary>
-        /// <param name = "dependencyObject">The dependency object to bind to.</param>
-        /// <param name = "value">The model.</param>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <param name="value">The model.</param>
         public static void SetModelWithoutContext(DependencyObject dependencyObject, object value)
         {
             dependencyObject.SetValue(ModelWithoutContextProperty, value);
@@ -63,7 +63,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the model to bind to.
         /// </summary>
-        /// <param name = "dependencyObject">The dependency object to bind to.</param>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
         /// <returns>The model.</returns>
         public static object GetModel(DependencyObject dependencyObject)
         {
@@ -73,8 +73,8 @@ namespace Caliburn.Light
         /// <summary>
         /// Sets the model to bind to.
         /// </summary>
-        /// <param name = "dependencyObject">The dependency object to bind to.</param>
-        /// <param name = "value">The model.</param>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <param name="value">The model.</param>
         public static void SetModel(DependencyObject dependencyObject, object value)
         {
             dependencyObject.SetValue(ModelProperty, value);
@@ -112,5 +112,33 @@ namespace Caliburn.Light
             var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
             viewModelBinder.Bind(viewModel, view, context);
         }
+
+#if NETFX_CORE
+        /// <summary>
+        /// The DependencyProperty for the CommandParameter used in x:Bind scenarios.
+        /// </summary>
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.RegisterAttached("CommandParameter",
+            typeof (object), typeof (Bind), null);
+			
+		/// <summary>
+        /// Gets the command parameter
+        /// </summary>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <returns>The command parameter.</returns>
+        public static object GetCommandParameter(DependencyObject dependencyObject)
+        {
+            return dependencyObject.GetValue(CommandParameterProperty);
+        }
+
+        /// <summary>
+        /// Sets the command parameter.
+        /// </summary>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <param name="value">The command parameter.</param>
+        public static void SetCommandParameter(DependencyObject dependencyObject, object value)
+        {
+            dependencyObject.SetValue(CommandParameterProperty, value);
+        }
+#endif
     }
 }

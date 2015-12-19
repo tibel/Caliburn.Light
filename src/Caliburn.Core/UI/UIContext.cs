@@ -170,6 +170,17 @@ namespace Caliburn.Light
             return ViewAdapter.TryClose(view, dialogResult);
         }
 
+        /// <summary>
+        /// Gets the command parameter of the view.
+        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter' (UAP only).
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <returns>The command parameter.</returns>
+        public static object GetCommandParameter(object view)
+        {
+            return ViewAdapter.GetCommandParameter(view);
+        }
+
         #endregion
     }
 }

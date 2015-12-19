@@ -36,7 +36,8 @@ namespace Caliburn.Light
 
         public void OnEvent(object sender, object eventArgs)
         {
-            Execute(eventArgs);
+            var parameter = UIContext.GetCommandParameter(sender);
+            Execute(parameter ?? eventArgs);
         }
 
         public void Execute(object parameter)

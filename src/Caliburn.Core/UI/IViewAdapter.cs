@@ -40,5 +40,13 @@ namespace Caliburn.Light
         /// <param name="dialogResult">The dialog result.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
         bool TryClose(object view, bool? dialogResult);
+
+        /// <summary>
+        /// Gets the command parameter of the view.
+        /// This can be the native CommandParameter property or 'cal:Bind.CommandParameter' (UAP only).
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <returns>The command parameter.</returns>
+        object GetCommandParameter(object view);
     }
 }

@@ -91,5 +91,34 @@ namespace Caliburn.Light
 
             return false;
         }
+
+        /// <summary>
+        /// Gets the command parameter of the view.
+        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter' (UAP only).
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <returns>The command parameter.</returns>
+        public object GetCommandParameter(object view)
+        {
+            var dependencyObject = view as DependencyObject;
+            if (dependencyObject == null)
+                return null;
+
+#if NETFX_CORE
+            var commandParameter = Bind.GetCommandParameter(dependencyObject);
+            if (commandParameter != null)
+                return commandParameter;
+
+            var buttonBase = dependencyObject as ButtonBase;
+            if (buttonBase != null)
+                return buttonBase.CommandParameter;
+#else
+            var commandSource = dependencyObject as System.Windows.Input.ICommandSource;
+            if (commandSource != null)
+                return commandSource.CommandParameter;
+#endif
+
+            return null;
+        }
     }
 }

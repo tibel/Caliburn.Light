@@ -32,5 +32,10 @@ namespace Caliburn.Light
         {
             return false;
         }
+
+        public object GetCommandParameter(object view)
+        {
+            return null;
+        }
     }
 }
