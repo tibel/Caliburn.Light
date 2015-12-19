@@ -49,4 +49,5 @@ Use following behaviors for attaching an action to a view element
 In contrast to WPF
 - does not use behaviors (Behaviors SDK)
 - use `x:Bind` for sake of performance
+- use `cal:Bind.CommandParameter` in combination with `x:Bind`
 - maintain the Enabled state with a separate binding
