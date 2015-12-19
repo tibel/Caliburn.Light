@@ -38,6 +38,16 @@ namespace Caliburn.Light
         /// <summary>
         /// Represents failure of the validation.
         /// </summary>
+        /// <param name="errorDescription">The error description.</param>
+        /// <returns></returns>
+        public static ValidationResult Failure(string errorDescription)
+        {
+            return new ValidationResult(false, errorDescription);
+        }
+
+        /// <summary>
+        /// Represents failure of the validation.
+        /// </summary>
         /// <param name="provider">An object that supplies culture-specific formatting information. </param>
         /// <param name="format">A composite format string.</param>
         /// <param name="args">An object array that contains zero or more objects to format.</param>

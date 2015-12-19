@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -8,18 +9,17 @@ namespace Caliburn.Light
     public interface IValidator
     {
         /// <summary>
-        /// Determines whether this instance can validate the specified property.
+        /// Gets the name of all properties that can be validated by this instance.
         /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns>True, if this instance can validate the property.</returns>
-        bool CanValidateProperty(string propertyName);
+        ICollection<string> ValidatableProperties { get; }
 
         /// <summary>
-        /// Validates the specified property.
+        /// Applies the rules contained in this instance to <paramref name="obj"/>.
         /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="value">The property value.</param>
-        /// <returns>The list of validation errors.</returns>
-        IEnumerable<string> ValidateProperty(string propertyName, object value);
+        /// <param name="obj">The object to apply the rules to.</param>
+        /// <param name="propertyName">Name of the property we want to apply rules for.</param>
+        /// <param name="cultureInfo">The culture to use for validation.</param>
+        /// <returns>A collection of errors.</returns>
+        ICollection<string> ValidateProperty(object obj, string propertyName, CultureInfo cultureInfo);
     }
 }

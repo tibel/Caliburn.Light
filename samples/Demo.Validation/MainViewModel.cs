@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -15,8 +14,13 @@ namespace Demo.Validation
 
         public MainViewModel(Company company)
         {
-            _validation = new ValidationAdapter(OnErrorsChanged);
-            _validation.Validators.Add(new DataAnnotationsValidator(GetType()));
+            var ruleValidator = new RuleValidator<MainViewModel>();
+            _validation = new ValidationAdapter(ruleValidator, OnErrorsChanged);
+
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(CName), m => m.CName, 1, 100, "Name is required."));
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Address), m => m.Address, 1, 100, "Address is required."));
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Website), m => m.Website, 1, 100, "Website is required."));
+            ruleValidator.AddRule(new RegexValidationRule<MainViewModel>(nameof(Website), m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid."));
 
             _company = company;
             SaveCommand = DelegateCommand
@@ -27,38 +31,33 @@ namespace Demo.Validation
                 .Build();
         }
 
-        [Required(ErrorMessage = @"Name is required.")]
         public string CName
         {
             get { return _company.Name; }
             set
             {
                 _company.Name = value;
-                OnPropertyChanged(value);
+                OnPropertyChanged();
             }
         }
 
-        [Required(ErrorMessage = @"Address is required.")]
         public string Address
         {
             get { return _company.Address; }
             set
             {
                 _company.Address = value;
-                OnPropertyChanged(value);
+                OnPropertyChanged();
             }
         }
 
-        [Required(ErrorMessage = @"Website is required.")]
-        [RegularExpression(@"^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$",
-            ErrorMessage = @"The format of the web address is not valid")]
         public string Website
         {
             get { return _company.Website; }
             set
             {
                 _company.Website = value;
-                OnPropertyChanged(value);
+                OnPropertyChanged();
             }
         }
 
@@ -68,7 +67,7 @@ namespace Demo.Validation
             set
             {
                 _company.Contact = value;
-                OnPropertyChanged(value);
+                OnPropertyChanged();
             }
         }
 
@@ -84,9 +83,9 @@ namespace Demo.Validation
             get { return !_validation.HasErrors; }
         }
 
-        protected void OnPropertyChanged(object value, [CallerMemberName] string propertyName = "")
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            _validation.ValidateProperty(propertyName, value);
+            _validation.ValidateProperty(this, propertyName);
             RaisePropertyChanged(propertyName);
         }
 

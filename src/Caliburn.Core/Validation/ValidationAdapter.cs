@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
+using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -11,67 +9,41 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class ValidationAdapter
     {
-        private readonly IList<IValidator> _validators = new List<IValidator>();
-        private readonly IDictionary<string, IList<string>> _validationErrors = new Dictionary<string, IList<string>>();
+        private readonly IValidator _validator;
         private readonly Action<string> _onErrorsChanged;
-
+        private readonly Dictionary<string, ICollection<string>> _errors = new Dictionary<string, ICollection<string>>();
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationAdapter"/> class.
         /// </summary>
+        /// <param name="validator">The validator.</param>
         /// <param name="onErrorsChanged">Called when a property was validated.</param>
-        public ValidationAdapter(Action<string> onErrorsChanged = null)
+        public ValidationAdapter(IValidator validator, Action<string> onErrorsChanged = null)
         {
+            if (validator == null)
+                throw new ArgumentNullException(nameof(validator));
+
+            _validator = validator;
             _onErrorsChanged = onErrorsChanged;
         }
 
         /// <summary>
-        /// Gets the validators.
-        /// </summary>
-        public ICollection<IValidator> Validators
-        {
-            get { return _validators; }
-        }
-
-        /// <summary>
         /// Validates the property.
         /// </summary>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
-        /// <param name="value">The value to validate.</param>
-        /// <returns>True, if validation succeeded.</returns>
-        public bool ValidateProperty<TProperty>(Expression<Func<TProperty>> property, object value)
-        {
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-            return ValidateProperty(propertyName, value);
-        }
-
-        /// <summary>
-        /// Validates the property.
-        /// </summary>
+        /// <param name="instance">The instance.</param>
         /// <param name="propertyName">Name of the property.</param>
-        /// <param name="value">The value to validate.</param>
         /// <returns>True, if validation succeeded.</returns>
-        public bool ValidateProperty(string propertyName, object value)
+        public bool ValidateProperty(object instance, string propertyName)
         {
-            var values = ValidatePropertyImpl(propertyName, value);
+            var errors = _validator.ValidateProperty(instance, propertyName, CultureInfo.CurrentCulture);
 
-            if (values.Count == 0)
-                _validationErrors.Remove(propertyName);
+            if (errors.Count == 0)
+                _errors.Remove(propertyName);
             else
-                _validationErrors[propertyName] = values;
+                _errors[propertyName] = errors;
 
             OnErrorsChanged(propertyName);
-            return values.Count == 0;
-        }
-
-        private IList<string> ValidatePropertyImpl(string propertyName, object value)
-        {
-            var allErrors = new List<string>();
-            foreach (var errors in _validators.Select(validator => validator.ValidateProperty(propertyName, value)))
-            {
-                allErrors.AddRange(errors);
-            }
-            return allErrors;
+            return errors.Count == 0;
         }
 
         /// <summary>
@@ -81,22 +53,20 @@ namespace Caliburn.Light
         /// <returns>True, if any property has validation errors.</returns>
         public bool Validate(object instance)
         {
-            _validationErrors.Clear();
+            _errors.Clear();
 
-            var properties = instance.GetType().GetRuntimeProperties();
-            foreach (var property in properties)
+            foreach (var propertyName in _validator.ValidatableProperties)
             {
-                if (!_validators.Any(validator => validator.CanValidateProperty(property.Name)))
-                    continue;
+                var errors = _validator.ValidateProperty(instance, propertyName, CultureInfo.CurrentCulture);
 
-                var value = property.GetValue(instance);
-                var errors = ValidatePropertyImpl(property.Name, value);
-                if (errors.Count > 0)
-                    _validationErrors.Add(property.Name, errors);
+                if (errors.Count == 0)
+                    _errors.Remove(propertyName);
+                else
+                    _errors[propertyName] = errors;
             }
 
             OnErrorsChanged(string.Empty);
-            return _validationErrors.Count == 0;
+            return _errors.Count == 0;
         }
 
         /// <summary>
@@ -106,22 +76,10 @@ namespace Caliburn.Light
         /// <returns>List of validation errors.</returns>
         public IEnumerable<string> GetPropertyError(string propertyName)
         {
-            IList<string> errors;
-            if (_validationErrors.TryGetValue(propertyName, out errors))
+            ICollection<string> errors;
+            if (_errors.TryGetValue(propertyName, out errors))
                 return errors;
-            return Enumerable.Empty<string>();
-        }
-
-        /// <summary>
-        /// Gets all validation errors of the spezified property.
-        /// </summary>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
-        /// <returns>List of validation errors.</returns>
-        public IEnumerable<string> GetPropertyError<TProperty>(Expression<Func<TProperty>> property)
-        {
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-            return GetPropertyError(propertyName);
+            return System.Linq.Enumerable.Empty<string>();
         }
 
         /// <summary>
@@ -131,22 +89,10 @@ namespace Caliburn.Light
         /// <returns>True, if the property has validation errors.</returns>
         public bool HasPropertyError(string propertyName)
         {
-            IList<string> errors;
-            if (_validationErrors.TryGetValue(propertyName, out errors))
+            ICollection<string> errors;
+            if (_errors.TryGetValue(propertyName, out errors))
                 return errors.Count > 0;
             return false;
-        }
-
-        /// <summary>
-        /// Determines whether the spezified property has validation errors.
-        /// </summary>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
-        /// <returns>True, if the property has validation errors.</returns>
-        public bool HasPropertyError<TProperty>(Expression<Func<TProperty>> property)
-        {
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-            return HasPropertyError(propertyName);
         }
 
         /// <summary>
@@ -154,7 +100,7 @@ namespace Caliburn.Light
         /// </summary>
         public bool HasErrors
         {
-            get { return _validationErrors.Count > 0; }
+            get { return _errors.Count > 0; }
         }
 
         private void OnErrorsChanged(string propertyName)

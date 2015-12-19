@@ -14,6 +14,16 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="propertyExpression">The property expression (e.g. p => p.PropertyName)</param>
         /// <returns>The name of the property.</returns>
+        public static string ExtractPropertyName<TProperty>(Expression<Func<TProperty>> propertyExpression)
+        {
+            return ExtractPropertyName((LambdaExpression)propertyExpression);
+        }
+        
+        /// <summary>
+        /// Extracts the property name from a property expression.
+        /// </summary>
+        /// <param name="propertyExpression">The property expression (e.g. p => p.PropertyName)</param>
+        /// <returns>The name of the property.</returns>
         public static string ExtractPropertyName(LambdaExpression propertyExpression)
         {
             if (propertyExpression == null)

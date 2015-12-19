@@ -1,46 +1,57 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace Caliburn.Light
 {
     /// <summary>
     /// Performs a length validation of a <see cref="string"/>.
     /// </summary>
-    public class StringLengthValidationRule : ValidationRule<string>
+    /// <typeparam name="T">The type of the object the rule applies to.</typeparam>
+    public sealed class StringLengthValidationRule<T> : PropertyValidationRule<T, string>
     {
         private readonly int _minimumLength;
         private readonly int _maximumLength;
-        private readonly string _errorMessage;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringLengthValidationRule"/> class.
+        /// Initializes a new instance of the <see cref="StringLengthValidationRule&lt;T&gt;"/> class.
         /// </summary>
+        /// <param name="propertyName">The name of the property this instance applies to.</param>
+        /// <param name="getPropertyValue">Gets the value of the property.</param>
         /// <param name="minimumLength">The minimum length.</param>
         /// <param name="maximumLength">The maximum length.</param>
         /// <param name="errorMessage">The error message.</param>
-        public StringLengthValidationRule(int minimumLength, int maximumLength, string errorMessage)
+        public StringLengthValidationRule(string propertyName, Func<T, string> getPropertyValue, int minimumLength, int maximumLength, string errorMessage)
+            : base(propertyName, getPropertyValue, errorMessage)
         {
+            if (minimumLength < 0)
+                throw new ArgumentOutOfRangeException(nameof(minimumLength));
+            if (maximumLength < 0 || minimumLength > maximumLength)
+                throw new ArgumentOutOfRangeException(nameof(maximumLength));
+
             _minimumLength = minimumLength;
             _maximumLength = maximumLength;
-            _errorMessage = errorMessage;
         }
 
         /// <summary>
-        /// Performs validation checks on a value.
+        /// Applies the rule to the specified object.
         /// </summary>
-        /// <param name="value">The value to check.</param>
+        /// <param name="obj">The object to apply the rule to.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
-        /// <returns>A <see cref="ValidationResult" /> object.</returns>
-        protected override ValidationResult OnValidate(string value, CultureInfo cultureInfo)
+        /// <returns>
+        /// A <see cref="ValidationResult" /> object.
+        /// </returns>
+        public override ValidationResult Apply(T obj, CultureInfo cultureInfo)
         {
             var length = 0;
-
+            var value = GetPropertyValue(obj);
+            
             if (!string.IsNullOrEmpty(value))
                 length = GetTrimmedLength(value);
             
-            if (length < _minimumLength || length > _maximumLength)
-                return ValidationResult.Failure(cultureInfo, _errorMessage, _minimumLength, _maximumLength, length);
-
-            return ValidationResult.Success();
+            if (length >= _minimumLength && length <= _maximumLength)
+                return ValidationResult.Success();
+            else
+                return ValidationResult.Failure(cultureInfo, ErrorMessage, _minimumLength, _maximumLength, length);
         }
 
         private static int GetTrimmedLength(string value)

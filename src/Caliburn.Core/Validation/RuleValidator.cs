@@ -1,99 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-using Weakly;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Helper for rule based validation.
+    /// Rule based validator.
     /// </summary>
-    public sealed class RuleValidator : IValidator
+    /// <typeparam name="T">The type of the object the validator applies to.</typeparam>
+    public sealed class RuleValidator<T> : IValidator
     {
-        private readonly IDictionary<string, IList<IValidationRule>> _rules =
-            new Dictionary<string, IList<IValidationRule>>();
+        private static readonly ICollection<string> Empty = new ReadOnlyCollection<string>(new List<string>());
+
+        private readonly Dictionary<string, IList<ValidationRule<T>>> _rules =
+            new Dictionary<string, IList<ValidationRule<T>>>();
 
         /// <summary>
-        /// Adds a <see cref="IValidationRule"/> to the validator.
+        /// Adds a rule to the validator.
         /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
         /// <param name="rule">The rule to add.</param>
-        public void AddRule(string propertyName, IValidationRule rule)
+        public void AddRule(ValidationRule<T> rule)
         {
-            IList<IValidationRule> current;
-            if (!_rules.TryGetValue(propertyName, out current))
+            if (rule == null)
+                throw new ArgumentNullException(nameof(rule));
+
+            IList<ValidationRule<T>> current;
+            if (!_rules.TryGetValue(rule.PropertyName, out current))
             {
-                current = new List<IValidationRule>();
-                _rules.Add(propertyName, current);
+                current = new List<ValidationRule<T>>();
+                _rules.Add(rule.PropertyName, current);
             }
 
             current.Add(rule);
         }
 
         /// <summary>
-        /// Adds a <see cref="IValidationRule"/> to the validator.
-        /// </summary>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
-        /// <param name="rule">The rule to add.</param>
-        public void AddRule<TProperty>(Expression<Func<TProperty>> property, IValidationRule rule)
-        {
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-            AddRule(propertyName, rule);
-        }
-
-        /// <summary>
-        /// Removes all validation rules for a property.
+        /// Removes all rules for a property.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
-        public void RemoveRules(string propertyName)
+        /// <returns>true if rules where removed; otherwise, false.</returns>
+        public bool RemoveRules(string propertyName)
         {
-            _rules.Remove(propertyName);
-        }
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
 
-        /// <summary>
-        /// Removes all validation rules for a property.
-        /// </summary>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
-        public void RemoveRules<TProperty>(Expression<Func<TProperty>> property)
-        {
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-            RemoveRules(propertyName);
+            return _rules.Remove(propertyName);
         }
 
         /// <summary>
         /// Determines whether this instance can validate the specified property.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
-        /// <returns>
-        /// True, if this instance can validate the property.
-        /// </returns>
+        /// <returns>True, if this instance can validate the property.</returns>
         public bool CanValidateProperty(string propertyName)
         {
             return _rules.ContainsKey(propertyName);
         }
 
         /// <summary>
-        /// Validates the specified property.
+        /// Gets the name of all properties that can be validated by this instance.
         /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="value">The property value.</param>
-        /// <returns>
-        /// The list of validation errors.
-        /// </returns>
-        public IEnumerable<string> ValidateProperty(string propertyName, object value)
+        public ICollection<string> ValidatableProperties
         {
-            IList<IValidationRule> propertyRules;
-            if (!_rules.TryGetValue(propertyName, out propertyRules))
-                return Enumerable.Empty<string>();
+            get { return _rules.Keys; }
+        }
 
-            return from rule in propertyRules
-                let result = rule.Validate(value, CultureInfo.CurrentCulture)
-                where !result.IsValid
-                select result.ErrorDescription;
+        ICollection<string> IValidator.ValidateProperty(object obj, string propertyName, CultureInfo cultureInfo)
+        {
+            return ValidateProperty((T)obj, propertyName, cultureInfo);
+        }
+
+        /// <summary>
+        /// Applies the rules contained in this instance to <paramref name="obj"/>.
+        /// </summary>
+        /// <param name="obj">The object to apply the rules to.</param>
+        /// <param name="propertyName">Name of the property we want to apply rules for.</param>
+        /// <param name="cultureInfo">The culture to use for validation.</param>
+        /// <returns>A collection of errors.</returns>
+        public ICollection<string> ValidateProperty(T obj, string propertyName, CultureInfo cultureInfo)
+        {
+            IList<ValidationRule<T>> propertyRules;
+            if (!_rules.TryGetValue(propertyName, out propertyRules))
+                return Empty;
+
+            var errors = new List<string>();
+
+            foreach (var rule in propertyRules)
+            {
+                var result = rule.Apply(obj, cultureInfo);
+
+                if (!result.IsValid)
+                {
+                    errors.Add(result.ErrorDescription);
+                }
+            }
+
+            return errors;
         }
     }
 }
