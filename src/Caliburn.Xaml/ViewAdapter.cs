@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -87,41 +86,6 @@ namespace Caliburn.Light
             if (popup != null)
             {
                 popup.IsOpen = false;
-                return true;
-            }
-
-            return TryCloseFallback(view, dialogResult);
-        }
-
-        private bool TryCloseFallback(object view, bool? dialogResult)
-        {
-            var viewType = view.GetType();
-            var closeMethod = viewType.GetRuntimeMethod("Close", new Type[0]);
-            if (closeMethod != null)
-            {
-                var isClosed = false;
-                if (dialogResult != null)
-                {
-                    var resultProperty = viewType.GetRuntimeProperty("DialogResult");
-                    if (resultProperty != null)
-                    {
-                        resultProperty.SetValue(view, dialogResult, null);
-                        isClosed = true;
-                    }
-                }
-
-                if (!isClosed)
-                {
-                    closeMethod.Invoke(view, null);
-                }
-
-                return true;
-            }
-
-            var isOpenProperty = viewType.GetRuntimeProperty("IsOpen");
-            if (isOpenProperty != null)
-            {
-                isOpenProperty.SetValue(view, false, null);
                 return true;
             }
 

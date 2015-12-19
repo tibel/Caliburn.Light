@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 #if NETFX_CORE
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
@@ -63,11 +62,10 @@ namespace Caliburn.Light
             if (!(bool) view.GetValue(IsGeneratedProperty)) return view;
 
             var contentControl = view as ContentControl;
-            if (contentControl != null)
-                return contentControl.Content;
+            if (contentControl == null)
+                throw new NotSupportedException("Generated view type is not supported.");
 
-            var contentProperty = FindContentProperty(view);
-            return contentProperty.GetValue(view);
+            return contentControl.Content;
         }
 
         /// <summary>
@@ -173,21 +171,6 @@ namespace Caliburn.Light
 #else
             return element.IsLoaded;
 #endif
-        }
-
-        private const string DefaultContentPropertyName = "Content";
-
-        /// <summary>
-        /// Finds the Content property of specified <paramref name="element"/>.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <returns>An object that represents the specified property, or null if the property is not found.</returns>
-        public static PropertyInfo FindContentProperty(object element)
-        {
-            var type = element.GetType();
-            var contentPropertyAttribute = type.GetTypeInfo().GetCustomAttribute<ContentPropertyAttribute>(true);
-            var contentPropertyName = (contentPropertyAttribute == null) ? DefaultContentPropertyName : contentPropertyAttribute.Name;
-            return type.GetRuntimeProperty(contentPropertyName);
         }
     }
 }

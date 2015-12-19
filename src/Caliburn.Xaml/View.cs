@@ -1,4 +1,5 @@
-﻿#if NETFX_CORE
+﻿using System;
+#if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #else
@@ -122,14 +123,10 @@ namespace Caliburn.Light
         private static void SetContentProperty(DependencyObject targetLocation, DependencyObject view)
         {
             var contentControl = targetLocation as ContentControl;
-            if (contentControl != null)
-            {
-                contentControl.Content = view;
-                return;
-            }
+            if (contentControl == null)
+                throw new NotSupportedException("Only ContentControl is supported.");
 
-            var contentProperty = ViewHelper.FindContentProperty(targetLocation);
-            contentProperty.SetValue(targetLocation, view);
+            contentControl.Content = view;
         }
     }
 }
