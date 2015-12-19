@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Weakly;
 
@@ -88,28 +86,6 @@ namespace Caliburn.Light
 
             _target = target;
             _propertyNames = propertyNames;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the property to listen for change notifications.
-        /// </summary>
-        /// <param name="target">The object to observe.</param>
-        /// <param name="property">The property.</param>
-        /// <returns>Itself</returns>
-        public DelegateCommandBuilder Observe<TProperty>(INotifyPropertyChanged target, Expression<Func<TProperty>> property)
-        {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-            if (_target != null)
-                throw new InvalidOperationException("Observe already set.");
-            if (property == null)
-                throw new ArgumentNullException(nameof(property));
-
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-                        
-            _target = target;
-            _propertyNames = new[] { propertyName };
             return this;
         }
 
@@ -247,28 +223,6 @@ namespace Caliburn.Light
 
             _target = target;
             _propertyNames = propertyNames;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the property to listen for change notifications.
-        /// </summary>
-        /// <param name="target">The object to observe.</param>
-        /// <param name="property">The property.</param>
-        /// <returns>Itself</returns>
-        public DelegateCommandBuilder<TParameter> Observe<TProperty>(INotifyPropertyChanged target, Expression<Func<TProperty>> property)
-        {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-            if (_target != null)
-                throw new InvalidOperationException("Observe already set.");
-            if (property == null)
-                throw new ArgumentNullException(nameof(property));
-
-            var propertyName = PropertySupport.ExtractPropertyName(property);
-
-            _target = target;
-            _propertyNames = new[] { propertyName };
             return this;
         }
 

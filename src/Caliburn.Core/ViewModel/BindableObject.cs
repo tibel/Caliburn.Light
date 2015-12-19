@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Weakly;
 
@@ -62,16 +61,6 @@ namespace Caliburn.Light
             var handler = PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event if needed.
-        /// </summary>
-        /// <typeparam name = "TProperty">The type of the property.</typeparam>
-        /// <param name = "property">The property expression.</param>
-        protected void RaisePropertyChanged<TProperty>(Expression<Func<TProperty>> property)
-        {
-            RaisePropertyChanged(PropertySupport.ExtractPropertyName(property));
         }
 
         /// <summary>
