@@ -36,8 +36,26 @@ namespace Caliburn.Light
 
         public void OnEvent(object sender, object eventArgs)
         {
-            var parameter = UIContext.GetCommandParameter(sender);
-            Execute(parameter ?? eventArgs);
+            var parameter = DetermineParameter(sender, eventArgs);
+            Execute(parameter);
+        }
+
+        private static object DetermineParameter(object sender, object eventArgs)
+        {
+            var resolvedParameter = UIContext.GetCommandParameter(sender);
+
+            var specialValue = resolvedParameter as ISpecialValue;
+            if (specialValue != null)
+            {
+                var context = new CoroutineExecutionContext
+                {
+                    Source = sender,
+                    EventArgs = eventArgs,
+                };
+                resolvedParameter = specialValue.Resolve(context);
+            }
+
+            return resolvedParameter ?? eventArgs;
         }
 
         public void Execute(object parameter)
