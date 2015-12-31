@@ -1,7 +1,4 @@
----
-layout: page
-title: Service Locator
----
+# Service Locator
 
 Caliburn.Micro comes pre-bundled with a static Service Locator called IoC. For those unfamiliar, a Service Locator is an entity that can provide another entity with service instances, usually based on some type or key. Service Locator is actually a pattern and is related to Inversion of Control. Many consider Service Locator to be an anti-pattern but like all patterns it has its use cases. 
 

@@ -1,7 +1,4 @@
----
-layout: page
-title: Introduction
----
+# Introduction
 
 When my [“Build Your Own MVVM Framework”][mix] talk was chosen for Mix10, I was excited to have the opportunity to show others what we had been doing in [Caliburn][caliburn] in a simplified, but powerful way. After giving the talk, I received a ton of positive feedback on the techniques/framework that I had demonstrated. I was approached by several companies and individuals who expressed an interest in a more “official” version of what I had shown. That, coupled with the coming of Windows Phone 7, impressed upon me a need to have a more “lean and mean” framework. My vision was to take 90% of Caliburn’s features and squash them into 10% of the code. I started with the Mix sample framework, then used an iterative process of integrating Caliburn v2 features, simplifying and refactoring. I continued along those lines until I had what I felt was a complete solution that mirrored the full version of Caliburn v2, but on a smaller scale.
 

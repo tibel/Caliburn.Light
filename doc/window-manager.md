@@ -1,7 +1,4 @@
----
-layout: page
-title: The Window Manager
----
+# The Window Manager
 
 It is quite hard to write documentation for the Window Manager, as there is not one Window Manager but there is one per platform (Silverlight, Phone, WPF and WinRT). To make it even more complex: these Windows Managers have different interfaces and features. 
 

@@ -1,7 +1,4 @@
----
-layout: page
-title: View / View Model Naming Conventions
----
+# View / View Model Naming Conventions
 
 After receiving feedback about View and ViewModel resolution in Caliburn Micro, we have added new capabilities to make type resolution simpler while maintaining the robust regular expression-based name transformation mechanism that drives it. To get a better understanding about these new capabilities and how type resolution, in general, works in the framework, it's an appropriate time to describe in detail the naming conventions that the framework supports out-of-the-box. As you should already know by now, the framework depends considerably on naming conventions, and in type resolution specifically there are two different naming conventions to consider: the convention for naming the type itself and the convention for naming the namespace of the type.
 

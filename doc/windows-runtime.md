@@ -1,7 +1,4 @@
----
-layout: page
-title: Working with WinRT
----
+# Working with WinRT
 
 Unlike other versions of Caliburn Micro the WinRT version doesn't use a Bootstrapper, the non ranty reason for this is that Windows.UI.Xaml.Application exposes most of it's functionality through method overrides and not events. Therefore it makes sense to have a custom Application rather than forcing the developer to wire the application to the bootstrapper.
 

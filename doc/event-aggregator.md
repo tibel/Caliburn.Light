@@ -1,7 +1,4 @@
----
-layout: page
-title: The Event Aggregator
----
+# The Event Aggregator
 
 Caliburn.Micro comes pre-bundled with an Event Aggregator, conveniently called EventAggregator. For those unfamiliar, an Event Aggregator is a service that provides the ability to publish an object from one entity to another in a loosely based fashion. Event Aggregator is actually a pattern and it's implementation can vary from framework to framework. For Caliburn.Micro we focused on making our Event Aggregator implementation simple to use without sacrificing features or flexibility.
 

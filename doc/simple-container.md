@@ -1,7 +1,4 @@
----
-layout: page
-title: Simple IoC Container
----
+# Simple IoC Container
 
 Caliburn.Micro comes pre-bundled with a Dependency Injection container called SimpleContainer. For those unfamiliar, a dependency injection container is an object that is used to hold dependency mappings for use later in an app via Dependency Injection. Dependency Injection is actually a pattern typically using the container element instead of manual service mapping.
 

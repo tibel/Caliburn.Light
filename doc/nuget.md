@@ -1,7 +1,4 @@
----
-layout: page
-title: Nuget Package Installation
----
+# Nuget Package Installation
 
 [NuGet][nuget] is a Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects that use the .NET Framework. Caliburn.Micro is proud to support the NuGet Package Manager.
 

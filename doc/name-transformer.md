@@ -1,7 +1,4 @@
----
-layout: page
-title: Using the Name Transformer
----
+# Using the Name Transformer
 
 The NameTransformer was introduced in Caliburn.Micro v1.1 and is an integral part of how both the ViewLocator and ViewModelLocator map class names to their companion role. While you can override various funcs on these services to replace the underlying behavior, most of your needs should be met by simply configuring rules with the appropriate NameTransformer which describe your unique mapping strategies.
 
