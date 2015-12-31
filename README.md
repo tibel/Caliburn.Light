@@ -1,4 +1,4 @@
-![Logo](./logo.png?raw=true)
+![Logo](logo.png)
 # Caliburn.Light
 
 Caliburn.Light is a fork of [Caliburn.Micro](http://caliburnmicro.com/) that
