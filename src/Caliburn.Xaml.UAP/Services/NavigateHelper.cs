@@ -35,9 +35,24 @@ namespace Caliburn.Light
         /// <returns>Itself</returns>
         public NavigateHelper<TViewModel> WithParam<TValue>(Expression<Func<TViewModel, TValue>> property, TValue value)
         {
+            return WithParam(PropertySupport.ExtractPropertyName(property), value);
+        }
+
+        /// <summary>
+        /// Adds a query string parameter to the Uri.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="propertyName">The property.</param>
+        /// <param name="value">The property value.</param>
+        /// <returns>Itself</returns>
+        public NavigateHelper<TViewModel> WithParam<TValue>(string propertyName, TValue value)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+
             if (value is ValueType || !ReferenceEquals(null, value))
             {
-                _parameters[PropertySupport.ExtractPropertyName(property)] = value.ToString();
+                _parameters[propertyName] = value.ToString();
             }
 
             return this;
