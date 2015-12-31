@@ -1,6 +1,6 @@
-# Caliburn.Light Documentation
+# Documentation
 
-TODO update the docs for latest version
+:heavy_exclamation_mark: work in progress
 
  - Getting Started
     - [Introduction](introduction.md)
