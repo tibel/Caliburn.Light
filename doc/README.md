@@ -1,11 +1,20 @@
 # Documentation
 
-:heavy_exclamation_mark: work in progress
+This repository includes several documents that explain both high-level and low-level concepts about Caliburn.Light.
 
+:heavy_exclamation_mark: work in progress :heavy_exclamation_mark:
+
+- Introduction
+  - [History](history.md)
+  - [Build the Code](build.md)
+  - [NuGet](nuget.md)
+- Getting Started
+
+
+
+Old TOC:
  - Getting Started
     - [Introduction](introduction.md)
-    - [Obtain and Build the Code](build.md)
-    - [NuGet](nuget.md)
     - [Cheat Sheet](cheat-sheet.md)
  - Soup to Nuts
     - [Basic Configuration](configuration.md)
