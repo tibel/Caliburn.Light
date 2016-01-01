@@ -1,8 +1,8 @@
 # Documentation
 
-This repository includes several documents that explain both high-level and low-level concepts about Caliburn.Light.
-
 :heavy_exclamation_mark: work in progress :heavy_exclamation_mark:
+
+This repository includes several documents that explain both high-level and low-level concepts about Caliburn.Light.
 
 - Introduction
   - [Overview](overview.md)
@@ -10,26 +10,26 @@ This repository includes several documents that explain both high-level and low-
   - [Build the Code](build.md)
 - Getting Started
   - [NuGet](nuget.md)
-  - Basic Configuration
-
-
-
-Soup to Nuts (OLD)
-
-- [Basic Configuration](configuration.md)
-- [Customizing the Bootstrapper](bootstrapper.md)
-- [All about Actions](actions.md)
-- [Working with Windows Phone (Silverlight)](windows-phone.md)
-- [Working with Windows RT (Windows 8 and Windows Phone 8.1)](windows-runtime.md)
-- [IResult and Coroutines](coroutines.md)
-- [Screens, Conductors and Composition](composition.md)
-- [All About Conventions](conventions.md)
-  - [View / ViewModel Naming Conventions](naming-conventions.md)
-  - [Handling Custom Conventions](custom-conventions.md)
-  - [Using the NameTransformer](name-transformer.md)
-- [The Event Aggregator](event-aggregator.md)
-- [Simple IoC Container](simple-container.md)
-- [Service Locator](service-locator.md)
-- [The Window Manager](window-manager.md)
-- [Design Time Support](design-time.md)
-- [Async (Task Support)](async.md)
+  - [Basic Configuration](configuration.md)
+- What's next?
+  - [All about Actions](actions.md)
+  - [Screens, Conductors and Composition](composition.md)
+  - [WPF specifics](wpf.md)
+  - [Windows Runtime specifics](windows-runtime.md)
+  - [Customizing the Bootstrapper](bootstrapper.md)
+  - [Validation](validation.md)
+- Advanced Topics
+  - [Service Locator](service-locator.md)
+  - [Simple IoC Container](simple-container.md)
+  - [The Event Aggregator](event-aggregator.md)
+  - [The Window Manager](window-manager.md)
+  - [Design Time Support](design-time.md)
+  - [ICoTask and Coroutines](coroutines.md)
+  - [Async (Task Support)](async.md)
+  - [View/ViewModel Resolution](viewmodel-resolver.md)
+    - [All About Conventions](conventions.md)
+    - [View / ViewModel Naming Conventions](naming-conventions.md)
+    - [Handling Custom Conventions](custom-conventions.md)
+    - [Using the NameTransformer](name-transformer.md)
+- Extending the Framework
+  - The ViewModel Binder
