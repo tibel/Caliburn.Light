@@ -5,18 +5,15 @@ This repository includes several documents that explain both high-level and low-
 :heavy_exclamation_mark: work in progress :heavy_exclamation_mark:
 
 - Introduction
+  - [Overview](overview.md)
   - [History](history.md)
   - [Build the Code](build.md)
-  - [NuGet](nuget.md)
 - Getting Started
+  - [NuGet](nuget.md)
 
 
 
-Old TOC:
- - Getting Started
-    - [Introduction](introduction.md)
-    - [Cheat Sheet](cheat-sheet.md)
- - Soup to Nuts
+Soup to Nuts
     - [Basic Configuration](configuration.md)
     - [Customizing the Bootstrapper](bootstrapper.md)
     - [All about Actions](actions.md)
