@@ -11,7 +11,7 @@ This repository includes several documents that explain both high-level and low-
 - Getting Started
   - [NuGet](nuget.md)
   - [Basic Configuration](configuration.md)
-- What's next?
+- What's next
   - [Screens, Conductors and Composition](composition.md)
   - [Validation](validation.md)
   - [WPF specifics](wpf.md)
@@ -25,8 +25,8 @@ This repository includes several documents that explain both high-level and low-
   - [ICoTask and Coroutines](coroutines.md)
   - [Async (Task Support)](async.md)
   - [View/ViewModel Resolution](viewmodel-resolver.md)
-    - [All About Conventions](conventions.md)
-    - [View / ViewModel Naming Conventions](naming-conventions.md)
+    - [Convention Based](conventions.md)
+    - [Naming Conventions](naming-conventions.md)
     - [Handling Custom Conventions](custom-conventions.md)
     - [Using the NameTransformer](name-transformer.md)
   - [Office and WinForms Applications](winforms.md)
