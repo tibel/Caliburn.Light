@@ -4,7 +4,7 @@ For building Caliburn.Light by your own you need:
 - [GitHub client](https://desktop.github.com/)
 - Visual Studio 2015
 
-
+Now the easy part:
 1. Clone the repository to your computer
 2. Navigate to the folder where you cloned the repository
 3. Open `Caliburn.Light.sln`

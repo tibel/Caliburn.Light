@@ -14,7 +14,7 @@ PM> Install-Package Caliburn.Light
 
 Now it is time to wire up the framework.
 
-##### WPF
+#### WPF
 
 Create your application bootstrapper.
 
@@ -79,6 +79,6 @@ Add your AppBoostrapper to your App.xaml's Resources section.
 
 **Note**: Make sure to remove the StartupUri value. Caliburn.Light will be handling the main window creation for you.
 
-##### Windows Store App
+#### Windows Store App
 
 For WinRT, the process of getting started is unfortunately quite different, due to significant design differences in the Windows XAML APIs.
