@@ -1,51 +1,31 @@
 # Service Locator
 
-Caliburn.Micro comes pre-bundled with a static Service Locator called IoC. For those unfamiliar, a Service Locator is an entity that can provide another entity with service instances, usually based on some type or key. Service Locator is actually a pattern and is related to Inversion of Control. Many consider Service Locator to be an anti-pattern but like all patterns it has its use cases. 
+Caliburn.Light comes pre-bundled with a static Service Locator called IoC. For those unfamiliar, a Service Locator is an entity that can provide another entity with service instances, usually based on some type or key. Service Locator is actually a pattern and is related to Inversion of Control. Many consider Service Locator to be an anti-pattern but like all patterns it has its use cases. 
 
 ### Getting Started
 
-IoC is the static entity used for Service Location in Caliburn.Micro, this enables IoC to work with static entites such as dependency properties with ease. The public definition of IoC is shown below.
+IoC is the static entity used for Service Location in Caliburn.Light, this enables IoC to work with static entities such as dependency properties with ease. The public definition of IoC is shown below.
 
 ``` csharp
-public static class IoC {
-	public static Func<Type, string, object> GetInstance;
-        public static Func<Type, IEnumerable<object>> GetAllInstances;
-        public static Action<object> BuildUp;
+public static class IoC
+{
+  public static void Initialize(IServiceLocator serviceLocator) { }
 
-        public static T Get<T>(string key = null);
-	public static IEnumerable<T> GetAll<T>();
+  public static object GetInstance(Type service, string key = null) { }
+  public static T GetInstance<T>(string key = null) { }
+
+  public static IEnumerable<object> GetAllInstances(Type service) { }
+  public static IEnumerable<T> GetAllInstances<T>() { }
 }
 ```
 
-As you can see above much of the functionality of IoC is dependant on the consumer providing it. In most cases the relevant methods required map directly to methods provided by all Dependency Injection containers (although the name and functionality may differ).
+As you can see above much of the functionality of IoC is dependent on the consumer providing it. In most cases the relevant methods required map directly to methods provided by all Dependency Injection containers (although the name and functionality may differ).
 
 ### Injecting IoC with functionality.
 
-Caliburn.Micro requires IoC to work correctly because it takes advantage of it at a framework level. As a non optional service we provide an extensibility point directly on the Bootstrapper for the purposes of injecting functionality into IoC. Below, the sample uses Caliburn.Micro's own SimpleContainer to inject functionality into IoC.
+Caliburn.Light requires IoC to work correctly because it takes advantage of it at a framework level. As a non optional service we provide an extensibility point `IServiceLocator` for the purposes of injecting functionality into IoC. Caliburn.Light's own SimpleContainer implements this interface to inject functionality into IoC.
 
-``` csharp
-public class CustomBootstrapper : Bootstrapper {
-	private SimpleContainer _container = new SimpleContainer();
-		
-	//...
-
-	protected override object GetInstance(Type service, string key) {
-		return _container.GetInstance(service, key);
-	}
-
-	protected override IEnumerable<object> GetAllInstances(Type service) {
-		return _container.GetAllInstances(service);
-	}
-
-	protected override void BuildUp(object instance) {
-		_container.BuildUp(instance);
-	}
-
-	//...
-}
-```
-
-By mapping your chosen dependency container to IoC, Calburn.Micro can take advantage of any service bindings made on the container via Service Location. 
+By mapping your chosen dependency container to IoC, Calburn.Light can take advantage of any service bindings made on the container via Service Location. 
 
 ### Using IoC in your application
 
@@ -69,13 +49,4 @@ Requesting a collection of services is also supported by IoC. The return type is
 ``` csharp
 var viewModelCollection = IoC.GetAll<IViewModel>();
 var viewModel = IoC.GetAll<IViewModel>().FirstOrDefault(vm => vm.GetType() == typeof(ShellViewModel));
-```
-
-##### Injecting an instance with services
-
-IoC supports the injection of services into a given instance. The mechanics of how this is done is left to the implementation injected into the Action<Instance> BuildUp field. There are various places in the framework were this is used to inject functionality into entities that were created externally to the dependency container mapped to IoC.
-
-``` csharp
-var viewModel = new LocallyCreatedViewModel();
-IoC.BuildUp(viewModel);
 ```
