@@ -1,6 +1,6 @@
 # Screens, Conductors and Composition
 
-Actions, Coroutines and Conventions tend to draw the most attention to Caliburn.Micro, but the Screens and Conductors piece is probably most important to understand if you want your UI to be engineered well. It’s particularly important if you want to leverage composition. The terms Screen, Screen Conductor and Screen Collection have more recently been codified by Jeremy Miller during his work on the book "Presentation Patterns" for Addison Wesley. While these patterns are primarily used in CM by inheriting ViewModels from particular base classes, it’s important to think of them as roles rather than as View-Models. In fact, depending on your architecture, a Screen could be a UserControl, Presenter or ViewModel. That’s getting a little ahead of ourselves though. First, let’s talk about what these things are in general.
+The Screens and Conductors piece of Caliburn.Light is probably most important to understand if you want your UI to be engineered well. It’s particularly important if you want to leverage composition. The terms Screen, Screen Conductor and Screen Collection have more recently been codified by Jeremy Miller during his work on the book "Presentation Patterns" for Addison Wesley. While these patterns are primarily used in CL by inheriting ViewModels from particular base classes, it’s important to think of them as roles rather than as View-Models. In fact, depending on your architecture, a Screen could be a UserControl, Presenter or ViewModel. That’s getting a little ahead of ourselves though. First, let’s talk about what these things are in general.
 
 ### Theory
 
@@ -18,59 +18,58 @@ In an application like Visual Studio, you would not only have a ScreenConductor 
 ### Implementations
 There are lots of different ways to implement these ideas. You could inherit from a TabControl and implement an IScreenConductor interface and build all the logic directly in the control. Add that to your IoC container and you’re off and running. You could implement an IScreen interface on a custom UserControl or you could implement it as a POCO used as a base for Supervising Controllers. ScreenCollection could be a custom collection with special logic for maintaining the active screen, or it could just be a simple IList<IScreen>.
 
-#### Caliburn.Micro Implementations
-These concepts are implemented in CM through various interfaces and base classes which can be used mostly to build ViewModels. Let’s take a look at them:
+#### Caliburn.Light Implementations
+These concepts are implemented in CL through various interfaces and base classes which can be used mostly to build ViewModels. Let’s take a look at them:
 
 ##### Screens
-In Caliburn.Micro we have broken down the notion of screen activation into several interfaces:
+In Caliburn.Light we have broken down the notion of screen activation into several interfaces:
 
  - IActivate – Indicates that the implementer requires activation. This interface provides an Activate method, an IsActive property and an Activated event which should be raised when activation occurs.
  - IDeactivate – Indicates that the implementer requires deactivation. This interface has a Deactivate method which takes a bool property indicating whether to close the screen in addition to deactivating it. It also has two events: AttemptingDeactivation, which should be raised before deactivation and Deactivated which should be raised after deactivation.
- - IGuardClose – Indicates that the implementer may need to cancel a close operation. It has one method: CanClose. This method is designed with an async pattern, allowing complex logic such as async user interaction to take place while making the close decision. The caller will pass an Action<bool> to the CanClose method. The implementer should call the action when guard logic is complete. Pass true to indicate that the implementer can close, false otherwise.
+ - ICloseGuard – Indicates that the implementer may need to cancel a close operation. It has one method: CanCloseAsync. This method is designed with an async pattern, allowing complex logic such as async user interaction to take place while making the close decision. The caller will await the CanCloseAsync method. The async Task should return true to indicate that the implementer can close, false otherwise.
 
 In addition to these core lifecycle interfaces, we have a few others to help in creating consistency between presentation layer classes:
 
  - IHaveDisplayName – Has a single property called DisplayName
- - INotifyPropertyChangedEx – This interface inherits from the standard INotifyPropertyChanged and augments it with additional behaviors. It adds an IsNotifying property which can be used to turn off/on all change notification, a NotifyOfPropertyChange method which can be called to raise a property change and a Refresh method which can be used to refresh all bindings on the object.
- - IObservableCollection<T> – Composes the following interfaces: IList<T>, INotifyPropertyChangedEx and INotifyCollectionChanged
- - IChild<T> – Implemented by elements that are part of a hierarchy or that need a reference to an owner. It has one property named Parent.
+ - IBindableObject – This interface inherits from the standard INotifyPropertyChanged and augments it with additional behaviors. It adds a SuspendNotifications method which can be used to turn off/on all change notification and a Refresh method which can be used to refresh all bindings on the object.
+ - IBindableCollection<T> – Composes the following interfaces: IList<T>, IBindableObject and INotifyCollectionChanged
+ - IChild – Implemented by elements that are part of a hierarchy or that need a reference to an owner. It has one property named Parent.
  - IViewAware – Implemented by classes which need to be made aware of the view that they are bound to. It has an AttachView method which is called by the framework when it binds the view to the instance. It has a GetView method which the framework calls before creating a view for the instance. This enables caching of complex views or even complex view resolution logic. Finally, it has an event which should be raised when a view is attached to the instance called ViewAttached.
 
 Because certain combinations are so common, we have some convenience interfaces and base classes:
 
- - PropertyChangedBase – Implements INotifyPropertyChangedEx (and thus INotifyPropertyChanged). It provides a lambda-based NotifyOfPropertyChange method in addition to the standard string mechanism, enabling strongly-typed change notification. Also, all property change events are automatically marshaled to the UI thread.
- - BindableCollection – Implements IObservableCollection<T> by inheriting from the standard ObservableCollection<T> and adding the additional behavior specified by INotifyPropertyChangedEx. Also, this class ensures that all property change and collection change events occur on the UI thread.
- - IScreen – This interface composes several other interfaces: IHaveDisplayName, IActivate, IDeactivate, IGuardClose and INotifyPropertyChangedEx.
- - Screen – Inherits from PropertyChangedBase and implements the IScreen interface. Additionally, IChild and IViewAware are implemented.
+ - BindableObject – Implements IBindableObject (and thus INotifyPropertyChanged).
+ - BindableCollection – Implements IBindableCollection<T> by inheriting from the standard ObservableCollection<T> and adding the additional behavior specified by IBindableObject.
+ - IScreen – This interface composes several other interfaces: IActivate, IDeactivate, ICloseGuard and IBindableObject.
+ - Screen – Inherits from BindableObject and implements the IScreen interface. Additionally IViewAware is implemented.
 
-What this all means is that you will probably inherit most of your view models from either PropertyChangedBase or Screen. Generally speaking, you would use Screen if you need any of the activation features and PropertyChangedBase for everything else. CM’s default Screen implementation has a few additional features as well and makes it easy to hook into the appropriate parts of the lifecycle:
+What this all means is that you will probably inherit most of your view models from either BindableObject or Screen. Generally speaking, you would use Screen if you need any of the activation features and BindableObject for everything else. CL’s default Screen implementation has a few additional features as well and makes it easy to hook into the appropriate parts of the lifecycle:
 
  - OnInitialize – Override this method to add logic which should execute only the first time that the screen is activated. After initialization is complete, IsInitialized will be true.
  - OnActivate – Override this method to add logic which should execute every time the screen is activated. After activation is complete, IsActive will be true.
  - OnDeactivate – Override this method to add custom logic which should be executed whenever the screen is deactivated or closed. The bool property will indicated if the deactivation is actually a close. After deactivation is complete, IsActive will be false.
- - CanClose – The default implementation always allows closing. Override this method to add custom guard logic.
- - OnViewLoaded – Since Screen implements IViewAware, it takes this as an opportunity to let you know when your view’s Loaded event is fired. Use this if you are following a SupervisingController or PassiveView style and you need to work with the view. This is also a place to put view model logic which may be dependent on the presence of a view even though you may not be working with the view directly.
- - TryClose – Call this method to close the screen. If the screen is being controlled by a Conductor, it asks the Conductor to initiate the shutdown process for the Screen. If the Screen is not controlled by a Conductor, but exists independently (perhaps because it was shown using the WindowManager), this method attempts to close the view. In both scenarios the CanClose logic will be invoked and if allowed, OnDeactivate will be called with a value of true.
+ - CanCloseAsync – The default implementation always allows closing. Override this method to add custom guard logic.
+ - TryClose – Call this method to close the screen. If the screen is being controlled by a Conductor, it asks the Conductor to initiate the shutdown process for the Screen. If the Screen is not controlled by a Conductor, but exists independently (perhaps because it was shown using the WindowManager), this method attempts to close the view. In both scenarios the CanCloseAsync logic will be invoked and if allowed, OnDeactivate will be called with a value of true.
 
-So, just to re-iterate: if you need a lifecycle, inherit from Screen; otherwise inherit from PropertyChangedBase.
+So, just to re-iterate: if you need a lifecycle, inherit from Screen; otherwise inherit from BindableObject.
 
 ##### Conductors
 
-As I mentioned above, once you introduce lifecycle, you need something to enforce it. In Caliburn.Micro, this role is represented by the IConductor interface which has the following members:
+As I mentioned above, once you introduce lifecycle, you need something to enforce it. In Caliburn.Light, this role is represented by the IConductor interface which has the following members:
 
  - ActivateItem – Call this method to activate a particular item. It will also add it to the currently conducted items if the conductor is using a “screen collection.”
  - DeactivateItem – Call this method to deactivate a particular item. The second parameter indicates whether the item should also be closed. If so, it will also remove it from the currently conducted items if the conductor is using a “screen collection.”
  - ActivationProcessed – Raised when the conductor has processed the activation of an item. It indicates whether or not the activation was successful.
- - GetChildren– Call this method to return a list of all the items that the conductor is tracking. If the conductor is using a “screen collection,” this returns all the “screens,” otherwise this only returns ActiveItem. (From the IParent interface)
- - INotifyPropertyChangedEx – This interface is composed into IConductor.
+ - GetChildren – Call this method to return a list of all the items that the conductor is tracking. If the conductor is using a “screen collection,” this returns all the “screens,” otherwise this only returns ActiveItem. (From the IParent interface)
+ - IBindableObject – This interface is composed into IConductor.
 
 We also have an interface called IConductActiveItem which composes IConductor and IHaveActiveItem to add the following member:
  
  - ActiveItem – A property that indicates what item the conductor is currently tracking as active.
 
-You may have noticed that CM’s IConductor interface uses the term “item” rather than “screen” and that I was putting the term “screen collection” in quotes. The reason for this is that CM’s conductor implementations do not require the item being conducted to implement IScreen or any particular interface. Conducted items can be POCOs. Rather than enforcing the use of IScreen, each of the conductor implementations is generic, with no constraints on the type. As the conductor is asked to activate/deactivate/close/etc each of the items it is conducting, it checks them individually for the following fine-grained interfaces: IActivate, IDeactive, IGuardClose and IChild. In practice, I usually inherit conducted items from Screen, but this gives you the flexibility to use your own base class, or to only implement the interfaces for the lifecycle events you care about on a per-class basis. You can even have a conductor tracking heterogeneous items, some of which inherit from Screen and others that implement specific interfaces or none at all.
+You may have noticed that CL’s IConductor interface uses the term “item” rather than “screen” and that I was putting the term “screen collection” in quotes. The reason for this is that CL’s conductor implementations do not require the item being conducted to implement IScreen or any particular interface. Conducted items can be POCOs. Rather than enforcing the use of IScreen, each of the conductor implementations is generic, with no constraints on the type. As the conductor is asked to activate/deactivate/close/etc each of the items it is conducting, it checks them individually for the following fine-grained interfaces: IActivate, IDeactive, IGuardClose and IChild. In practice, I usually inherit conducted items from Screen, but this gives you the flexibility to use your own base class, or to only implement the interfaces for the lifecycle events you care about on a per-class basis. You can even have a conductor tracking heterogeneous items, some of which inherit from Screen and others that implement specific interfaces or none at all.
 
-Out of the box CM has three implementations of IConductor, two that work with a “screen collection” and one that does not. We’ll look at the conductor without the collection first. 
+Out of the box CL has three implementations of IConductor, two that work with a “screen collection” and one that does not. We’ll look at the conductor without the collection first. 
 
 ##### Conductor<T>
 
@@ -78,27 +77,27 @@ This simple conductor implements the majority of IConductor’s members through 
 
 ##### Conductor<T>.Collection.OneActive
 
-This implementation has all the features of Conductor<T> but also adds the notion of a “screen collection.” Since conductors in CM can conduct any type of class, this collection is exposed through an IObservableCollection<T> called Items rather than Screens. As a result of the presence of the Items collection, deactivation and closing of conducted items are not treated synonymously. When a new item is activated, the previous active item is deactivated only and it remains in the Items collection. To close an item with this conductor, you must explicitly call its CloseItem method. When an item is closed and that item was the active item, the conductor must then determine which item should be activated next. By default, this is the item before the previous active item in the list. If you need to change this behavior, you can override DetermineNextItemToActivate.
+This implementation has all the features of Conductor<T> but also adds the notion of a “screen collection.” Since conductors in CL can conduct any type of class, this collection is exposed through an IObservableCollection<T> called Items rather than Screens. As a result of the presence of the Items collection, deactivation and closing of conducted items are not treated synonymously. When a new item is activated, the previous active item is deactivated only and it remains in the Items collection. To close an item with this conductor, you must explicitly call its CloseItem method. When an item is closed and that item was the active item, the conductor must then determine which item should be activated next. By default, this is the item before the previous active item in the list. If you need to change this behavior, you can override DetermineNextItemToActivate.
 
 ##### Conductor<T>.Collection.AllActive
 
 Similarly, this implementation also has the features of Conductor<T> and adds the notion of a "screen collection." The main difference is that rather than a single item being active at one time, many items can be active. Closing an item deactivates it and removes it from the collection.
 
-There are two very important details about CMs IConductor implementations that I have not mentioned yet. First, they both inherit from Screen. This is a key feature of these implementations because it creates a composite pattern between screens and conductors. So, let’s say you are building a basic navigation-style application. Your shell would be an instance of Conductor<IScreen> because it shows one Screen at a time and doesn’t maintain a collection. But, let’s say that one of those screens was very complicated and needed to have a multi-tabbed interface requiring lifecycle events for each tab. Well, that particular screen could inherit from Conductor<T>.Collection.OneActive. The shell need not be concerned with the complexity of the individual screen. One of those screens could even be a UserControl that implemented IScreen instead of a ViewModel if that’s what was required. The second important detail is a consequence of the first. Since all OOTB implementations of IConductor inherit from Screen it means that they too have a lifecycle and that lifecycle cascades to whatever items they are conducting. So, if a conductor is deactivated, its ActiveItem will be deactivated as well. If you try to close a conductor, it’s going to only be able to close if all of the items it conducts can close. This turns out to be a very powerful feature. There’s one aspect about this that I’ve noticed frequently trips up developers. **If you activate an item in a conductor that is itself not active, that item won’t actually be activated until the conductor gets activated.** This makes sense when you think about it, but can occasionally cause hair pulling.
+There are two very important details about CLs IConductor implementations that I have not mentioned yet. First, they both inherit from Screen. This is a key feature of these implementations because it creates a composite pattern between screens and conductors. So, let’s say you are building a basic navigation-style application. Your shell would be an instance of Conductor<IScreen> because it shows one Screen at a time and doesn’t maintain a collection. But, let’s say that one of those screens was very complicated and needed to have a multi-tabbed interface requiring lifecycle events for each tab. Well, that particular screen could inherit from Conductor<T>.Collection.OneActive. The shell need not be concerned with the complexity of the individual screen. One of those screens could even be a UserControl that implemented IScreen instead of a ViewModel if that’s what was required. The second important detail is a consequence of the first. Since all OOTB implementations of IConductor inherit from Screen it means that they too have a lifecycle and that lifecycle cascades to whatever items they are conducting. So, if a conductor is deactivated, its ActiveItem will be deactivated as well. If you try to close a conductor, it’s going to only be able to close if all of the items it conducts can close. This turns out to be a very powerful feature. There’s one aspect about this that I’ve noticed frequently trips up developers. **If you activate an item in a conductor that is itself not active, that item won’t actually be activated until the conductor gets activated.** This makes sense when you think about it, but can occasionally cause hair pulling.
 
 ##### Quasi-Conductors
 
-Not everything in CM that can be a screen is rooted inside of a Conductor. For example, what about the your root view model? If it’s a conductor, who is activating it? Well, that’s one of the jobs that the Bootstrapper performs. The Bootstrapper itself is not a conductor, but it understands the fine-grained lifecycle interfaces discussed above and ensures that your root view model is treated with the respect it deserves. The WindowManager works in a similar way by acting a little like a conductor for the purpose of enforcing the lifecycle of your modal (and modeless - WPF only) windows. So, lifecycle isn’t magical. All your screens/conductors must be either rooted in a conductor or managed by the Bootstrapper or WindowManager to work properly; otherwise you are going to need to manage the lifecycle yourself.
+Not everything in CL that can be a screen is rooted inside of a Conductor. For example, what about the your root view model? If it’s a conductor, who is activating it? Well, that’s one of the jobs that the Bootstrapper performs. The Bootstrapper itself is not a conductor, but it understands the fine-grained lifecycle interfaces discussed above and ensures that your root view model is treated with the respect it deserves. The WindowManager works in a similar way by acting a little like a conductor for the purpose of enforcing the lifecycle of your modal (and modeless - WPF only) windows. So, lifecycle isn’t magical. All your screens/conductors must be either rooted in a conductor or managed by the Bootstrapper or WindowManager to work properly; otherwise you are going to need to manage the lifecycle yourself.
 
 ##### View-First
 
-If you are working with WP7 or using the Silverlight Navigation Framework, you may be wondering if/how you can leverage screens and conductors. So far, I’ve been assuming a primarily ViewModel-First approach to shell engineering. But the WP7 platform enforces a View-First approach by controlling page navigation. The same is true of the SL Nav framework. In these cases, the Phone/Nav Framework acts like a conductor. In order to make this play well with ViewModels, the WP7 version of CM has a FrameAdapter which hooks into the NavigationService. This adapter, which is set up by the PhoneBootstrapper, understands the same fine-grained lifecycle interfaces that conductors do and ensures that they are called on your ViewModels at the appropriate points during navigation. You can even cancel the phone’s page navigation by implementing IGuardClose on your ViewModel. While the FrameAdapter is only part of the WP7 version of CM, it should be easily portable to Silverlight should you wish to use it in conjunction with the Silverlight Navigation Framework.
+If you are working with WinRT Navigation Framework, you may be wondering if/how you can leverage screens and conductors. So far, I’ve been assuming a primarily ViewModel-First approach to shell engineering. But the WinRT platform enforces a View-First approach by controlling page navigation. In this case, the Nav Framework acts like a conductor. In order to make this play well with ViewModels, the WinRT version of CL has a FrameAdapter which hooks into the NavigationService. This adapter, which is set up by the CalliburnApplication, understands the same fine-grained lifecycle interfaces that conductors do and ensures that they are called on your ViewModels at the appropriate points during navigation. You can even cancel the page navigation by implementing ICloseGuard on your ViewModel.
 
 ### Simple Navigation
 
 ![Simple Navigation](images/simple-navigation.jpg)
 
-Previously, we discussed the theory and basic APIs for Screens and Conductors in Caliburn.Micro. Now I would like to walk through the first of several samples. This particular sample demonstrates how to set up a simple navigation-style shell using Conductor<T> and two “Page” view models. As you can see from the project structure, we have the typical pattern of Bootstrapper and ShellViewModel. In order to keep this sample as simple as possible, I’m not even using an IoC container with the Bootstrapper. Let’s look at the ShellViewModel first. It inherits from Conductor<object> and is implemented as follows:
+Previously, we discussed the theory and basic APIs for Screens and Conductors in Caliburn.Light. Now I would like to walk through the first of several samples. This particular sample demonstrates how to set up a simple navigation-style shell using Conductor<T> and two “Page” view models. As you can see from the project structure, we have the typical pattern of Bootstrapper and ShellViewModel. In order to keep this sample as simple as possible, I’m not even using an IoC container with the Bootstrapper. Let’s look at the ShellViewModel first. It inherits from Conductor<object> and is implemented as follows:
 
 ``` csharp
 public class ShellViewModel : Conductor<object> {
@@ -119,7 +118,7 @@ public class ShellViewModel : Conductor<object> {
 Here is the corresponding ShellView:
 
 ``` xml
-<UserControl x:Class="Caliburn.Micro.SimpleNavigation.ShellView"
+<UserControl x:Class="Caliburn.Light.SimpleNavigation.ShellView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:tc="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit">
@@ -138,9 +137,9 @@ Here is the corresponding ShellView:
 </UserControl>
 ```
 
-Notice that the ShellViewModel has two methods, each of which passes a view model instance to the ActivateItem method. Recall from our earlier discussion that ActivateItem is a method on Conductor<T> which will switch the ActiveItem property of the conductor to this instance and push the instance through the activation stage of the screen lifecycle (if it supports it by implementing IActivate). Recall also, that if ActiveItem is already set to an instance, then before the new instance is set, the previous instance will be checked for an implementation of IGuardClose which may or may not cancel switching of the ActiveItem. Assuming the current ActiveItem can close, the conductor will then push it through the deactivation stage of the lifecycle, passing true to the Deactivate method to indicate that the view model should also be closed. This is all it takes to create a navigation application in Caliburn.Micro. The ActiveItem of the conductor represents the “current page” and the conductor manages the transitions from one page to the other. This is all done in a ViewModel-First fashion since it’s the conductor and it’s child view models that are driving the navigation and not the “views.”
+Notice that the ShellViewModel has two methods, each of which passes a view model instance to the ActivateItem method. Recall from our earlier discussion that ActivateItem is a method on Conductor<T> which will switch the ActiveItem property of the conductor to this instance and push the instance through the activation stage of the screen lifecycle (if it supports it by implementing IActivate). Recall also, that if ActiveItem is already set to an instance, then before the new instance is set, the previous instance will be checked for an implementation of IGuardClose which may or may not cancel switching of the ActiveItem. Assuming the current ActiveItem can close, the conductor will then push it through the deactivation stage of the lifecycle, passing true to the Deactivate method to indicate that the view model should also be closed. This is all it takes to create a navigation application in Caliburn.Light. The ActiveItem of the conductor represents the “current page” and the conductor manages the transitions from one page to the other. This is all done in a ViewModel-First fashion since it’s the conductor and it’s child view models that are driving the navigation and not the “views.”
 
-Once the basic Conductor structure is in place, it’s quite easy to get it rendering. The ShellView demonstrates this. All we have to do is place a ContentControl in the view. By naming it “ActiveItem” our data binding conventions kick in. The convention for ContentControl is a bit interesting. If the item we are binding to is not a value type and not a string, then we assume that the Content is a ViewModel. So, instead of binding to the Content property as we would in the other cases, we actually set up a binding with CM’s custom attached property: View.Model. This property causes CM’s ViewLocator to look up the appropriate view for the view model and CM’s ViewModelBinder to bind the two together. Once that is complete, we pop the view into the ContentControl’s Content property. This single convention is what enables the powerful, yet simple ViewModel-First composition in the framework.
+Once the basic Conductor structure is in place, it’s quite easy to get it rendering. The ShellView demonstrates this. All we have to do is place a ContentControl in the view. By naming it “ActiveItem” our data binding conventions kick in. The convention for ContentControl is a bit interesting. If the item we are binding to is not a value type and not a string, then we assume that the Content is a ViewModel. So, instead of binding to the Content property as we would in the other cases, we actually set up a binding with CL’s custom attached property: View.Model. This property causes CL’s ViewLocator to look up the appropriate view for the view model and CL’s ViewModelBinder to bind the two together. Once that is complete, we pop the view into the ContentControl’s Content property. This single convention is what enables the powerful, yet simple ViewModel-First composition in the framework.
 
 For completeness, let’s take a look at the PageOneViewModel and PageTwoViewModel:
 
@@ -158,20 +157,20 @@ public class PageTwoViewModel : Screen {
 Along with their views:
 
 ``` xml
-<UserControl x:Class="Caliburn.Micro.SimpleNavigation.PageOneView"
+<UserControl x:Class="Caliburn.Light.SimpleNavigation.PageOneView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <TextBlock FontSize="32">Page One</TextBlock>
 </UserControl>
 
-<UserControl x:Class="Caliburn.Micro.SimpleNavigation.PageTwoView"
+<UserControl x:Class="Caliburn.Light.SimpleNavigation.PageTwoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <TextBlock FontSize="32">Page Two</TextBlock>
 </UserControl>
 ```
 
-I’d like to point out a few final things. Notice that PageOneViewModel is just a POCO, but PageTwoViewModel inherits from Screen. Remember that the conductors in CM don’t place any constraints on what can be conducted. Rather, they check each instance for support of the various fine-grained lifecycle instances at the necessary times. So, when ActivateItem is called for PageTwoViewModel, it will first check PageOneViewModel to see if it implements IGuardClose. Since it does not, it will attempt to close it. It will then check to see if it implements IDeactivate. Since it does not, it will just proceed to activate the new item. First it checks if the new item implements IChild. Since Screen does, it hooks up the hierarchical relationship. Next, it will check PageTwoViewModel to see if it implements IActivate. Since Screen does, the code in my OnActivate method will then run. Finally, it will set the ActiveItem property on the conductor and raise the appropriate events. Here’s an important consequence of this that should be remembered: The activation is a ViewModel-specific lifecycle process and doesn’t guarantee anything about the state of the View. Many times, even though your ViewModel has been activated, its view may not yet be visible. You will see this when you run the sample. The MessageBox will show when the activation occurs, but the view for page two will not yet be visible. Remember, if you have any activation logic that is dependent on the view being already loaded, you should override Screen.OnViewLoaded instead of/in combination with OnActivate.
+I’d like to point out a few final things. Notice that PageOneViewModel is just a POCO, but PageTwoViewModel inherits from Screen. Remember that the conductors in CL don’t place any constraints on what can be conducted. Rather, they check each instance for support of the various fine-grained lifecycle instances at the necessary times. So, when ActivateItem is called for PageTwoViewModel, it will first check PageOneViewModel to see if it implements IGuardClose. Since it does not, it will attempt to close it. It will then check to see if it implements IDeactivate. Since it does not, it will just proceed to activate the new item. First it checks if the new item implements IChild. Since Screen does, it hooks up the hierarchical relationship. Next, it will check PageTwoViewModel to see if it implements IActivate. Since Screen does, the code in my OnActivate method will then run. Finally, it will set the ActiveItem property on the conductor and raise the appropriate events. Here’s an important consequence of this that should be remembered: The activation is a ViewModel-specific lifecycle process and doesn’t guarantee anything about the state of the View. Many times, even though your ViewModel has been activated, its view may not yet be visible. You will see this when you run the sample. The MessageBox will show when the activation occurs, but the view for page two will not yet be visible. Remember, if you have any activation logic that is dependent on the view being already loaded, you should override Screen.OnViewLoaded instead of/in combination with OnActivate.
 
 ### Simple MDI
 
@@ -213,7 +212,7 @@ Since we want to maintain a list of open items, but only keep one item active at
 Those are the main scenarios. Hopefully you can see some of the differences from a Conductor without a collection and understand why those differences are there. Let’s see how the ShellView renders:
 
 ``` xml
-<Window x:Class="Caliburn.Micro.SimpleMDI.ShellView"
+<Window x:Class="Caliburn.Light.SimpleMDI.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cal="http://www.caliburnproject.org"
@@ -238,16 +237,16 @@ Those are the main scenarios. Hopefully you can see some of the differences from
 </Window>
 ```
 
-As you can see we are using a WPF TabControl. CM’s conventions will bind its ItemsSource to the Items collection and its SelectedItem to the ActiveItem. It will also add a default ContentTemplate which will be used to compose in the ViewModel/View pair for the ActiveItem. Conventions can also supply an ItemTemplate since our tabs all implement IHaveDisplayName (through Screen), but I’ve opted to override that by supplying my own to enable closing the tabs. We’ll talk more in depth about conventions in a later article. For completeness, here are the trivial implementations of TabViewModel along with its view:
+As you can see we are using a WPF TabControl. CL’s conventions will bind its ItemsSource to the Items collection and its SelectedItem to the ActiveItem. It will also add a default ContentTemplate which will be used to compose in the ViewModel/View pair for the ActiveItem. Conventions can also supply an ItemTemplate since our tabs all implement IHaveDisplayName (through Screen), but I’ve opted to override that by supplying my own to enable closing the tabs. We’ll talk more in depth about conventions in a later article. For completeness, here are the trivial implementations of TabViewModel along with its view:
 
 ``` csharp
-namespace Caliburn.Micro.SimpleMDI {
+namespace Caliburn.Light.SimpleMDI {
     public class TabViewModel : Screen {}
 }
 ```
 
 ``` xml
-<UserControl x:Class="Caliburn.Micro.SimpleMDI.TabView"
+<UserControl x:Class="Caliburn.Light.SimpleMDI.TabView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Orientation="Horizontal">
@@ -277,7 +276,7 @@ I’m not going to go line-by-line through this sample. It’s better if you tak
 
 ##### ViewModel Composition
 
-One of the most important features of Screens and Conductors in Caliburn.Micro is that they are an implementation of the Composite Pattern, making them easy to compose together in different configurations. Generally speaking, composition is one of the most important aspects of object oriented programming and learning how to use it in your presentation tier can yield great benefits. To see how composition plays a role in this particular sample, let's look at two screenshots. The first shows the application with the CustomersWorkspace in view, editing a specific Customer’s Address. The second screen is the same, but with its View/ViewModel pairs rotated three-dimensionally, so you can see how the UI is composed.
+One of the most important features of Screens and Conductors in Caliburn.Light is that they are an implementation of the Composite Pattern, making them easy to compose together in different configurations. Generally speaking, composition is one of the most important aspects of object oriented programming and learning how to use it in your presentation tier can yield great benefits. To see how composition plays a role in this particular sample, let's look at two screenshots. The first shows the application with the CustomersWorkspace in view, editing a specific Customer’s Address. The second screen is the same, but with its View/ViewModel pairs rotated three-dimensionally, so you can see how the UI is composed.
 
 *Editing a Customer’s Address*
 
@@ -291,7 +290,7 @@ In this application, the ShellViewModel is a Conductor<IWorkspace>.Collection.On
 
 ##### Multiple Views over the Same ViewModel
 
-You may not be aware of this, but Caliburn.Micro can display multiple Views over the same ViewModel. This is supported by setting the View.Context attached property on the View/ViewModel’s injection site. Here’s an example from the default CustomerWorkspaceView:
+You may not be aware of this, but Caliburn.Light can display multiple Views over the same ViewModel. This is supported by setting the View.Context attached property on the View/ViewModel’s injection site. Here’s an example from the default CustomerWorkspaceView:
 
 ``` xml
 <clt:TransitioningContentControl cal:View.Context="{Binding State, Mode=TwoWay}"
@@ -299,18 +298,16 @@ You may not be aware of this, but Caliburn.Micro can display multiple Views over
                                  Style="{StaticResource specialTransition}"/>
 ```
 
-There is a lot of other Xaml surrounding this to form the chrome of the CustomerWorkspaceView, but the content region is the most noteworthy part of the view. Notice that we are binding the View.Context attached property to the State property on the CustomerWorkspaceViewModel. This allows us to dynamically change out views based on the value of that property. Because this is all hosted in the TransitioningContentControl, we get a nice transition whenever the view changes. This technique is used to switch the CustomerWorkspaceViewModel from a “Master” view, where it displays all open CustomerViewModels, a search UI and a New button, to a “Detail” view, where it displays the currently activated CustomerViewModel along with its specific view (composed in). In order for CM to find these contextual views, you need a namespace based on the ViewModel name, minus the words “View” and “Model”, with some Views named corresponding to the Context. For example, when the framework looks for the Detail view of Caliburn.Micro.HelloScreens.Customers.CustomersWorkspaceViewModel, it’s going to look for Caliburn.Micro.HelloScreens.Customers.CustomersWorkspace.Detail That’s the out-of-the-box naming convention. If that doesn’t work for you, you can simply customize the ViewLocator.LocateForModelType func.
+There is a lot of other XAML surrounding this to form the chrome of the CustomerWorkspaceView, but the content region is the most noteworthy part of the view. Notice that we are binding the View.Context attached property to the State property on the CustomerWorkspaceViewModel. This allows us to dynamically change out views based on the value of that property. Because this is all hosted in the TransitioningContentControl, we get a nice transition whenever the view changes. This technique is used to switch the CustomerWorkspaceViewModel from a “Master” view, where it displays all open CustomerViewModels, a search UI and a New button, to a “Detail” view, where it displays the currently activated CustomerViewModel along with its specific view (composed in). In order for CL to find these contextual views, you need a namespace based on the ViewModel name, minus the words “View” and “Model”, with some Views named corresponding to the Context. For example, when the framework looks for the Detail view of Caliburn.Light.HelloScreens.Customers.CustomersWorkspaceViewModel, it’s going to look for Caliburn.Light.HelloScreens.Customers.CustomersWorkspace.Detail That’s the out-of-the-box naming convention. If that doesn’t work for you, you can simply customize the ViewLocator.LocateForModelType func.
 
 ##### Custom IConductor Implementation
 
-Although Caliburn.Micro provides the developer with default implementations of IScreen and IConductor. It’s easy to implement your own. In the case of this sample, I needed a dialog manager that could be modal to a specific part of the application without affecting other parts. Normally, the default Conductor<T> would work, but I discovered I needed to fine-tune shutdown sequence, so I implemented my own. Let’s take a look at that:
+Although Caliburn.Light provides the developer with default implementations of IScreen and IConductor. It’s easy to implement your own. In the case of this sample, I needed a dialog manager that could be modal to a specific part of the application without affecting other parts. Normally, the default Conductor<T> would work, but I discovered I needed to fine-tune shutdown sequence, so I implemented my own. Let’s take a look at that:
 
 ``` csharp
-[Export(typeof(IDialogManager)), PartCreationPolicy(CreationPolicy.NonShared)]
 public class DialogConductorViewModel : PropertyChangedBase, IDialogManager, IConductActiveItem {
-    readonly Func<IMessageBox> createMessageBox;
+    private readonly Func<IMessageBox> createMessageBox;
 
-    [ImportingConstructor]
     public DialogConductorViewModel(Func<IMessageBox> messageBoxFactory) {
         createMessageBox = messageBoxFactory;
     }
@@ -383,7 +380,7 @@ Strictly speaking, I didn’t actually need to implement IConductor to make this
 
 ##### Custom ICloseStrategy
 
-Possibly one of the coolest features of this sample is how we control application shutdown. Since IShell inherits IGuardClose, in the Bootstrapper we just override OnStartup and wire Silverlight’s MainWindow.Closing event to call IShell.CanClose:
+Possibly one of the coolest features of this sample is how we control application shutdown. Since IShell inherits ICloseGuard, in the Bootstrapper we just override OnStartup and wire Silverlight’s MainWindow.Closing event to call IShell.CanClose:
 
 ``` csharp
 protected override void OnStartup(object sender, StartupEventArgs e) {
@@ -417,12 +414,9 @@ void MainWindowClosing(object sender, ClosingEventArgs e) {
 The ShellViewModel inherits this functionality through its base class Conductor<IWorkspace>.Collection.OneActive. Since all the built-in conductors have a CloseStrategy, we can create conductor specific mechanisms for shutdown and plug them in easily. Here’s how we plug in our custom strategy:
 
 ``` csharp
-[Export(typeof(IShell))]
-public class ShellViewModel : Conductor<IWorkspace>.Collection.OneActive, IShell
-{
-    readonly IDialogManager dialogs;
+public class ShellViewModel : Conductor<IWorkspace>.Collection.OneActive, IShell {
+    private readonly IDialogManager dialogs;
 
-    [ImportingConstructor]
     public ShellViewModel(IDialogManager dialogs, [ImportMany]IEnumerable<IWorkspace> workspaces) {
         this.dialogs = dialogs;
         Items.AddRange(workspaces);
@@ -439,9 +433,9 @@ And here’s the implementation of that strategy:
 
 ``` csharp
 public class ApplicationCloseStrategy : ICloseStrategy<IWorkspace> {
-    IEnumerator<IWorkspace> enumerator;
-    bool finalResult;
-    Action<bool, IEnumerable<IWorkspace>> callback;
+    private IEnumerator<IWorkspace> enumerator;
+    private bool finalResult;
+    private Action<bool, IEnumerable<IWorkspace>> callback;
 
     public void Execute(IEnumerable<IWorkspace> toClose, Action<bool, IEnumerable<IWorkspace>> callback) {
         enumerator = toClose.GetEnumerator();
@@ -451,7 +445,7 @@ public class ApplicationCloseStrategy : ICloseStrategy<IWorkspace> {
         Evaluate(finalResult);
     }
 
-    void Evaluate(bool result)
+    private void Evaluate(bool result)
     {
         finalResult = finalResult && result;
 

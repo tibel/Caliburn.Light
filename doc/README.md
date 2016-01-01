@@ -12,12 +12,10 @@ This repository includes several documents that explain both high-level and low-
   - [NuGet](nuget.md)
   - [Basic Configuration](configuration.md)
 - What's next?
-  - [All about Actions](actions.md)
   - [Screens, Conductors and Composition](composition.md)
+  - [Validation](validation.md)
   - [WPF specifics](wpf.md)
   - [Windows Runtime specifics](windows-runtime.md)
-  - [Customizing the Bootstrapper](bootstrapper.md)
-  - [Validation](validation.md)
 - Advanced Topics
   - [Service Locator](service-locator.md)
   - [Simple IoC Container](simple-container.md)
@@ -31,5 +29,6 @@ This repository includes several documents that explain both high-level and low-
     - [View / ViewModel Naming Conventions](naming-conventions.md)
     - [Handling Custom Conventions](custom-conventions.md)
     - [Using the NameTransformer](name-transformer.md)
+  - [Office and WinForms Applications](winforms.md)
 - Extending the Framework
   - The ViewModel Binder
