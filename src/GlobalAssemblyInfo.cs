@@ -5,7 +5,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/tibel/")]
 [assembly: AssemblyProduct("Caliburn.Light")]
-[assembly: AssemblyCopyright("Copyright © Thomas Ibel 2014-2015")]
+[assembly: AssemblyCopyright("Copyright © Thomas Ibel 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
@@ -14,5 +14,5 @@ using System.Resources;
 [assembly: CLSCompliant(true)]
 #endif
 
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.4.0")]
+[assembly: AssemblyVersion("3.1.0.0")]
+[assembly: AssemblyFileVersion("3.1.0.0")]
