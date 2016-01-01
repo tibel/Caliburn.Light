@@ -1,29 +1,35 @@
 # The Event Aggregator
 
-Caliburn.Micro comes pre-bundled with an Event Aggregator, conveniently called EventAggregator. For those unfamiliar, an Event Aggregator is a service that provides the ability to publish an object from one entity to another in a loosely based fashion. Event Aggregator is actually a pattern and it's implementation can vary from framework to framework. For Caliburn.Micro we focused on making our Event Aggregator implementation simple to use without sacrificing features or flexibility.
+Caliburn.Light comes pre-bundled with an Event Aggregator, conveniently called EventAggregator. For those unfamiliar, an Event Aggregator is a service that provides the ability to publish an object from one entity to another in a loosely based fashion. Event Aggregator is actually a pattern and it's implementation can vary from framework to framework. For Caliburn.Light we focused on making our Event Aggregator implementation simple to use without sacrificing features or flexibility.
 
 ### Getting Started
 
 As previously mentioned we provide an implementation of Event Aggregator for you. This implementation implements the IEventAggregator interface, however, you can provide your own implementation if required. Please take a moment to familiarize yourself with the IEventAggregator signature.
 
 ``` csharp
-public interface IEventAggregator {
-    	bool HandlerExistsFor(Type messageType);
-    	void Subscribe(object subscriber);
-    	void Unsubscribe(object subscriber);
-    	void Publish(object message, Action<Action> marshal);
-    }
+public interface IEventAggregator
+{
+  IEventAggregatorHandler Subscribe<TMessage>(Action<TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
+  IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+      where TTarget : class;
+
+  IEventAggregatorHandler Subscribe<TMessage>(Func<TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread);
+  IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+      where TTarget : class;
+
+  void Unsubscribe(IEventAggregatorHandler handler);
+  void Publish(object message);
+}
 ```
 
 ### Creation and Lifecycle
 
-To use the EventAggregator correctly it must exist as an application level service. This is usually achieved by creating an instance of EventAggregator as a Singleton. We recommend that you use Dependency Injection to obtain a reference to the instance although we do not enforce this. The sample below details how to create an instance of EventAggregator, add it to the IoC container included with Caliburn.Micro (although you are free to use any container you wish) and request it in a ViewModel.
+To use the EventAggregator correctly it must exist as an application level service. This is usually achieved by creating an instance of EventAggregator as a Singleton. We recommend that you use Dependency Injection to obtain a reference to the instance although we do not enforce this. The sample below details how to create an instance of EventAggregator, add it to the IoC container included with Caliburn.Light (although you are free to use any container you wish) and request it in a ViewModel.
 
 ``` csharp
-// Creating the EventAggregator as a singleton.
+    // Creating the EventAggregator as a singleton.
     public class Bootstrapper : BootstrapperBase {
-        private readonly SimpleContainer _container =
-            new SimpleContainer();
+        private readonly SimpleContainer _container = new SimpleContainer();
 
          // ... Other Bootstrapper Config
 
@@ -57,21 +63,11 @@ public class FooViewModel {
         public FooViewModel(IEventAggregator eventAggregator) {
             _eventAggregator = eventAggregator;
 
-            _eventAggregator.PublishOnUIThread(new object());
-            _eventAggregator.PublishOnUIThread("Hello World");
-            _eventAggregator.PublishOnUIThread(22);
+            _eventAggregator.Publish(new object());
+            _eventAggregator.Publish("Hello World");
+            _eventAggregator.Publish(22);
         }
     }
-```
-
-### Publishing using a custom thread Marshal
-
-By convention, the EventAggregator publishes on the UI thread (using PublishOnUIThread() method). You can override this per publish. Consider the following code below which publishes the message supplied on a background thread.
-
-``` csharp
-_eventAggregator.Publish(new object(), action => {
-                    Task.Factory.StartNew(action);
-                });
 ```
 
 ### Subscribing To Events
@@ -126,7 +122,7 @@ public class FooViewModel : IHandle<string>, IHandle<bool> {
 
 ### Polymorphic Subscribers
 
-Caliburn.Micro's EventAggregator honors polymorphism. When selecting handlers to call, the EventAggregator will fire any handler who's Event type is assignable from the Event being sent. This results in a lot of flexibility and helps reuse.
+Caliburn.Light's EventAggregator honors polymorphism. When selecting handlers to call, the EventAggregator will fire any handler who's Event type is assignable from the Event being sent. This results in a lot of flexibility and helps reuse.
 
 ``` csharp
 public class FooViewModel : IHandle<object>, IHandle<string> {
@@ -173,7 +169,7 @@ public class FooViewModel : IHandle<object> {
 
 ### Coroutine Aware Subscribers
 
-If you are using the EventAggregator with Caliburn.Micro as opposed to on it's own via Nuget, access to Coroutine support within the Event Aggregator becomes available. Coroutines are supported via the IHandleWithCoroutine<T> Interface.
+If you are using the EventAggregator with Caliburn.Light as opposed to on it's own via Nuget, access to Coroutine support within the Event Aggregator becomes available. Coroutines are supported via the IHandleWithCoroutine<T> Interface.
 
 ``` csharp
 public interface IHandleWithCoroutine<TMessage> : IHandle {
@@ -217,7 +213,7 @@ public class EventWithCoroutine {
 
 ### Task Aware Subscribers
 
-Caliburn.Micro also provides support for task based subscribers where the asynchronous functionality of Coroutines is desired but in a more light weight fashion. To utilize this functionality implement the IHandleWithTask<T> Interface, seen below.
+Caliburn.Light also provides support for task based subscribers where the asynchronous functionality of Coroutines is desired but in a more light weight fashion. To utilize this functionality implement the IHandleWithTask<T> Interface, seen below.
 
 ``` csharp
 public interface IHandleWithTask<TMessage> : IHandle {

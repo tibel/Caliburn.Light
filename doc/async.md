@@ -1,43 +1,35 @@
 # Async (Task Support)
 
-From the beginning Caliburn.Micro uses IResult and Coroutines for asynchronous operations.
+From the beginning Caliburn.Light uses Task and async/await for asynchronous operations.
 
-With .NET 4.0 Microsoft added Task to the .NET Framework for better supporting parallel/async operations. And in .NET 4.5 they added async/await keywords to C# and VB.NET.
 
-#### Caliburn.Micro has extensions to support Task.
+#### Coroutines
 
-Instead of registering an callback when a coroutine is completed you now can await it:
+Await a coroutines async execution:
 
 ``` csharp
 public static class Coroutine {
-
-    public static void BeginExecute(
-		IEnumerator<IResult> coroutine, 
-		CoroutineExecutionContext context = null, 
-		EventHandler<ResultCompletionEventArgs> callback = null) { }
-
     public static Task ExecuteAsync(
-		IEnumerator<IResult> coroutine,
+		IEnumerator<ICoTask> coroutine,
 		CoroutineExecutionContext context = null)  { }
-
 }
 ```
 
-A Task object can be wrapped in an IResult and used inside a coroutine as if it were an IResult: 
+A Task object can be wrapped in an ICoTask and used inside a coroutine as if it were an ICoTask: 
 
 ``` csharp
 public static class TaskExtensions {
 
     public static Task ExecuteAsync(
-		this IResult result, CoroutineExecutionContext context = null) { }
+		this ICoTask result, CoroutineExecutionContext context = null) { }
 
     public static Task<TResult> ExecuteAsync<TResult>(
-		this IResult<TResult> result,
+		this ICoTask<TResult> result,
 		CoroutineExecutionContext context = null) { }
 
-    public static TaskResult AsResult(this Task task) { }
+    public static ICoTask AsCoTask(this Task task) { }
 
-    public static TaskResult<TResult> AsResult<TResult>(this Task<TResult> task) { }
+    public static ICoTask<TResult> AsCoTask<TResult>(this Task<TResult> task) { }
 
 }
 ```
@@ -45,15 +37,13 @@ public static class TaskExtensions {
 ##### Example
 
 ``` csharp
-yield return Task.Delay(500).AsResult();
+yield return Task.Delay(500).AsCoTask();
 ```
 
-The other way round also works as you can wrap an IResult in a Task by ExecuteAsync.
+The other way round also works as you can wrap an ICoTask in a Task by ExecuteAsync.
 
 ##### Example
 
 ``` csharp
 await new SimpleResult().ExecuteAsync();
 ```
-
-And finally also EventAggregator supports Task with the IHandleWithTask<TMessage> interface.

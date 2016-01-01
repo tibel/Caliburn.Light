@@ -1,6 +1,6 @@
 # All about Conventions
 
-One of the main features of Caliburn.Micro is manifest in its ability to remove the need for boiler plate code by acting on a series of conventions. Some people love conventions and some hate them. That’s why CM’s conventions are fully customizable and can even be turned off completely if not desired. If you are going to use conventions, and since they are ON by default, it’s good to know what those conventions are and how they work. That’s the subject of this article.
+One of the main features of Caliburn.Light is manifest in its ability to remove the need for boiler plate code by acting on a series of conventions. Some people love conventions and some hate them. That’s why CM’s conventions are fully customizable and can even be turned off completely if not desired. If you are going to use conventions, and since they are ON by default, it’s good to know what those conventions are and how they work. That’s the subject of this article.
 
 ### View Resolution (ViewModel-First)
 
@@ -50,7 +50,7 @@ There are three places that the framework uses the ViewLocator; three places whe
 
 ##### Basics
 
-Though Caliburn.Micro prefers ViewModel-First development, there are times when you may want to take a View-First approach, especially when working with WP7. In the case where you start with a view, you will likely then need to resolve a ViewModel. We use a similar naming convention for this scenario as we did with view location. This is handled by ViewModelLocator.LocateForViewType. While with View location we change instances of “ViewModel” to “View”, with ViewModel location we change “View” to “ViewModel.” The other interesting difference is in how we get the instance of the ViewModel itself. Because your ViewModels may be registered by an interface or a concrete class we attempt to generate possible interface names as well. If we find a match, we resolve it from the IoC container.
+Though Caliburn.Light prefers ViewModel-First development, there are times when you may want to take a View-First approach, especially when working with WP7. In the case where you start with a view, you will likely then need to resolve a ViewModel. We use a similar naming convention for this scenario as we did with view location. This is handled by ViewModelLocator.LocateForViewType. While with View location we change instances of “ViewModel” to “View”, with ViewModel location we change “View” to “ViewModel.” The other interesting difference is in how we get the instance of the ViewModel itself. Because your ViewModels may be registered by an interface or a concrete class we attempt to generate possible interface names as well. If we find a match, we resolve it from the IoC container.
 
 ##### Other Things To Know
 
@@ -72,7 +72,7 @@ When we bind together your View and ViewModel, regardless of whether you use a V
 
 ##### Other Things To Know
 
-On all platforms, conventions cannot by applied to the contents of a DataTemplate. This is a current limitation of the Xaml templating system. I have asked Microsoft to fix this, but I doubt they will respond. As a result, in order to have Binding and Action conventions applied to your DataTemplate, you must add a Bind.Model="{Binding}" attached property to the root element inside the DataTemplate. This provides the necessary hook for Caliburn.Micro to apply its conventions each time a UI is instantiated from a DataTemplate.
+On all platforms, conventions cannot by applied to the contents of a DataTemplate. This is a current limitation of the Xaml templating system. I have asked Microsoft to fix this, but I doubt they will respond. As a result, in order to have Binding and Action conventions applied to your DataTemplate, you must add a Bind.Model="{Binding}" attached property to the root element inside the DataTemplate. This provides the necessary hook for Caliburn.Light to apply its conventions each time a UI is instantiated from a DataTemplate.
 
 On the WP7 platform, if the View you are binding is a PhoneApplicationPage, this service is responsible for wiring up actions to the ApplicationBar’s Buttons and Menus. See the WP7 specific docs for more information on that.
 
@@ -82,7 +82,7 @@ Should you decide that you don’t like the behavior of the ViewModelBinder (mor
 
 ##### Framework Usage
 
-The ViewModelBinder is used in three places inside of Caliburn.Micro. The first place is inside the implementation of the View.Model attached property. This property takes your ViewModel, locates a view using the ViewLocator and then passes both of them along to the ViewModelBinder. After binding is complete, the View is injected inside the element on which the property is defined. That’s the ViewModel-First usage pattern. The second place that uses the ViewModelBinder is inside the implementation of the Bind.Model attached property. This property takes a ViewModel and passes it along with the element on which the property is defined to the ViewModelBinder. In other words, this is View-First, since you have already instantiated the View inline in your Xaml and are then just invoking the binding against a ViewModel. The final place that the ViewModelBinder is used is in the WP7 version of the framework. Inside of the FrameAdapter, when a page is navigated to, the ViewModelLocator is first used to obtain the ViewModel for that page. Then, the ViewModelBinder is uses to connect the ViewModel to the page.
+The ViewModelBinder is used in three places inside of Caliburn.Light. The first place is inside the implementation of the View.Model attached property. This property takes your ViewModel, locates a view using the ViewLocator and then passes both of them along to the ViewModelBinder. After binding is complete, the View is injected inside the element on which the property is defined. That’s the ViewModel-First usage pattern. The second place that uses the ViewModelBinder is inside the implementation of the Bind.Model attached property. This property takes a ViewModel and passes it along with the element on which the property is defined to the ViewModelBinder. In other words, this is View-First, since you have already instantiated the View inline in your Xaml and are then just invoking the binding against a ViewModel. The final place that the ViewModelBinder is used is in the WP7 version of the framework. Inside of the FrameAdapter, when a page is navigated to, the ViewModelLocator is first used to obtain the ViewModel for that page. Then, the ViewModelBinder is uses to connect the ViewModel to the page.
 
 ### Element Location
 
@@ -190,7 +190,7 @@ I mentioned above that “CM defines a basic implementation of ApplyBinding for 
 
 ``` xml
 <DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro">
+              xmlns:cal="clr-namespace:Caliburn.Light;assembly=Caliburn.Light">
     <ContentControl cal:View.Model="{Binding}" 
                     VerticalContentAlignment="Stretch"
                     HorizontalContentAlignment="Stretch" />
