@@ -13,7 +13,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
 - change Validation to be reflection free
-- remove usage of Expression<Func<TProperty>> to extract the property name
+- remove usage of Expression&lt;Func&lt;TProperty&gt;&gt; to extract the property name
 - initial documentation update
 - UAP: support cal:Bind.CommandParameter with x:Bind
 - UAP: support special value in DelegateCommand.OnEvent
