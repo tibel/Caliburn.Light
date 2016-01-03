@@ -13,7 +13,6 @@ namespace Caliburn.Light
     {
         private readonly TProperty _minimum;
         private readonly TProperty _maximum;
-        private readonly string _unitSymbol;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RangeValidationRule&lt;T, TProperty&gt;"/> class.
@@ -23,8 +22,7 @@ namespace Caliburn.Light
         /// <param name="minimum">The minimum value.</param>
         /// <param name="maximum">The maximum value.</param>
         /// <param name="errorMessage">The error message.</param>
-        /// <param name="unitSymbol">The unit symbol.</param>
-        public RangeValidationRule(string propertyName, Func<T, TProperty> getPropertyValue, TProperty minimum, TProperty maximum, string errorMessage, string unitSymbol)
+        public RangeValidationRule(string propertyName, Func<T, TProperty> getPropertyValue, TProperty minimum, TProperty maximum, string errorMessage)
             : base(propertyName, getPropertyValue, errorMessage)
         {
             if (minimum.CompareTo(maximum) > 0)
@@ -32,7 +30,6 @@ namespace Caliburn.Light
 
             _minimum = minimum;
             _maximum = maximum;
-            _unitSymbol = unitSymbol;
         }
 
         /// <summary>
@@ -48,7 +45,7 @@ namespace Caliburn.Light
             if (value.CompareTo(_minimum) >= 0 && value.CompareTo(_maximum) <= 0)
                 return ValidationResult.Success();
             else
-                return ValidationResult.Failure(cultureInfo, ErrorMessage, _minimum, _maximum, value, _unitSymbol);  
+                return ValidationResult.Failure(cultureInfo, ErrorMessage, _minimum, _maximum, value);  
         }
     }
 }
