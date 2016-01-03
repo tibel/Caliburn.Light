@@ -11,7 +11,6 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private readonly NamedObject _staticTarget = new NamedObject("StaticTarget");
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
         // ReSharper disable once UnusedParameter.Local
@@ -40,22 +39,6 @@ namespace Caliburn.Light
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
         /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="weakHandler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
-        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TMessage>([EmptyCapture] Action<TMessage> weakHandler, ThreadOption threadOption)
-        {
-            VerifyDelegate(weakHandler);
-
-            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => weakHandler(m), threadOption);
-            AddHandler(handler);
-            return handler;
-        }
-
-        /// <summary>
-        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
-        /// </summary>
         /// <typeparam name="TTarget">The type of the handler target.</typeparam>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
@@ -69,22 +52,6 @@ namespace Caliburn.Light
             VerifyDelegate(weakHandler);
 
             var handler = new EventAggregatorHandler<TTarget, TMessage>(target, weakHandler, threadOption);
-            AddHandler(handler);
-            return handler;
-        }
-
-        /// <summary>
-        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="weakHandler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
-        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TMessage>([EmptyCapture] Func<TMessage, Task> weakHandler, ThreadOption threadOption)
-        {
-            VerifyDelegate(weakHandler);
-
-            var handler = new EventAggregatorHandler<object, TMessage>(_staticTarget, (t, m) => weakHandler(m).ObserveException().Watch(), threadOption);
             AddHandler(handler);
             return handler;
         }
