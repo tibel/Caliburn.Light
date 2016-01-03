@@ -16,9 +16,9 @@ namespace Caliburn.Light
         /// Initializes a new instance of the <see cref="DelegateValidationRule&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="propertyName">The name of the property this instance applies to.</param>
-        /// <param name="errorMessage">The error message if the rules fails.</param>
         /// <param name="rule">The rule to execute.</param>
-        public DelegateValidationRule(string propertyName, string errorMessage, Func<T, bool> rule)
+        /// <param name="errorMessage">The error message if the rules fails.</param>
+        public DelegateValidationRule(string propertyName, Func<T, bool> rule, string errorMessage)
             : base(propertyName, errorMessage)
         {
             if (rule == null)
