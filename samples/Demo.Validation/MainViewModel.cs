@@ -93,7 +93,7 @@ namespace Demo.Validation
 
         public IEnumerable GetErrors(string propertyName)
         {
-            return _validation.GetPropertyError(propertyName);
+            return _validation.GetPropertyErrors(propertyName);
         }
 
         public bool HasErrors

@@ -51,7 +51,7 @@ namespace Caliburn.Light
         /// Validates all properties of the specified instance.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <returns>True, if any property has validation errors.</returns>
+        /// <returns>True, if validation succeeded.</returns>
         public bool Validate(object instance)
         {
             _errors.Clear();
@@ -78,7 +78,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>List of validation errors.</returns>
-        public IEnumerable<string> GetPropertyError(string propertyName)
+        public IEnumerable<string> GetPropertyErrors(string propertyName)
         {
             ICollection<string> errors;
             if (_errors.TryGetValue(propertyName, out errors))
@@ -91,12 +91,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>True, if the property has validation errors.</returns>
-        public bool HasPropertyError(string propertyName)
+        public bool HasPropertyErrors(string propertyName)
         {
-            ICollection<string> errors;
-            if (_errors.TryGetValue(propertyName, out errors))
-                return errors.Count > 0;
-            return false;
+            return _errors.ContainsKey(propertyName);
         }
 
         /// <summary>
