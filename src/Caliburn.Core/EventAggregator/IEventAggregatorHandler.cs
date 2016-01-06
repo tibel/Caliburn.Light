@@ -1,4 +1,5 @@
-﻿
+﻿using System.Threading.Tasks;
+
 namespace Caliburn.Light
 {
     /// <summary>
@@ -27,6 +28,7 @@ namespace Caliburn.Light
         /// Handles the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
-        void Handle(object message);
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        Task HandleAsync(object message);
     }
 }

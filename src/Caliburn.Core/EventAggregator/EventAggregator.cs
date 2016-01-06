@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Weakly;
 
@@ -51,7 +50,13 @@ namespace Caliburn.Light
             VerifyTarget(target);
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, weakHandler, threadOption);
+            Func<TTarget, TMessage, Task> wrapper = (t, m) =>
+            {
+                weakHandler(t, m);
+                return TaskHelper.Completed();
+            };
+
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, wrapper, threadOption);
             AddHandler(handler);
             return handler;
         }
@@ -71,7 +76,7 @@ namespace Caliburn.Light
             VerifyTarget(target);
             VerifyDelegate(weakHandler);
 
-            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, (t, m) => weakHandler(t, m).ObserveException().Watch(), threadOption);
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, weakHandler, threadOption);
             AddHandler(handler);
             return handler;
         }
@@ -108,23 +113,34 @@ namespace Caliburn.Light
             }
 
             if (selectedHandlers.Count == 0) return;
-            var isUIThread = UIContext.CheckAccess();
 
-            var currentThreadHandlers = selectedHandlers
-                .Where(h => h.ThreadOption == ThreadOption.PublisherThread ||
-                            isUIThread && h.ThreadOption == ThreadOption.UIThread);
-            foreach (var h in currentThreadHandlers) { h.Handle(message); }
+            var isUIThread = UIContext.CheckAccess();
+            var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
+            PublishCore(message, currentThreadHandlers).ObserveException().Watch();
 
             if (!isUIThread)
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    UIContext.Run(() => { foreach (var h in uiThreadHandlers) { h.Handle(message); } }).ObserveException();
+                    UIContext.Run(() => PublishCore(message, uiThreadHandlers)).ObserveException().Watch();
             }
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundThreadHandlers.Count > 0)
-                Task.Run(() => { foreach (var h in backgroundThreadHandlers) { h.Handle(message); } }).ObserveException();
+                Task.Run(() => PublishCore(message, backgroundThreadHandlers)).ObserveException().Watch();
+        }
+
+        private static Task PublishCore(object message, IEnumerable<IEventAggregatorHandler> handlers)
+        {
+            var tasks = new List<Task>();
+
+            foreach (var h in handlers)
+            {
+                var task = h.HandleAsync(message);
+                if (!task.IsCompleted) tasks.Add(task);
+            }
+
+            return Task.WhenAll(tasks);
         }
     }
 }

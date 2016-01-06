@@ -1,4 +1,6 @@
 using System;
+using System.Threading.Tasks;
+using Weakly;
 
 namespace Caliburn.Light
 {
@@ -6,10 +8,10 @@ namespace Caliburn.Light
         where TTarget : class
     {
         private readonly WeakReference<TTarget> _target; 
-        private readonly Action<TTarget, TMessage> _weakHandler;
+        private readonly Func<TTarget, TMessage, Task> _weakHandler;
         private readonly ThreadOption _threadOption;
 
-        public EventAggregatorHandler(TTarget target, Action<TTarget, TMessage> weakHandler, ThreadOption threadOption)
+        public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
         {
             _target = new WeakReference<TTarget>(target);
             _weakHandler = weakHandler;
@@ -35,13 +37,13 @@ namespace Caliburn.Light
             return message is TMessage;
         }
 
-        public void Handle(object message)
+        public Task HandleAsync(object message)
         {
             TTarget target;
-            if (_target.TryGetTarget(out target))
-            {
-                _weakHandler(target, (TMessage)message);
-            }
+            if (!_target.TryGetTarget(out target))
+                return TaskHelper.Completed();
+
+            return _weakHandler(target, (TMessage)message);
         }
     }
 }
