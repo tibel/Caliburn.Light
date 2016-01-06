@@ -15,6 +15,9 @@
 - change Validation to be reflection free
 - remove usage of Expression&lt;Func&lt;TProperty&gt;&gt; to extract the property name
 - initial documentation update
+- add BindableCommand as base class of DelegateCommand
+- remove support for static subscribers in EventAggregator
+- optimize EventAggregator for async subscribers
 - UAP: support cal:Bind.CommandParameter with x:Bind
 - UAP: support special value in DelegateCommand.OnEvent
 - UAP: enable nameof() usage with NavigateHelper
