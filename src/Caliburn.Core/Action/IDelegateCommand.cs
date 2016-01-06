@@ -8,8 +8,8 @@ namespace Caliburn.Light
     {
         /// <summary>
         /// Raises <see cref="E:CanExecuteChanged"/> so every command invoker can requery to check if the command can execute.
-        /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
         /// </summary>
+        /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
         void RaiseCanExecuteChanged();
 
         /// <summary>

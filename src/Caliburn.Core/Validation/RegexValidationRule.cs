@@ -42,7 +42,7 @@ namespace Caliburn.Light
             if (match)
                 return ValidationResult.Success();
             else
-                return ValidationResult.Failure(cultureInfo, ErrorMessage);
+                return ValidationResult.Failure(ErrorMessage);
         }
     }
 }

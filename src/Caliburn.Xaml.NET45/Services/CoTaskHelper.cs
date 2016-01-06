@@ -3,8 +3,17 @@ using System.Windows;
 
 namespace Caliburn.Light
 {
-    internal static class CoTaskHelper
+    /// <summary>
+    /// Some helper methods when dealing with <see cref="ICoTask"/>.
+    /// </summary>
+    public static class CoTaskHelper
     {
+        /// <summary>
+        /// Gets the active window from the execution context.
+        /// </summary>
+        /// <param name="context">The execution context.</param>
+        /// <returns>The active window.</returns>
+        /// <remarks>If no window could be retrieved from the context, the first active window will be returned.</remarks>
         public static Window GetActiveWindow(CoroutineExecutionContext context)
         {
             return GetWindowFromContext(context) ?? GetFirstActiveWindow();
