@@ -222,7 +222,13 @@ namespace Caliburn.Light
 
             var task = returnValue as Task;
             if (task != null)
-                task.ObserveException().Watch();
+                HandleAsync(task);
+        }
+
+        private static async void HandleAsync(Task task)
+        {
+            if (!task.IsCompleted) task.Watch();
+            await task;
         }
 
         private object[] DetermineParameters(MethodBase method, object eventArgs = null)

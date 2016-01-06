@@ -1,11 +1,10 @@
-﻿using System.Windows.Input;
-
+﻿
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Defines a command.
+    /// Defines a delegate command.
     /// </summary>
-    public interface IDelegateCommand : ICommand
+    public interface IDelegateCommand : IBindableCommand
     {
         /// <summary>
         /// Raises <see cref="E:CanExecuteChanged"/> so every command invoker can requery to check if the command can execute.
@@ -14,10 +13,8 @@ namespace Caliburn.Light
         void RaiseCanExecuteChanged();
 
         /// <summary>
-        /// Defines the method to be called when using x:Bind event binding.
+        /// Determines whether the command is currently executing.
         /// </summary>
-        /// <param name="sender">The object where the handler is attached.</param>
-        /// <param name="eventArgs">Event data for the event.</param>
-        void OnEvent(object sender, object eventArgs);
+        bool IsExecuting { get; }
     }
 }

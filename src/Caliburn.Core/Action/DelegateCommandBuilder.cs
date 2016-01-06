@@ -10,7 +10,7 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class DelegateCommandBuilder
     {
-        private Action _execute;
+        private Func<Task> _execute;
         private Func<bool> _canExecute;
         private INotifyPropertyChanged _target;
         private string[] _propertyNames;
@@ -31,7 +31,12 @@ namespace Caliburn.Light
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
-            _execute = execute;
+            _execute = () =>
+            {
+                execute();
+                return TaskHelper.Completed();
+            };
+
             return this;
         }
 
@@ -47,7 +52,7 @@ namespace Caliburn.Light
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
-            _execute = () => execute().ObserveException().Watch();
+            _execute = execute;
             return this;
         }
 
@@ -115,7 +120,7 @@ namespace Caliburn.Light
     public sealed class DelegateCommandBuilder<TParameter>
     {
         private readonly Func<object, TParameter> _coerceParameter;
-        private Action<TParameter> _execute;
+        private Func<TParameter, Task> _execute;
         private Func<TParameter, bool> _canExecute;
         private INotifyPropertyChanged _target;
         private string[] _propertyNames;
@@ -152,7 +157,12 @@ namespace Caliburn.Light
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
-            _execute = execute;
+            _execute = p =>
+            {
+                execute(p);
+                return TaskHelper.Completed();
+            };
+
             return this;
         }
 
@@ -168,7 +178,7 @@ namespace Caliburn.Light
             if (_execute != null)
                 throw new InvalidOperationException("Execute already set.");
 
-            _execute = p => execute(p).ObserveException().Watch();
+            _execute = execute;
             return this;
         }
 

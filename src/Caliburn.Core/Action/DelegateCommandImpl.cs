@@ -1,19 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Weakly;
 
 namespace Caliburn.Light
 {
-    internal sealed class DelegateCommandImpl<TParameter> : IDelegateCommand
+    internal sealed class DelegateCommandImpl<TParameter> : AsyncCommand, IDelegateCommand
     {
         private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Action<TParameter> _execute;
+        private readonly Func<TParameter, Task> _execute;
         private readonly Func<TParameter, bool> _canExecute;
         private readonly string[] _propertyNames;
         private readonly IDisposable _propertyChangedRegistration;
-        private readonly WeakEventSource _canExecuteChangedSource = new WeakEventSource();
 
-        public DelegateCommandImpl(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute, INotifyPropertyChanged target, string[] propertyNames)
+        public DelegateCommandImpl(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute, 
+            INotifyPropertyChanged target, string[] propertyNames)
         {
             _coerceParameter = coerceParameter;
             _execute = execute;
@@ -34,55 +35,26 @@ namespace Caliburn.Light
             }
         }
 
-        public void OnEvent(object sender, object eventArgs)
+        protected override bool CanExecuteCore(object parameter)
         {
-            var parameter = DetermineParameter(sender, eventArgs);
-            Execute(parameter);
-        }
-
-        private static object DetermineParameter(object sender, object eventArgs)
-        {
-            var resolvedParameter = UIContext.GetCommandParameter(sender);
-
-            var specialValue = resolvedParameter as ISpecialValue;
-            if (specialValue != null)
-            {
-                var context = new CoroutineExecutionContext
-                {
-                    Source = sender,
-                    EventArgs = eventArgs,
-                };
-                resolvedParameter = specialValue.Resolve(context);
-            }
-
-            return resolvedParameter ?? eventArgs;
-        }
-
-        public void Execute(object parameter)
-        {
-            var value = _coerceParameter(parameter);
-            _execute(value);
-        }
-
-        public bool CanExecute(object parameter)
-        {
+            if (IsExecuting) return false;
             if (_canExecute == null) return true;
             var value = _coerceParameter(parameter);
             return _canExecute(value);
         }
 
-        public event EventHandler CanExecuteChanged
+        protected override Task ExecuteAsync(object parameter)
         {
-            add { _canExecuteChangedSource.Add(value); }
-            remove { _canExecuteChangedSource.Remove(value); }
+            var value = _coerceParameter(parameter);
+            return _execute(value);
         }
 
         public void RaiseCanExecuteChanged()
         {
             if (UIContext.CheckAccess())
-                _canExecuteChangedSource.Raise(this, EventArgs.Empty);
+                OnCanExecuteChanged();
             else
-                UIContext.Run(() => _canExecuteChangedSource.Raise(this, EventArgs.Empty)).ObserveException();
+                UIContext.Run(() => OnCanExecuteChanged()).ObserveException();
         }
     }
 }
