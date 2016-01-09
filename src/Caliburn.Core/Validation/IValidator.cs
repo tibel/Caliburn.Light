@@ -9,9 +9,11 @@ namespace Caliburn.Light
     public interface IValidator
     {
         /// <summary>
-        /// Gets the name of all properties that can be validated by this instance.
+        /// Determines whether this instance can validate the specified property.
         /// </summary>
-        ICollection<string> ValidatableProperties { get; }
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns>True, if this instance can validate the property.</returns>
+        bool CanValidateProperty(string propertyName);
 
         /// <summary>
         /// Applies the rules contained in this instance to <paramref name="obj"/>.
@@ -21,5 +23,13 @@ namespace Caliburn.Light
         /// <param name="cultureInfo">The culture to use for validation.</param>
         /// <returns>A collection of errors.</returns>
         ICollection<string> ValidateProperty(object obj, string propertyName, CultureInfo cultureInfo);
+
+        /// <summary>
+        /// Applies the rules contained in this instance to <paramref name="obj"/>.
+        /// </summary>
+        /// <param name="obj">The object to apply the rules to.</param>
+        /// <param name="cultureInfo">The culture to use for validation.</param>
+        /// <returns>A collection of errors.</returns>
+        IDictionary<string, ICollection<string>> Validate(object obj, CultureInfo cultureInfo);
     }
 }

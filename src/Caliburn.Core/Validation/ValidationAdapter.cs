@@ -54,19 +54,13 @@ namespace Caliburn.Light
         /// <returns>True, if validation succeeded.</returns>
         public bool Validate(object instance)
         {
-            _errors.Clear();
-
             var validator = Validator ?? NullValidator.Instance;
-            var cultureInfo = CultureInfo.CurrentCulture;
+            var errors = validator.Validate(instance, CultureInfo.CurrentCulture);
 
-            foreach (var propertyName in validator.ValidatableProperties)
+            _errors.Clear();
+            foreach (var error in errors)
             {
-                var errors = validator.ValidateProperty(instance, propertyName, cultureInfo);
-
-                if (errors.Count == 0)
-                    _errors.Remove(propertyName);
-                else
-                    _errors[propertyName] = errors;
+                _errors.Add(error.Key, error.Value);
             }
 
             OnErrorsChanged(string.Empty);

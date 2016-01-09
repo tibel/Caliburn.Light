@@ -14,14 +14,19 @@ namespace Caliburn.Light
         {
         }
 
-        public ICollection<string> ValidatableProperties
+        public bool CanValidateProperty(string propertyName)
         {
-            get { return Empty; }
+            return false;
         }
 
         public ICollection<string> ValidateProperty(object obj, string propertyName, CultureInfo cultureInfo)
         {
-            return Empty;
+            return new List<string>();
+        }
+
+        public IDictionary<string, ICollection<string>> Validate(object obj, CultureInfo cultureInfo)
+        {
+            return new Dictionary<string, ICollection<string>>();
         }
     }
 }

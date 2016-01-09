@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace Caliburn.Light
@@ -11,8 +10,6 @@ namespace Caliburn.Light
     /// <typeparam name="T">The type of the object the validator applies to.</typeparam>
     public sealed class RuleValidator<T> : IValidator
     {
-        private static readonly ICollection<string> Empty = new ReadOnlyCollection<string>(new List<string>());
-
         private readonly Dictionary<string, IList<ValidationRule<T>>> _rules =
             new Dictionary<string, IList<ValidationRule<T>>>();
 
@@ -71,6 +68,11 @@ namespace Caliburn.Light
             return ValidateProperty((T)obj, propertyName, cultureInfo);
         }
 
+        IDictionary<string, ICollection<string>> IValidator.Validate(object obj, CultureInfo cultureInfo)
+        {
+            return Validate((T)obj, cultureInfo);
+        }
+
         /// <summary>
         /// Applies the rules contained in this instance to <paramref name="obj"/>.
         /// </summary>
@@ -82,11 +84,39 @@ namespace Caliburn.Light
         {
             IList<ValidationRule<T>> propertyRules;
             if (!_rules.TryGetValue(propertyName, out propertyRules))
-                return Empty;
+                return new List<string>();
 
+            return ValidateCore(propertyRules, obj, cultureInfo);
+        }
+
+        /// <summary>
+        /// Applies the rules contained in this instance to <paramref name="obj"/>.
+        /// </summary>
+        /// <param name="obj">The object to apply the rules to.</param>
+        /// <param name="cultureInfo">The culture to use for validation.</param>
+        /// <returns>A collection of errors.</returns>
+        public IDictionary<string, ICollection<string>> Validate(T obj, CultureInfo cultureInfo)
+        {
+            var errors = new Dictionary<string, ICollection<string>>();
+
+            foreach (var propertyRules in _rules)
+            {
+                var propertyErrors = ValidateCore(propertyRules.Value, obj, cultureInfo);
+
+                if (propertyErrors.Count > 0)
+                {
+                    errors[propertyRules.Key] = propertyErrors;
+                }
+            }
+
+            return errors;
+        }
+
+        private static ICollection<string> ValidateCore(IList<ValidationRule<T>> rules, T obj, CultureInfo cultureInfo)
+        {
             var errors = new List<string>();
 
-            foreach (var rule in propertyRules)
+            foreach (var rule in rules)
             {
                 var result = rule.Apply(obj, cultureInfo);
 
