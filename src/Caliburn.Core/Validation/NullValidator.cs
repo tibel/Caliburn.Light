@@ -14,11 +14,6 @@ namespace Caliburn.Light
         {
         }
 
-        public bool CanValidateProperty(string propertyName)
-        {
-            return false;
-        }
-
         public ICollection<string> ValidateProperty(object obj, string propertyName, CultureInfo cultureInfo)
         {
             return new List<string>();

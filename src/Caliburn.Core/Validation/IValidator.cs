@@ -9,13 +9,6 @@ namespace Caliburn.Light
     public interface IValidator
     {
         /// <summary>
-        /// Determines whether this instance can validate the specified property.
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns>True, if this instance can validate the property.</returns>
-        bool CanValidateProperty(string propertyName);
-
-        /// <summary>
         /// Applies the rules contained in this instance to <paramref name="obj"/>.
         /// </summary>
         /// <param name="obj">The object to apply the rules to.</param>
