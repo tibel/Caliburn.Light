@@ -45,7 +45,10 @@ namespace Caliburn.Light
             if (value.CompareTo(_minimum) >= 0 && value.CompareTo(_maximum) <= 0)
                 return ValidationResult.Success();
             else
-                return ValidationResult.Failure(cultureInfo, ErrorMessage, _minimum, _maximum, value);  
+            {
+                var formattedMessage = string.Format(cultureInfo, ErrorMessage, _minimum, _maximum);
+                return ValidationResult.Failure(formattedMessage);
+            }
         }
     }
 }
