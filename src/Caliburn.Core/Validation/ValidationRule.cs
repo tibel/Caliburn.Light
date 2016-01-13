@@ -39,7 +39,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the error message if the rules fails.
         /// </summary>
-        protected string ErrorMessage
+        public string ErrorMessage
         {
             get { return _errorMessage; }
         }
@@ -50,8 +50,8 @@ namespace Caliburn.Light
         /// <param name="obj">The object to apply the rule to.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
-        /// A <see cref="ValidationResult" /> object.
+        /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        public abstract ValidationResult Apply(T obj, CultureInfo cultureInfo);
+        public abstract bool Apply(T obj, CultureInfo cultureInfo);
     }
 }

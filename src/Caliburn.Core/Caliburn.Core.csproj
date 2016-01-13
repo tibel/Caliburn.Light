@@ -129,7 +129,6 @@
     <Compile Include="Validation\RuleValidator.cs" />
     <Compile Include="Validation\StringLengthValidationRule.cs" />
     <Compile Include="Validation\ValidationAdapter.cs" />
-    <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationRule.cs" />
     <Compile Include="Action\DelegateCommand.cs" />
   </ItemGroup>

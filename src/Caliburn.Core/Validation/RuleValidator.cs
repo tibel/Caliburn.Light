@@ -118,11 +118,11 @@ namespace Caliburn.Light
 
             foreach (var rule in rules)
             {
-                var result = rule.Apply(obj, cultureInfo);
+                var valid = rule.Apply(obj, cultureInfo);
 
-                if (!result.IsValid)
+                if (!valid)
                 {
-                    errors.Add(result.ErrorDescription);
+                    errors.Add(rule.ErrorMessage);
                 }
             }
 

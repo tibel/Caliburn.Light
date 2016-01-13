@@ -33,16 +33,11 @@ namespace Caliburn.Light
         /// <param name="obj">The object to apply the rule to.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
-        /// A <see cref="ValidationResult" /> object.
+        /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        public override ValidationResult Apply(T obj, CultureInfo cultureInfo)
+        public override bool Apply(T obj, CultureInfo cultureInfo)
         {
-            var valid = _rule(obj);
-
-            if (valid)
-                return ValidationResult.Success();
-            else
-                return ValidationResult.Failure(ErrorMessage);
+            return _rule(obj);
         }
     }
 }
