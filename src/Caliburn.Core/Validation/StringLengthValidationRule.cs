@@ -51,12 +51,9 @@ namespace Caliburn.Light
             if (length >= _minimumLength && length <= _maximumLength)
                 return ValidationResult.Success();
             else
-            {
-                var formattedMessage = string.Format(cultureInfo, ErrorMessage, _minimumLength, _maximumLength);
-                return ValidationResult.Failure(formattedMessage);
-            }
+                return ValidationResult.Failure(ErrorMessage);
         }
-
+        
         private static int GetTrimmedLength(string value)
         {
             //end will point to the first non-trimmed character on the right
