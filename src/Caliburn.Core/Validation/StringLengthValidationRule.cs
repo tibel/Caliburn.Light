@@ -33,24 +33,19 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Applies the rule to the specified object.
+        /// Applies the rule to the specified property value.
         /// </summary>
-        /// <param name="obj">The object to apply the rule to.</param>
+        /// <param name="value">The object to apply the rule to.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
         /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        public override bool Apply(T obj, CultureInfo cultureInfo)
+        protected override bool ApplyProperty(string value, CultureInfo cultureInfo)
         {
-            var length = 0;
-            var value = GetPropertyValue(obj);
-            
-            if (!string.IsNullOrEmpty(value))
-                length = GetTrimmedLength(value);
-
+            var length = string.IsNullOrEmpty(value) ? 0 : GetTrimmedLength(value);
             return (length >= _minimumLength && length <= _maximumLength);
         }
-        
+
         private static int GetTrimmedLength(string value)
         {
             //end will point to the first non-trimmed character on the right

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -27,13 +28,27 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Gets the value of the property.
+        /// Applies the rule to the specified object.
         /// </summary>
-        /// <param name="obj">The property owner.</param>
-        /// <returns>The value of the property.</returns>
-        protected TProperty GetPropertyValue(T obj)
+        /// <param name="obj">The object to apply the rule to.</param>
+        /// <param name="cultureInfo">The culture to use in this rule.</param>
+        /// <returns>
+        /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
+        /// </returns>
+        public sealed override bool Apply(T obj, CultureInfo cultureInfo)
         {
-            return _getPropertyValue(obj);
+            var value = _getPropertyValue(obj);
+            return ApplyProperty(value, cultureInfo);
         }
+
+        /// <summary>
+        /// Applies the rule to the specified property value.
+        /// </summary>
+        /// <param name="value">The object to apply the rule to.</param>
+        /// <param name="cultureInfo">The culture to use in this rule.</param>
+        /// <returns>
+        /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
+        /// </returns>
+        protected abstract bool ApplyProperty(TProperty value, CultureInfo cultureInfo);
     }
 }

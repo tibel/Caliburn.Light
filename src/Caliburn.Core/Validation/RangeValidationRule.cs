@@ -33,16 +33,15 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Applies the rule to the specified object.
+        /// Applies the rule to the specified property value.
         /// </summary>
-        /// <param name="obj">The object to apply the rule to.</param>
+        /// <param name="value">The object to apply the rule to.</param>
         /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
         /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        public override bool Apply(T obj, CultureInfo cultureInfo)
+        protected override bool ApplyProperty(TProperty value, CultureInfo cultureInfo)
         {
-            var value = GetPropertyValue(obj);
             return (value.CompareTo(_minimum) >= 0 && value.CompareTo(_maximum) <= 0);
         }
     }
