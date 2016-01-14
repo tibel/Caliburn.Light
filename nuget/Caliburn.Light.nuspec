@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>3.1.0-alpha</version>
+    <version>3.1.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
@@ -13,6 +13,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
 - change Validation to be reflection free
+- don't create new strings in validators (pre-format error messages)
 - remove usage of Expression&lt;Func&lt;TProperty&gt;&gt; to extract the property name
 - initial documentation update
 - add BindableCommand as base class of DelegateCommand
