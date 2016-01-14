@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -63,14 +62,14 @@ namespace Caliburn.Light
             get { return _rules.Keys; }
         }
 
-        ICollection<string> IValidator.ValidateProperty(object obj, string propertyName, CultureInfo cultureInfo)
+        ICollection<string> IValidator.ValidateProperty(object obj, string propertyName)
         {
-            return ValidateProperty((T)obj, propertyName, cultureInfo);
+            return ValidateProperty((T)obj, propertyName);
         }
 
-        IDictionary<string, ICollection<string>> IValidator.Validate(object obj, CultureInfo cultureInfo)
+        IDictionary<string, ICollection<string>> IValidator.Validate(object obj)
         {
-            return Validate((T)obj, cultureInfo);
+            return Validate((T)obj);
         }
 
         /// <summary>
@@ -78,30 +77,28 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="obj">The object to apply the rules to.</param>
         /// <param name="propertyName">Name of the property we want to apply rules for.</param>
-        /// <param name="cultureInfo">The culture to use for validation.</param>
         /// <returns>A collection of errors.</returns>
-        public ICollection<string> ValidateProperty(T obj, string propertyName, CultureInfo cultureInfo)
+        public ICollection<string> ValidateProperty(T obj, string propertyName)
         {
             IList<ValidationRule<T>> propertyRules;
             if (!_rules.TryGetValue(propertyName, out propertyRules))
                 return new List<string>();
 
-            return ValidateCore(propertyRules, obj, cultureInfo);
+            return ValidateCore(propertyRules, obj);
         }
 
         /// <summary>
         /// Applies the rules contained in this instance to <paramref name="obj"/>.
         /// </summary>
         /// <param name="obj">The object to apply the rules to.</param>
-        /// <param name="cultureInfo">The culture to use for validation.</param>
         /// <returns>A collection of errors.</returns>
-        public IDictionary<string, ICollection<string>> Validate(T obj, CultureInfo cultureInfo)
+        public IDictionary<string, ICollection<string>> Validate(T obj)
         {
             var errors = new Dictionary<string, ICollection<string>>();
 
             foreach (var propertyRules in _rules)
             {
-                var propertyErrors = ValidateCore(propertyRules.Value, obj, cultureInfo);
+                var propertyErrors = ValidateCore(propertyRules.Value, obj);
 
                 if (propertyErrors.Count > 0)
                 {
@@ -112,13 +109,13 @@ namespace Caliburn.Light
             return errors;
         }
 
-        private static ICollection<string> ValidateCore(IList<ValidationRule<T>> rules, T obj, CultureInfo cultureInfo)
+        private static ICollection<string> ValidateCore(IList<ValidationRule<T>> rules, T obj)
         {
             var errors = new List<string>();
 
             foreach (var rule in rules)
             {
-                var valid = rule.Apply(obj, cultureInfo);
+                var valid = rule.Apply(obj);
 
                 if (!valid)
                 {

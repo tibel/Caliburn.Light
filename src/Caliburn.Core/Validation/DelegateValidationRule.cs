@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -31,11 +30,10 @@ namespace Caliburn.Light
         /// Applies the rule to the specified object.
         /// </summary>
         /// <param name="obj">The object to apply the rule to.</param>
-        /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
         /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        public override bool Apply(T obj, CultureInfo cultureInfo)
+        public override bool Apply(T obj)
         {
             return _rule(obj);
         }

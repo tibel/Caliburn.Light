@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -36,7 +35,7 @@ namespace Caliburn.Light
         public bool ValidateProperty(object instance, string propertyName)
         {
             var validator = Validator ?? NullValidator.Instance;
-            var errors = validator.ValidateProperty(instance, propertyName, CultureInfo.CurrentCulture);
+            var errors = validator.ValidateProperty(instance, propertyName);
 
             if (errors.Count == 0)
                 _errors.Remove(propertyName);
@@ -55,7 +54,7 @@ namespace Caliburn.Light
         public bool Validate(object instance)
         {
             var validator = Validator ?? NullValidator.Instance;
-            var errors = validator.Validate(instance, CultureInfo.CurrentCulture);
+            var errors = validator.Validate(instance);
 
             _errors.Clear();
             foreach (var error in errors)

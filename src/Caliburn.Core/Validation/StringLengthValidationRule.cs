@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Caliburn.Light
 {
@@ -36,11 +35,10 @@ namespace Caliburn.Light
         /// Applies the rule to the specified property value.
         /// </summary>
         /// <param name="value">The object to apply the rule to.</param>
-        /// <param name="cultureInfo">The culture to use in this rule.</param>
         /// <returns>
         /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        protected override bool ApplyProperty(string value, CultureInfo cultureInfo)
+        protected override bool ApplyProperty(string value)
         {
             var length = string.IsNullOrEmpty(value) ? 0 : GetTrimmedLength(value);
             return (length >= _minimumLength && length <= _maximumLength);
