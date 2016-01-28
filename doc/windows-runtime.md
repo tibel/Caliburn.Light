@@ -118,3 +118,11 @@ Overall these changes should give you increased functionality and better control
 On Windows 8 OnLaunched will only be called when your app is launched, if your app is already running and the user relaunches then the app will be activated but not launched and opened where it currently is.
 
 On Windows Phone 8.1 then OnLaunched will be called with a `PreviousExecutionState` of `ApplicationExecutionState.Running`. You need to check for this to not overwrite the current state of the app.
+
+## Attaching an action
+
+In contrast to WPF
+- does not use behaviors (Behaviors SDK)
+- use `x:Bind` for sake of performance
+- use `cal:Bind.CommandParameter` in combination with `x:Bind`
+- maintain the Enabled state with a separate binding
