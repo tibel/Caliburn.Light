@@ -18,7 +18,7 @@ PM> **Install-Package** [Caliburn.Light](https://www.nuget.org/packages/Caliburn
 
 
 ## Learn
-All Caliburn.Light [documentation](doc/) is included.
+All Caliburn.Light [documentation](doc/README.md) is included.
 
 
 
