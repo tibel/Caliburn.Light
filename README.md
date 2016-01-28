@@ -13,7 +13,7 @@ Caliburn.Light is a fork of [Caliburn.Micro](http://caliburnmicro.com/) that
 ## Install
 Caliburn.Light is available through NuGet:
 
-**Install-Package** [Caliburn.Light](https://www.nuget.org/packages/Caliburn.Light/)
+PM> **Install-Package** [Caliburn.Light](https://www.nuget.org/packages/Caliburn.Light/)
 
 
 
