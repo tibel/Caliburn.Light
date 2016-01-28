@@ -17,37 +17,10 @@ Caliburn.Light is available through NuGet:
 
 
 
-## Attached Properties
-
-### View-First
-- `Bind.Model` (use on root nodes like Window/UserControl/Page)  
-  Sets the DataContext and attaches the view to the view-model.
-- `Bind.ModelWithoutContext` (use inside of DataTemplate)  
-  Attaches the view to the view-model only.
-
-### ViewModel-First
-- `View.Model`  
-  Locates the view for the specified VM instance and injects it at the content site.
-  Sets the VM as DataContext on the view.
-- `View.Context`  
-  To support multiple views over the same ViewModel, set this property on the injection site.
+## Learn
+All Caliburn.Light [documentation](doc/) is included.
 
 
 
-## WPF
-Use following behaviors for attaching an action to a view element
-- `CallMethodAction`  
-  Calls a method on the specified object (supports parameters and coroutines).
-  It also maintains the Enabled state of the target element based on a guard method/property.
-- `InvokeCommandAction`  
-  Executes a specified ICommand when invoked.
-  It also maintains the Enabled state of the target element based on the CanExecute method of the command.
-
-
-
-## Windows 10
-In contrast to WPF
-- does not use behaviors (Behaviors SDK)
-- use `x:Bind` for sake of performance
-- use `cal:Bind.CommandParameter` in combination with `x:Bind`
-- maintain the Enabled state with a separate binding
+## License
+Caliburn.Light is licensed under the [MIT license](LICENSE).
