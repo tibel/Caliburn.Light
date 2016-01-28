@@ -1,3 +1,3 @@
 # Validation
 
-see `samples\Demo.Validation`
+see [Validation](../samples/Demo.Validation/) demo
