@@ -5,8 +5,6 @@ namespace Caliburn.Light
 {
     internal sealed class NullValidator : IValidator
     {
-        private static readonly ICollection<string> Empty = new ReadOnlyCollection<string>(new List<string>());
-
         public static readonly NullValidator Instance = new NullValidator();
 
         private NullValidator()
