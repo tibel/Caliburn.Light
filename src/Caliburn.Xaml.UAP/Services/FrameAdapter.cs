@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Windows.Foundation;
-using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -232,24 +228,24 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Gets the data type of the content that is currently displayed.
+        /// Gets the content that is currently displayed.
         /// </summary>
-        public Type CurrentSourcePageType
+        public object Content
         {
-            get { return _frame.CurrentSourcePageType; }
+            get { return _frame.Content; }
         }
 
         /// <summary>
         /// Navigates to the specified view type.
         /// </summary>
-        /// <param name="sourcePageType"> The view type to navigate to.</param>
+        /// <param name="viewType"> The view type to navigate to.</param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
-        public bool Navigate(Type sourcePageType, object parameter = null)
+        public bool Navigate(Type viewType, object parameter = null)
         {
             if (parameter == null)
-                return _frame.Navigate(sourcePageType);
-            return _frame.Navigate(sourcePageType, parameter);
+                return _frame.Navigate(viewType);
+            return _frame.Navigate(viewType, parameter);
         }
 
         /// <summary>

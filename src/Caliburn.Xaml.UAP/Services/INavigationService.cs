@@ -30,9 +30,9 @@ namespace Caliburn.Light
         event NavigationStoppedEventHandler NavigationStopped;
 
         /// <summary>
-        /// Gets the data type of the content that is currently displayed.
+        /// Gets the content that is currently displayed.
         /// </summary>
-        Type CurrentSourcePageType { get; }
+        object Content { get; }
 
         /// <summary>
         /// Indicates whether the navigator can navigate forward.
@@ -47,10 +47,10 @@ namespace Caliburn.Light
         /// <summary>
         /// Navigates to the specified view type.
         /// </summary>
-        /// <param name="sourcePageType"> The view type to navigate to.</param>
+        /// <param name="viewType"> The view type to navigate to.</param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
-        bool Navigate(Type sourcePageType, object parameter = null);
+        bool Navigate(Type viewType, object parameter = null);
 
         /// <summary>
         /// Navigate to the specified model type.
