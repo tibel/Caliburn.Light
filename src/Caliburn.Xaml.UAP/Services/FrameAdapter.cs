@@ -16,15 +16,15 @@ namespace Caliburn.Light
     public class FrameAdapter : INavigationService
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof (FrameAdapter));
-        private const string FrameStateKey = "FrameState";
-        private const string ParameterKey = "ParameterKey";
+
+        private static DependencyProperty PageKeyProperty =
+            DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(FrameAdapter), null);
 
         private readonly Frame _frame;
         private readonly IViewModelLocator _viewModelLocator;
         private readonly IViewModelBinder _viewModelBinder;
         private readonly IViewModelTypeResolver _viewModelTypeResolver;
-
-        private object _currentParameter;
+        private readonly ISuspensionManager _suspensionManager;
 
         /// <summary>
         /// Creates an instance of <see cref="FrameAdapter" />.
@@ -33,7 +33,9 @@ namespace Caliburn.Light
         /// <param name="viewModelLocator">The view-model locator.</param>
         /// <param name="viewModelBinder">The view-model binder.</param>
         /// <param name="viewModelTypeResolver">The view-model type resolver.</param>
-        public FrameAdapter(Frame frame, IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder, IViewModelTypeResolver viewModelTypeResolver)
+        /// <param name="suspensionManager">The suspension manager.</param>
+        public FrameAdapter(Frame frame, IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder, 
+            IViewModelTypeResolver viewModelTypeResolver, ISuspensionManager suspensionManager)
         {
             if (frame == null)
                 throw new ArgumentNullException(nameof(frame));
@@ -43,31 +45,27 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(viewModelBinder));
             if (viewModelTypeResolver == null)
                 throw new ArgumentNullException(nameof(viewModelTypeResolver));
+            if (suspensionManager == null)
+                throw new ArgumentNullException(nameof(suspensionManager));
 
             _frame = frame;
             _viewModelLocator = viewModelLocator;
             _viewModelBinder = viewModelBinder;
             _viewModelTypeResolver = viewModelTypeResolver;
+            _suspensionManager = suspensionManager;
 
             _frame.Navigating += OnNavigating;
             _frame.Navigated += OnNavigated;
-
-            // This could leak memory if we're creating and destorying navigation services regularly.
-            var navigationManager = SystemNavigationManager.GetForCurrentView();
-            navigationManager.BackRequested += OnBackRequested;
         }
 
         /// <summary>
-        ///   Occurs before navigation
+        /// Occurs before navigation
         /// </summary>
         /// <param name="sender"> The event sender. </param>
         /// <param name="e"> The event args. </param>
         protected virtual void OnNavigating(object sender, NavigatingCancelEventArgs e)
         {
-            var handler = Navigating;
-            if (handler != null)
-                handler(sender, e);
-
+            Navigating?.Invoke(sender, e);
             if (e.Cancel) return;
 
             var view = _frame.Content as FrameworkElement;
@@ -87,49 +85,41 @@ namespace Caliburn.Light
                 }
             }
 
+            var navigationAware = view.DataContext as INavigationAware;
+            if (navigationAware != null)
+            {
+                navigationAware.OnNavigatedFrom();
+            }
+
+            SaveState(view);
+
             var deactivator = view.DataContext as IDeactivate;
             if (deactivator != null)
             {
-                deactivator.Deactivate(CanCloseOnNavigating(sender, e));
+                deactivator.Deactivate(CanCloseOnNavigating(e));
             }
         }
 
         /// <summary>
-        ///   Occurs after navigation
+        /// Occurs after navigation
         /// </summary>
         /// <param name="sender"> The event sender. </param>
         /// <param name="e"> The event args. </param>
         protected virtual void OnNavigated(object sender, NavigationEventArgs e)
         {
-            if (e.Content == null)
-                return;
+            var view = e.Content as FrameworkElement;
+            if (view == null) return;
 
-            _currentParameter = e.Parameter;
+            EnsureViewModel(view);
+            RestoreState(view, e.NavigationMode);
 
-            var view = e.Content as Page;
-            if (view == null)
+            var navigationAware = view.DataContext as INavigationAware;
+            if (navigationAware != null)
             {
-                throw new ArgumentException("View '" + e.Content.GetType().FullName +
-                                            "' should inherit from Page or one of its descendents.");
+                navigationAware.OnNavigatedTo(e.Parameter);
             }
 
-            BindViewModel(view);
-        }
-
-        /// <summary>
-        /// Binds the view model.
-        /// </summary>
-        /// <param name="view">The view.</param>
-        protected virtual void BindViewModel(UIElement view)
-        {
-            var viewModel = _viewModelLocator.LocateForView(view);
-            if (viewModel == null)
-                return;
-
-            TryInjectParameters(viewModel, _currentParameter);
-            _viewModelBinder.Bind(viewModel, view, null);
-
-            var activator = viewModel as IActivate;
+            var activator = view.DataContext as IActivate;
             if (activator != null)
             {
                 activator.Activate();
@@ -137,68 +127,80 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Attempts to inject query string parameters from the view into the view model.
+        /// Ensures that the DataContext is set.
         /// </summary>
-        /// <param name="viewModel">The view model.</param>
-        /// <param name="parameter">The parameter.</param>
-        protected virtual void TryInjectParameters(object viewModel, object parameter)
+        /// <param name="view">The view.</param>
+        protected void EnsureViewModel(FrameworkElement view)
         {
-            var viewModelType = viewModel.GetType();
-
-            var stringParameter = parameter as string;
-            var dictionaryParameter = parameter as IDictionary<string, object>;
-
-            if (stringParameter != null && stringParameter.StartsWith("caliburn://"))
+            if (view.DataContext == null)
             {
-                var uri = new Uri(stringParameter);
-
-                if (!string.IsNullOrEmpty(uri.Query))
-                {
-                    var decorder = new WwwFormUrlDecoder(uri.Query);
-
-                    foreach (var pair in decorder)
-                    {
-                        var property = viewModelType.GetRuntimeProperty(pair.Name);
-                        if (property == null) continue;
-
-                        property.SetValue(viewModel,
-                            ParameterBinder.CoerceValue(property.PropertyType, pair.Value));
-                    }
-                }
+                var viewModel = _viewModelLocator.LocateForView(view);
+                _viewModelBinder.Bind(viewModel, view, null);
             }
-            else if (dictionaryParameter != null)
-            {
-                foreach (var pair in dictionaryParameter)
-                {
-                    var property = viewModelType.GetRuntimeProperty(pair.Key);
-                    if (property == null) continue;
+        }
 
-                    property.SetValue(viewModel,
-                        ParameterBinder.CoerceValue(property.PropertyType, pair.Value));
+        /// <summary>
+        /// Saves the current state.
+        /// </summary>
+        /// <param name="view">The view.</param>
+        protected void SaveState(FrameworkElement view)
+        {
+            var preserveState = view.DataContext as IPreserveState;
+            if (preserveState == null) return;
+
+            var pageKey = (string)view.GetValue(PageKeyProperty);
+            var frameState = _suspensionManager.SessionStateForFrame(_frame);
+            var pageState = new Dictionary<string, object>();
+            preserveState.SaveState(pageState);
+            frameState[pageKey] = pageState;
+        }
+
+        /// <summary>
+        /// Restore previously saved state.
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <param name="navigationMode">The navigation mode.</param>
+        protected void RestoreState(FrameworkElement view, NavigationMode navigationMode)
+        {
+            var frameState = _suspensionManager.SessionStateForFrame(_frame);
+            var pageKey = "Page-" + _frame.BackStackDepth;
+            view.SetValue(PageKeyProperty, pageKey);
+
+            if (navigationMode == NavigationMode.New)
+            {
+                // Clear existing state for forward navigation when adding a new page to the navigation stack
+                var nextPageKey = pageKey;
+                int nextPageIndex = _frame.BackStackDepth;
+                while (frameState.Remove(nextPageKey))
+                {
+                    nextPageIndex++;
+                    nextPageKey = "Page-" + nextPageIndex;
                 }
             }
             else
             {
-                var property = viewModelType.GetRuntimeProperty("Parameter");
-                if (property == null) return;
-
-                property.SetValue(viewModel,
-                    ParameterBinder.CoerceValue(property.PropertyType, parameter));
+                // Pass the preserved page state to the page, 
+                // using the same strategy for loading suspended state and recreating pages discarded from cache
+                var pageState = (Dictionary<string, object>)frameState[pageKey];
+                var preserveState = view.DataContext as IPreserveState;
+                if (preserveState != null && pageState != null && pageState.Count > 0)
+                {
+                    preserveState.RestoreState(pageState);
+                }
             }
         }
 
         /// <summary>
         /// Called to check whether or not to close current instance on navigating.
         /// </summary>
-        /// <param name="sender"> The event sender from OnNavigating event. </param>
         /// <param name="e"> The event args from OnNavigating event. </param>
-        protected virtual bool CanCloseOnNavigating(object sender, NavigatingCancelEventArgs e)
+        protected virtual bool CanCloseOnNavigating(NavigatingCancelEventArgs e)
         {
             return false;
         }
 
         /// <summary>
-        ///   Raised after navigation.
+        /// Raised after navigation.
         /// </summary>
         public event NavigatedEventHandler Navigated
         {
@@ -212,7 +214,7 @@ namespace Caliburn.Light
         public event NavigatingCancelEventHandler Navigating;
 
         /// <summary>
-        ///   Raised when navigation fails.
+        /// Raised when navigation fails.
         /// </summary>
         public event NavigationFailedEventHandler NavigationFailed
         {
@@ -221,21 +223,12 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Raised when navigation is stopped.
+        /// Raised when navigation is stopped.
         /// </summary>
         public event NavigationStoppedEventHandler NavigationStopped
         {
             add { _frame.NavigationStopped += value; }
             remove { _frame.NavigationStopped -= value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the data type of the current content, or the content that should be navigated to.
-        /// </summary>
-        public Type SourcePageType
-        {
-            get { return _frame.SourcePageType; }
-            set { _frame.SourcePageType = value; }
         }
 
         /// <summary>
@@ -277,7 +270,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Navigates forward.
+        /// Navigates forward.
         /// </summary>
         public void GoForward()
         {
@@ -285,7 +278,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Navigates back.
+        /// Navigates back.
         /// </summary>
         public void GoBack()
         {
@@ -293,7 +286,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Indicates whether the navigator can navigate forward.
+        /// Indicates whether the navigator can navigate forward.
         /// </summary>
         public bool CanGoForward
         {
@@ -301,7 +294,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        ///   Indicates whether the navigator can navigate back.
+        /// Indicates whether the navigator can navigate back.
         /// </summary>
         public bool CanGoBack
         {
@@ -322,101 +315,6 @@ namespace Caliburn.Light
         public IList<PageStackEntry> ForwardStack
         {
             get { return _frame.ForwardStack; }
-        }
-
-        /// <summary>
-        /// Stores the frame navigation state in local settings if it can.
-        /// </summary>
-        /// <returns>Whether the suspension was sucessful</returns>
-        public bool SuspendState()
-        {
-            try
-            {
-                var container = GetSettingsContainer();
-
-                container.Values[FrameStateKey] = _frame.GetNavigationState();
-                container.Values[ParameterKey] = _currentParameter;
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Failed to suspend state. {0}", ex);
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Tries to restore the frame navigation state from local settings.
-        /// </summary>
-        /// <returns>Whether the restoration of successful.</returns>
-        public bool ResumeState()
-        {
-            var container = GetSettingsContainer();
-
-            if (!container.Values.ContainsKey(FrameStateKey))
-                return false;
-
-            var frameState = (string) container.Values[FrameStateKey];
-
-            _currentParameter = container.Values.ContainsKey(ParameterKey)
-                ? container.Values[ParameterKey]
-                : null;
-
-            if (string.IsNullOrEmpty(frameState))
-                return false;
-
-            _frame.SetNavigationState(frameState);
-
-            var view = _frame.Content as Page;
-            if (view == null) return false;
-
-            BindViewModel(view);
-
-            var window = Window.Current;
-
-            if (ReferenceEquals(window.Content, null))
-                window.Content = _frame;
-
-            window.Activate();
-            return true;
-        }
-
-        /// <summary>
-        /// Occurs when the user presses the hardware Back button.
-        /// </summary>
-        public event EventHandler<BackRequestedEventArgs> BackRequested;
-
-        /// <summary>
-        ///  Occurs when the user presses the hardware Back button. Allows the handlers to cancel the default behavior.
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        protected virtual void OnBackRequested(BackRequestedEventArgs e)
-        {
-            var handler = BackRequested;
-            if (handler != null)
-                handler(this, e);
-        }
-
-        private void OnBackRequested(object sender, BackRequestedEventArgs e)
-        {
-            OnBackRequested(e);
-
-            if (e.Handled)
-                return;
-
-            if (CanGoBack)
-            {
-                e.Handled = true;
-                GoBack();
-            }
-        }
-
-        private static ApplicationDataContainer GetSettingsContainer()
-        {
-            return ApplicationData.Current.LocalSettings.CreateContainer("Caliburn.Light",
-                ApplicationDataCreateDisposition.Always);
         }
     }
 }
