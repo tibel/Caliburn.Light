@@ -20,9 +20,17 @@ namespace Caliburn.Light
     {
         private const string SessionStateFilename = "_sessionState.xml";
 
-        private Dictionary<string, object> _sessionState = new Dictionary<string, object>();
+        private static DependencyProperty FrameSessionStateKeyProperty =
+            DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(string), typeof(SuspensionManager), null);
+        private static DependencyProperty FrameSessionBaseKeyProperty =
+            DependencyProperty.RegisterAttached("_FrameSessionBaseKeyParams", typeof(string), typeof(SuspensionManager), null);
+        private static DependencyProperty FrameSessionStateProperty =
+            DependencyProperty.RegisterAttached("_FrameSessionState", typeof(Dictionary<string, object>), typeof(SuspensionManager), null);
+
+        private readonly List<WeakReference<Frame>> _registeredFrames = new List<WeakReference<Frame>>();
         private readonly List<Type> _knownTypes = new List<Type>();
-        
+        private Dictionary<string, object> _sessionState = new Dictionary<string, object>();
+
         /// <summary>
         /// Provides access to global session state for the current session.  This state is
         /// serialized by <see cref="SaveAsync"/> and restored by
@@ -128,15 +136,6 @@ namespace Caliburn.Light
                 throw new SuspensionManagerException("Restoring session state failed.", e);
             }
         }
-
-        private static DependencyProperty FrameSessionStateKeyProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(string), typeof(SuspensionManager), null);
-        private static DependencyProperty FrameSessionBaseKeyProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionBaseKeyParams", typeof(string), typeof(SuspensionManager), null);
-        private static DependencyProperty FrameSessionStateProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionState", typeof(Dictionary<string, object>), typeof(SuspensionManager), null);
-
-        private readonly List<WeakReference<Frame>> _registeredFrames = new List<WeakReference<Frame>>();
 
         /// <summary>
         /// Registers a <see cref="Frame"/> instance to allow its navigation history to be saved to
