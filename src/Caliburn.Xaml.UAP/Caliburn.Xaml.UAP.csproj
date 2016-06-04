@@ -137,9 +137,12 @@
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\ISharingService.cs" />
     <Compile Include="Services\ISupportSharing.cs" />
+    <Compile Include="Services\ISuspensionManager.cs" />
     <Compile Include="Services\NavigateHelper.cs" />
     <Compile Include="Services\NavigationServiceHelper.cs" />
     <Compile Include="Services\SharingService.cs" />
+    <Compile Include="Services\SuspensionManager.cs" />
+    <Compile Include="Services\SuspensionManagerException.cs" />
     <EmbeddedResource Include="Properties\Caliburn.Xaml.UAP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
