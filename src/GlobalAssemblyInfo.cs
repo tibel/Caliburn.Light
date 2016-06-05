@@ -14,5 +14,5 @@ using System.Resources;
 [assembly: CLSCompliant(true)]
 #endif
 
-[assembly: AssemblyVersion("3.1.0.0")]
-[assembly: AssemblyFileVersion("3.1.0.1")]
+[assembly: AssemblyVersion("3.2.0.0")]
+[assembly: AssemblyFileVersion("3.2.0.0")]
