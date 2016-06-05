@@ -41,12 +41,6 @@ namespace Demo.HelloSpecialValues
             _container.RegisterSingleton<MainPageViewModel>();
         }
 
-        protected override void PrepareViewFirst(Frame rootFrame)
-        {
-            _container.RegisterInstance(rootFrame);
-            _container.GetInstance<INavigationService>();
-        }
-
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -64,7 +58,7 @@ namespace Demo.HelloSpecialValues
             if (e.PreviousExecutionState == ApplicationExecutionState.Running)
                 return;
 
-            DisplayRootViewFor<MainPageViewModel>();
+            //TODO DisplayRootViewFor<MainPageViewModel>();
         }
     }
 }
