@@ -29,6 +29,7 @@ namespace Demo.HelloEventAggregator
             IoC.Initialize(_container);
 
             _container.RegisterSingleton<INavigationService, FrameAdapter>();
+            _container.RegisterSingleton<ISuspensionManager, SuspensionManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
             _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();

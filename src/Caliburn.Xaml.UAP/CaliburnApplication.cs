@@ -130,14 +130,15 @@ namespace Caliburn.Light
         /// Creates the root frame and navigates to the specified view.
         /// </summary>
         /// <param name="viewType">The view type to navigate to.</param>
-        /// <param name="paramter">The object parameter to pass to the target.</param>
-        protected void DisplayRootView(Type viewType, object paramter = null)
+        /// <param name="parameter">The object parameter to pass to the target.</param>
+        protected void DisplayRootView(Type viewType, object parameter = null)
         {
             Initialize();
 
             PrepareViewFirst();
 
-            RootFrame.Navigate(viewType, paramter);
+            var navigationService = IoC.GetInstance<INavigationService>();
+            navigationService.Navigate(viewType, parameter);
 
             var window = Window.Current;
 
@@ -158,36 +159,35 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Locates the view model, locates the associate view, binds them and shows it as the root view.
+        /// Creates the root frame and navigates to the specified view model.
         /// </summary>
         /// <param name="viewModelType">The view model type.</param>
-        protected void DisplayRootViewFor(Type viewModelType)
+        /// <param name="parameter">The object parameter to pass to the target.</param>
+        protected void DisplayRootViewFor(Type viewModelType, object parameter = null)
         {
             Initialize();
 
-            var viewModel = IoC.GetInstance(viewModelType);
-            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+            PrepareViewFirst();
 
-            var view = viewModelLocator.LocateForModel(viewModel, null);
-            viewModelBinder.Bind(viewModel, view, null);
-
-            var activator = viewModel as IActivate;
-            if (activator != null)
-                activator.Activate();
+            var navigationService = IoC.GetInstance<INavigationService>();
+            navigationService.NavigateToViewModel(viewModelType, parameter);
 
             var window = Window.Current;
-            window.Content = view;
+
+            if (ReferenceEquals(window.Content, null))
+                window.Content = RootFrame;
+
             window.Activate();
         }
 
         /// <summary>
-        /// Locates the view model, locates the associate view, binds them and shows it as the root view.
+        /// Creates the root frame and navigates to the specified view model.
         /// </summary>
         /// <typeparam name="T">The view model type.</typeparam>
-        protected void DisplayRootViewFor<T>()
+        /// <param name="parameter">The object parameter to pass to the target.</param>
+        protected void DisplayRootViewFor<T>(object parameter = null)
         {
-            DisplayRootViewFor(typeof (T));
+            DisplayRootViewFor(typeof (T), parameter);
         }
     }
 }
