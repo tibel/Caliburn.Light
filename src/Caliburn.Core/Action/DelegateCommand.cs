@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Windows.Input;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Builds an <see cref="IDelegateCommand"/> in a strongly typed fashion.
+    /// Builds an <see cref="ICommand"/> in a strongly typed fashion.
     /// </summary>
     public static class DelegateCommand
     {

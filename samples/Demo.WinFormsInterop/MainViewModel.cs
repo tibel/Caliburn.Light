@@ -1,5 +1,6 @@
 ﻿using Caliburn.Light;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Demo.WinFormsInterop
 {
@@ -22,7 +23,7 @@ namespace Demo.WinFormsInterop
             set { SetProperty(ref _name, value); }
         }
 
-        public IDelegateCommand SayHelloCommand { get; private set; }
+        public ICommand SayHelloCommand { get; private set; }
 
         private void SayHello()
         {

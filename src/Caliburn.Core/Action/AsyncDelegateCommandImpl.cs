@@ -5,7 +5,7 @@ using Weakly;
 
 namespace Caliburn.Light
 {
-    internal sealed class DelegateCommandImpl<TParameter> : AsyncCommand, IDelegateCommand
+    internal sealed class AsyncDelegateCommandImpl<TParameter> : AsyncCommand
     {
         private readonly Func<object, TParameter> _coerceParameter;
         private readonly Func<TParameter, Task> _execute;
@@ -13,7 +13,7 @@ namespace Caliburn.Light
         private readonly string[] _propertyNames;
         private readonly IDisposable _propertyChangedRegistration;
 
-        public DelegateCommandImpl(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute, 
+        public AsyncDelegateCommandImpl(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute, 
             INotifyPropertyChanged target, string[] propertyNames)
         {
             _coerceParameter = coerceParameter;
@@ -47,14 +47,6 @@ namespace Caliburn.Light
         {
             var value = _coerceParameter(parameter);
             return _execute(value);
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            if (UIContext.CheckAccess())
-                OnCanExecuteChanged();
-            else
-                UIContext.Run(() => OnCanExecuteChanged()).ObserveException();
         }
     }
 }

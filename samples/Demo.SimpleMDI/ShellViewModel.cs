@@ -1,6 +1,7 @@
 ﻿using Caliburn.Light;
 using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Demo.SimpleMDI
 {
@@ -26,9 +27,9 @@ namespace Demo.SimpleMDI
                 .Build();
         }
 
-        public IDelegateCommand OpenTabCommand { get; private set; }
+        public ICommand OpenTabCommand { get; private set; }
 
-        public IDelegateCommand CloseTabCommand { get; private set; }
+        public ICommand CloseTabCommand { get; private set; }
 
         private void OpenTab()
         {

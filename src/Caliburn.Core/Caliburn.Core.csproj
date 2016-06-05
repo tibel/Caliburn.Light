@@ -54,9 +54,7 @@
     <Compile Include="Action\AsyncCommand.cs" />
     <Compile Include="Action\BindableCommand.cs" />
     <Compile Include="Action\DelegateCommandBuilder.cs" />
-    <Compile Include="Action\DelegateCommandImpl.cs" />
-    <Compile Include="Action\IBindableCommand.cs" />
-    <Compile Include="Action\IDelegateCommand.cs" />
+    <Compile Include="Action\AsyncDelegateCommandImpl.cs" />
     <Compile Include="Action\ISpecialValue.cs" />
     <Compile Include="Action\ParameterBinder.cs" />
     <Compile Include="EventAggregator\EventAggregator.cs" />

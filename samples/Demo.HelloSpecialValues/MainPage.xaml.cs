@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Caliburn.Light;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
@@ -22,20 +23,19 @@ namespace Demo.HelloSpecialValues
             get { return DataContext as MainPageViewModel; }
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            IoC.GetInstance<IPageAdapter>().OnNavigatingFrom(this, e);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            IoC.GetInstance<IPageAdapter>().OnNavigatedFrom(this, e);
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // Prepare page for display here.
-
-            // If your application contains multiple pages, ensure that you are
-            // handling the hardware Back button by registering for the
-            // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
-            // If you are using the NavigationHelper provided by some templates,
-            // this event is handled for you.
+            IoC.GetInstance<IPageAdapter>().OnNavigatedTo(this, e);
         }
     }
 }

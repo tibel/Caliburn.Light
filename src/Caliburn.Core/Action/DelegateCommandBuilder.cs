@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Weakly;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Builds an <see cref="IDelegateCommand"/> in a strongly typed fashion.
+    /// Builds an <see cref="ICommand"/> in a strongly typed fashion.
     /// </summary>
     public sealed class DelegateCommandBuilder
     {
@@ -98,7 +99,7 @@ namespace Caliburn.Light
         /// Builds the command.
         /// </summary>
         /// <returns>The newly build command.</returns>
-        public IDelegateCommand Build()
+        public AsyncCommand Build()
         {
             if (_execute == null)
                 throw new InvalidOperationException("Execute not set.");
@@ -109,12 +110,12 @@ namespace Caliburn.Light
             if (_canExecute != null)
                 canExecute = p => _canExecute();
 
-            return new DelegateCommandImpl<object>(p => p, p => _execute(), canExecute, _target, _propertyNames);
+            return new AsyncDelegateCommandImpl<object>(p => p, p => _execute(), canExecute, _target, _propertyNames);
         }
     }
 
     /// <summary>
-    /// Builds an <see cref="IDelegateCommand"/> in a strongly typed fashion.
+    /// Builds an <see cref="ICommand"/> in a strongly typed fashion.
     /// </summary>
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class DelegateCommandBuilder<TParameter>
@@ -240,14 +241,14 @@ namespace Caliburn.Light
         /// Builds the command.
         /// </summary>
         /// <returns>The newly build command.</returns>
-        public IDelegateCommand Build()
+        public AsyncCommand Build()
         {
             if (_execute == null)
                 throw new InvalidOperationException("Execute not set.");
             if (_target != null && _canExecute == null)
                 throw new InvalidOperationException("CanExecute not set but Observe used.");
 
-            return new DelegateCommandImpl<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
+            return new AsyncDelegateCommandImpl<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
         }
     }
 }
