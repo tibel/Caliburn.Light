@@ -99,7 +99,7 @@ namespace Caliburn.Light
         /// Builds the command.
         /// </summary>
         /// <returns>The newly build command.</returns>
-        public BindableCommand Build()
+        public AsyncCommand Build()
         {
             if (_execute == null)
                 throw new InvalidOperationException("Execute not set.");
@@ -241,7 +241,7 @@ namespace Caliburn.Light
         /// Builds the command.
         /// </summary>
         /// <returns>The newly build command.</returns>
-        public BindableCommand Build()
+        public AsyncCommand Build()
         {
             if (_execute == null)
                 throw new InvalidOperationException("Execute not set.");

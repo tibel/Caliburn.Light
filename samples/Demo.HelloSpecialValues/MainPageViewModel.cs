@@ -39,7 +39,7 @@ namespace Demo.HelloSpecialValues
             private set;
         }
 
-        public BindableCommand CharacterSelectedCommand
+        public AsyncCommand CharacterSelectedCommand
         {
             get;
             private set;
