@@ -22,7 +22,7 @@ namespace Demo.HelloSpecialValues
                 new CharacterViewModel("Tyrion Lannister", "ms-appx:///resources/images/tyrion.jpg")
             };
 
-            CharacterSelectedCommand = DelegateCommand.WithParameter<CharacterViewModel>()
+            CharacterSelectedCommand =  DelegateCommand.WithParameter<CharacterViewModel>()
                 .OnExecute(p => CharacterSelected(p))
                 .Build();
         }
@@ -39,7 +39,7 @@ namespace Demo.HelloSpecialValues
             private set;
         }
 
-        public IDelegateCommand CharacterSelectedCommand
+        public BindableCommand CharacterSelectedCommand
         {
             get;
             private set;

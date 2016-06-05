@@ -44,9 +44,7 @@ namespace Caliburn.Light
         /// <param name="propertyName">The name of the property thatchanged.</param>
         protected void OnPropertyChanged(string propertyName)
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -115,6 +113,18 @@ namespace Caliburn.Light
             }
 
             return resolvedParameter ?? eventArgs;
+        }
+
+        /// <summary>
+        /// Raises <see cref="E:CanExecuteChanged"/> so every command invoker can requery to check if the command can execute.
+        /// </summary>
+        /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
+        public void RaiseCanExecuteChanged()
+        {
+            if (UIContext.CheckAccess())
+                OnCanExecuteChanged();
+            else
+                UIContext.Run(() => OnCanExecuteChanged()).ObserveException();
         }
     }
 }

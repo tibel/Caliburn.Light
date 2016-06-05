@@ -1,18 +1,19 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Weakly;
 
 namespace Caliburn.Light
 {
-    internal sealed class DelegateCommandImpl<TParameter> : BindableCommand
+    internal sealed class AsyncDelegateCommandImpl<TParameter> : AsyncCommand
     {
         private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Action<TParameter> _execute;
+        private readonly Func<TParameter, Task> _execute;
         private readonly Func<TParameter, bool> _canExecute;
         private readonly string[] _propertyNames;
         private readonly IDisposable _propertyChangedRegistration;
 
-        public DelegateCommandImpl(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute,
+        public AsyncDelegateCommandImpl(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute, 
             INotifyPropertyChanged target, string[] propertyNames)
         {
             _coerceParameter = coerceParameter;
@@ -36,15 +37,16 @@ namespace Caliburn.Light
 
         protected override bool CanExecuteCore(object parameter)
         {
+            if (IsExecuting) return false;
             if (_canExecute == null) return true;
             var value = _coerceParameter(parameter);
             return _canExecute(value);
         }
 
-        public override void Execute(object parameter)
+        protected override Task ExecuteAsync(object parameter)
         {
             var value = _coerceParameter(parameter);
-            _execute(value);
+            return _execute(value);
         }
     }
 }

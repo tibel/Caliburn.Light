@@ -1,4 +1,5 @@
 ﻿using Caliburn.Light;
+using System.Windows.Input;
 
 namespace Demo.HelloEventAggregator
 {
@@ -24,7 +25,7 @@ namespace Demo.HelloEventAggregator
             set { SetProperty(ref _message, value); }
         }
 
-        public IDelegateCommand PublishCommand { get; private set; }
+        public ICommand PublishCommand { get; private set; }
 
         private void Publish()
         {
