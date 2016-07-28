@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
@@ -59,7 +58,7 @@ namespace Caliburn.Light
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
-            view = IoC.GetAllInstances(viewType).FirstOrDefault() as UIElement;
+            view = IoC.GetInstance(viewType) as UIElement;
             if (view != null)
             {
                 return view;
