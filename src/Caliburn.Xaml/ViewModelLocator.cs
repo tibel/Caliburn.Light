@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -59,20 +58,11 @@ namespace Caliburn.Light
             }
 
             view = IoC.GetInstance(viewType) as UIElement;
-            if (view != null)
+            if (view == null)
             {
-                return view;
+                view = (UIElement)Activator.CreateInstance(viewType);
             }
 
-            var viewTypeInfo = viewType.GetTypeInfo();
-            var uiElementInfo = typeof(UIElement).GetTypeInfo();
-            if (viewTypeInfo.IsInterface || viewTypeInfo.IsAbstract || !uiElementInfo.IsAssignableFrom(viewTypeInfo))
-            {
-                Log.Error("Cannot create {0}.", viewType);
-                return new TextBlock { Text = string.Format("Cannot create {0}.", viewType) };
-            }
-
-            view = (UIElement)Activator.CreateInstance(viewType);
             return view;
         }
 
