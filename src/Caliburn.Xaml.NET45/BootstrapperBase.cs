@@ -96,8 +96,17 @@ namespace Caliburn.Light
         /// <param name="settings">The optional window settings.</param>
         protected void DisplayRootViewFor(Type viewModelType, IDictionary<string, object> settings = null)
         {
+            if (viewModelType == null)
+                throw new ArgumentNullException(nameof(viewModelType));
+
             var windowManager = IoC.GetInstance<IWindowManager>();
+            if (windowManager == null)
+                throw new InvalidOperationException("Could not resolve IWindowManager from IoC.");
+
             var viewModel = IoC.GetInstance(viewModelType);
+            if (viewModel == null)
+                throw new InvalidOperationException(string.Format("Could not resolve type '{0}' from IoC.", viewModelType));
+
             windowManager.ShowWindow(viewModel, null, settings);
         }
 
