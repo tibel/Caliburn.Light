@@ -88,6 +88,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TService">The instance type.</typeparam>
         /// <param name="instance">The instance.</param>
+        /// <param name="errorMessageFunc">A function that returns the error message to use if the <paramref name="instance"/> is null.</param>
         /// <returns>Returns the <paramref name="instance"/>.</returns>
         public static TService EnsureNotNull<TService>(this TService instance, Func<string> errorMessageFunc)
             where TService : class

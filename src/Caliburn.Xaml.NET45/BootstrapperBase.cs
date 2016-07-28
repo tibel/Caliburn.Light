@@ -99,6 +99,8 @@ namespace Caliburn.Light
             if (viewModelType == null)
                 throw new ArgumentNullException(nameof(viewModelType));
 
+            var windowManager = IoC.GetInstance<IWindowManager>().EnsureNotNull("Could not resolve type 'IWindowManager' from IoC.");
+            var viewModel = IoC.GetInstance(viewModelType).EnsureNotNull(() => string.Format("Could not resolve type '{0}' from IoC.", viewModelType));
             windowManager.ShowWindow(viewModel, null, settings);
         }
 
