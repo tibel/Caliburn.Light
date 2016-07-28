@@ -109,7 +109,7 @@ namespace Caliburn.Light
                 ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
                 : view.Name;
 
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>().EnsureNotNull("Could not resolve type 'IViewModelBinder' from IoC.");
             viewModelBinder.Bind(viewModel, view, context);
         }
 
