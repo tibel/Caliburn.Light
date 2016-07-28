@@ -23,5 +23,20 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <returns>All the instances or an empty enumerable if none are found.</returns>
         IEnumerable<object> GetAllInstances(Type service);
+
+        /// <summary>
+        /// Requests an instance.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns>The instance.</returns>
+        TService GetInstance<TService>(string key = null);
+
+        /// <summary>
+        /// Gets all instances of a particular type.
+        /// </summary>
+        /// <typeparam name="TService">The type to resolve.</typeparam>
+        /// <returns>The resolved instances.</returns>
+        IEnumerable<TService> GetAllInstances<TService>();
     }
 }

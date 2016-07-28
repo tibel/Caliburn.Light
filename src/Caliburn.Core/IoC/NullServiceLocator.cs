@@ -20,5 +20,15 @@ namespace Caliburn.Light
         {
             throw new InvalidOperationException("IoC is not initialized.");
         }
+
+        public TService GetInstance<TService>(string key = null)
+        {
+            throw new InvalidOperationException("IoC is not initialized.");
+        }
+
+        public IEnumerable<TService> GetAllInstances<TService>()
+        {
+            throw new InvalidOperationException("IoC is not initialized.");
+        }
     }
 }

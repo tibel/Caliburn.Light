@@ -113,7 +113,6 @@
     <Compile Include="IoC\IServiceLocator.cs" />
     <Compile Include="IoC\NullServiceLocator.cs" />
     <Compile Include="IoC\SimpleContainer.cs" />
-    <Compile Include="IoC\ServiceLocatorHelper.cs" />
     <Compile Include="UI\IViewAdapter.cs" />
     <Compile Include="Logging\DebugLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
