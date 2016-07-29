@@ -12,53 +12,30 @@ namespace Caliburn.Light
     {
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
-        // ReSharper disable once UnusedParameter.Local
-        private static void VerifyTarget(object target)
+        /// <summary>
+        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
+        /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="target">The message handler target.</param>
+        /// <param name="handler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
+        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+            where TTarget : class
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        private static void VerifyDelegate(Delegate weakHandler)
-        {
-            if (weakHandler == null)
-                throw new ArgumentNullException(nameof(weakHandler));
-        }
-
-        private void AddHandler(IEventAggregatorHandler handler)
-        {
-            lock (_handlers)
-            {
-                _handlers.RemoveAll(h => h.IsDead);
-                _handlers.Add(handler);
-            }
-        }
-
-        /// <summary>
-        /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
-        /// </summary>
-        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
-        /// <typeparam name="TMessage">The type of the message.</typeparam>
-        /// <param name="target">The message handler target.</param>
-        /// <param name="weakHandler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
-        /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Action<TTarget, TMessage> weakHandler, ThreadOption threadOption)
-            where TTarget : class
-        {
-            VerifyTarget(target);
-            VerifyDelegate(weakHandler);
+            if (handler == null)
+                throw new ArgumentNullException(nameof(handler));
 
             Func<TTarget, TMessage, Task> wrapper = (t, m) =>
             {
-                weakHandler(t, m);
+                handler(t, m);
                 return TaskHelper.Completed();
             };
 
-            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, wrapper, threadOption);
-            AddHandler(handler);
-            return handler;
+            return SubscribeCore(target, wrapper, threadOption);
         }
 
         /// <summary>
@@ -67,18 +44,32 @@ namespace Caliburn.Light
         /// <typeparam name="TTarget">The type of the handler target.</typeparam>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
-        /// <param name="weakHandler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
+        /// <param name="handler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
             where TTarget : class
         {
-            VerifyTarget(target);
-            VerifyDelegate(weakHandler);
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (handler == null)
+                throw new ArgumentNullException(nameof(handler));
 
-            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, weakHandler, threadOption);
-            AddHandler(handler);
-            return handler;
+            return SubscribeCore(target, handler, threadOption);
+        }
+
+        private IEventAggregatorHandler SubscribeCore<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption)
+            where TTarget : class
+        {
+            var item = new EventAggregatorHandler<TTarget, TMessage>(target, handler, threadOption);
+
+            lock (_handlers)
+            {
+                _handlers.RemoveAll(h => h.IsDead);
+                _handlers.Add(item);
+            }
+
+            return item;
         }
 
         /// <summary>
@@ -116,7 +107,8 @@ namespace Caliburn.Light
 
             var isUIThread = UIContext.CheckAccess();
             var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
-            PublishCore(message, currentThreadHandlers).ObserveException().Watch();
+            if (currentThreadHandlers.Count > 0)
+                PublishCore(message, currentThreadHandlers).ObserveException().Watch();
 
             if (!isUIThread)
             {
@@ -130,14 +122,13 @@ namespace Caliburn.Light
                 Task.Run(() => PublishCore(message, backgroundThreadHandlers)).ObserveException().Watch();
         }
 
-        private static Task PublishCore(object message, IEnumerable<IEventAggregatorHandler> handlers)
+        private static Task PublishCore(object message, List<IEventAggregatorHandler> handlers)
         {
-            var tasks = new List<Task>();
+            var tasks = new Task[handlers.Count];
 
-            foreach (var h in handlers)
+            for (var i = 0; i < handlers.Count; i++)
             {
-                var task = h.HandleAsync(message);
-                if (!task.IsCompleted) tasks.Add(task);
+                tasks[i] = handlers[i].HandleAsync(message);
             }
 
             return Task.WhenAll(tasks);

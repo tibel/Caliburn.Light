@@ -7,14 +7,14 @@ namespace Caliburn.Light
     internal sealed class EventAggregatorHandler<TTarget, TMessage> : IEventAggregatorHandler
         where TTarget : class
     {
-        private readonly WeakReference<TTarget> _target; 
-        private readonly Func<TTarget, TMessage, Task> _weakHandler;
+        private readonly WeakReference<TTarget> _weakTarget; 
+        private readonly Func<TTarget, TMessage, Task> _handler;
         private readonly ThreadOption _threadOption;
 
-        public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
+        public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption)
         {
-            _target = new WeakReference<TTarget>(target);
-            _weakHandler = weakHandler;
+            _weakTarget = new WeakReference<TTarget>(target);
+            _handler = handler;
             _threadOption = threadOption;
         }
 
@@ -28,7 +28,7 @@ namespace Caliburn.Light
             get
             {
                 TTarget target;
-                return !_target.TryGetTarget(out target);
+                return !_weakTarget.TryGetTarget(out target);
             }
         }
 
@@ -40,10 +40,10 @@ namespace Caliburn.Light
         public Task HandleAsync(object message)
         {
             TTarget target;
-            if (!_target.TryGetTarget(out target))
+            if (!_weakTarget.TryGetTarget(out target))
                 return TaskHelper.Completed();
 
-            return _weakHandler(target, (TMessage)message);
+            return _handler(target, (TMessage)message);
         }
     }
 }
