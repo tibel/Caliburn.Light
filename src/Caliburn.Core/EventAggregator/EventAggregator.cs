@@ -10,65 +10,75 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private readonly object _lockObject = new object();
-        private readonly WeakDelegateTable _table = new WeakDelegateTable();
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
+
+        // ReSharper disable once UnusedParameter.Local
+        private static void VerifyTarget(object target)
+        {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        private static void VerifyDelegate(Delegate weakHandler)
+        {
+            if (weakHandler == null)
+                throw new ArgumentNullException(nameof(weakHandler));
+        }
+
+        private void AddHandler(IEventAggregatorHandler handler)
+        {
+            lock (_handlers)
+            {
+                _handlers.RemoveAll(h => h.IsDead);
+                _handlers.Add(handler);
+            }
+        }
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
         /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TMessage>(object target, Action<TMessage> handler, ThreadOption threadOption)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Action<TTarget, TMessage> weakHandler, ThreadOption threadOption)
+            where TTarget : class
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
+            VerifyTarget(target);
+            VerifyDelegate(weakHandler);
 
-            Func<TMessage, Task> wrapper = m =>
+            Func<TTarget, TMessage, Task> wrapper = (t, m) =>
             {
-                handler(m);
+                weakHandler(t, m);
                 return TaskHelper.Completed();
             };
 
-            return SubscribeCore(target, wrapper, threadOption);
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, wrapper, threadOption);
+            AddHandler(handler);
+            return handler;
         }
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
         /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler" /> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TMessage>(object target, Func<TMessage, Task> handler, ThreadOption threadOption)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
+            where TTarget : class
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
+            VerifyTarget(target);
+            VerifyDelegate(weakHandler);
 
-            return SubscribeCore(target, handler, threadOption);
-        }
-
-        private IEventAggregatorHandler SubscribeCore<TMessage>(object target, Func<TMessage, Task> handler, ThreadOption threadOption)
-        {
-            var item = new EventAggregatorHandler<TMessage>(target, handler, threadOption);
-
-            lock (_lockObject)
-            {
-                _handlers.RemoveAll(h => h.IsDead);
-                _handlers.Add(item);
-
-                _table.AddDelegate(target, handler);
-            }
-
-            return item;
+            var handler = new EventAggregatorHandler<TTarget, TMessage>(target, weakHandler, threadOption);
+            AddHandler(handler);
+            return handler;
         }
 
         /// <summary>
@@ -80,15 +90,8 @@ namespace Caliburn.Light
             if (handler == null)
                 throw new ArgumentNullException(nameof(handler));
 
-            lock (_lockObject)
+            lock (_handlers)
             {
-                object target;
-                Delegate del;
-                if (handler.TryGetTargetAndHandler(out target, out del))
-                {
-                    _table.RemoveDelegate(target, del);
-                }
-
                 _handlers.RemoveAll(h => h.IsDead || ReferenceEquals(h, handler));
             }
         }
@@ -103,7 +106,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(message));
 
             List<IEventAggregatorHandler> selectedHandlers;
-            lock (_lockObject)
+            lock (_handlers)
             {
                 _handlers.RemoveAll(h => h.IsDead);
                 selectedHandlers = _handlers.FindAll(h => h.CanHandle(message));

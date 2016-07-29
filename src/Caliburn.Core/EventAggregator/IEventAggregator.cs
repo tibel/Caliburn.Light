@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Weakly;
 
 namespace Caliburn.Light
 {
@@ -11,22 +12,26 @@ namespace Caliburn.Light
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
         /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TMessage>(object target, Action<TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Action<TTarget, TMessage> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+            where TTarget : class;
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage"/>.
         /// </summary>
+        /// <typeparam name="TTarget">The type of the handler target.</typeparam>
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
-        /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
+        /// <param name="weakHandler">The message handler to register.</param>
+        /// <param name="threadOption">Specifies on which Thread the <paramref name="weakHandler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TMessage>(object target, Func<TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread);
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, [EmptyCapture] Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption = ThreadOption.PublisherThread)
+            where TTarget : class;
 
         /// <summary>
         /// Unsubscribes the specified handler.
