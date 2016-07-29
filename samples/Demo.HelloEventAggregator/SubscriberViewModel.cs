@@ -8,7 +8,7 @@ namespace Demo.HelloEventAggregator
 
         public SubscriberViewModel(IEventAggregator eventAggregator)
         {
-            eventAggregator.Subscribe<SubscriberViewModel, string>(this, (t, m) => t.OnMessageReceived(m));
+            eventAggregator.Subscribe<string>(this, m => OnMessageReceived(m));
         }
 
         private void OnMessageReceived(string message)

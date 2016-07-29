@@ -60,6 +60,7 @@
     <Compile Include="EventAggregator\EventAggregator.cs" />
     <Compile Include="EventAggregator\IEventAggregatorHandler.cs" />
     <Compile Include="EventAggregator\EventAggregatorHandler.cs" />
+    <Compile Include="EventAggregator\WeakDelegateTable.cs" />
     <Compile Include="PropertySupport.cs" />
     <Compile Include="Validation\DelegateValidationRule.cs" />
     <Compile Include="Validation\NullValidator.cs" />

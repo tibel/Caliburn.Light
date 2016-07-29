@@ -4,17 +4,16 @@ using Weakly;
 
 namespace Caliburn.Light
 {
-    internal sealed class EventAggregatorHandler<TTarget, TMessage> : IEventAggregatorHandler
-        where TTarget : class
+    internal sealed class EventAggregatorHandler<TMessage> : IEventAggregatorHandler
     {
-        private readonly WeakReference<TTarget> _target; 
-        private readonly Func<TTarget, TMessage, Task> _weakHandler;
+        private readonly WeakReference<object> _weakTarget;
+        private readonly WeakReference<Func<TMessage, Task>> _weakHandler;
         private readonly ThreadOption _threadOption;
 
-        public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> weakHandler, ThreadOption threadOption)
+        public EventAggregatorHandler(object target, Func<TMessage, Task> handler, ThreadOption threadOption)
         {
-            _target = new WeakReference<TTarget>(target);
-            _weakHandler = weakHandler;
+            _weakTarget = new WeakReference<object>(target);
+            _weakHandler = new WeakReference<Func<TMessage, Task>>(handler);
             _threadOption = threadOption;
         }
 
@@ -27,9 +26,17 @@ namespace Caliburn.Light
         {
             get
             {
-                TTarget target;
-                return !_target.TryGetTarget(out target);
+                Func<TMessage, Task> handler;
+                return !_weakHandler.TryGetTarget(out handler);
             }
+        }
+
+        public bool TryGetTargetAndHandler(out object target, out Delegate handler)
+        {
+            Func<TMessage, Task> typedHandler = null;
+            var result = _weakTarget.TryGetTarget(out target) && _weakHandler.TryGetTarget(out typedHandler);
+            handler = typedHandler;
+            return result;
         }
 
         public bool CanHandle(object message)
@@ -39,11 +46,11 @@ namespace Caliburn.Light
 
         public Task HandleAsync(object message)
         {
-            TTarget target;
-            if (!_target.TryGetTarget(out target))
+            Func<TMessage, Task> handler;
+            if (!_weakHandler.TryGetTarget(out handler))
                 return TaskHelper.Completed();
 
-            return _weakHandler(target, (TMessage)message);
+            return handler((TMessage)message);
         }
     }
 }
