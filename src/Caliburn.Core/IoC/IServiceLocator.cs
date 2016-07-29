@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Caliburn.Light
@@ -22,7 +23,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="service">The service.</param>
         /// <returns>All the instances or an empty enumerable if none are found.</returns>
-        IEnumerable<object> GetAllInstances(Type service);
+        IEnumerable GetAllInstances(Type service);
 
         /// <summary>
         /// Requests an instance.

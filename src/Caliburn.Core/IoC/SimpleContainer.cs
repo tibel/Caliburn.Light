@@ -339,7 +339,7 @@ namespace Caliburn.Light
             return instances;
         }
 
-        IEnumerable<object> IServiceLocator.GetAllInstances(Type service)
+        IEnumerable IServiceLocator.GetAllInstances(Type service)
         {
             return GetAllInstances(service);
         }

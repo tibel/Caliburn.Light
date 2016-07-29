@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Caliburn.Light
@@ -52,7 +53,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="service">The type to resolve.</param>
         /// <returns>The resolved instances.</returns>
-        public static IEnumerable<object> GetAllInstances(Type service)
+        public static IEnumerable GetAllInstances(Type service)
         {
             return ServiceLocator.GetAllInstances(service);
         }

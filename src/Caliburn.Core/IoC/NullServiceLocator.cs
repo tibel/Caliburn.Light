@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Caliburn.Light
 {
@@ -13,22 +15,22 @@ namespace Caliburn.Light
 
         public object GetInstance(Type service, string key)
         {
-            throw new InvalidOperationException("IoC is not initialized.");
+            return null;
         }
 
-        public IEnumerable<object> GetAllInstances(Type service)
+        public IEnumerable GetAllInstances(Type service)
         {
-            throw new InvalidOperationException("IoC is not initialized.");
+            return Enumerable.Empty<object>();
         }
 
-        public TService GetInstance<TService>(string key = null)
+        public TService GetInstance<TService>(string key)
         {
-            throw new InvalidOperationException("IoC is not initialized.");
+            return default(TService);
         }
 
         public IEnumerable<TService> GetAllInstances<TService>()
         {
-            throw new InvalidOperationException("IoC is not initialized.");
+            return Enumerable.Empty<TService>();
         }
     }
 }
