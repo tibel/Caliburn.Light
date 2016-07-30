@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -10,7 +10,9 @@ namespace Caliburn.Light
     /// </summary>
     public class FrameAdapter : IFrameAdapter
     {
-        private readonly Dictionary<Frame, Page> _previousPage = new Dictionary<Frame, Page>();
+        private static DependencyProperty FrameAdapterProperty =
+            DependencyProperty.RegisterAttached("_FrameAdapter", typeof(AdapterImpl), typeof(FrameAdapter), null);
+
         private readonly IViewModelLocator _viewModelLocator;
         private readonly IViewModelBinder _viewModelBinder;
 
@@ -39,9 +41,11 @@ namespace Caliburn.Light
             if (frame == null)
                 throw new ArgumentNullException(nameof(frame));
 
-            frame.Navigating += OnNavigating;
-            frame.Navigated += OnNavigated;
-            frame.NavigationFailed += OnNavigationFailed;
+            var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
+            if (adapter != null) return;
+
+            adapter = new AdapterImpl(this, frame);
+            frame.SetValue(FrameAdapterProperty, adapter);
         }
 
         /// <summary>
@@ -53,45 +57,66 @@ namespace Caliburn.Light
             if (frame == null)
                 throw new ArgumentNullException(nameof(frame));
 
-            frame.Navigating -= OnNavigating;
-            frame.Navigated -= OnNavigated;
-            frame.NavigationFailed -= OnNavigationFailed;
-            _previousPage.Remove(frame);
+            var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
+            if (adapter == null) return;
+
+            frame.ClearValue(FrameAdapterProperty);
+            adapter.Dispose();
         }
 
-        private void OnNavigating(object sender, NavigatingCancelEventArgs e)
+        private class AdapterImpl : IDisposable
         {
-            var frame = (Frame)sender;
-            var page = frame.Content as Page;
-            if (page == null) return;
+            private readonly FrameAdapter _parent;
+            private readonly Frame _frame;
+            private Page _previousPage;
 
-            OnNavigatingFrom(page, e);
-
-            if (!e.Cancel)
-                _previousPage[frame] = page;
-        }
-
-        private void OnNavigated(object sender, NavigationEventArgs e)
-        {
-            var frame = (Frame)sender;
-
-            Page previousPage;
-            if (_previousPage.TryGetValue(frame, out previousPage))
+            public AdapterImpl(FrameAdapter parent, Frame frame)
             {
-                _previousPage.Remove(frame);
-                OnNavigatedFrom(previousPage, e);
+                _parent = parent;
+                _frame = frame;
+
+                frame.Navigating += OnNavigating;
+                frame.Navigated += OnNavigated;
+                frame.NavigationFailed += OnNavigationFailed;
             }
 
-            var page = frame.Content as Page;
-            if (page == null) return;
+            private void OnNavigating(object sender, NavigatingCancelEventArgs e)
+            {
+                var page = _frame.Content as Page;
+                if (page == null) return;
 
-            OnNavigatedTo(page, e);
-        }
+                _parent.OnNavigatingFrom(page, e);
 
-        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            var frame = (Frame)sender;
-            _previousPage.Remove(frame);
+                if (!e.Cancel)
+                    _previousPage = page;
+            }
+
+            private void OnNavigated(object sender, NavigationEventArgs e)
+            {
+                if (_previousPage != null)
+                {
+                    var previousPage = _previousPage;
+                    _previousPage = null;
+                    _parent.OnNavigatedFrom(previousPage, e);
+                }
+
+                var page = _frame.Content as Page;
+                if (page == null) return;
+
+                _parent.OnNavigatedTo(page, e);
+            }
+
+            private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+            {
+                _previousPage = null;
+            }
+
+            public void Dispose()
+            {
+                _frame.Navigating -= OnNavigating;
+                _frame.Navigated -= OnNavigated;
+                _frame.NavigationFailed -= OnNavigationFailed;
+            }
         }
 
         private void OnNavigatingFrom(Page page, NavigatingCancelEventArgs e)
