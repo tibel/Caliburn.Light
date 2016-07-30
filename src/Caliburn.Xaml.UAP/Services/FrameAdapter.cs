@@ -208,8 +208,8 @@ namespace Caliburn.Light
             }
 
             frameState["Navigation"] = frame.GetNavigationState();
-
-            return adapter.FrameState;
+ 
+            return frameState;
         }
 
         /// <summary>
