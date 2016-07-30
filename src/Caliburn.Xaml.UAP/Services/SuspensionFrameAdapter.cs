@@ -7,22 +7,22 @@ using Windows.UI.Xaml.Navigation;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Extends <see cref="PageAdapter"/> with <see cref="ISuspensionManager"/> support.
+    /// Extends <see cref="FrameAdapter"/> with <see cref="ISuspensionManager"/> support.
     /// </summary>
-    public class SuspensionPageAdapter : PageAdapter
+    public class SuspensionFrameAdapter : FrameAdapter
     {
         private static DependencyProperty PageKeyProperty =
-            DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(SuspensionPageAdapter), null);
+            DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(SuspensionFrameAdapter), null);
 
         private readonly ISuspensionManager _suspensionManager;
 
         /// <summary>
-        /// Creates an instance of <see cref="SuspensionPageAdapter" />.
+        /// Creates an instance of <see cref="SuspensionFrameAdapter" />.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
         /// <param name="viewModelBinder">The view-model binder.</param>
         /// <param name="suspensionManager">The suspension manager.</param>
-        public SuspensionPageAdapter(IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder, ISuspensionManager suspensionManager)
+        public SuspensionFrameAdapter(IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder, ISuspensionManager suspensionManager)
             : base(viewModelLocator, viewModelBinder)
         {
             if (suspensionManager == null)
@@ -32,7 +32,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Calls <see cref="PageAdapter.OnNavigatedFromCore(Page, NavigationEventArgs)"/> and saves the page state.
+        /// Calls <see cref="FrameAdapter.OnNavigatedFromCore(Page, NavigationEventArgs)"/> and saves the page state.
         /// </summary>
         /// <param name="page">The page.</param>
         /// <param name="e">The event data.</param>
@@ -43,7 +43,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Restores the page state and calls <see cref="PageAdapter.OnNavigatedToCore(Page, NavigationEventArgs)"/>
+        /// Restores the page state and calls <see cref="FrameAdapter.OnNavigatedToCore(Page, NavigationEventArgs)"/>
         /// </summary>
         /// <param name="page">The page.</param>
         /// <param name="e">The event data.</param>

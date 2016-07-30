@@ -32,7 +32,7 @@ namespace Demo.HelloSpecialValues
             _container = new SimpleContainer();
             IoC.Initialize(_container);
 
-            _container.RegisterSingleton<IPageAdapter, PageAdapter>();
+            _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
             _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
@@ -71,6 +71,7 @@ namespace Demo.HelloSpecialValues
             {
                 // Create a Frame to act as the navigation context
                 rootFrame = new Frame();
+                _container.GetInstance<IFrameAdapter>().AttachTo(rootFrame);
 
                 // Set the default language
                 rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];

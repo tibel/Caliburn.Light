@@ -6,149 +6,168 @@ using Windows.UI.Xaml.Navigation;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A basic implementation of <see cref="INavigationService" /> designed to adapt the <see cref="Frame" /> control.
+    /// Integrate framework lifetime handling into <see cref="Frame"/> navigation events.
     /// </summary>
-    public class FrameAdapter : INavigationService
+    public class FrameAdapter : IFrameAdapter
     {
-        private readonly Frame _frame;
-        private readonly IViewModelTypeResolver _viewModelTypeResolver;
+        private readonly Dictionary<Frame, Page> _previousPage = new Dictionary<Frame, Page>();
+        private readonly IViewModelLocator _viewModelLocator;
+        private readonly IViewModelBinder _viewModelBinder;
 
         /// <summary>
         /// Creates an instance of <see cref="FrameAdapter" />.
         /// </summary>
-        /// <param name="frame">The frame to represent as a <see cref="INavigationService" />.</param>
-        /// <param name="viewModelTypeResolver">The view-model type resolver.</param>
-        public FrameAdapter(Frame frame, IViewModelTypeResolver viewModelTypeResolver)
+        /// <param name="viewModelLocator">The view-model locator.</param>
+        /// <param name="viewModelBinder">The view-model binder.</param>
+        public FrameAdapter(IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder)
+        {
+            if (viewModelLocator == null)
+                throw new ArgumentNullException(nameof(viewModelLocator));
+            if (viewModelBinder == null)
+                throw new ArgumentNullException(nameof(viewModelBinder));
+
+            _viewModelLocator = viewModelLocator;
+            _viewModelBinder = viewModelBinder;
+        }
+
+        /// <summary>
+        /// Attaches this instance to the <paramref name="frame"/>.
+        /// </summary>
+        /// <param name="frame">The frame to attach to.</param>
+        public void AttachTo(Frame frame)
         {
             if (frame == null)
                 throw new ArgumentNullException(nameof(frame));
-            if (viewModelTypeResolver == null)
-                throw new ArgumentNullException(nameof(viewModelTypeResolver));
 
-            _frame = frame;
-            _viewModelTypeResolver = viewModelTypeResolver;
+            frame.Navigating += OnNavigating;
+            frame.Navigated += OnNavigated;
+            frame.NavigationFailed += OnNavigationFailed;
         }
 
         /// <summary>
-        /// Raised after navigation.
+        /// Detachtes this instrance from the <paramref name="frame"/>.
         /// </summary>
-        public event NavigatedEventHandler Navigated
+        /// <param name="frame">The frame to detatch from.</param>
+        public void DetatchFrom(Frame frame)
         {
-            add { _frame.Navigated += value; }
-            remove { _frame.Navigated -= value; }
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+
+            frame.Navigating -= OnNavigating;
+            frame.Navigated -= OnNavigated;
+            frame.NavigationFailed -= OnNavigationFailed;
+            _previousPage.Remove(frame);
         }
 
-        /// <summary>
-        /// Raised prior to navigation.
-        /// </summary>
-        public event NavigatingCancelEventHandler Navigating
+        private void OnNavigating(object sender, NavigatingCancelEventArgs e)
         {
-            add { _frame.Navigating += value; }
-            remove { _frame.Navigating -= value; }
+            var frame = (Frame)sender;
+            var page = frame.Content as Page;
+            if (page == null) return;
+
+            OnNavigatingFrom(page, e);
+
+            if (!e.Cancel)
+                _previousPage[frame] = page;
         }
 
-        /// <summary>
-        /// Raised when navigation fails.
-        /// </summary>
-        public event NavigationFailedEventHandler NavigationFailed
+        private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            add { _frame.NavigationFailed += value; }
-            remove { _frame.NavigationFailed -= value; }
-        }
+            var frame = (Frame)sender;
 
-        /// <summary>
-        /// Raised when navigation is stopped.
-        /// </summary>
-        public event NavigationStoppedEventHandler NavigationStopped
-        {
-            add { _frame.NavigationStopped += value; }
-            remove { _frame.NavigationStopped -= value; }
-        }
-
-        /// <summary>
-        /// Gets the content that is currently displayed.
-        /// </summary>
-        public object Content
-        {
-            get { return _frame.Content; }
-        }
-
-        /// <summary>
-        /// Navigates to the specified view type.
-        /// </summary>
-        /// <param name="viewType"> The view type to navigate to.</param>
-        /// <param name="parameter">The object parameter to pass to the target.</param>
-        /// <returns> Whether or not navigation succeeded. </returns>
-        public bool Navigate(Type viewType, object parameter = null)
-        {
-            if (parameter == null)
-                return _frame.Navigate(viewType);
-            return _frame.Navigate(viewType, parameter);
-        }
-
-        /// <summary>
-        /// Navigate to the specified model type.
-        /// </summary>
-        /// <param name="viewModelType">The model type to navigate to.</param>
-        /// <param name="parameter">The object parameter to pass to the target.</param>
-        /// <returns>Whether or not navigation succeeded.</returns>
-        public bool NavigateToViewModel(Type viewModelType, object parameter = null)
-        {
-            var viewType = _viewModelTypeResolver.GetViewType(viewModelType, null);
-            if (viewType == null)
+            Page previousPage;
+            if (_previousPage.TryGetValue(frame, out previousPage))
             {
-                throw new InvalidOperationException(string.Format("No view was found for {0}.", viewModelType.FullName));
+                _previousPage.Remove(frame);
+                OnNavigatedFrom(previousPage, e);
             }
 
-            return Navigate(viewType, parameter);
+            var page = frame.Content as Page;
+            if (page == null) return;
+
+            OnNavigatedTo(page, e);
+        }
+
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            var frame = (Frame)sender;
+            _previousPage.Remove(frame);
+        }
+
+        private void OnNavigatingFrom(Page page, NavigatingCancelEventArgs e)
+        {
+            if (e.Cancel) return;
+
+            var guard = page.DataContext as ICloseGuard;
+            if (guard != null)
+            {
+                var task = guard.CanCloseAsync();
+                if (!task.IsCompleted)
+                    throw new NotSupportedException("Async task is not supported.");
+
+                if (!task.Result)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+        private void OnNavigatedFrom(Page page, NavigationEventArgs e)
+        {
+            OnNavigatedFromCore(page, e);
+
+            var deactivator = page.DataContext as IDeactivate;
+            if (deactivator != null)
+            {
+                var close = page.NavigationCacheMode == NavigationCacheMode.Disabled;
+                deactivator.Deactivate(close);
+            }
         }
 
         /// <summary>
-        /// Navigates forward.
+        /// Calls <see cref="INavigationAware.OnNavigatedFrom" /> on the view model
         /// </summary>
-        public void GoForward()
+        /// <param name="page">The page.</param>
+        /// <param name="e">The event data.</param>
+        protected virtual void OnNavigatedFromCore(Page page, NavigationEventArgs e)
         {
-            _frame.GoForward();
+            var navigationAware = page.DataContext as INavigationAware;
+            if (navigationAware != null)
+            {
+                navigationAware.OnNavigatedFrom();
+            }
+        }
+
+        private void OnNavigatedTo(Page page, NavigationEventArgs e)
+        {
+            if (page.DataContext == null)
+            {
+                var viewModel = _viewModelLocator.LocateForView(page);
+                _viewModelBinder.Bind(viewModel, page, null);
+            }
+
+            OnNavigatedToCore(page, e);
+
+            var activator = page.DataContext as IActivate;
+            if (activator != null)
+            {
+                activator.Activate();
+            }
         }
 
         /// <summary>
-        /// Navigates back.
+        /// Calls <see cref="INavigationAware.OnNavigatedTo(object)" /> on the view model.
         /// </summary>
-        public void GoBack()
+        /// <param name="page">The page.</param>
+        /// <param name="e">The event data.</param>
+        protected virtual void OnNavigatedToCore(Page page, NavigationEventArgs e)
         {
-            _frame.GoBack();
-        }
-
-        /// <summary>
-        /// Indicates whether the navigator can navigate forward.
-        /// </summary>
-        public bool CanGoForward
-        {
-            get { return _frame.CanGoForward; }
-        }
-
-        /// <summary>
-        /// Indicates whether the navigator can navigate back.
-        /// </summary>
-        public bool CanGoBack
-        {
-            get { return _frame.CanGoBack; }
-        }
-
-        /// <summary>
-        /// Gets a collection of PageStackEntry instances representing the backward navigation history of the Frame.
-        /// </summary>
-        public IList<PageStackEntry> BackStack
-        {
-            get { return _frame.BackStack; }
-        }
-
-        /// <summary>
-        /// Gets a collection of PageStackEntry instances representing the forward navigation history of the Frame.
-        /// </summary>
-        public IList<PageStackEntry> ForwardStack
-        {
-            get { return _frame.ForwardStack; }
+            var navigationAware = page.DataContext as INavigationAware;
+            if (navigationAware != null)
+            {
+                navigationAware.OnNavigatedTo(e.Parameter);
+            }
         }
     }
 }

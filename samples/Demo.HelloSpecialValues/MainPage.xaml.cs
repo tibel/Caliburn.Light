@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
@@ -13,29 +12,14 @@ namespace Demo.HelloSpecialValues
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         public MainPageViewModel Model
         {
             get { return DataContext as MainPageViewModel; }
-        }
-
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            IoC.GetInstance<IPageAdapter>().OnNavigatingFrom(this, e);
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            IoC.GetInstance<IPageAdapter>().OnNavigatedFrom(this, e);
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            IoC.GetInstance<IPageAdapter>().OnNavigatedTo(this, e);
         }
     }
 }
