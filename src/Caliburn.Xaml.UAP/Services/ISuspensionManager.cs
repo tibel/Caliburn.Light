@@ -42,12 +42,10 @@ namespace Caliburn.Light
         /// state, which in turn gives their active <see cref="Page"/> an opportunity restore its
         /// state.
         /// </summary>
-        /// <param name="sessionBaseKey">An optional key that identifies the type of session.
-        /// This can be used to distinguish between multiple application launch scenarios.</param>
         /// <returns>An asynchronous task that reflects when session state has been read.  The
         /// content of <see cref="SessionState"/> should not be relied upon until this task
         /// completes.</returns>
-        Task RestoreAsync(string sessionBaseKey = null);
+        Task RestoreAsync();
 
         /// <summary>
         /// Save the current <see cref="SessionState"/>.  Any <see cref="Frame"/> instances

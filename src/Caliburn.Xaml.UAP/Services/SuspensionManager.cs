@@ -22,8 +22,6 @@ namespace Caliburn.Light
 
         private static DependencyProperty FrameSessionStateKeyProperty =
             DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(string), typeof(SuspensionManager), null);
-        private static DependencyProperty FrameSessionBaseKeyProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionBaseKeyParams", typeof(string), typeof(SuspensionManager), null);
 
         private readonly IFrameAdapter _frameAdapter;
         private readonly List<WeakReference<Frame>> _registeredFrames = new List<WeakReference<Frame>>();
@@ -81,24 +79,21 @@ namespace Caliburn.Light
                     Frame frame;
                     if (weakFrameReference.TryGetTarget(out frame))
                     {
-                        var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
-                        var frameState = _frameAdapter.SaveState(frame);
-                        _sessionState[frameSessionKey] = frameState;
+                        SaveFrameState(frame);
                     }
                 }
 
-                // Serialize the session state synchronously to avoid asynchronous access to shared
-                // state
+                // Serialize the session state synchronously to avoid asynchronous access to shared state
                 var sessionData = new MemoryStream();
                 var serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
                 serializer.WriteObject(sessionData, _sessionState);
 
                 // Get an output stream for the SessionState file and write the state asynchronously
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(SessionStateFilename, CreationCollisionOption.ReplaceExisting);
-                using (var fileStream = await file.OpenStreamForWriteAsync())
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(SessionStateFilename, CreationCollisionOption.ReplaceExisting).AsTask().ConfigureAwait(false);
+                using (var fileStream = await file.OpenStreamForWriteAsync().ConfigureAwait(false))
                 {
                     sessionData.Seek(0, SeekOrigin.Begin);
-                    await sessionData.CopyToAsync(fileStream);
+                    await sessionData.CopyToAsync(fileStream).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -113,31 +108,22 @@ namespace Caliburn.Light
         /// state, which in turn gives their active <see cref="Page"/> an opportunity restore its
         /// state.
         /// </summary>
-        /// <param name="sessionBaseKey">An optional key that identifies the type of session.
-        /// This can be used to distinguish between multiple application launch scenarios.</param>
         /// <returns>An asynchronous task that reflects when session state has been read.  The
         /// content of <see cref="SessionState"/> should not be relied upon until this task
         /// completes.</returns>
-        public async Task RestoreAsync(string sessionBaseKey = null)
+        public async Task RestoreAsync()
         {
             _sessionState = new Dictionary<string, object>();
 
             try
             {
-                // Get the input stream for the SessionState file
-                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(SessionStateFilename);
-                using (var inStream = await file.OpenSequentialReadAsync())
-                {
-                    // Deserialize the Session State
-                    var serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
-                    _sessionState = (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
-                }
+                _sessionState = await ReadSessionStateAsync(_knownTypes);
 
                 // Restore any registered frames to their saved state
                 foreach (var weakFrameReference in _registeredFrames)
                 {
                     Frame frame;
-                    if (weakFrameReference.TryGetTarget(out frame) && (string)frame.GetValue(FrameSessionBaseKeyProperty) == sessionBaseKey)
+                    if (weakFrameReference.TryGetTarget(out frame))
                     {
                         RestoreFrameState(frame);
                     }
@@ -146,6 +132,18 @@ namespace Caliburn.Light
             catch (Exception e)
             {
                 throw new SuspensionManagerException("Restoring session state failed.", e);
+            }
+        }
+
+        private static async Task<Dictionary<string, object>> ReadSessionStateAsync(IEnumerable<Type> knownTypes)
+        {
+            // Get the input stream for the SessionState file
+            var file = await ApplicationData.Current.LocalFolder.GetFileAsync(SessionStateFilename).AsTask().ConfigureAwait(false);
+            using (var inStream = await file.OpenSequentialReadAsync().AsTask().ConfigureAwait(false))
+            {
+                // Deserialize the Session State
+                var serializer = new DataContractSerializer(typeof(Dictionary<string, object>), knownTypes);
+                return (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
             }
         }
 
@@ -165,14 +163,18 @@ namespace Caliburn.Light
         /// This can be used to distinguish between multiple application launch scenarios.</param>
         public void RegisterFrame(Frame frame, string sessionStateKey, string sessionBaseKey = null)
         {
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+            if (string.IsNullOrEmpty(sessionStateKey))
+                throw new ArgumentNullException(nameof(sessionStateKey));
+
             if (frame.GetValue(FrameSessionStateKeyProperty) != null)
             {
-                throw new InvalidOperationException("Frames can only be registered to one session state key");
+                throw new InvalidOperationException("Frames can only be registered to one session state key.");
             }
 
             if (!string.IsNullOrEmpty(sessionBaseKey))
             {
-                frame.SetValue(FrameSessionBaseKeyProperty, sessionBaseKey);
                 sessionStateKey = sessionBaseKey + "_" + sessionStateKey;
             }
 
@@ -194,9 +196,19 @@ namespace Caliburn.Light
         /// managed.</param>
         public void UnregisterFrame(Frame frame)
         {
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+
+            var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
+            if (frameSessionKey == null)
+            {
+                throw new InvalidOperationException("Only previously registered frames can be unregistered.");
+            }
+
             // Remove session state and remove the frame from the list of frames whose navigation
             // state will be saved (along with any weak references that are no longer reachable)
-            _sessionState.Remove((string)frame.GetValue(FrameSessionStateKeyProperty));
+            frame.ClearValue(FrameSessionStateKeyProperty);
+            _sessionState.Remove(frameSessionKey);
             _registeredFrames.RemoveAll((weakFrameReference) =>
             {
                 Frame testFrame;
@@ -204,22 +216,26 @@ namespace Caliburn.Light
             });
         }
 
+        private void SaveFrameState(Frame frame)
+        {
+            var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
+            var frameState = _frameAdapter.SaveState(frame);
+            if (frameState != null)
+            {
+                _sessionState[frameSessionKey] = frameState;
+            }
+        }
+
         private void RestoreFrameState(Frame frame)
         {
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
-            if (frameSessionKey == null)
-            {
-                return;
-            }
 
             object result;
-            if (!_sessionState.TryGetValue(frameSessionKey, out result))
+            if (_sessionState.TryGetValue(frameSessionKey, out result))
             {
-                return;
+                var frameState = (IDictionary<string, object>)result;
+                _frameAdapter.RestoreState(frame, frameState);
             }
-
-            var frameState = (IDictionary<string, object>)result;
-            _frameAdapter.RestoreState(frame, frameState);
         }
     }
 }
