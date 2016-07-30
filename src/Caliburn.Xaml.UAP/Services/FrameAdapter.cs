@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -12,6 +13,8 @@ namespace Caliburn.Light
     {
         private static DependencyProperty FrameAdapterProperty =
             DependencyProperty.RegisterAttached("_FrameAdapter", typeof(AdapterImpl), typeof(FrameAdapter), null);
+        private static DependencyProperty PageKeyProperty =
+            DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(FrameAdapter), null);
 
         private readonly IViewModelLocator _viewModelLocator;
         private readonly IViewModelBinder _viewModelBinder;
@@ -45,6 +48,7 @@ namespace Caliburn.Light
             if (adapter != null) return;
 
             adapter = new AdapterImpl(this, frame);
+            adapter.FrameState = new Dictionary<string, object>();
             frame.SetValue(FrameAdapterProperty, adapter);
         }
 
@@ -80,6 +84,8 @@ namespace Caliburn.Light
                 frame.NavigationFailed += OnNavigationFailed;
             }
 
+            public IDictionary<string, object> FrameState { get; set; }
+
             private void OnNavigating(object sender, NavigatingCancelEventArgs e)
             {
                 var page = _frame.Content as Page;
@@ -97,13 +103,13 @@ namespace Caliburn.Light
                 {
                     var previousPage = _previousPage;
                     _previousPage = null;
-                    _parent.OnNavigatedFrom(previousPage, e);
+                    _parent.OnNavigatedFrom(previousPage, e, FrameState);
                 }
 
                 var page = _frame.Content as Page;
                 if (page == null) return;
 
-                _parent.OnNavigatedTo(page, e);
+                _parent.OnNavigatedTo(page, e, FrameState);
             }
 
             private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -138,9 +144,15 @@ namespace Caliburn.Light
             }
         }
 
-        private void OnNavigatedFrom(Page page, NavigationEventArgs e)
+        private void OnNavigatedFrom(Page page, NavigationEventArgs e, IDictionary<string, object> frameState)
         {
-            OnNavigatedFromCore(page, e);
+            var navigationAware = page.DataContext as INavigationAware;
+            if (navigationAware != null)
+            {
+                navigationAware.OnNavigatedFrom();
+            }
+
+            SavePageState(page, frameState);
 
             var deactivator = page.DataContext as IDeactivate;
             if (deactivator != null)
@@ -150,21 +162,7 @@ namespace Caliburn.Light
             }
         }
 
-        /// <summary>
-        /// Calls <see cref="INavigationAware.OnNavigatedFrom" /> on the view model
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="e">The event data.</param>
-        protected virtual void OnNavigatedFromCore(Page page, NavigationEventArgs e)
-        {
-            var navigationAware = page.DataContext as INavigationAware;
-            if (navigationAware != null)
-            {
-                navigationAware.OnNavigatedFrom();
-            }
-        }
-
-        private void OnNavigatedTo(Page page, NavigationEventArgs e)
+        private void OnNavigatedTo(Page page, NavigationEventArgs e, IDictionary<string, object> frameState)
         {
             if (page.DataContext == null)
             {
@@ -172,7 +170,13 @@ namespace Caliburn.Light
                 _viewModelBinder.Bind(viewModel, page, null);
             }
 
-            OnNavigatedToCore(page, e);
+            RestorePageState(page, e.NavigationMode, frameState);
+
+            var navigationAware = page.DataContext as INavigationAware;
+            if (navigationAware != null)
+            {
+                navigationAware.OnNavigatedTo(e.Parameter);
+            }
 
             var activator = page.DataContext as IActivate;
             if (activator != null)
@@ -182,16 +186,94 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Calls <see cref="INavigationAware.OnNavigatedTo(object)" /> on the view model.
+        /// Save the current state for <paramref name="frame"/>.
         /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="e">The event data.</param>
-        protected virtual void OnNavigatedToCore(Page page, NavigationEventArgs e)
+        /// <param name="frame">The frame.</param>
+        /// <returns>The internal frame state dictionary.</returns>
+        public IDictionary<string, object> SaveState(Frame frame)
         {
-            var navigationAware = page.DataContext as INavigationAware;
-            if (navigationAware != null)
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+
+            var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
+            if (adapter == null)
+                throw new InvalidOperationException("Adapter is not attached to frame.");
+
+            var frameState = adapter.FrameState;
+
+            var currentPage = frame.Content as Page;
+            if (currentPage != null)
             {
-                navigationAware.OnNavigatedTo(e.Parameter);
+                SavePageState(currentPage, frameState);
+            }
+
+            frameState["Navigation"] = frame.GetNavigationState();
+
+            return adapter.FrameState;
+        }
+
+        /// <summary>
+        ///  Restores previously saved for <paramref name="frame"/>.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        /// <param name="frameState">The state dictionary that will be used.</param>
+        public void RestoreState(Frame frame, IDictionary<string, object> frameState)
+        {
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+            if (frameState == null)
+                throw new ArgumentNullException(nameof(frameState));
+
+            var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
+            if (adapter == null)
+                throw new InvalidOperationException("Adapter is not attached to frame.");
+
+            adapter.FrameState = frameState;
+
+            if (frameState.ContainsKey("Navigation"))
+            {
+                frame.SetNavigationState((string)frameState["Navigation"]);
+            }
+        }
+
+        private void SavePageState(Page page, IDictionary<string, object> frameState)
+        {
+            var preserveState = page.DataContext as IPreserveState;
+            if (preserveState == null) return;
+
+            var pageKey = (string)page.GetValue(PageKeyProperty);
+            var pageState = new Dictionary<string, object>();
+            preserveState.SaveState(pageState);
+            frameState[pageKey] = pageState;
+        }
+
+        private void RestorePageState(Page page, NavigationMode navigationMode, IDictionary<string, object> frameState)
+        {
+            var frame = page.Frame;
+            var pageKey = "Page-" + frame.BackStackDepth;
+            page.SetValue(PageKeyProperty, pageKey);
+
+            if (navigationMode == NavigationMode.New)
+            {
+                // Clear existing state for forward navigation when adding a new page to the navigation stack
+                var nextPageKey = pageKey;
+                int nextPageIndex = frame.BackStackDepth;
+                while (frameState.Remove(nextPageKey))
+                {
+                    nextPageIndex++;
+                    nextPageKey = "Page-" + nextPageIndex;
+                }
+            }
+            else
+            {
+                // Pass the preserved page state to the page, 
+                // using the same strategy for loading suspended state and recreating pages discarded from cache
+                var preserveState = page.DataContext as IPreserveState;
+                if (preserveState != null)
+                {
+                    var pageState = (Dictionary<string, object>)frameState[pageKey];
+                    preserveState.RestoreState(pageState);
+                }
             }
         }
     }

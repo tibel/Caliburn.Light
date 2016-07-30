@@ -29,7 +29,7 @@ namespace Caliburn.Light
         /// <see cref="RestoreAsync"/> will also restore navigation history.
         /// </summary>
         /// <param name="frame">An instance whose navigation history should be managed by
-        /// <see cref="SuspensionManager"/></param>
+        /// <see cref="ISuspensionManager"/></param>
         /// <param name="sessionStateKey">A unique key into <see cref="SessionState"/> used to
         /// store navigation-related information.</param>
         /// <param name="sessionBaseKey">An optional key that identifies the type of session.
@@ -57,19 +57,6 @@ namespace Caliburn.Light
         /// </summary>
         /// <returns>An asynchronous task that reflects when session state has been saved.</returns>
         Task SaveAsync();
-
-        /// <summary>
-        /// Provides storage for session state associated with the specified <see cref="Frame"/>.
-        /// Frames that have been previously registered with <see cref="RegisterFrame"/> have
-        /// their session state saved and restored automatically as a part of the global
-        /// <see cref="SessionState"/>.  Frames that are not registered have transient state
-        /// that can still be useful when restoring pages that have been discarded from the
-        /// navigation cache.
-        /// </summary>
-        /// <param name="frame">The instance for which session state is desired.</param>
-        /// <returns>A collection of state subject to the same serialization mechanism as
-        /// <see cref="SessionState"/>.</returns>
-        IDictionary<string, object> SessionStateForFrame(Frame frame);
 
         /// <summary>
         /// Disassociates a <see cref="Frame"/> previously registered by <see cref="RegisterFrame"/>

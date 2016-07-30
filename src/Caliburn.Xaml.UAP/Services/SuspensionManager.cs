@@ -24,12 +24,23 @@ namespace Caliburn.Light
             DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(string), typeof(SuspensionManager), null);
         private static DependencyProperty FrameSessionBaseKeyProperty =
             DependencyProperty.RegisterAttached("_FrameSessionBaseKeyParams", typeof(string), typeof(SuspensionManager), null);
-        private static DependencyProperty FrameSessionStateProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionState", typeof(Dictionary<string, object>), typeof(SuspensionManager), null);
 
+        private readonly IFrameAdapter _frameAdapter;
         private readonly List<WeakReference<Frame>> _registeredFrames = new List<WeakReference<Frame>>();
         private readonly List<Type> _knownTypes = new List<Type>();
         private Dictionary<string, object> _sessionState = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Creates an instance of <see cref="SuspensionManager" />.
+        /// </summary>
+        /// <param name="frameAdapter">The view-model locator.</param>
+        public SuspensionManager(IFrameAdapter frameAdapter)
+        {
+            if (frameAdapter == null)
+                throw new ArgumentNullException(nameof(frameAdapter));
+
+            _frameAdapter = frameAdapter;
+        }
 
         /// <summary>
         /// Provides access to global session state for the current session.  This state is
@@ -70,7 +81,9 @@ namespace Caliburn.Light
                     Frame frame;
                     if (weakFrameReference.TryGetTarget(out frame))
                     {
-                        SaveFrameNavigationState(frame);
+                        var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
+                        var frameState = _frameAdapter.SaveState(frame);
+                        _sessionState[frameSessionKey] = frameState;
                     }
                 }
 
@@ -126,8 +139,7 @@ namespace Caliburn.Light
                     Frame frame;
                     if (weakFrameReference.TryGetTarget(out frame) && (string)frame.GetValue(FrameSessionBaseKeyProperty) == sessionBaseKey)
                     {
-                        frame.ClearValue(FrameSessionStateProperty);
-                        RestoreFrameNavigationState(frame);
+                        RestoreFrameState(frame);
                     }
                 }
             }
@@ -158,11 +170,6 @@ namespace Caliburn.Light
                 throw new InvalidOperationException("Frames can only be registered to one session state key");
             }
 
-            if (frame.GetValue(FrameSessionStateProperty) != null)
-            {
-                throw new InvalidOperationException("Frames must be either be registered before accessing frame session state, or not registered at all");
-            }
-
             if (!string.IsNullOrEmpty(sessionBaseKey))
             {
                 frame.SetValue(FrameSessionBaseKeyProperty, sessionBaseKey);
@@ -175,7 +182,7 @@ namespace Caliburn.Light
             _registeredFrames.Add(new WeakReference<Frame>(frame));
 
             // Check to see if navigation state can be restored
-            RestoreFrameNavigationState(frame);
+            RestoreFrameState(frame);
         }
 
         /// <summary>
@@ -189,7 +196,7 @@ namespace Caliburn.Light
         {
             // Remove session state and remove the frame from the list of frames whose navigation
             // state will be saved (along with any weak references that are no longer reachable)
-            SessionState.Remove((string)frame.GetValue(FrameSessionStateKeyProperty));
+            _sessionState.Remove((string)frame.GetValue(FrameSessionStateKeyProperty));
             _registeredFrames.RemoveAll((weakFrameReference) =>
             {
                 Frame testFrame;
@@ -197,56 +204,22 @@ namespace Caliburn.Light
             });
         }
 
-        /// <summary>
-        /// Provides storage for session state associated with the specified <see cref="Frame"/>.
-        /// Frames that have been previously registered with <see cref="RegisterFrame"/> have
-        /// their session state saved and restored automatically as a part of the global
-        /// <see cref="SessionState"/>.  Frames that are not registered have transient state
-        /// that can still be useful when restoring pages that have been discarded from the
-        /// navigation cache.
-        /// </summary>
-        /// <param name="frame">The instance for which session state is desired.</param>
-        /// <returns>A collection of state subject to the same serialization mechanism as
-        /// <see cref="SessionState"/>.</returns>
-        public IDictionary<string, object> SessionStateForFrame(Frame frame)
+        private void RestoreFrameState(Frame frame)
         {
-            var frameState = (Dictionary<string, object>)frame.GetValue(FrameSessionStateProperty);
-
-            if (frameState == null)
+            var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
+            if (frameSessionKey == null)
             {
-                var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
-                if (frameSessionKey != null)
-                {
-                    // Registered frames reflect the corresponding session state
-                    if (!_sessionState.ContainsKey(frameSessionKey))
-                    {
-                        _sessionState[frameSessionKey] = new Dictionary<string, object>();
-                    }
-                    frameState = (Dictionary<string, object>)_sessionState[frameSessionKey];
-                }
-                else
-                {
-                    // Frames that aren't registered have transient state
-                    frameState = new Dictionary<string, object>();
-                }
-                frame.SetValue(FrameSessionStateProperty, frameState);
+                return;
             }
-            return frameState;
-        }
 
-        private void RestoreFrameNavigationState(Frame frame)
-        {
-            var frameState = SessionStateForFrame(frame);
-            if (frameState.ContainsKey("Navigation"))
+            object result;
+            if (!_sessionState.TryGetValue(frameSessionKey, out result))
             {
-                frame.SetNavigationState((string)frameState["Navigation"]);
+                return;
             }
-        }
 
-        private void SaveFrameNavigationState(Frame frame)
-        {
-            var frameState = SessionStateForFrame(frame);
-            frameState["Navigation"] = frame.GetNavigationState();
+            var frameState = (IDictionary<string, object>)result;
+            _frameAdapter.RestoreState(frame, frameState);
         }
     }
 }
