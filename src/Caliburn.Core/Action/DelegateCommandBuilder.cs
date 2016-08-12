@@ -143,7 +143,7 @@ namespace Caliburn.Light
             if (parameter is TParameter)
                 return (TParameter)parameter;
 
-            return (TParameter)ParameterBinder.CoerceValue(typeof(TParameter), parameter);
+            return (TParameter)Convert.ChangeType(parameter, typeof(TParameter));
         }
 
         /// <summary>

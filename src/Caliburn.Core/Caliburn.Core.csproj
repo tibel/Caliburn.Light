@@ -56,7 +56,6 @@
     <Compile Include="Action\DelegateCommandBuilder.cs" />
     <Compile Include="Action\AsyncDelegateCommandImpl.cs" />
     <Compile Include="Action\ISpecialValue.cs" />
-    <Compile Include="Action\ParameterBinder.cs" />
     <Compile Include="EventAggregator\EventAggregator.cs" />
     <Compile Include="EventAggregator\IEventAggregatorHandler.cs" />
     <Compile Include="EventAggregator\EventAggregatorHandler.cs" />

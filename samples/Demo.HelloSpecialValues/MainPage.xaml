@@ -11,6 +11,10 @@
 
     <Grid>
         <GridView ItemsSource="{Binding Characters}" SelectionMode="None" IsSwipeEnabled="False" IsItemClickEnabled="True" Margin="20" ItemClick="{x:Bind Model.CharacterSelectedCommand.OnEvent}">
+            <cal:Bind.CommandParameter>
+                <local:ClickedItem />
+            </cal:Bind.CommandParameter>
+            
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <local:CharacterView cal:Bind.ModelWithoutContext="{Binding}" />

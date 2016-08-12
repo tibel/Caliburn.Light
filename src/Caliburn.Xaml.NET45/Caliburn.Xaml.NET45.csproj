@@ -69,6 +69,7 @@
     <Compile Include="Behaviors\IHaveParameters.cs" />
     <Compile Include="Behaviors\InvokeCommandAction.cs" />
     <Compile Include="Behaviors\Parameter.cs" />
+    <Compile Include="Behaviors\ParameterBinder.cs" />
     <Compile Include="Behaviors\ParameterCollection.cs" />
     <Compile Include="BootstrapperBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
