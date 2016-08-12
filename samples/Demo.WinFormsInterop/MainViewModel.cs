@@ -1,4 +1,5 @@
 ﻿using Caliburn.Light;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -25,9 +26,10 @@ namespace Demo.WinFormsInterop
 
         public ICommand SayHelloCommand { get; private set; }
 
-        private void SayHello()
+        private Task SayHello()
         {
-            MessageBox.Show(string.Format("Hello {0}!", Name)); //Don't do this in real life :)
+            var message = new MessageBoxCoTask(string.Format("Hello {0}!", Name));
+            return message.ExecuteAsync();
         }
     }
 }

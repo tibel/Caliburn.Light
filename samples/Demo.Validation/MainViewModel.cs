@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -69,9 +70,13 @@ namespace Demo.Validation
 
         public ICommand SaveCommand { get; private set; }
 
-        private void Save()
+        private Task Save()
         {
-            MessageBox.Show("Your changes where saved.", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
+            var message = new MessageBoxCoTask("Your changes where saved.")
+                .Caption("Save")
+                .Image(MessageBoxImage.Information);
+
+            return message.ExecuteAsync();
         }
 
         public bool CanSave
