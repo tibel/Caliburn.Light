@@ -52,6 +52,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Action\AsyncCommand.cs" />
+    <Compile Include="Action\DelegateCommandImpl.cs" />
     <Compile Include="Action\BindableCommand.cs" />
     <Compile Include="Action\DelegateCommandBuilder.cs" />
     <Compile Include="Action\AsyncDelegateCommandImpl.cs" />

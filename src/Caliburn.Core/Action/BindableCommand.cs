@@ -121,10 +121,7 @@ namespace Caliburn.Light
         /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
         public void RaiseCanExecuteChanged()
         {
-            if (UIContext.CheckAccess())
-                OnCanExecuteChanged();
-            else
-                UIContext.Run(() => OnCanExecuteChanged()).ObserveException();
+            OnCanExecuteChanged();
         }
     }
 }
