@@ -30,7 +30,8 @@ namespace Caliburn.Light
             var application = Application.Current;
             if (application == null) return null;
             var active = application.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
-            return active ?? application.MainWindow;
+            if (active != null) return active;
+            return application.MainWindow ?? application.Windows.OfType<Window>().FirstOrDefault();
         }
     }
 }
