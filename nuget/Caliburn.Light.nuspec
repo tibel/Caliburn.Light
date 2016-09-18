@@ -17,10 +17,6 @@ TODO
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
 
-    <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Windows.Interactivity" targetFramework="net451" />
-    </frameworkAssemblies>
-
     <dependencies>
       <group>
         <dependency id="Weakly" version="[2.7.0,2.8)" />
