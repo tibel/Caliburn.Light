@@ -25,7 +25,7 @@ namespace Caliburn.Light
             }
 
             var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
-            if (result.Item1)
+            if (result.CanClose)
                 ChangeActiveItem(item, true);
             else
                 OnActivationProcessed(item, false);
@@ -44,7 +44,7 @@ namespace Caliburn.Light
             }
 
             var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
-            if (result.Item1)
+            if (result.CanClose)
                 ChangeActiveItem(default(T), close);
         }
 
@@ -55,7 +55,7 @@ namespace Caliburn.Light
         public override async Task<bool> CanCloseAsync()
         {
             var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
-            return result.Item1;
+            return result.CanClose;
         }
 
         /// <summary>

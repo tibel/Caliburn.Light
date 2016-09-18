@@ -82,13 +82,13 @@ namespace Caliburn.Light
                 {
                     var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
 
-                    var canClose = result.Item1;
-                    var closeable = result.Item2;
+                    var canClose = result.CanClose;
+                    var closeables = result.Closeables;
 
-                    if (!canClose && closeable.Any())
+                    if (!canClose && closeables.Any())
                     {
-                        foreach (var x in closeable.OfType<IDeactivate>()) { x.Deactivate(true); }
-                        _items.RemoveRange(closeable);
+                        foreach (var x in closeables.OfType<IDeactivate>()) { x.Deactivate(true); }
+                        _items.RemoveRange(closeables);
                     }
 
                     return canClose;
@@ -129,7 +129,7 @@ namespace Caliburn.Light
                     else
                     {
                         var result = await CloseStrategy.ExecuteAsync(new[] {item});
-                        if (result.Item1)
+                        if (result.CanClose)
                             CloseItemCore(item);
                     }
                 }

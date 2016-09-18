@@ -98,7 +98,7 @@ namespace Caliburn.Light
                     else
                     {
                         var result = await CloseStrategy.ExecuteAsync(new[] {item});
-                        if (result.Item1)
+                        if (result.CanClose)
                             CloseItemCore(item);
                     }
                 }
@@ -152,12 +152,12 @@ namespace Caliburn.Light
                 {
                     var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
 
-                    var canClose = result.Item1;
-                    var closable = result.Item2;
+                    var canClose = result.CanClose;
+                    var closables = result.Closeables;
 
-                    if (!canClose && closable.Any())
+                    if (!canClose && closables.Any())
                     {
-                        if (closable.Contains(ActiveItem))
+                        if (closables.Contains(ActiveItem))
                         {
                             var list = _items.ToList();
                             var next = ActiveItem;
@@ -166,19 +166,19 @@ namespace Caliburn.Light
                                 var previous = next;
                                 next = DetermineNextItemToActivate(list, list.IndexOf(previous));
                                 list.Remove(previous);
-                            } while (closable.Contains(next));
+                            } while (closables.Contains(next));
 
                             var previousActive = ActiveItem;
                             ChangeActiveItem(next, true);
                             _items.Remove(previousActive);
 
-                            var stillToClose = closable.ToList();
+                            var stillToClose = closables.ToList();
                             stillToClose.Remove(previousActive);
-                            closable = stillToClose;
+                            closables = stillToClose;
                         }
 
-                        foreach (var x in closable.OfType<IDeactivate>()) { x.Deactivate(true); }
-                        _items.RemoveRange(closable);
+                        foreach (var x in closables.OfType<IDeactivate>()) { x.Deactivate(true); }
+                        _items.RemoveRange(closables);
                     }
 
                     return canClose;

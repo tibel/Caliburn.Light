@@ -69,6 +69,7 @@
     <Compile Include="ViewModel\BindableObject.cs" />
     <Compile Include="ViewModel\ActivationEventArgs.cs" />
     <Compile Include="ViewModel\ActivationProcessedEventArgs.cs" />
+    <Compile Include="ViewModel\CloseResult.cs" />
     <Compile Include="ViewModel\Conductor.cs" />
     <Compile Include="ViewModel\ConductorBase.cs" />
     <Compile Include="ViewModel\ConductorBaseWithActiveItem.cs" />

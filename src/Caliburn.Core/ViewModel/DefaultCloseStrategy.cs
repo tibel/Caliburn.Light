@@ -28,7 +28,7 @@ namespace Caliburn.Light
         /// <param name="toClose">Items that are requesting close.</param>
         /// <returns>A task containing the aggregated close results.
         /// The bool indicates whether close can occur. The enumerable indicates which children should close if the parent cannot.</returns>
-        public async Task<Tuple<bool, IEnumerable<T>>> ExecuteAsync(IEnumerable<T> toClose)
+        public async Task<CloseResult<T>> ExecuteAsync(IEnumerable<T> toClose)
         {
             var closables = new List<T>();
             var result = true;
@@ -52,7 +52,7 @@ namespace Caliburn.Light
                 }
             }
 
-            return new Tuple<bool, IEnumerable<T>>(result, _closeConductedItemsWhenConductorCannotClose ? closables : Enumerable.Empty<T>());
+            return new CloseResult<T>(result, _closeConductedItemsWhenConductorCannotClose ? closables : Enumerable.Empty<T>());
         }
     }
 }
