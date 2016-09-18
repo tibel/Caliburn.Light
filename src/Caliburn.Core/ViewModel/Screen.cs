@@ -48,23 +48,17 @@ namespace Caliburn.Light
 
         private void OnActivated(bool wasInitialized)
         {
-            var handler = Activated;
-            if (handler != null)
-                handler(this, new ActivationEventArgs(wasInitialized));
+            Activated?.Invoke(this, new ActivationEventArgs(wasInitialized));
         }
 
         private void OnDeactivating(bool wasClosed)
         {
-            var handler = Deactivating;
-            if (handler != null)
-                handler(this, new DeactivationEventArgs(wasClosed));
+            Deactivating?.Invoke(this, new DeactivationEventArgs(wasClosed));
         }
 
         private void OnDeactivated(bool wasClosed)
         {
-            var handler = Deactivated;
-            if (handler != null)
-                handler(this, new DeactivationEventArgs(wasClosed));
+            Deactivated?.Invoke(this, new DeactivationEventArgs(wasClosed));
         }
 
         void IActivate.Activate()
@@ -158,7 +152,7 @@ namespace Caliburn.Light
 
             foreach (var view in Views.Values)
             {
-                if (UIContext.TryClose(view, dialogResult))
+                if (UIContext.TryClose(view.Target, dialogResult))
                     return;
             }
 
