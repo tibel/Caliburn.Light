@@ -15,7 +15,7 @@ namespace Caliburn.Light
     public class ViewModelTypeResolver : IViewModelTypeResolver
     {
         private readonly Dictionary<Type, Type> _modelTypeLookup = new Dictionary<Type, Type>();
-        private readonly Dictionary<Tuple<Type, string>, Type> _viewTypeLookup = new Dictionary<Tuple<Type, string>, Type>();
+        private readonly Dictionary<ViewTypeLookupKey, Type> _viewTypeLookup = new Dictionary<ViewTypeLookupKey, Type>(new ViewTypeLookupKeyComparer());
 
         /// <summary>
         /// Determines the view model type based on the specified view type.
@@ -44,7 +44,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(modelType));
 
             Type viewType;
-            _viewTypeLookup.TryGetValue(new Tuple<Type, string>(modelType, context ?? string.Empty), out viewType);
+            _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out viewType);
             return viewType;
         }
 
@@ -64,7 +64,7 @@ namespace Caliburn.Light
             if (context == null)
                 _modelTypeLookup.Add(viewType, modelType);
 
-            _viewTypeLookup.Add(new Tuple<Type, string>(modelType, context ?? string.Empty), viewType);
+            _viewTypeLookup.Add(new ViewTypeLookupKey(modelType, context ?? string.Empty), viewType);
         }
     }
 }
