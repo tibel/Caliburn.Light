@@ -1,25 +1,27 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Weakly;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A delegate command that can be data-bound.
+    /// An async delegate command that can be data-bound.
     /// </summary>
-    public sealed class DelegateCommand : BindableCommand
+    public sealed class AsyncDelegateCommand : AsyncCommand
     {
-        private readonly Action _execute;
+        private readonly Func<Task> _execute;
         private readonly Func<bool> _canExecute;
         private readonly string[] _propertyNames;
         private readonly IDisposable _propertyChangedRegistration;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="DelegateCommand"/>.
+        /// Initializes a new instance of <see cref="AsyncDelegateCommand"/>.
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        public DelegateCommand(Action execute, Func<bool> canExecute = null)
+        public AsyncDelegateCommand(Func<Task> execute, Func<bool> canExecute = null)
         {
             if (execute == null)
                 throw new ArgumentNullException(nameof(execute));
@@ -29,13 +31,12 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="DelegateCommand"/>.
+        /// Initializes a new instance of <see cref="AsyncDelegateCommand"/>.
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        /// <param name="target">The object to observe for change notifications.</param>
         /// <param name="propertyNames">The property names.</param>
-        public DelegateCommand(Action execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
+        public AsyncDelegateCommand(Func<Task> execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
         {
             if (execute == null)
                 throw new ArgumentNullException(nameof(execute));
@@ -52,24 +53,6 @@ namespace Caliburn.Light
             _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
         }
 
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<System.Threading.Tasks.Task> execute, Func<bool> canExecute = null)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<System.Threading.Tasks.Task> execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
-        {
-            throw new NotSupportedException();
-        }
-
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
@@ -77,45 +60,47 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Determines whether the command can execute in its current state.
+        /// The implementation of <see cref="ICommand.CanExecute(object)"/>.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
         protected override bool CanExecuteCore(object parameter)
         {
+            if (IsExecuting) return false;
             if (_canExecute == null) return true;
             return _canExecute();
         }
 
         /// <summary>
-        /// Called when the command is invoked.
+        /// The implementation of <see cref="ICommand.Execute(object)"/>.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        public override void Execute(object parameter)
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        protected override Task ExecuteAsync(object parameter)
         {
-            _execute();
+            return _execute();
         }
     }
 
     /// <summary>
-    /// A delegate command that can be data-bound.
+    /// An async delegate command that can be data-bound.
     /// </summary>
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
-    public sealed class DelegateCommand<TParameter> : BindableCommand
+    public sealed class AsyncDelegateCommand<TParameter> : AsyncCommand
     {
         private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Action<TParameter> _execute;
+        private readonly Func<TParameter, Task> _execute;
         private readonly Func<TParameter, bool> _canExecute;
         private readonly string[] _propertyNames;
         private readonly IDisposable _propertyChangedRegistration;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="DelegateCommand&lt;TParameter&gt;"/>.
+        /// Initializes a new instance of <see cref="AsyncDelegateCommand&lt;TParameter&gt;"/>.
         /// </summary>
         /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute = null)
+        public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute = null)
         {
             if (coerceParameter == null)
                 throw new ArgumentNullException(nameof(coerceParameter));
@@ -128,14 +113,13 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="DelegateCommand&lt;TParameter&gt;"/>.
+        /// Initializes a new instance of <see cref="AsyncDelegateCommand&lt;TParameter&gt;"/>.
         /// </summary>
         /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        /// <param name="target">The object to observe for change notifications.</param>
         /// <param name="propertyNames">The property names.</param>
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute,
+        public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute,
             INotifyPropertyChanged target, params string[] propertyNames)
         {
             if (coerceParameter == null)
@@ -156,25 +140,6 @@ namespace Caliburn.Light
             _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
         }
 
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, System.Threading.Tasks.Task> execute, Func<TParameter, bool> canExecute = null)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, System.Threading.Tasks.Task> execute, Func<TParameter, bool> canExecute,
-            INotifyPropertyChanged target, params string[] propertyNames)
-        {
-            throw new NotSupportedException();
-        }
-
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
@@ -182,25 +147,27 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Determines whether the command can execute in its current state.
+        /// The implementation of <see cref="ICommand.CanExecute(object)"/>.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
         protected override bool CanExecuteCore(object parameter)
         {
+            if (IsExecuting) return false;
             if (_canExecute == null) return true;
             var value = _coerceParameter(parameter);
             return _canExecute(value);
         }
 
         /// <summary>
-        /// Called when the command is invoked.
+        /// The implementation of <see cref="ICommand.Execute(object)"/>.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        public override void Execute(object parameter)
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        protected override Task ExecuteAsync(object parameter)
         {
             var value = _coerceParameter(parameter);
-            _execute(value);
+            return _execute(value);
         }
     }
 }

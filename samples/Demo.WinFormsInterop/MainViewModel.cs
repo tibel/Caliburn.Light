@@ -1,6 +1,5 @@
 ﻿using Caliburn.Light;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Demo.WinFormsInterop
@@ -11,11 +10,7 @@ namespace Demo.WinFormsInterop
 
         public MainViewModel()
         {
-            SayHelloCommand = DelegateCommand.NoParameter()
-                .OnExecute(() => SayHello())
-                .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
-                .Observe(this, nameof(Name))
-                .Build();
+            SayHelloCommand = new AsyncDelegateCommand(() => SayHello(), () => !string.IsNullOrWhiteSpace(Name), this, nameof(Name));
         }
 
         public string Name

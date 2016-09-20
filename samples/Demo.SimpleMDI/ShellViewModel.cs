@@ -18,13 +18,9 @@ namespace Demo.SimpleMDI
 
             _createTabViewModel = createTabViewModel;
 
-            OpenTabCommand = DelegateCommand.NoParameter()
-                .OnExecute(() => OpenTab())
-                .Build();
+            OpenTabCommand = new DelegateCommand(() => OpenTab());
 
-            CloseTabCommand = DelegateCommand.WithParameter<TabViewModel>()
-                .OnExecute(item => DeactivateItem(item, true))
-                .Build();
+            CloseTabCommand = new DelegateCommand<TabViewModel>(CoerceParameter<TabViewModel>.Default, item => DeactivateItem(item, true));
         }
 
         public ICommand OpenTabCommand { get; private set; }
