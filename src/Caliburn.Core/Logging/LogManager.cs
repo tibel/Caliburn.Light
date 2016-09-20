@@ -7,6 +7,8 @@ namespace Caliburn.Light
     /// </summary>
     public static class LogManager
     {
+        private static readonly Func<Type, ILogger> _getNullLogger = type => NullLogger.Instance;
+
         private static Func<Type, ILogger> _getLogger;
 
         /// <summary>
@@ -15,7 +17,7 @@ namespace Caliburn.Light
         /// <param name="getLogger">The function to create a <see cref="ILogger"/> for a type.</param>
         public static void Initialize(Func<Type, ILogger> getLogger = null)
         {
-            _getLogger = getLogger;
+            _getLogger = getLogger ?? _getNullLogger;
         }
 
         /// <summary>
@@ -25,7 +27,7 @@ namespace Caliburn.Light
         /// <returns>A logger for the provided type.</returns>
         public static ILogger GetLogger(Type type)
         {
-            return (_getLogger != null) ? _getLogger(type) : NullLogger.Instance;
+            return _getLogger(type);
         }
     }
 }

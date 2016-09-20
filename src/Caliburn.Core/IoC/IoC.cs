@@ -18,12 +18,8 @@ namespace Caliburn.Light
         public static void Initialize(IServiceLocator serviceLocator)
         {
             LogManager.GetLogger(typeof(IoC)).Info("Initialize");
-            _serviceLocator = serviceLocator;
-        }
 
-        private static IServiceLocator ServiceLocator
-        {
-            get { return _serviceLocator ?? NullServiceLocator.Instance; }
+            _serviceLocator = serviceLocator ?? NullServiceLocator.Instance;
         }
 
         /// <summary>
@@ -34,7 +30,7 @@ namespace Caliburn.Light
         /// <returns>The resolved instance.</returns>
         public static object GetInstance(Type service, string key = null)
         {
-            return ServiceLocator.GetInstance(service, key);
+            return _serviceLocator.GetInstance(service, key);
         }
 
         /// <summary>
@@ -45,7 +41,7 @@ namespace Caliburn.Light
         /// <returns>The resolved instance.</returns>
         public static T GetInstance<T>(string key = null)
         {
-            return ServiceLocator.GetInstance<T>(key);
+            return _serviceLocator.GetInstance<T>(key);
         }
 
         /// <summary>
@@ -55,7 +51,7 @@ namespace Caliburn.Light
         /// <returns>The resolved instances.</returns>
         public static IEnumerable GetAllInstances(Type service)
         {
-            return ServiceLocator.GetAllInstances(service);
+            return _serviceLocator.GetAllInstances(service);
         }
 
         /// <summary>
@@ -65,7 +61,7 @@ namespace Caliburn.Light
         /// <returns>The resolved instances.</returns>
         public static IEnumerable<T> GetAllInstances<T>()
         {
-            return ServiceLocator.GetAllInstances<T>();
+            return _serviceLocator.GetAllInstances<T>();
         }
 
         /// <summary>
