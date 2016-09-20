@@ -10,9 +10,13 @@ namespace Caliburn.Light
     /// </summary>
     public static class UIContext
     {
+        private static readonly SynchronizationContext _nullSynchronizationContext = new SynchronizationContext();
+        private static readonly SendOrPostCallback _sendOrPostCallback = new SendOrPostCallback(OnSendOrPost);
+
+        private static IViewAdapter _viewAdapter = NullViewAdapter.Instance;
         private static int? _managedThreadId;
-        private static TaskScheduler _taskScheduler;
-        private static IViewAdapter _viewAdapter;
+        private static SynchronizationContext _synchronizationContext = _nullSynchronizationContext;
+        private static TaskScheduler _taskScheduler = TaskScheduler.Default;
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
@@ -20,22 +24,25 @@ namespace Caliburn.Light
         /// <param name="viewAdapter">The adapter to interact with view elements.</param>
         public static void Initialize(IViewAdapter viewAdapter)
         {
-            Initialize(viewAdapter, Environment.CurrentManagedThreadId, TaskScheduler.FromCurrentSynchronizationContext());
+            Initialize(viewAdapter, Environment.CurrentManagedThreadId, SynchronizationContext.Current, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
-        /// <param name="viewAdapter">The adapter to interact with view elements. Can be null if not needed.</param>
+        /// <param name="viewAdapter">The adapter to interact with view elements.</param>
         /// <param name="managedThreadId">The Id of the UI thread. Use null to allow any thread.</param>
-        /// <param name="taskScheduler">The <see cref="TaskScheduler"/> associated with the UI context. Can be null if not needed.</param>
+        /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> assoziated with the UI context.</param>
+        /// <param name="taskScheduler">The <see cref="System.Threading.Tasks.TaskScheduler"/> associated with the UI context.</param>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static void Initialize(IViewAdapter viewAdapter, int? managedThreadId, TaskScheduler taskScheduler)
+        public static void Initialize(IViewAdapter viewAdapter, int? managedThreadId, SynchronizationContext synchronizationContext, TaskScheduler taskScheduler)
         {
             LogManager.GetLogger(typeof(UIContext)).Info("Initialize");
-            _viewAdapter = viewAdapter;
+
+            _viewAdapter = viewAdapter ?? NullViewAdapter.Instance;
             _managedThreadId = managedThreadId;
-            _taskScheduler = taskScheduler;
+            _synchronizationContext = synchronizationContext ?? _nullSynchronizationContext;
+            _taskScheduler = taskScheduler ?? TaskScheduler.Default;
         }
 
         #region Thread
@@ -61,11 +68,49 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// The <see cref="TaskScheduler"/> associated with the UI context.
+        /// Queues the specified work to run on the UI thread.
+        /// </summary>
+        /// <param name="action">The work to execute asynchronously.</param>
+        public static void BeginInvoke(Action action)
+        {
+            _synchronizationContext.Post(_sendOrPostCallback, action);
+        }
+
+        /// <summary>
+        /// Executes the specified work synchronously on the UI thread.
+        /// </summary>
+        /// <param name="action">The work to execute synchronously.</param>
+        public static void Invoke(Action action)
+        {
+            _synchronizationContext.Send(_sendOrPostCallback, action);
+        }
+
+        /// <summary>
+        /// Executes the specified work synchronously on the UI thread and returns the result of the function.
+        /// </summary>
+        /// <typeparam name="TResult">The return value type of the specified delegate.</typeparam>
+        /// <param name="function">The work to execute synchronously.</param>
+        /// <returns>The value returned by the function.</returns>
+        public static TResult Invoke<TResult>(Func<TResult> function)
+        {
+            var result = default(TResult);
+            Action action = () => result = function();
+            _synchronizationContext.Send(_sendOrPostCallback, action);
+            return result;
+        }
+
+        private static void OnSendOrPost(object obj)
+        {
+            var action = (Action)obj;
+            action();
+        }
+
+        /// <summary>
+        /// The <see cref="System.Threading.Tasks.TaskScheduler"/> associated with the UI context.
         /// </summary>
         public static TaskScheduler TaskScheduler
         {
-            get { return _taskScheduler ?? TaskScheduler.Current; }
+            get { return _taskScheduler; }
         }
 
         private const TaskCreationOptions CreationOptions = TaskCreationOptions.DenyChildAttach | TaskCreationOptions.HideScheduler;
@@ -77,7 +122,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
         public static Task Run(Action action)
         {
-            return Task.Factory.StartNew(action, default(CancellationToken), CreationOptions, TaskScheduler);
+            return Task.Factory.StartNew(action, default(CancellationToken), CreationOptions, _taskScheduler);
         }
 
         /// <summary>
@@ -88,7 +133,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents a proxy for the <see cref="Task&lt;TResult&gt;"/> returned by function.</returns>
         public static Task<TResult> Run<TResult>(Func<Task<TResult>> function)
         {
-            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, TaskScheduler).Unwrap();
+            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, _taskScheduler).Unwrap();
         }
 
         /// <summary>
@@ -98,7 +143,7 @@ namespace Caliburn.Light
         /// <returns>A task that represents a proxy for the task returned by function.</returns>
         public static Task Run(Func<Task> function)
         {
-            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, TaskScheduler).Unwrap();
+            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, _taskScheduler).Unwrap();
         }
 
         /// <summary>
@@ -109,24 +154,19 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents the work queued to execute in the UI thread.</returns>
         public static Task<TResult> Run<TResult>(Func<TResult> function)
         {
-            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, TaskScheduler);
+            return Task.Factory.StartNew(function, default(CancellationToken), CreationOptions, _taskScheduler);
         }
 
         #endregion
 
         #region View
 
-        private static IViewAdapter ViewAdapter
-        {
-            get { return _viewAdapter ?? NullViewAdapter.Instance; }
-        }
-
         /// <summary>
         /// Indicates whether or not the framework is running in the context of a designer.
         /// </summary>
         public static bool IsInDesignTool
         {
-            get { return ViewAdapter.IsInDesignTool; }
+            get { return _viewAdapter.IsInDesignTool; }
         }
 
         /// <summary>
@@ -136,7 +176,7 @@ namespace Caliburn.Light
         /// <returns>The root element that was not created by the framework.</returns>
         public static object GetFirstNonGeneratedView(object view)
         {
-            return ViewAdapter.GetFirstNonGeneratedView(view);
+            return _viewAdapter.GetFirstNonGeneratedView(view);
         }
 
         /// <summary>
@@ -146,7 +186,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnFirstLoad(object view, Action<object> handler)
         {
-            ViewAdapter.ExecuteOnFirstLoad(view, handler);
+            _viewAdapter.ExecuteOnFirstLoad(view, handler);
         }
 
         /// <summary>
@@ -156,7 +196,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnLayoutUpdated(object view, Action<object> handler)
         {
-            ViewAdapter.ExecuteOnLayoutUpdated(view, handler);
+            _viewAdapter.ExecuteOnLayoutUpdated(view, handler);
         }
 
         /// <summary>
@@ -167,7 +207,7 @@ namespace Caliburn.Light
         /// <returns>true, when close could be initiated; otherwise false.</returns>
         public static bool TryClose(object view, bool? dialogResult)
         {
-            return ViewAdapter.TryClose(view, dialogResult);
+            return _viewAdapter.TryClose(view, dialogResult);
         }
 
         /// <summary>
@@ -178,7 +218,7 @@ namespace Caliburn.Light
         /// <returns>The command parameter.</returns>
         public static object GetCommandParameter(object view)
         {
-            return ViewAdapter.GetCommandParameter(view);
+            return _viewAdapter.GetCommandParameter(view);
         }
 
         #endregion
