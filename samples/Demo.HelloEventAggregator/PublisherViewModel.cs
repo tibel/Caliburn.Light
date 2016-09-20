@@ -12,11 +12,7 @@ namespace Demo.HelloEventAggregator
         {
             _eventAggregator = eventAggregator;
 
-            PublishCommand = DelegateCommand.NoParameter()
-                .OnExecute(() => Publish())
-                .OnCanExecute(() => !string.IsNullOrEmpty(Message))
-                .Observe(this, nameof(Message))
-                .Build();
+            PublishCommand = new DelegateCommand(() => Publish(), () => !string.IsNullOrEmpty(Message), this, nameof(Message));
         }
 
         public string Message

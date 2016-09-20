@@ -21,10 +21,8 @@ namespace Demo.HelloSpecialValues
                 new CharacterViewModel("Sansa Stark", "ms-appx:///resources/images/sansa.jpg"),
                 new CharacterViewModel("Tyrion Lannister", "ms-appx:///resources/images/tyrion.jpg")
             };
-
-            CharacterSelectedCommand =  DelegateCommand.WithParameter<CharacterViewModel>()
-                .OnExecute(p => CharacterSelected(p))
-                .Build();
+            
+            CharacterSelectedCommand =  new AsyncDelegateCommand<CharacterViewModel>(CoerceParameter<CharacterViewModel>.Default, p => CharacterSelected(p));
         }
 
         private async Task CharacterSelected(CharacterViewModel character)
