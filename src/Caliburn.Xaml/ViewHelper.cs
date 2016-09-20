@@ -3,13 +3,13 @@
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 #else
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 #endif
 
@@ -161,9 +161,6 @@ namespace Caliburn.Light
         /// </returns>
         public static bool IsElementLoaded(FrameworkElement element)
         {
-            if (element == null)
-                return false;
-
 #if NETFX_CORE
             var content = Window.Current.Content;
             var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
@@ -171,6 +168,63 @@ namespace Caliburn.Light
 #else
             return element.IsLoaded;
 #endif
+        }
+
+        /// <summary>
+        /// Tries to close the specified view.
+        /// </summary>
+        /// <param name="view">The view to close.</param>
+        /// <param name="dialogResult">The dialog result.</param>
+        /// <returns>true, when close could be initiated; otherwise false.</returns>
+        public static bool TryClose(object view, bool? dialogResult)
+        {
+            var window = view as Window;
+            if (window != null)
+            {
+#if !NETFX_CORE
+                if (dialogResult.HasValue)
+                    window.DialogResult = dialogResult;
+                else
+                    window.Close();
+#else
+                window.Close();
+#endif
+                return true;
+            }
+
+            var popup = view as Popup;
+            if (popup != null)
+            {
+                popup.IsOpen = false;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the command parameter of the element.
+        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter' (UAP only).
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The command parameter.</returns>
+        public static object GetCommandParameter(DependencyObject element)
+        {
+#if NETFX_CORE
+            var commandParameter = Bind.GetCommandParameter(element);
+            if (commandParameter != null)
+                return commandParameter;
+
+            var buttonBase = element as ButtonBase;
+            if (buttonBase != null)
+                return buttonBase.CommandParameter;
+#else
+            var commandSource = element as System.Windows.Input.ICommandSource;
+            if (commandSource != null)
+                return commandSource.CommandParameter;
+#endif
+
+            return null;
         }
     }
 }
