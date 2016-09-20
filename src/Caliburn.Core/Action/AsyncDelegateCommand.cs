@@ -35,6 +35,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
+        /// <param name="target">The object to observe for change notifications.</param>
         /// <param name="propertyNames">The property names.</param>
         public AsyncDelegateCommand(Func<Task> execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
         {
@@ -118,6 +119,7 @@ namespace Caliburn.Light
         /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
+        /// <param name="target">The object to observe for change notifications.</param>
         /// <param name="propertyNames">The property names.</param>
         public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute,
             INotifyPropertyChanged target, params string[] propertyNames)
