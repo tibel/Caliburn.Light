@@ -63,40 +63,5 @@ namespace Caliburn.Light
         {
             return _serviceLocator.GetAllInstances<T>();
         }
-
-        /// <summary>
-        /// Ensures that the given <paramref name="instance"/> is not null and throws an exception otherwise.
-        /// </summary>
-        /// <typeparam name="TService">The instance type.</typeparam>
-        /// <param name="instance">The instance.</param>
-        /// <param name="errorMessage">The error message to use if the <paramref name="instance"/> is null.</param>
-        /// <returns>Returns the <paramref name="instance"/>.</returns>
-        public static TService EnsureNotNull<TService>(this TService instance, string errorMessage)
-            where TService : class
-        {
-            if (instance == null)
-                throw new InvalidOperationException(errorMessage);
-
-            return instance;
-        }
-
-        /// <summary>
-        /// Ensures that the given <paramref name="instance"/> is not null and throws an exception otherwise.
-        /// </summary>
-        /// <typeparam name="TService">The instance type.</typeparam>
-        /// <param name="instance">The instance.</param>
-        /// <param name="errorMessageFunc">A function that returns the error message to use if the <paramref name="instance"/> is null.</param>
-        /// <returns>Returns the <paramref name="instance"/>.</returns>
-        public static TService EnsureNotNull<TService>(this TService instance, Func<string> errorMessageFunc)
-            where TService : class
-        {
-            if (errorMessageFunc == null)
-                throw new ArgumentNullException(nameof(errorMessageFunc));
-
-            if (instance == null)
-                throw new InvalidOperationException(errorMessageFunc());
-
-            return instance;
-        }
     }
 }

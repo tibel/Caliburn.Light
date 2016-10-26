@@ -101,8 +101,13 @@ namespace Caliburn.Light
                 return;
             }
 
-            var viewModelLocator = IoC.GetInstance<IViewModelLocator>().EnsureNotNull("Could not resolve type 'IViewModelLocator' from IoC.");
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>().EnsureNotNull("Could not resolve type 'IViewModelBinder' from IoC.");
+            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            if (viewModelLocator == null)
+                throw new InvalidOperationException("Could not resolve type 'IViewModelLocator' from IoC.");
+
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+            if (viewModelBinder == null)
+                throw new InvalidOperationException("Could not resolve type 'IViewModelBinder' from IoC.");
 
             var view = viewModelLocator.LocateForModel(model, context);
             RemoveFromParent(view);

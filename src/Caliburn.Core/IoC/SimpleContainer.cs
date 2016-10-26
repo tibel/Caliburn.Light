@@ -270,7 +270,7 @@ namespace Caliburn.Light
 
             var serviceType = service.GetTypeInfo();
 
-            if (DelegateType.IsAssignableFrom(serviceType))
+            if (serviceType.IsGenericType && DelegateType.IsAssignableFrom(serviceType))
             {
                 var typeToCreate = service.GenericTypeArguments[0];
                 var factoryFactoryType = typeof(FactoryFactory<>).MakeGenericType(typeToCreate);
@@ -279,7 +279,7 @@ namespace Caliburn.Light
                 return factoryFactoryMethod.Invoke(factoryFactoryHost, new object[] { this, key });
             }
 
-            if (EnumerableType.IsAssignableFrom(serviceType) && serviceType.IsGenericType)
+            if (serviceType.IsGenericType && EnumerableType.IsAssignableFrom(serviceType))
             {
                 if (key != null)
                     throw new InvalidOperationException(string.Format("Requesting type '{0}' with key {1} is not supported.", service, key));
@@ -296,7 +296,7 @@ namespace Caliburn.Light
                 return array;
             }
 
-            return null;
+            return (serviceType.IsValueType) ? Activator.CreateInstance(service) : null;
         }
 
         /// <summary>

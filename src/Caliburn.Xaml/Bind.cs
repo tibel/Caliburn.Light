@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -109,7 +110,10 @@ namespace Caliburn.Light
                 ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
                 : view.Name;
 
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>().EnsureNotNull("Could not resolve type 'IViewModelBinder' from IoC.");
+            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
+            if (viewModelBinder == null)
+                throw new InvalidOperationException("Could not resolve type 'IViewModelBinder' from IoC.");
+
             viewModelBinder.Bind(viewModel, view, context);
         }
 
