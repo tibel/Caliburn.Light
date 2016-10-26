@@ -32,6 +32,7 @@ namespace Caliburn.Light
             {
                 var task = ExecuteAsync(parameter);
                 if (!task.IsCompleted)
+                    Executing?.Invoke(null, new TaskEventArgs(task));
                 await task;
             }
             finally
