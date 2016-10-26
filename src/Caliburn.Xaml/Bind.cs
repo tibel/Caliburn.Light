@@ -117,7 +117,6 @@ namespace Caliburn.Light
             viewModelBinder.Bind(viewModel, view, context);
         }
 
-#if NETFX_CORE
         /// <summary>
         /// The DependencyProperty for the CommandParameter used in x:Bind scenarios.
         /// </summary>
@@ -143,6 +142,5 @@ namespace Caliburn.Light
         {
             dependencyObject.SetValue(CommandParameterProperty, value);
         }
-#endif
     }
 }

@@ -43,7 +43,7 @@ namespace Caliburn.Light
 
         /// <summary>
         /// Gets the command parameter of the view.
-        /// This can be the native CommandParameter property or 'cal:Bind.CommandParameter' (UAP only).
+        /// This can be the native CommandParameter property or 'cal:Bind.CommandParameter'.
         /// </summary>
         /// <param name="view">The view.</param>
         /// <returns>The command parameter.</returns>

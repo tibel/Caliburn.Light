@@ -204,17 +204,17 @@ namespace Caliburn.Light
 
         /// <summary>
         /// Gets the command parameter of the element.
-        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter' (UAP only).
+        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter'.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns>The command parameter.</returns>
         public static object GetCommandParameter(DependencyObject element)
         {
-#if NETFX_CORE
             var commandParameter = Bind.GetCommandParameter(element);
             if (commandParameter != null)
                 return commandParameter;
 
+#if NETFX_CORE
             var buttonBase = element as ButtonBase;
             if (buttonBase != null)
                 return buttonBase.CommandParameter;
