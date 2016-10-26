@@ -20,7 +20,11 @@ namespace Demo.Validation
             _validation = new ValidationAdapter(OnErrorsChanged);
             _validation.Validator = SetupValidator();
             
-            SaveCommand = new AsyncDelegateCommand(() => Save(), () => CanSave, this, nameof(CanSave));
+            SaveCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => Save())
+                .OnCanExecute(() => CanSave)
+                .Observe(this, nameof(CanSave))
+                .Build();
         }
 
         public string CName

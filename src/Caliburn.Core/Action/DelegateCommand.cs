@@ -52,24 +52,6 @@ namespace Caliburn.Light
             _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
         }
 
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<System.Threading.Tasks.Task> execute, Func<bool> canExecute = null)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<System.Threading.Tasks.Task> execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
-        {
-            throw new NotSupportedException();
-        }
-
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
@@ -154,25 +136,6 @@ namespace Caliburn.Light
             _canExecute = canExecute;
             _propertyNames = propertyNames;
             _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
-        }
-
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, System.Threading.Tasks.Task> execute, Func<TParameter, bool> canExecute = null)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use AsyncDelegateCommand", true)]
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, System.Threading.Tasks.Task> execute, Func<TParameter, bool> canExecute,
-            INotifyPropertyChanged target, params string[] propertyNames)
-        {
-            throw new NotSupportedException();
         }
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)

@@ -17,10 +17,14 @@ namespace Demo.SimpleMDI
                 throw new ArgumentNullException(nameof(createTabViewModel));
 
             _createTabViewModel = createTabViewModel;
+            
+            OpenTabCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => OpenTab())
+                .Build();
 
-            OpenTabCommand = new DelegateCommand(() => OpenTab());
-
-            CloseTabCommand = new DelegateCommand<TabViewModel>(CoerceParameter<TabViewModel>.Default, item => DeactivateItem(item, true));
+            CloseTabCommand = DelegateCommandBuilder.WithParameter<TabViewModel>()
+                .OnExecute(item => DeactivateItem(item, true))
+                .Build();
         }
 
         public ICommand OpenTabCommand { get; private set; }

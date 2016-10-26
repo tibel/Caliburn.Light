@@ -10,7 +10,11 @@ namespace Demo.WinFormsInterop
 
         public MainViewModel()
         {
-            SayHelloCommand = new AsyncDelegateCommand(() => SayHello(), () => !string.IsNullOrWhiteSpace(Name), this, nameof(Name));
+            SayHelloCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => SayHello())
+                .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
+                .Observe(this, nameof(Name))
+                .Build();
         }
 
         public string Name

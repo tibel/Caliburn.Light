@@ -12,10 +12,21 @@ namespace Demo.ExceptionHandling
     {
         public ShellViewModel()
         {
-            ExecuteCommand = new DelegateCommand(() => OnExecute());
-            UIContextRunCommand = new DelegateCommand(() => OnUIContextRun());
-            TaskRunCommand = new DelegateCommand(() => OnTaskRun());
-            AsyncCommand = new AsyncDelegateCommand(() => OnAsync());
+            ExecuteCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => OnExecute())
+                .Build();
+
+            UIContextRunCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => OnUIContextRun())
+                .Build();
+
+            TaskRunCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => OnTaskRun())
+                .Build();
+
+            AsyncCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => OnAsync())
+                .Build();
         }
 
         public ICommand ExecuteCommand { get; private set; }
