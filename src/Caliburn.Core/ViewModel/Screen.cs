@@ -121,15 +121,13 @@ namespace Caliburn.Light
         {
         }
 
-        private static readonly Task<bool> TrueTask = Task.FromResult(true);
-
         /// <summary>
         /// Called to check whether or not this instance can close.
         /// </summary>
         /// <returns>A task containing the result of the close check.</returns>
         public virtual Task<bool> CanCloseAsync()
         {
-            return TrueTask;
+            return TaskHelper.TrueTask;
         }
 
         /// <summary>

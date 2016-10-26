@@ -10,7 +10,7 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private static readonly SynchronizationContext _threadPool = new SynchronizationContext();
+        private static readonly SynchronizationContext ThreadPool = new SynchronizationContext();
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Caliburn.Light
             Func<TTarget, TMessage, Task> wrapper = (t, m) =>
             {
                 handler(t, m);
-                return TaskHelper.Completed();
+                return TaskHelper.CompletedTask;
             };
 
             return SubscribeCore(target, wrapper, threadOption);
@@ -121,7 +121,7 @@ namespace Caliburn.Light
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundThreadHandlers.Count > 0)
-                _threadPool.Post(state => PublishCore(message, backgroundThreadHandlers), null);
+                ThreadPool.Post(state => PublishCore(message, backgroundThreadHandlers), null);
         }
 
         private static void PublishCore(object message, List<IEventAggregatorHandler> handlers)
@@ -138,7 +138,7 @@ namespace Caliburn.Light
         private static void Observe(Task task)
         {
             task.ContinueWith((t, state) => ((SynchronizationContext)state).Post(s => ((Task)s).GetAwaiter().GetResult(), t),
-                _threadPool,
+                ThreadPool,
                 default(CancellationToken),
                 TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted,
                 TaskScheduler.Default);

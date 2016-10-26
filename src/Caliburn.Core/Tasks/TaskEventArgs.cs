@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Provides data for <see cref="TaskHelper"/> events.
+    /// Provides data for <see cref="Task"/> events.
     /// </summary>
     public sealed class TaskEventArgs : EventArgs
     {
