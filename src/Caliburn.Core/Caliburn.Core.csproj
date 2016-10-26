@@ -61,7 +61,18 @@
     <Compile Include="EventAggregator\EventAggregator.cs" />
     <Compile Include="EventAggregator\IEventAggregatorHandler.cs" />
     <Compile Include="EventAggregator\EventAggregatorHandler.cs" />
+    <Compile Include="Events\IWeakEventHandler.cs" />
+    <Compile Include="Events\WeakCanExecuteChangedHandler.cs" />
+    <Compile Include="Events\WeakEventHandler.cs" />
+    <Compile Include="Events\WeakEventHandlerBase.cs" />
+    <Compile Include="Events\WeakEventList.cs" />
+    <Compile Include="Events\WeakEventListener.cs" />
+    <Compile Include="Events\WeakEventSource.cs" />
+    <Compile Include="Events\WeakNotifyCollectionChangedHandler.cs" />
+    <Compile Include="Events\WeakNotifyPropertyChangedHandler.cs" />
     <Compile Include="PropertySupport.cs" />
+    <Compile Include="Tasks\TaskEventArgs.cs" />
+    <Compile Include="Tasks\TaskHelper.cs" />
     <Compile Include="Validation\DelegateValidationRule.cs" />
     <Compile Include="Validation\NullValidator.cs" />
     <Compile Include="Validation\PropertyValidationRule.cs" />
@@ -78,6 +89,7 @@
     <Compile Include="ViewModel\ConductorWithCollectionOneActive.cs" />
     <Compile Include="ViewModel\DeactivationEventArgs.cs" />
     <Compile Include="ViewModel\DefaultCloseStrategy.cs" />
+    <Compile Include="ViewModel\DisposableAction.cs" />
     <Compile Include="ViewModel\IActivate.cs" />
     <Compile Include="ViewModel\IChild.cs" />
     <Compile Include="ViewModel\IClose.cs" />
@@ -129,12 +141,6 @@
     <Compile Include="Validation\StringLengthValidationRule.cs" />
     <Compile Include="Validation\ValidationAdapter.cs" />
     <Compile Include="Validation\ValidationRule.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Weakly, Version=2.7.0.0, Culture=neutral, PublicKeyToken=3e9c206b2200b970, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Weakly.2.7.0\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Weakly.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

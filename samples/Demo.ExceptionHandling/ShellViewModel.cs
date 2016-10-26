@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Light;
-using Weakly;
 
 namespace Demo.ExceptionHandling
 {

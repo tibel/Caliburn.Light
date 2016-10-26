@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Weakly;
 
 namespace Caliburn.Light
 {
