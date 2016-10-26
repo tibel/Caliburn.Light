@@ -14,8 +14,6 @@ namespace Demo.ExceptionHandling
             {
                 AppDomain.CurrentDomain.UnhandledException += (sender, e) => Debug.WriteLine(">>> AppDomain - {0}", e.ExceptionObject);
                 TaskScheduler.UnobservedTaskException      += (sender, e) => Debug.WriteLine(">>> TaskScheduler - {0}", e.Exception);
-                TaskHelper.TaskFaulted                     += (sender, e) => Debug.WriteLine(">>> TaskFaulted - {0}", e.Task.Exception);
-                TaskHelper.TaskWatched                     += (sender, e) => Debug.WriteLine(">>> TaskWatched");
 
                 LogManager.Initialize(t => new DebugLogger(t));
 

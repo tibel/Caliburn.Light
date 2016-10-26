@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Caliburn.Light
@@ -30,7 +31,7 @@ namespace Caliburn.Light
             try
             {
                 var task = ExecuteAsync(parameter);
-                if (!task.IsCompleted) task.Watch();
+                if (!task.IsCompleted)
                 await task;
             }
             finally
@@ -38,6 +39,11 @@ namespace Caliburn.Light
                 SetIsExecuting(false);
             }
         }
+
+        /// <summary>
+        /// Occurs when <see cref="ExecuteAsync(object)"/> is invoked and the operation has not completed synchronously.
+        /// </summary>
+        public static event EventHandler<TaskEventArgs> Executing;
 
         private void SetIsExecuting(bool value)
         {

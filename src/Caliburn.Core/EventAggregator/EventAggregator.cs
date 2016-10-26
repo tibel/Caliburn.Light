@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -9,6 +10,7 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
+        private static readonly SynchronizationContext _threadPool = new SynchronizationContext();
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
 
         /// <summary>
@@ -107,30 +109,45 @@ namespace Caliburn.Light
             var isUIThread = UIContext.CheckAccess();
             var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
             if (currentThreadHandlers.Count > 0)
-                PublishCore(message, currentThreadHandlers).ObserveException().Watch();
+                PublishCore(message, currentThreadHandlers);
 
             if (!isUIThread)
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    UIContext.Run(() => PublishCore(message, uiThreadHandlers)).ObserveException().Watch();
+                    UIContext.BeginInvoke(() => PublishCore(message, uiThreadHandlers));
             }
+
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundThreadHandlers.Count > 0)
-                Task.Run(() => PublishCore(message, backgroundThreadHandlers)).ObserveException().Watch();
+                _threadPool.Post(state => PublishCore(message, backgroundThreadHandlers), null);
         }
 
-        private static Task PublishCore(object message, List<IEventAggregatorHandler> handlers)
+        private static void PublishCore(object message, List<IEventAggregatorHandler> handlers)
         {
-            var tasks = new Task[handlers.Count];
-
             for (var i = 0; i < handlers.Count; i++)
             {
-                tasks[i] = handlers[i].HandleAsync(message);
+                var task = handlers[i].HandleAsync(message);
+                Observe(task);
+                if (!task.IsCompleted)
+                    Executing?.Invoke(null, new TaskEventArgs(task));
             }
-
-            return Task.WhenAll(tasks);
         }
+
+        private static void Observe(Task task)
+        {
+            task.ContinueWith((t, state) => ((SynchronizationContext)state).Post(s => ((Task)s).GetAwaiter().GetResult(), t),
+                _threadPool,
+                default(CancellationToken),
+                TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted,
+                TaskScheduler.Default);
+        }
+
+
+        /// <summary>
+        /// Occurs when <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
+        /// </summary>
+        public static event EventHandler<TaskEventArgs> Executing;
     }
 }

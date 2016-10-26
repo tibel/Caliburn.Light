@@ -39,29 +39,30 @@ namespace Demo.ExceptionHandling
             throw new InvalidOperationException("Error on execute.");
         }
 
-        private void OnUIContextRun()
+        private Task OnUIContextRun()
         {
-            Task.Run(() =>
+            return Task.Run(() =>
             {
                 Debug.Assert(!UIContext.CheckAccess());
                 Thread.Sleep(100);
-                UIContext.Run(new Action(() =>
+
+                return UIContext.Run(new Action(() =>
                 {
                     Debug.Assert(UIContext.CheckAccess());
                     Thread.Sleep(100);
                     throw new InvalidOperationException("Error on a background Task.");
-                })).ObserveException();
-            }).ObserveException();
+                }));
+            });
         }
 
-        private void OnTaskRun()
+        private Task OnTaskRun()
         {
-            Task.Run(() =>
+            return Task.Run(() =>
             {
                 Debug.Assert(!UIContext.CheckAccess());
                 Thread.Sleep(100);
                 throw new InvalidOperationException("Error on a background Task.");
-            }).ObserveException();
+            });
         }
 
         private async Task OnAsync()
