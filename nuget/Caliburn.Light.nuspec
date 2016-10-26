@@ -12,7 +12,16 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-TODO
+- added new FrameAdapter that attaches the framwork to a Frame instance
+- added IPreserveState and INavigationAware interfaces for ViewModels
+- added SuspensionManager
+- streamlined SimpleContainer API
+- changed SimpleContainer.GetInstance() to return null instead of throwing exception if not found
+- changed DelegateCommandBuilder to return concrete class instead of interface
+- changed NavigationService to be used by ViewModels only (framework uses FrameAdapter)
+- removed Weakly
+- removed NavigationHelper
+- removed CallMethodAction and InvokeCommandAction
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel Phone IoC Validation Command Async</tags>
