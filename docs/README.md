@@ -1,4 +1,4 @@
-![Logo](../logo.png)
+![Logo](images/logo.png)
 # Documentation
 
 :heavy_exclamation_mark: work in progress :heavy_exclamation_mark:
