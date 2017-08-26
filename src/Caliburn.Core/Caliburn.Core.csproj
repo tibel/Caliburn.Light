@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
@@ -7,13 +7,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Caliburn.Light</RootNamespace>
     <AssemblyName>Caliburn.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile151</TargetFrameworkProfile>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile151</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Caliburn.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Caliburn.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Caliburn.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Caliburn.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -52,62 +52,12 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Action\AsyncCommand.cs" />
+    <Compile Include="Action\AsyncDelegateCommand.cs" />
+    <Compile Include="Action\BindableCommand.cs" />
     <Compile Include="Action\CoerceParameter.cs" />
     <Compile Include="Action\DelegateCommand.cs" />
-    <Compile Include="Action\BindableCommand.cs" />
-    <Compile Include="Action\AsyncDelegateCommand.cs" />
     <Compile Include="Action\DelegateCommandBuilder.cs" />
     <Compile Include="Action\ISpecialValue.cs" />
-    <Compile Include="EventAggregator\EventAggregator.cs" />
-    <Compile Include="EventAggregator\IEventAggregatorHandler.cs" />
-    <Compile Include="EventAggregator\EventAggregatorHandler.cs" />
-    <Compile Include="Events\IWeakEventHandler.cs" />
-    <Compile Include="Events\WeakCanExecuteChangedHandler.cs" />
-    <Compile Include="Events\WeakEventHandler.cs" />
-    <Compile Include="Events\WeakEventHandlerBase.cs" />
-    <Compile Include="Events\WeakEventList.cs" />
-    <Compile Include="Events\WeakEventListener.cs" />
-    <Compile Include="Events\WeakEventSource.cs" />
-    <Compile Include="Events\WeakNotifyCollectionChangedHandler.cs" />
-    <Compile Include="Events\WeakNotifyPropertyChangedHandler.cs" />
-    <Compile Include="PropertySupport.cs" />
-    <Compile Include="Tasks\TaskEventArgs.cs" />
-    <Compile Include="Tasks\TaskHelper.cs" />
-    <Compile Include="Validation\DelegateValidationRule.cs" />
-    <Compile Include="Validation\NullValidator.cs" />
-    <Compile Include="Validation\PropertyValidationRule.cs" />
-    <Compile Include="Validation\RegexValidationRule.cs" />
-    <Compile Include="ViewModel\BindableCollection.cs" />
-    <Compile Include="ViewModel\BindableObject.cs" />
-    <Compile Include="ViewModel\ActivationEventArgs.cs" />
-    <Compile Include="ViewModel\ActivationProcessedEventArgs.cs" />
-    <Compile Include="ViewModel\CloseResult.cs" />
-    <Compile Include="ViewModel\Conductor.cs" />
-    <Compile Include="ViewModel\ConductorBase.cs" />
-    <Compile Include="ViewModel\ConductorBaseWithActiveItem.cs" />
-    <Compile Include="ViewModel\ConductorWithCollectionAllActive.cs" />
-    <Compile Include="ViewModel\ConductorWithCollectionOneActive.cs" />
-    <Compile Include="ViewModel\DeactivationEventArgs.cs" />
-    <Compile Include="ViewModel\DefaultCloseStrategy.cs" />
-    <Compile Include="ViewModel\DisposableAction.cs" />
-    <Compile Include="ViewModel\IActivate.cs" />
-    <Compile Include="ViewModel\IChild.cs" />
-    <Compile Include="ViewModel\IClose.cs" />
-    <Compile Include="ViewModel\ICloseStrategy.cs" />
-    <Compile Include="ViewModel\IConductor.cs" />
-    <Compile Include="ViewModel\IDeactivate.cs" />
-    <Compile Include="ViewModel\ICloseGuard.cs" />
-    <Compile Include="ViewModel\IHaveActiveItem.cs" />
-    <Compile Include="ViewModel\IHaveDisplayName.cs" />
-    <Compile Include="ViewModel\IBindableObject.cs" />
-    <Compile Include="ViewModel\IBindableCollection.cs" />
-    <Compile Include="ViewModel\IParent.cs" />
-    <Compile Include="ViewModel\IScreen.cs" />
-    <Compile Include="ViewModel\IViewAware.cs" />
-    <Compile Include="ViewModel\Screen.cs" />
-    <Compile Include="ViewModel\ScreenHelper.cs" />
-    <Compile Include="ViewModel\ViewAttachedEventArgs.cs" />
-    <Compile Include="ViewModel\ViewAware.cs" />
     <Compile Include="Coroutines\ContinueCoTaskDecorator.cs" />
     <Compile Include="Coroutines\Coroutine.cs" />
     <Compile Include="Coroutines\CoroutineExecutionContext.cs" />
@@ -121,33 +71,76 @@
     <Compile Include="Coroutines\SequentialCoTask.cs" />
     <Compile Include="Coroutines\SimpleCoTask.cs" />
     <Compile Include="Coroutines\TaskDecoratorCoTask.cs" />
+    <Compile Include="EventAggregator\EventAggregator.cs" />
+    <Compile Include="EventAggregator\EventAggregatorHandler.cs" />
     <Compile Include="EventAggregator\IEventAggregator.cs" />
+    <Compile Include="EventAggregator\IEventAggregatorHandler.cs" />
     <Compile Include="EventAggregator\ThreadOption.cs" />
+    <Compile Include="Events\IWeakEventHandler.cs" />
+    <Compile Include="Events\WeakCanExecuteChangedHandler.cs" />
+    <Compile Include="Events\WeakEventHandler.cs" />
+    <Compile Include="Events\WeakEventHandlerBase.cs" />
+    <Compile Include="Events\WeakEventList.cs" />
+    <Compile Include="Events\WeakEventListener.cs" />
+    <Compile Include="Events\WeakEventSource.cs" />
+    <Compile Include="Events\WeakNotifyCollectionChangedHandler.cs" />
+    <Compile Include="Events\WeakNotifyPropertyChangedHandler.cs" />
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="IoC\IServiceLocator.cs" />
     <Compile Include="IoC\NullServiceLocator.cs" />
     <Compile Include="IoC\SimpleContainer.cs" />
-    <Compile Include="UI\IViewAdapter.cs" />
     <Compile Include="Logging\DebugLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertySupport.cs" />
+    <Compile Include="Tasks\TaskEventArgs.cs" />
+    <Compile Include="Tasks\TaskHelper.cs" />
+    <Compile Include="UI\IViewAdapter.cs" />
     <Compile Include="UI\NullViewAdapter.cs" />
     <Compile Include="UI\UIContext.cs" />
+    <Compile Include="Validation\DelegateValidationRule.cs" />
     <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\NullValidator.cs" />
+    <Compile Include="Validation\PropertyValidationRule.cs" />
     <Compile Include="Validation\RangeValidationRule.cs" />
+    <Compile Include="Validation\RegexValidationRule.cs" />
     <Compile Include="Validation\RuleValidator.cs" />
     <Compile Include="Validation\StringLengthValidationRule.cs" />
     <Compile Include="Validation\ValidationAdapter.cs" />
     <Compile Include="Validation\ValidationRule.cs" />
+    <Compile Include="ViewModel\ActivationEventArgs.cs" />
+    <Compile Include="ViewModel\ActivationProcessedEventArgs.cs" />
+    <Compile Include="ViewModel\BindableCollection.cs" />
+    <Compile Include="ViewModel\BindableObject.cs" />
+    <Compile Include="ViewModel\CloseResult.cs" />
+    <Compile Include="ViewModel\Conductor.cs" />
+    <Compile Include="ViewModel\ConductorBase.cs" />
+    <Compile Include="ViewModel\ConductorBaseWithActiveItem.cs" />
+    <Compile Include="ViewModel\ConductorWithCollectionAllActive.cs" />
+    <Compile Include="ViewModel\ConductorWithCollectionOneActive.cs" />
+    <Compile Include="ViewModel\DeactivationEventArgs.cs" />
+    <Compile Include="ViewModel\DefaultCloseStrategy.cs" />
+    <Compile Include="ViewModel\DisposableAction.cs" />
+    <Compile Include="ViewModel\IActivate.cs" />
+    <Compile Include="ViewModel\IBindableCollection.cs" />
+    <Compile Include="ViewModel\IBindableObject.cs" />
+    <Compile Include="ViewModel\IChild.cs" />
+    <Compile Include="ViewModel\IClose.cs" />
+    <Compile Include="ViewModel\ICloseGuard.cs" />
+    <Compile Include="ViewModel\ICloseStrategy.cs" />
+    <Compile Include="ViewModel\IConductor.cs" />
+    <Compile Include="ViewModel\IDeactivate.cs" />
+    <Compile Include="ViewModel\IHaveActiveItem.cs" />
+    <Compile Include="ViewModel\IHaveDisplayName.cs" />
+    <Compile Include="ViewModel\IParent.cs" />
+    <Compile Include="ViewModel\IScreen.cs" />
+    <Compile Include="ViewModel\IViewAware.cs" />
+    <Compile Include="ViewModel\Screen.cs" />
+    <Compile Include="ViewModel\ScreenHelper.cs" />
+    <Compile Include="ViewModel\ViewAttachedEventArgs.cs" />
+    <Compile Include="ViewModel\ViewAware.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
