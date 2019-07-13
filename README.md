@@ -1,10 +1,10 @@
 ![Logo](logo.png)
 # Caliburn.Light
 
-Caliburn.Light is a fork of [Caliburn.Micro](http://caliburnmicro.com/) that
+Caliburn.Light is a fork of [Caliburn.Micro](https://caliburnmicro.com/) that
 - is modular/magic-free (does not include conventions)
 - does not switch to UI thread automatically for everything
-- integrates some ideas of [Prism](http://msdn.microsoft.com/en-us/library/ff648465.aspx) and [MVVMLight](http://www.mvvmlight.net/) 
+- integrates some ideas of [Prism](http://prismlibrary.github.io/) and [MVVMLight](http://www.mvvmlight.net/) 
 - uses weak events (see [Weakly](https://github.com/tibel/Weakly))
 - supports `ICommand` out-of-the-box
 
