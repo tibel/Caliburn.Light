@@ -14,17 +14,20 @@
     <releaseNotes>
 - migrated from PCL to .NET Standard 2.0
 - changed minimum supported frameworks to NET 4.6.1 and UAP 10.0.16299
+- added .NET Core 3.0 WPF support
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
   </metadata>
 
   <files>
-    <file src="..\src\Caliburn.Core\bin\Release\Caliburn.*" target="lib\netstandard2.0" />
+    <file src="..\src\Caliburn.Light.Core\bin\Release\netstandard2.0\Caliburn.*" exclude="**\*.deps.json" target="lib\netstandard2.0" />
 
-    <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net461" />
+    <file src="..\src\Caliburn.Light.WPF\bin\Release\net461\Caliburn.*" exclude="**\*.deps.json" target="lib\net461" />
 
-    <file src="..\src\Caliburn.Xaml.UAP\bin\Release\Caliburn.*" target="lib\uap10.0.16299" />
+    <file src="..\src\Caliburn.Light.WPF\bin\Release\netcoreapp3.0\Caliburn.*" exclude="**\*.deps.json" target="lib\netcoreapp3.0" />
+
+    <file src="..\src\Caliburn.Light.UAP\bin\Release\Caliburn.*" exclude="**\*.deps.json" target="lib\uap10.0.16299" />
 
     <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
   </files>

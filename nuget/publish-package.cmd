@@ -1,4 +1,3 @@
-@ECHO OFF
-for /f "delims=" %%F in ('dir *.nupkg /b /o-n') do set PACKAGE=%%F
-..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe push %PACKAGE%
+@ECHO OFF & SETLOCAL
+for /f "delims=" %%F in ('dir *.nupkg /b /o-n') do nuget.cmd push %%F
 pause

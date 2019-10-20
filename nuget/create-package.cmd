@@ -1,4 +1,4 @@
-@ECHO OFF
+@ECHO OFF & SETLOCAL
 del *.nupkg
-..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe pack Caliburn.Light.nuspec -Symbols
+nuget.cmd pack Caliburn.Light.nuspec -Symbols
 pause
