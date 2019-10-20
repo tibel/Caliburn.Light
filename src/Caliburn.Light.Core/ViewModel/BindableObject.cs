@@ -41,7 +41,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Determines wether notifications are suspended.
+        /// Determines whether notifications are suspended.
         /// </summary>
         /// <returns></returns>
         protected bool AreNotificationsSuspended()
@@ -52,7 +52,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Raises the PropertyChanged event if needed.
         /// </summary>
-        /// <param name="propertyName">The name of the property thatchanged.</param>
+        /// <param name="propertyName">The name of the property that changed.</param>
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (AreNotificationsSuspended()) return;

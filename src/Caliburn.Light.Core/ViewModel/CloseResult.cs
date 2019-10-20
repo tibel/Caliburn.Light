@@ -21,12 +21,12 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Indicates wether close can occur.
+        /// Indicates whether close can occur.
         /// </summary>
         public bool CanClose { get; }
 
         /// <summary>
-        /// Iindicates which children should close if the parent cannot.
+        /// Indicates which children should close if the parent cannot.
         /// </summary>
         public IEnumerable<T> Closeables { get; }
     }

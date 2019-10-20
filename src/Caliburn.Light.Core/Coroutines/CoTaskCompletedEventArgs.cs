@@ -3,7 +3,7 @@
 namespace Caliburn.Light
 {
     /// <summary>
-    /// The event args for the <see cref="ICoTask.Completed"/> event.
+    /// The event arguments for the <see cref="ICoTask.Completed"/> event.
     /// </summary>
     public sealed class CoTaskCompletedEventArgs : EventArgs
     {
@@ -25,9 +25,9 @@ namespace Caliburn.Light
         public Exception Error { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="ICoTask"/> was cancelled.
+        /// Gets a value indicating whether the <see cref="ICoTask"/> was canceled.
         /// </summary>
-        /// <value><c>true</c> if cancelled; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if canceled; otherwise, <c>false</c>.</value>
         public bool WasCancelled { get; private set; }
     }
 }

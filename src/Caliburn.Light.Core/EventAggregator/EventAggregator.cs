@@ -33,7 +33,7 @@ namespace Caliburn.Light
             Func<TTarget, TMessage, Task> wrapper = (t, m) =>
             {
                 handler(t, m);
-                return TaskHelper.CompletedTask;
+                return Task.CompletedTask;
             };
 
             return SubscribeCore(target, wrapper, threadOption);

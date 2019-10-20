@@ -9,6 +9,7 @@ namespace Caliburn.Light
     public class Screen : ViewAware, IScreen
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(Screen));
+        private static readonly Task<bool> TrueTask = Task.FromResult(true);
 
         private bool _isActive;
         private bool _isInitialized;
@@ -116,7 +117,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Called when deactivating.
         /// </summary>
-        /// <param name = "close">Inidicates whether this instance will be closed.</param>
+        /// <param name = "close">Indicates whether this instance will be closed.</param>
         protected virtual void OnDeactivate(bool close)
         {
         }
@@ -127,7 +128,7 @@ namespace Caliburn.Light
         /// <returns>A task containing the result of the close check.</returns>
         public virtual Task<bool> CanCloseAsync()
         {
-            return TaskHelper.TrueTask;
+            return TrueTask;
         }
 
         /// <summary>

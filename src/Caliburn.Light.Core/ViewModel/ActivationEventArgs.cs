@@ -5,7 +5,7 @@ namespace Caliburn.Light
     /// <summary>
     /// EventArgs sent during activation.
     /// </summary>
-    public class ActivationEventArgs : EventArgs
+    public sealed class ActivationEventArgs : EventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivationEventArgs"/> class.
@@ -19,6 +19,6 @@ namespace Caliburn.Light
         /// <summary>
         /// Indicates whether the sender was initialized in addition to being activated.
         /// </summary>
-        public bool WasInitialized { get; private set; }
+        public bool WasInitialized { get; }
     }
 }

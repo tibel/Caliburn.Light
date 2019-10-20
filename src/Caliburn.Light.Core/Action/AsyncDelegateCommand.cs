@@ -6,7 +6,7 @@ using System.Windows.Input;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// An async delegate command that can be data-bound.
+    /// An asynchronous delegate command that can be data-bound.
     /// </summary>
     public sealed class AsyncDelegateCommand : AsyncCommand
     {
@@ -83,7 +83,7 @@ namespace Caliburn.Light
     }
 
     /// <summary>
-    /// An async delegate command that can be data-bound.
+    /// An asynchronous delegate command that can be data-bound.
     /// </summary>
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class AsyncDelegateCommand<TParameter> : AsyncCommand

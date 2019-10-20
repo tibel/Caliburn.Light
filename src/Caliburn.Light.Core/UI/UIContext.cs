@@ -32,7 +32,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="viewAdapter">The adapter to interact with view elements.</param>
         /// <param name="managedThreadId">The Id of the UI thread. Use null to allow any thread.</param>
-        /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> assoziated with the UI context.</param>
+        /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> associated with the UI context.</param>
         /// <param name="taskScheduler">The <see cref="System.Threading.Tasks.TaskScheduler"/> associated with the UI context.</param>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static void Initialize(IViewAdapter viewAdapter, int? managedThreadId, SynchronizationContext synchronizationContext, TaskScheduler taskScheduler)

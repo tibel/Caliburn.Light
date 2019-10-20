@@ -3,9 +3,9 @@
 namespace Caliburn.Light
 {
     /// <summary>
-    /// The event args for the <see cref="IViewAware.ViewAttached"/> event.
+    /// The event arguments for the <see cref="IViewAware.ViewAttached"/> event.
     /// </summary>
-    public class ViewAttachedEventArgs : EventArgs
+    public sealed class ViewAttachedEventArgs : EventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewAttachedEventArgs"/> class.
@@ -21,11 +21,11 @@ namespace Caliburn.Light
         /// <summary>
         /// The view.
         /// </summary>
-        public object View { get; private set; }
+        public object View { get; }
 
         /// <summary>
         /// The context.
         /// </summary>
-        public object Context { get; private set; }
+        public object Context { get; }
     }
 }

@@ -26,8 +26,7 @@ namespace Caliburn.Light
         /// Executes the strategy.
         /// </summary>
         /// <param name="toClose">Items that are requesting close.</param>
-        /// <returns>A task containing the aggregated close results.
-        /// The bool indicates whether close can occur. The enumerable indicates which children should close if the parent cannot.</returns>
+        /// <returns>A task containing the aggregated close results.</returns>
         public async Task<CloseResult<T>> ExecuteAsync(IEnumerable<T> toClose)
         {
             var closables = new List<T>();

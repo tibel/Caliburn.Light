@@ -69,7 +69,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Called when deactivating.
         /// </summary>
-        /// <param name="close">Inidicates whether this instance will be closed.</param>
+        /// <param name="close">Indicates whether this instance will be closed.</param>
         protected override void OnDeactivate(bool close)
         {
             ScreenHelper.TryDeactivate(ActiveItem, close);

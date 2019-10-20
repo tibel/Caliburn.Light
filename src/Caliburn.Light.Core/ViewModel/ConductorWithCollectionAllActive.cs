@@ -13,7 +13,7 @@ namespace Caliburn.Light
         public partial class Collection
         {
             /// <summary>
-            /// An implementation of <see cref="IConductor"/> that holds on to many items wich are all activated.
+            /// An implementation of <see cref="IConductor"/> that holds on to many items which are all activated.
             /// </summary>
             public class AllActive : ConductorBase<T>
             {
@@ -64,7 +64,7 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Called when deactivating.
                 /// </summary>
-                /// <param name="close">Inidicates whether this instance will be closed.</param>
+                /// <param name="close">Indicates whether this instance will be closed.</param>
                 protected override void OnDeactivate(bool close)
                 {
                     foreach (var x in _items.OfType<IDeactivate>()) { x.Deactivate(close); }

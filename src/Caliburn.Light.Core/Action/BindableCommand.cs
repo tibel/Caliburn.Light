@@ -40,7 +40,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Raises the PropertyChanged event.
         /// </summary>
-        /// <param name="propertyName">The name of the property thatchanged.</param>
+        /// <param name="propertyName">The name of the property that changed.</param>
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A couroutine that encapsulates an <see cref="System.Threading.Tasks.Task"/>.
+    /// A coroutine that encapsulates an <see cref="System.Threading.Tasks.Task"/>.
     /// </summary>
     internal class TaskDecoratorCoTask : CoTask
     {
@@ -50,7 +50,7 @@ namespace Caliburn.Light
     }
 
     /// <summary>
-    /// A couroutine that encapsulates an <see cref="System.Threading.Tasks.Task&lt;TResult&gt;"/>.
+    /// A coroutine that encapsulates an <see cref="System.Threading.Tasks.Task&lt;TResult&gt;"/>.
     /// </summary>
     /// <typeparam name="TResult">The type of the coTask.</typeparam>
     internal sealed class TaskDecoratorCoTask<TResult> : TaskDecoratorCoTask, ICoTask<TResult>

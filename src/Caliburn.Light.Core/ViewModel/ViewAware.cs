@@ -16,7 +16,7 @@ namespace Caliburn.Light
         public static readonly string DefaultContext = "__default__";
 
         /// <summary>
-        /// The view chache for this instance.
+        /// The view cache for this instance.
         /// </summary>
         protected IDictionary<string, WeakReference> Views
         {

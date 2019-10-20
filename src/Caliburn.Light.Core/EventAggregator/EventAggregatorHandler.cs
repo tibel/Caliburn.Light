@@ -40,7 +40,7 @@ namespace Caliburn.Light
         {
             TTarget target;
             if (!_weakTarget.TryGetTarget(out target))
-                return TaskHelper.CompletedTask;
+                return Task.CompletedTask;
 
             return _handler(target, (TMessage)message);
         }

@@ -3,7 +3,7 @@
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A decorator which executes a coroutine when the wrapped <see cref="ICoTask"/> was cancelled.
+    /// A decorator which executes a coroutine when the wrapped <see cref="ICoTask"/> was canceled.
     /// </summary>
     internal sealed class ContinueCoTaskDecorator : CoTaskDecorator
     {

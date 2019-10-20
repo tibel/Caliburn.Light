@@ -94,14 +94,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action.</param>
-        /// <returns>The coroutine that encapusulates the action.</returns>
+        /// <returns>The coroutine that encapsulates the action.</returns>
         public static ICoTask<TResult> AsCoTask<TResult>(this Func<TResult> action)
         {
             return new DelegateCoTask<TResult>(action);
         }
 
         /// <summary>
-        /// Encapsulates a <see cref="Task"/> inside a couroutine.
+        /// Encapsulates a <see cref="Task"/> inside a coroutine.
         /// </summary>
         /// <param name="task">The task.</param>
         /// <returns>The coroutine that encapsulates the task.</returns>
@@ -111,7 +111,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Encapsulates a <see cref="Task&lt;TResult&gt;"/> inside a couroutine.
+        /// Encapsulates a <see cref="Task&lt;TResult&gt;"/> inside a coroutine.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="task">The task.</param>
@@ -126,7 +126,7 @@ namespace Caliburn.Light
         #region Decorators
 
         /// <summary>
-        /// Adds behavior to the CoTask which is executed when the <paramref name ="coTask"/> was cancelled.
+        /// Adds behavior to the CoTask which is executed when the <paramref name ="coTask"/> was canceled.
         /// </summary>
         /// <param name="coTask">The CoTask to decorate.</param>
         /// <param name="coroutine">The coroutine to execute when <paramref name="coTask"/> was canceled.</param>

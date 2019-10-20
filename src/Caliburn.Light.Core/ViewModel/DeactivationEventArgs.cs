@@ -5,7 +5,7 @@ namespace Caliburn.Light
     /// <summary>
     /// EventArgs sent during deactivation.
     /// </summary>
-    public class DeactivationEventArgs : EventArgs
+    public sealed class DeactivationEventArgs : EventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeactivationEventArgs"/> class.
@@ -19,6 +19,6 @@ namespace Caliburn.Light
         /// <summary>
         /// Indicates whether the sender was closed in addition to being deactivated.
         /// </summary>
-        public bool WasClosed { get; private set; }
+        public bool WasClosed { get; }
     }
 }

@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// An async command that can be data-bound.
+    /// An asynchronous command that can be data-bound.
     /// </summary>
     public abstract class AsyncCommand : BindableCommand
     {

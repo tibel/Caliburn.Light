@@ -381,7 +381,7 @@ namespace Caliburn.Light
         /// Creates an instance of the type with the specified constructor arguments.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="args">The constructor args.</param>
+        /// <param name="args">The constructor arguments.</param>
         /// <returns>The created instance.</returns>
         protected virtual object ActivateInstance(Type type, object[] args)
         {

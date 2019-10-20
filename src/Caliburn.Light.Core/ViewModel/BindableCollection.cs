@@ -45,7 +45,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Determines wether notifications are suspended.
+        /// Determines whether notifications are suspended.
         /// </summary>
         /// <returns></returns>
         protected bool AreNotificationsSuspended()
