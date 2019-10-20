@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caliburn.Core", "src\Caliburn.Core\Caliburn.Core.csproj", "{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caliburn.Core", "src\Caliburn.Core\Caliburn.Core.csproj", "{EEB221AC-3C5E-4D24-BFF0-F75CA41C3C1B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{37BFCCA7-0B83-4B34-B4EA-896F6757F785}"
 EndProject
@@ -36,9 +36,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WpfDesignTime", "sampl
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{1123c3c4-3504-468b-ba87-322effaaa76e}*SharedItemsImports = 13
 		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{83cb8852-880d-4334-845a-6cfcbce86071}*SharedItemsImports = 4
+		src\Caliburn.Xaml\Caliburn.Xaml.projitems*{f289ff4d-21e1-4e33-8e92-4677a17543d4}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,5 +195,8 @@ Global
 		{79C7D215-C5CB-45F6-B100-770D26A8CCC5} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{3C72AAF5-9E31-409E-BCE7-C8EB45240B50} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
 		{474AC080-D5D8-4548-AAE6-D649EC0EA49E} = {37BFCCA7-0B83-4B34-B4EA-896F6757F785}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5EEC7833-CC1D-46B1-B8C9-D951B8305125}
 	EndGlobalSection
 EndGlobal
