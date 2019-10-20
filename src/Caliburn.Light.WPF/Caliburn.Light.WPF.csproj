@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Caliburn.Core\Caliburn.Core.csproj" />
+    <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Caliburn.Xaml\Caliburn.Xaml.projitems" Label="Shared" />
+  <Import Project="..\Caliburn.Light.Shared\Caliburn.Light.Shared.projitems" Label="Shared" />
 </Project>

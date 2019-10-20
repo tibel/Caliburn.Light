@@ -144,13 +144,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Caliburn.Core\Caliburn.Core.csproj">
+    <ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj">
       <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
-      <Name>Caliburn.Core</Name>
+      <Name>Caliburn.Light.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Caliburn.Xaml.UAP\Caliburn.Xaml.UAP.csproj">
+    <ProjectReference Include="..\..\src\Caliburn.Light.UAP\Caliburn.Light.UAP.csproj">
       <Project>{83cb8852-880d-4334-845a-6cfcbce86071}</Project>
-      <Name>Caliburn.Xaml.UAP</Name>
+      <Name>Caliburn.Light.UAP</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

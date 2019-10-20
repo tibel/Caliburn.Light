@@ -77,7 +77,7 @@
     <EmbeddedResource Include="Properties\Caliburn.Xaml.UAP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Caliburn.Core\Caliburn.Core.csproj">
+    <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj">
       <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
       <Name>Caliburn.Core</Name>
     </ProjectReference>
@@ -87,7 +87,7 @@
       <Version>6.2.9</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="..\Caliburn.Xaml\Caliburn.Xaml.projitems" Label="Shared" />
+  <Import Project="..\Caliburn.Light.Shared\Caliburn.Light.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
