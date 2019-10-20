@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="3.3">
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
     <version>3.3.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
-    <license type="file">LICENSE</license>
-    <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
     <icon>logo.png</icon>
+    <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
+    <repository type="git" url="https://github.com/tibel/Caliburn.Light.git" />
     <releaseNotes>
 - migrated from PCL to .NET Standard 2.0
 - changed minimum supported frameworks to NET 4.6.1 and UAP 10.0.16299
@@ -38,8 +39,6 @@
     <file src="..\src\Caliburn.Light.WPF\bin\Release\netcoreapp3.0\Caliburn.*" exclude="**\*.deps.json" target="lib\netcoreapp3.0" />
 
     <file src="..\src\Caliburn.Light.UAP\bin\Release\Caliburn.*" exclude="**\*.deps.json" target="lib\uap10.0.16299" />
-
-    <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
 
     <file src="..\LICENSE" target="LICENSE" />
     <file src="..\logo.png" target="" />
