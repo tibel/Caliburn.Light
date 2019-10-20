@@ -7,9 +7,9 @@
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
-    <licenseUrl>https://github.com/tibel/Caliburn.Light/raw/master/LICENSE</licenseUrl>
+    <license type="file">LICENSE</license>
     <projectUrl>https://github.com/tibel/Caliburn.Light</projectUrl>
-    <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
+    <icon>logo.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
 - migrated from PCL to .NET Standard 2.0
@@ -18,6 +18,16 @@
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
+    <dependencies>
+      <group targetFramework="netstandard2.0">
+      </group>
+      <group targetFramework="net461">
+      </group>
+      <group targetFramework="netcoreapp3.0">
+      </group>
+      <group targetFramework="uap10.0.16299">
+      </group>
+    </dependencies>
   </metadata>
 
   <files>
@@ -30,5 +40,8 @@
     <file src="..\src\Caliburn.Light.UAP\bin\Release\Caliburn.*" exclude="**\*.deps.json" target="lib\uap10.0.16299" />
 
     <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
+
+    <file src="..\LICENSE" target="LICENSE" />
+    <file src="..\logo.png" target="" />
   </files>
 </package>
