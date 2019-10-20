@@ -3,7 +3,7 @@
   <metadata>
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
@@ -12,27 +12,19 @@
     <iconUrl>https://github.com/tibel/Caliburn.Light/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes>
-- added new FrameAdapter that attaches the framwork to a Frame instance
-- added IPreserveState and INavigationAware interfaces for ViewModels
-- added SuspensionManager
-- streamlined SimpleContainer API
-- changed SimpleContainer.GetInstance() to return null instead of throwing exception if not found
-- changed DelegateCommandBuilder to return concrete class instead of interface
-- changed NavigationService to be used by ViewModels only (framework uses FrameAdapter)
-- removed Weakly
-- removed NavigationHelper
-- removed CallMethodAction and InvokeCommandAction
+- migrated from PCL to .NET Standard 2.0
+- changed minimum supported frameworks to NET 4.6.1 and UAP 10.0.16299
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
   </metadata>
 
   <files>
-    <file src="..\src\Caliburn.Core\bin\Release\Caliburn.*" target="lib\portable-net451+win81+wpa81" />
+    <file src="..\src\Caliburn.Core\bin\Release\Caliburn.*" target="lib\netstandard2.0" />
 
-    <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net451" />
+    <file src="..\src\Caliburn.Xaml.NET45\bin\Release\Caliburn.*" target="lib\net461" />
 
-    <file src="..\src\Caliburn.Xaml.UAP\bin\Release\Caliburn.*" target="lib\uap10.0" />
+    <file src="..\src\Caliburn.Xaml.UAP\bin\Release\Caliburn.*" target="lib\uap10.0.16299" />
 
     <file src="..\src\**\*.cs" exclude="**\obj\**\*.*" target="src" />
   </files>
