@@ -3,7 +3,7 @@
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Denotes a class which wants to preserve state accross session lifetime.
+    /// Denotes a class which wants to preserve state across session lifetime.
     /// </summary>
     public interface IPreserveState
     {

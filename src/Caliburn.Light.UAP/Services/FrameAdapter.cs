@@ -53,9 +53,9 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Detachtes this instrance from the <paramref name="frame"/>.
+        /// Detaches this instance from the <paramref name="frame"/>.
         /// </summary>
-        /// <param name="frame">The frame to detatch from.</param>
+        /// <param name="frame">The frame to detach from.</param>
         public void DetatchFrom(Frame frame)
         {
             if (frame == null)
@@ -134,7 +134,7 @@ namespace Caliburn.Light
             {
                 var task = guard.CanCloseAsync();
                 if (!task.IsCompleted)
-                    throw new NotSupportedException("Async task is not supported.");
+                    throw new NotSupportedException("Asynchronous task is not supported.");
 
                 if (!task.Result)
                 {

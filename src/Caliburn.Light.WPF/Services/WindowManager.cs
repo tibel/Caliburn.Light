@@ -130,7 +130,7 @@ namespace Caliburn.Light
         /// Creates a window.
         /// </summary>
         /// <param name="rootModel">The view model.</param>
-        /// <param name="isDialog">Whethor or not the window is being shown as a dialog.</param>
+        /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <param name="context">The view context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The window.</returns>
@@ -154,11 +154,11 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Makes sure the view is a window is is wrapped by one.
+        /// Makes sure the view is a window or is wrapped by one.
         /// </summary>
         /// <param name="model">The view model.</param>
         /// <param name="view">The view.</param>
-        /// <param name="isDialog">Whethor or not the window is being shown as a dialog.</param>
+        /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <returns>The window.</returns>
         protected virtual Window EnsureWindow(object model, object view, bool isDialog)
         {

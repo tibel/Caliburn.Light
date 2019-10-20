@@ -6,7 +6,7 @@ using System.Windows;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Condcuts a window with its view-model.
+    /// Conducts a window with its view-model.
     /// </summary>
     public sealed class WindowConductor
     {

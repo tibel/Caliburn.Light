@@ -6,7 +6,7 @@
     public interface ISharingService
     {
         /// <summary>
-        /// Programmatically initiates the user interface for sharing content with another app.
+        /// Programmatically initiates the user interface for sharing content with another application.
         /// </summary>
         void ShowShareUI();
     }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Caliburn.Light
 {
     [DebuggerDisplay("ModelType = {ModelType.Name} Context = {Context}")]
-    internal struct ViewTypeLookupKey
+    internal readonly struct ViewTypeLookupKey
     {
         public ViewTypeLookupKey(Type modelType, string context)
         {

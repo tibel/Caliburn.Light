@@ -68,7 +68,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior to execute when the application starts.
         /// </summary>
-        /// <param name="e">The event args.</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnStartup(StartupEventArgs e)
         {
         }
@@ -76,7 +76,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior to execute before the application shuts down.
         /// </summary>
-        /// <param name="e">The event args.</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnExit(ExitEventArgs e)
         {
         }
@@ -84,7 +84,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior for unhandled exceptions.
         /// </summary>
-        /// <param name="e">The event args.</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
         }

@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Encapsulates the app and its available services.
+    /// Encapsulates the application and its available services.
     /// </summary>
     public abstract class CaliburnApplication : Application
     {
@@ -43,8 +43,8 @@ namespace Caliburn.Light
             base.OnWindowCreated(args);
 
             // Because dispatchers are tied to windows Execute will fail in 
-            // scenarios when the app has multiple windows open (though contract 
-            // activation, this keeps Excute up to date with the currently activated window
+            // scenarios when the application has multiple windows open (though contract 
+            // activation, this keeps Execute up to date with the currently activated window
             args.Window.Activated += (s, e) => UIContext.Initialize(new ViewAdapter());
         }
 
@@ -68,7 +68,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior when the application transitions from Suspended state to Running state.
         /// </summary>
-        /// <param name="e">The event args.</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnResuming(object e)
         {
         }
@@ -76,7 +76,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior when the application transitions to Suspended state from some other state.
         /// </summary>
-        /// <param name="e">The event args.</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnSuspending(SuspendingEventArgs e)
         {
         }
@@ -84,7 +84,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Override this to add custom behavior for unhandled exceptions.
         /// </summary>
-        /// <param name="e">The event args.</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnUnhandledException(UnhandledExceptionEventArgs e)
         {
         }

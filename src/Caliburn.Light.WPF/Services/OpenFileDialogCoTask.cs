@@ -19,7 +19,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Initializes a new instance of the <see cref="OpenFileDialogCoTask{TResult}"/> class.
         /// </summary>
-        /// <param name="multiselect">Determines wether it is allows to select multiple files.</param>
+        /// <param name="multiselect">Determines whether it is allows to select multiple files.</param>
         /// <param name="title">The title of the dialog.</param>
         protected OpenFileDialogCoTask(bool multiselect, string title = null)
         {

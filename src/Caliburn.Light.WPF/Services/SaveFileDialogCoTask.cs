@@ -106,7 +106,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Ask the user for permission if the file will be overriden.
+        /// Ask the user for permission if the file will be overridden.
         /// </summary>
         /// <returns></returns>
         public SaveFileDialogCoTask PromptForOverwrite()
