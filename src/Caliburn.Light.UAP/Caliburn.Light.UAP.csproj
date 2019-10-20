@@ -74,7 +74,7 @@
     <Compile Include="Services\SharingService.cs" />
     <Compile Include="Services\SuspensionManager.cs" />
     <Compile Include="Services\SuspensionManagerException.cs" />
-    <EmbeddedResource Include="Properties\Caliburn.Xaml.UAP.rd.xml" />
+    <EmbeddedResource Include="Properties\Caliburn.Xaml.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj">
