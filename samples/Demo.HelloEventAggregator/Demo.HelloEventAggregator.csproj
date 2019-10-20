@@ -145,11 +145,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj">
-      <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
+      <Project>{53D2D831-73B0-4879-B07C-ABD8BB41EF08}</Project>
       <Name>Caliburn.Light.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Caliburn.Light.UAP\Caliburn.Light.UAP.csproj">
-      <Project>{83cb8852-880d-4334-845a-6cfcbce86071}</Project>
+      <Project>{83CB8852-880D-4334-845A-6CFCBCE86071}</Project>
       <Name>Caliburn.Light.UAP</Name>
     </ProjectReference>
   </ItemGroup>

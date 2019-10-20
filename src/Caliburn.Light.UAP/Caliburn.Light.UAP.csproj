@@ -78,8 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj">
-      <Project>{eeb221ac-3c5e-4d24-bff0-f75ca41c3c1b}</Project>
-      <Name>Caliburn.Core</Name>
+      <Project>{53D2D831-73B0-4879-B07C-ABD8BB41EF08}</Project>
+      <Name>Caliburn.Light.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
