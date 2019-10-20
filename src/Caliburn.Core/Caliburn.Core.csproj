@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Caliburn.Light</RootNamespace>
+    <AssemblyName>Caliburn.Core</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Caliburn.Light.snk</AssemblyOriginatorKeyFile>
-    <RootNamespace>Caliburn.Light</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
