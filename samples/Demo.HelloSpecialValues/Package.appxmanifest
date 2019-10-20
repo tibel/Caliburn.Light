@@ -8,7 +8,7 @@
 
   <Identity
     Name="d6d8e7b6-8fb2-4467-b344-0e82fc3d335c"
-    Publisher="CN=thoma"
+    Publisher="CN=tibel"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="d6d8e7b6-8fb2-4467-b344-0e82fc3d335c" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
