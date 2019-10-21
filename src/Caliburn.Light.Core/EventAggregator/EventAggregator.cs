@@ -118,7 +118,6 @@ namespace Caliburn.Light
                     UIContext.BeginInvoke(() => PublishCore(message, uiThreadHandlers));
             }
 
-
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundThreadHandlers.Count > 0)
                 ThreadPool.Post(state => PublishCore(message, backgroundThreadHandlers), null);

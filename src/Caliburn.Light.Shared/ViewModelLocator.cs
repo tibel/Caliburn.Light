@@ -18,17 +18,23 @@ namespace Caliburn.Light
         private static readonly ILogger Log = LogManager.GetLogger(typeof(ViewModelLocator));
 
         private readonly IViewModelTypeResolver _typeResolver;
+        private readonly IServiceLocator _serviceLocator;
 
         /// <summary>
         /// Creates an instance of <see cref="ViewModelLocator"/>.
         /// </summary>
         /// <param name="typeResolver">The type resolver.</param>
-        public ViewModelLocator(IViewModelTypeResolver typeResolver)
+        /// <param name="serviceLocator">The service locator.</param>
+        public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceLocator serviceLocator)
         {
             if (typeResolver == null)
                 throw new ArgumentNullException(nameof(typeResolver));
 
+            if (serviceLocator == null)
+                throw new ArgumentNullException(nameof(serviceLocator));
+
             _typeResolver = typeResolver;
+            _serviceLocator = serviceLocator;
         }
 
         /// <summary>
@@ -57,7 +63,7 @@ namespace Caliburn.Light
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
-            view = IoC.GetInstance(viewType) as UIElement;
+            view = _serviceLocator.GetInstance(viewType) as UIElement;
             if (view == null)
             {
                 view = (UIElement)Activator.CreateInstance(viewType);
@@ -77,7 +83,7 @@ namespace Caliburn.Light
 #if !NETFX_CORE
                     var windowCheck = view as Window;
                     if (windowCheck == null ||
-                        (!windowCheck.IsLoaded && !(new WindowInteropHelper(windowCheck).Handle == IntPtr.Zero)))
+                        (!windowCheck.IsLoaded && new WindowInteropHelper(windowCheck).Handle != IntPtr.Zero))
                     {
                         return view;
                     }
@@ -115,7 +121,7 @@ namespace Caliburn.Light
                 return null;
             }
 
-            var model = IoC.GetInstance(modelType);
+            var model = _serviceLocator.GetInstance(modelType);
             if (model == null)
             {
                 Log.Error("Cannot locate {0}.", modelType);

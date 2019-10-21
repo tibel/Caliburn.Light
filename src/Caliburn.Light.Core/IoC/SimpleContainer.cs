@@ -22,6 +22,9 @@ namespace Caliburn.Light
         public SimpleContainer()
         {
             _entries = new List<ContainerEntry>();
+
+            RegisterPerRequest(c => c);
+            RegisterPerRequest<IServiceLocator>(c => c);
         }
 
         private SimpleContainer(IEnumerable<ContainerEntry> entries)
@@ -128,7 +131,7 @@ namespace Caliburn.Light
             if (service == null)
                 throw new ArgumentNullException(nameof(service));
 
-            GetOrCreateEntry(service, key).Add(c => instance);
+            GetOrCreateEntry(service, key).Add(_ => instance);
         }
 
         /// <summary>
@@ -221,7 +224,7 @@ namespace Caliburn.Light
             if (service == null)
                 throw new ArgumentNullException(nameof(service));
 
-            var entry = _entries.FirstOrDefault(x => x.Service == service && x.Key == key);
+            var entry = _entries.Find(x => x.Service == service && x.Key == key);
             if (entry == null) return false;
             return _entries.Remove(entry);
         }
@@ -259,7 +262,7 @@ namespace Caliburn.Light
             if (service == null)
                 throw new ArgumentNullException(nameof(service));
 
-            var entry = _entries.FirstOrDefault(x => x.Service == service && x.Key == key) ?? _entries.FirstOrDefault(x => x.Service == service);
+            var entry = _entries.Find(x => x.Service == service && x.Key == key) ?? _entries.Find(x => x.Service == service);
             if (entry != null)
             {
                 if (entry.Count != 1)
@@ -346,7 +349,7 @@ namespace Caliburn.Light
 
         private ContainerEntry GetOrCreateEntry(Type service, string key)
         {
-            var entry = _entries.FirstOrDefault(x => x.Service == service && x.Key == key);
+            var entry = _entries.Find(x => x.Service == service && x.Key == key);
             if (entry == null)
             {
                 entry = new ContainerEntry { Service = service, Key = key };
