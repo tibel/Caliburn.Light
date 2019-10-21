@@ -19,6 +19,11 @@ namespace Caliburn.Light
         private static TaskScheduler _taskScheduler = TaskScheduler.Default;
 
         /// <summary>
+        /// Gets whether the <see cref="UIContext"/> is initialized.
+        /// </summary>
+        public static bool IsInitialized => !ReferenceEquals(_viewAdapter, NullViewAdapter.Instance);
+
+        /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
         /// <param name="viewAdapter">The adapter to interact with view elements.</param>

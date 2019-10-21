@@ -9,7 +9,12 @@ namespace Caliburn.Light
     /// </summary>
     public static class IoC
     {
-        private static IServiceLocator _serviceLocator;
+        private static IServiceLocator _serviceLocator = NullServiceLocator.Instance;
+
+        /// <summary>
+        /// Gets whether the <see cref="IoC"/> is initialized.
+        /// </summary>
+        public static bool IsInitialized => !ReferenceEquals(_serviceLocator, NullServiceLocator.Instance);
 
         /// <summary>
         /// Initializes with the specified service locator.

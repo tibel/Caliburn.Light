@@ -7,9 +7,14 @@ namespace Caliburn.Light
     /// </summary>
     public static class LogManager
     {
-        private static readonly Func<Type, ILogger> _getNullLogger = type => NullLogger.Instance;
+        private static readonly Func<Type, ILogger> _getNullLogger = _ => NullLogger.Instance;
 
         private static Func<Type, ILogger> _getLogger;
+
+        /// <summary>
+        /// Gets whether the <see cref="LogManager"/> is initialized.
+        /// </summary>
+        public static bool IsInitialized => !ReferenceEquals(_getLogger, _getNullLogger);
 
         /// <summary>
         /// Initializes the logging system.
