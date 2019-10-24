@@ -7,7 +7,7 @@ namespace Demo.WpfDesignTime
     {
         public AppBootstrapper()
         {
-            LogManager.Initialize(type => new DebugLogger(type));
+            LogManager.Initialize(new DebugLoggerFactory());
             Initialize();
         }
 

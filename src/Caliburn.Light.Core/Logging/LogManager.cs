@@ -7,22 +7,20 @@ namespace Caliburn.Light
     /// </summary>
     public static class LogManager
     {
-        private static readonly Func<Type, ILogger> _getNullLogger = _ => NullLogger.Instance;
-
-        private static Func<Type, ILogger> _getLogger;
+        private static ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
 
         /// <summary>
         /// Gets whether the <see cref="LogManager"/> is initialized.
         /// </summary>
-        public static bool IsInitialized => !ReferenceEquals(_getLogger, _getNullLogger);
+        public static bool IsInitialized => !ReferenceEquals(_loggerFactory, NullLoggerFactory.Instance);
 
         /// <summary>
         /// Initializes the logging system.
         /// </summary>
-        /// <param name="getLogger">The function to create a <see cref="ILogger"/> for a type.</param>
-        public static void Initialize(Func<Type, ILogger> getLogger = null)
+        /// <param name="loggerFactory">The logger factory.</param>
+        public static void Initialize(ILoggerFactory loggerFactory = null)
         {
-            _getLogger = getLogger ?? _getNullLogger;
+            _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
         }
 
         /// <summary>
@@ -32,7 +30,7 @@ namespace Caliburn.Light
         /// <returns>A logger for the provided type.</returns>
         public static ILogger GetLogger(Type type)
         {
-            return _getLogger(type);
+            return _loggerFactory.GetLogger(type);
         }
     }
 }
