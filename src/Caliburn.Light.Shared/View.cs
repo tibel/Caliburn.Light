@@ -17,14 +17,16 @@ namespace Caliburn.Light
         /// <summary>
         /// A dependency property for assigning a context to a particular portion of the UI.
         /// </summary>
-        public static readonly DependencyProperty ContextProperty = DependencyProperty.RegisterAttached("Context",
-            typeof (string), typeof (View), new PropertyMetadata(null, OnContextChanged));
+        public static readonly DependencyProperty ContextProperty =
+            DependencyProperty.RegisterAttached("Context",
+                typeof (string), typeof (View), new PropertyMetadata(null, OnContextChanged));
 
         /// <summary>
         /// A dependency property for attaching a model to the UI.
         /// </summary>
-        public static readonly DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model",
-            typeof (object), typeof (View), new PropertyMetadata(null, OnModelChanged));
+        public static readonly DependencyProperty ModelProperty =
+            DependencyProperty.RegisterAttached("Model",
+                typeof (object), typeof (View), new PropertyMetadata(null, OnModelChanged));
 
         /// <summary>
         /// Sets the model.
@@ -69,31 +71,23 @@ namespace Caliburn.Light
         private static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue == e.NewValue) return;
-
-            if (e.NewValue is null)
-            {
-                SetContentProperty(targetLocation, null);
-            }
-            else
-            {
-                var context = GetContext(targetLocation);
-                SetContentCore(targetLocation, e.NewValue, context);
-            }
+            SetContentCore(targetLocation, e.NewValue, GetContext(targetLocation));
         }
 
         private static void OnContextChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue == e.NewValue) return;
-
-            var model = GetModel(targetLocation);
-            if (model is null) return;
-
-            var context = (string) e.NewValue;
-            SetContentCore(targetLocation, model, context);
+            SetContentCore(targetLocation, GetModel(targetLocation), (string)e.NewValue);
         }
 
         private static void SetContentCore(DependencyObject targetLocation, object model, string context)
         {
+            if (model is null)
+            {
+                SetContentProperty(targetLocation, null);
+                return;
+            }
+
             if (ViewHelper.IsInDesignTool)
             {
                 var placeholder = new TextBlock { Text = string.Format("View for {0}", model.GetType()) };
