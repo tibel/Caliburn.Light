@@ -74,22 +74,20 @@ namespace Caliburn.Light
 
         private UIElement TryGetViewFromViewAware(object model, string context)
         {
-            var viewAware = model as IViewAware;
-            if (viewAware != null)
+            if (model is IViewAware viewAware)
             {
-                var view = viewAware.GetView(context) as UIElement;
-                if (view != null)
+                if (viewAware.GetView(context) is UIElement view)
                 {
 #if !NETFX_CORE
-                    var windowCheck = view as Window;
-                    if (windowCheck == null ||
-                        (!windowCheck.IsLoaded && new WindowInteropHelper(windowCheck).Handle != IntPtr.Zero))
-                    {
-                        return view;
-                    }
-#else
-                    return view;
+                    if (view is Window window && (window.IsLoaded || new WindowInteropHelper(window).Handle == IntPtr.Zero))
+                        return null;
 #endif
+
+                    // remove from parent
+                    if (view is FrameworkElement fe && fe.Parent is ContentControl parent)
+                            parent.Content = null;
+
+                    return view;
                 }
             }
 

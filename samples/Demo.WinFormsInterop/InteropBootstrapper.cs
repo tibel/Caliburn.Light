@@ -15,10 +15,12 @@ namespace Demo.WinFormsInterop
         protected override void Configure()
         {
             var viewModel = new MainViewModel();
-            var viewModelBinder = new ViewModelBinder();
 
             var view = new MainView();
-            viewModelBinder.Bind(viewModel, view, null, true);
+
+            view.DataContext = viewModel;
+            if (viewModel is IViewAware viewAware)
+                viewAware.AttachView(view, null);
 
             var activator = viewModel as IActivate;
             if (activator != null)

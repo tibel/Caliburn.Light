@@ -33,7 +33,6 @@ namespace Demo.HelloSpecialValues
             _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
-            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             var typeResolver = new NameBasedViewModelTypeResolver();
             typeResolver.AddAssembly(typeof(App).GetTypeInfo().Assembly);

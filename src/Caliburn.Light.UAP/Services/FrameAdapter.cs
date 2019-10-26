@@ -17,22 +17,17 @@ namespace Caliburn.Light
             DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(FrameAdapter), null);
 
         private readonly IViewModelLocator _viewModelLocator;
-        private readonly IViewModelBinder _viewModelBinder;
 
         /// <summary>
         /// Creates an instance of <see cref="FrameAdapter" />.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
-        /// <param name="viewModelBinder">The view-model binder.</param>
-        public FrameAdapter(IViewModelLocator viewModelLocator, IViewModelBinder viewModelBinder)
+        public FrameAdapter(IViewModelLocator viewModelLocator)
         {
             if (viewModelLocator == null)
                 throw new ArgumentNullException(nameof(viewModelLocator));
-            if (viewModelBinder == null)
-                throw new ArgumentNullException(nameof(viewModelBinder));
 
             _viewModelLocator = viewModelLocator;
-            _viewModelBinder = viewModelBinder;
         }
 
         /// <summary>
@@ -166,8 +161,8 @@ namespace Caliburn.Light
         {
             if (page.DataContext == null)
             {
-                var viewModel = _viewModelLocator.LocateForView(page);
-                _viewModelBinder.Bind(viewModel, page, null, true);
+                page.DataContext = _viewModelLocator.LocateForView(page);
+                Bind.SetTrackDataContext(page, true);
             }
 
             RestorePageState(page, e.NavigationMode, frameState);

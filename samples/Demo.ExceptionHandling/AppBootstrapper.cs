@@ -17,7 +17,6 @@ namespace Demo.ExceptionHandling
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
-            _container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             var typeResolver = new ViewModelTypeResolver();
             typeResolver.AddMapping<ShellView, ShellViewModel>();

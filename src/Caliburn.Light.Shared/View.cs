@@ -70,7 +70,7 @@ namespace Caliburn.Light
         {
             if (e.OldValue == e.NewValue) return;
 
-            if (e.NewValue == null)
+            if (e.NewValue is null)
             {
                 SetContentProperty(targetLocation, null);
             }
@@ -86,7 +86,7 @@ namespace Caliburn.Light
             if (e.OldValue == e.NewValue) return;
 
             var model = GetModel(targetLocation);
-            if (model == null) return;
+            if (model is null) return;
 
             var context = (string) e.NewValue;
             SetContentCore(targetLocation, model, context);
@@ -102,36 +102,26 @@ namespace Caliburn.Light
             }
 
             var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
-            if (viewModelLocator == null)
+            if (viewModelLocator is null)
                 throw new InvalidOperationException("Could not resolve type 'IViewModelLocator' from IoC.");
 
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
-            if (viewModelBinder == null)
-                throw new InvalidOperationException("Could not resolve type 'IViewModelBinder' from IoC.");
-
             var view = viewModelLocator.LocateForModel(model, context);
-            RemoveFromParent(view);
 
-            viewModelBinder.Bind(model, view, context, true);
+            if (view is FrameworkElement fe)
+                fe.DataContext = model;
+
+            if (model is IViewAware viewAware)
+                viewAware.AttachView(view, context);
+
             SetContentProperty(targetLocation, view);
-        }
-
-        private static void RemoveFromParent(DependencyObject view)
-        {
-            var fe = view as FrameworkElement;
-            if (fe != null && fe.Parent != null)
-            {
-                SetContentProperty(fe.Parent, null);
-            }
         }
 
         private static void SetContentProperty(DependencyObject targetLocation, DependencyObject view)
         {
-            var contentControl = targetLocation as ContentControl;
-            if (contentControl == null)
+            if (targetLocation is ContentControl contentControl)
+                contentControl.Content = view;
+            else
                 throw new NotSupportedException("Only ContentControl is supported.");
-
-            contentControl.Content = view;
         }
     }
 }

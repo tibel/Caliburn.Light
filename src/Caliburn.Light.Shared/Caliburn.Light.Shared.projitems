@@ -11,19 +11,18 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BindingHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BooleanBoxes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\NameBasedViewModelTypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\NameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\RegExHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\TypeMappingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\ViewModelTypeNameTransformer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventions\ViewTypeNameTransformer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IViewModelBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IViewModelTypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)View.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModelBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelTypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTypeLookupKey.cs" />

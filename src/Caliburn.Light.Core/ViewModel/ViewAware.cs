@@ -35,6 +35,11 @@ namespace Caliburn.Light
             OnViewAttached(nonGeneratedView, context);
         }
 
+        bool IViewAware.DetachView(object view, string context)
+        {
+            return _views.Remove(context ?? DefaultContext);
+        }
+
         /// <summary>
         /// Called when a view is attached.
         /// </summary>

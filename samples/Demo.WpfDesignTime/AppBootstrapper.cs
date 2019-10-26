@@ -19,7 +19,6 @@ namespace Demo.WpfDesignTime
             container.RegisterSingleton<IWindowManager, WindowManager>();
             container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
-            container.RegisterSingleton<IViewModelBinder, ViewModelBinder>();
 
             var typeResolver = new ViewModelTypeResolver();
             typeResolver.AddMapping<ShellView, ShellViewModel>();

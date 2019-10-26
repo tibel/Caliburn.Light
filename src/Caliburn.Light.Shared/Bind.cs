@@ -16,94 +16,6 @@ namespace Caliburn.Light
     public static class Bind
     {
         /// <summary>
-        /// Allows binding on an existing view. Use this on root UserControls, Pages and Windows; not in a DataTemplate.
-        /// </summary>
-        public static readonly DependencyProperty ModelProperty = DependencyProperty.RegisterAttached("Model",
-            typeof (object), typeof (Bind), new PropertyMetadata(null, OnModelChanged));
-
-        /// <summary>
-        /// Allows binding on an existing view without setting the data context. Use this from within a DataTemplate.
-        /// </summary>
-        public static readonly DependencyProperty ModelWithoutContextProperty =
-            DependencyProperty.RegisterAttached("ModelWithoutContext", typeof (object), typeof (Bind),
-                new PropertyMetadata(null, OnModelWithoutContextChanged));
-
-        /// <summary>
-        /// Gets the model to bind to.
-        /// </summary>
-        /// <param name="dependencyObject">The dependency object to bind to.</param>
-        /// <returns>The model.</returns>
-        public static object GetModelWithoutContext(DependencyObject dependencyObject)
-        {
-            return dependencyObject.GetValue(ModelWithoutContextProperty);
-        }
-
-        /// <summary>
-        /// Sets the model to bind to.
-        /// </summary>
-        /// <param name="dependencyObject">The dependency object to bind to.</param>
-        /// <param name="value">The model.</param>
-        public static void SetModelWithoutContext(DependencyObject dependencyObject, object value)
-        {
-            dependencyObject.SetValue(ModelWithoutContextProperty, value);
-        }
-
-        /// <summary>
-        /// Gets the model to bind to.
-        /// </summary>
-        /// <param name="dependencyObject">The dependency object to bind to.</param>
-        /// <returns>The model.</returns>
-        public static object GetModel(DependencyObject dependencyObject)
-        {
-            return dependencyObject.GetValue(ModelProperty);
-        }
-
-        /// <summary>
-        /// Sets the model to bind to.
-        /// </summary>
-        /// <param name="dependencyObject">The dependency object to bind to.</param>
-        /// <param name="value">The model.</param>
-        public static void SetModel(DependencyObject dependencyObject, object value)
-        {
-            dependencyObject.SetValue(ModelProperty, value);
-        }
-
-        private static void OnModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (ViewHelper.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
-                return;
-
-            var fe = d as FrameworkElement;
-            if (fe == null) return;
-
-            SetModelCore(e.NewValue, fe, true);
-        }
-
-        private static void OnModelWithoutContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (ViewHelper.IsInDesignTool || e.NewValue == null || e.NewValue == e.OldValue)
-                return;
-
-            var fe = d as FrameworkElement;
-            if (fe == null) return;
-
-            SetModelCore(e.NewValue, fe, false);
-        }
-
-        private static void SetModelCore(object viewModel, FrameworkElement view, bool setDataContext)
-        {
-            var context = string.IsNullOrEmpty(view.Name)
-                ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                : view.Name;
-
-            var viewModelBinder = IoC.GetInstance<IViewModelBinder>();
-            if (viewModelBinder == null)
-                throw new InvalidOperationException("Could not resolve type 'IViewModelBinder' from IoC.");
-
-            viewModelBinder.Bind(viewModel, view, context, setDataContext);
-        }
-
-        /// <summary>
         /// The DependencyProperty for the CommandParameter used in x:Bind scenarios.
         /// </summary>
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.RegisterAttached("CommandParameter",
@@ -127,6 +39,90 @@ namespace Caliburn.Light
         public static void SetCommandParameter(DependencyObject dependencyObject, object value)
         {
             dependencyObject.SetValue(CommandParameterProperty, value);
+        }
+
+        /// <summary>
+        /// Whether changing DataContext is tracked for <see cref="IViewAware"/>.
+        /// </summary>
+        public static readonly DependencyProperty TrackDataContextProperty =
+            DependencyProperty.RegisterAttached("TrackDataContext",
+                typeof(bool), typeof(Bind), new PropertyMetadata(BooleanBoxes.FalseBox, OnTrackDataContextChanged));
+
+        /// <summary>
+        /// Gets if changing DataContext is tracked.
+        /// </summary>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <returns>Whether changing DataContext is tracked.</returns>
+        public static bool GetTrackDataContext(DependencyObject dependencyObject)
+        {
+            return (bool) dependencyObject.GetValue(TrackDataContextProperty);
+        }
+
+        /// <summary>
+        /// Sets if changing DataContext is tracked.
+        /// </summary>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <param name="value">Whether changing DataContext should be tracked.</param>
+        public static void SetTrackDataContext(DependencyObject dependencyObject, bool value)
+        {
+            dependencyObject.SetValue(TrackDataContextProperty, BooleanBoxes.Box(value));
+        }
+
+        private static void OnTrackDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (ViewHelper.IsInDesignTool || e.NewValue == e.OldValue || !(d is FrameworkElement fe))
+                return;
+
+            if ((bool)e.NewValue)
+            {
+                fe.DataContextChanged += OnDataContextChanged;
+
+#if NETFX_CORE
+                fe.SetValue(CurrentDataContextProperty, fe.DataContext);
+#endif
+
+                OnDataContextChanged(fe, null, fe.DataContext);
+            }
+            else
+            {
+#if NETFX_CORE
+                fe.ClearValue(CurrentDataContextProperty);
+#endif
+
+                fe.DataContextChanged -= OnDataContextChanged;
+            }
+        }
+
+#if NETFX_CORE
+        private static readonly DependencyProperty CurrentDataContextProperty =
+            DependencyProperty.RegisterAttached("CurrentDataContext",
+                typeof(object), typeof(Bind), new PropertyMetadata(null));
+
+        private static void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs e)
+        {
+            var oldValue = sender.ReadLocalValue(CurrentDataContextProperty);
+            sender.SetValue(CurrentDataContextProperty, e.NewValue);
+
+            OnDataContextChanged(sender, oldValue, e.NewValue);
+        }
+#else
+        private static void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            OnDataContextChanged((FrameworkElement)sender, e.OldValue, e.NewValue);
+        }
+#endif
+
+        private static void OnDataContextChanged(FrameworkElement view, object oldValue, object newValue)
+        {
+            var context = string.IsNullOrEmpty(view.Name)
+                ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                : view.Name;
+
+            if (oldValue is IViewAware oldViewAware)
+                oldViewAware.DetachView(view, context);
+
+            if (newValue is IViewAware newViewAware)
+                newViewAware.AttachView(view, context);
         }
     }
 }
