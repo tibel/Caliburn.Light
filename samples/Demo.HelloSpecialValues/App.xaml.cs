@@ -20,7 +20,7 @@ namespace Demo.HelloSpecialValues
         public App()
         {
             InitializeComponent();
-            LogManager.Initialize(t => new DebugLogger(t));
+            LogManager.Initialize(new DebugLoggerFactory());
         }
 
         private SimpleContainer _container;
