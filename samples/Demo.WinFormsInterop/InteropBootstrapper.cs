@@ -18,7 +18,7 @@ namespace Demo.WinFormsInterop
             var viewModelBinder = new ViewModelBinder();
 
             var view = new MainView();
-            viewModelBinder.Bind(viewModel, view, null);
+            viewModelBinder.Bind(viewModel, view, null, true);
 
             var activator = viewModel as IActivate;
             if (activator != null)

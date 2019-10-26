@@ -167,7 +167,7 @@ namespace Caliburn.Light
             if (page.DataContext == null)
             {
                 var viewModel = _viewModelLocator.LocateForView(page);
-                _viewModelBinder.Bind(viewModel, page, null);
+                _viewModelBinder.Bind(viewModel, page, null, true);
             }
 
             RestorePageState(page, e.NavigationMode, frameState);

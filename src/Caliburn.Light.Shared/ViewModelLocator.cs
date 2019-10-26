@@ -13,7 +13,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Locates view and view-model instances.
     /// </summary>
-    public class ViewModelLocator : IViewModelLocator
+    public sealed class ViewModelLocator : IViewModelLocator
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(ViewModelLocator));
 

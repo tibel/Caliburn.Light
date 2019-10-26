@@ -9,7 +9,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Binds a view to a view model.
     /// </summary>
-    public class ViewModelBinder : IViewModelBinder
+    public sealed class ViewModelBinder : IViewModelBinder
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof (ViewModelBinder));
 
@@ -19,14 +19,13 @@ namespace Caliburn.Light
         /// <param name="viewModel">The view model</param>
         /// <param name="view">The view.</param>
         /// <param name="context">The creation context (or null for default).</param>
-        public void Bind(object viewModel, UIElement view, string context)
+        /// <param name="setDataContext">Whether to set the DataContext or leave unchanged.</param>
+        public void Bind(object viewModel, UIElement view, string context, bool setDataContext)
         {
             Log.Info("Binding {0} and {1}.", view, viewModel);
 
-            var noDataContext = Light.Bind.GetNoDataContext(view);
-
             var frameworkElement = view as FrameworkElement;
-            if (frameworkElement != null && !noDataContext)
+            if (frameworkElement != null && setDataContext)
             {
                 Log.Info("Setting DC of {0} to {1}.", frameworkElement, viewModel);
                 frameworkElement.DataContext = viewModel;

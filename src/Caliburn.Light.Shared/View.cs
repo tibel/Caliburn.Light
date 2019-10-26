@@ -112,7 +112,7 @@ namespace Caliburn.Light
             var view = viewModelLocator.LocateForModel(model, context);
             RemoveFromParent(view);
 
-            viewModelBinder.Bind(model, view, context);
+            viewModelBinder.Bind(model, view, context, true);
             SetContentProperty(targetLocation, view);
         }
 

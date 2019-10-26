@@ -17,6 +17,7 @@ namespace Caliburn.Light
         /// <param name="viewModel">The view model</param>
         /// <param name="view">The view.</param>
         /// <param name="context">The creation context (or null for default).</param>
-        void Bind(object viewModel, UIElement view, string context);
+        /// <param name="setDataContext">Whether to set the DataContext or leave unchanged.</param>
+        void Bind(object viewModel, UIElement view, string context, bool setDataContext);
     }
 }

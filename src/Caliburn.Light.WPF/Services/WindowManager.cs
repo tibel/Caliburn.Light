@@ -89,7 +89,7 @@ namespace Caliburn.Light
             popup.Child = view;
             ViewHelper.SetIsGenerated(popup, true);
 
-            _viewModelBinder.Bind(rootModel, popup, context);
+            _viewModelBinder.Bind(rootModel, popup, context, true);
 
             var activatable = rootModel as IActivate;
             if (activatable != null)
@@ -138,7 +138,7 @@ namespace Caliburn.Light
             IDictionary<string, object> settings)
         {
             var view = EnsureWindow(rootModel, _viewModelLocator.LocateForModel(rootModel, context), isDialog);
-            _viewModelBinder.Bind(rootModel, view, context);
+            _viewModelBinder.Bind(rootModel, view, context, true);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Window.TitleProperty))
@@ -223,7 +223,7 @@ namespace Caliburn.Light
         protected virtual Page CreatePage(object rootModel, string context, IDictionary<string, object> settings)
         {
             var view = EnsurePage(rootModel, _viewModelLocator.LocateForModel(rootModel, context));
-            _viewModelBinder.Bind(rootModel, view, context);
+            _viewModelBinder.Bind(rootModel, view, context, true);
 
             var haveDisplayName = rootModel as IHaveDisplayName;
             if (haveDisplayName != null && !BindingHelper.IsDataBound(view, Page.TitleProperty))

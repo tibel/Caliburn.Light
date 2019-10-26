@@ -28,19 +28,6 @@ namespace Caliburn.Light
             DependencyProperty.RegisterAttached("ModelWithoutContext", typeof (object), typeof (Bind),
                 new PropertyMetadata(null, OnModelWithoutContextChanged));
 
-        private static readonly DependencyProperty NoDataContextProperty =
-            DependencyProperty.RegisterAttached("NoDataContext", typeof (bool), typeof (Bind), null);
-
-        /// <summary>
-        /// Gets whether or not the DataContext should be set on the view.
-        /// </summary>
-        /// <param name="dependencyObject">The view.</param>
-        /// <returns>Whether or not the DataContext should be set.</returns>
-        public static bool GetNoDataContext(DependencyObject dependencyObject)
-        {
-            return (bool) dependencyObject.GetValue(NoDataContextProperty);
-        }
-
         /// <summary>
         /// Gets the model to bind to.
         /// </summary>
@@ -89,7 +76,7 @@ namespace Caliburn.Light
             var fe = d as FrameworkElement;
             if (fe == null) return;
 
-            SetModelCore(e.NewValue, fe);
+            SetModelCore(e.NewValue, fe, true);
         }
 
         private static void OnModelWithoutContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -100,11 +87,10 @@ namespace Caliburn.Light
             var fe = d as FrameworkElement;
             if (fe == null) return;
 
-            fe.SetValue(NoDataContextProperty, true);
-            SetModelCore(e.NewValue, fe);
+            SetModelCore(e.NewValue, fe, false);
         }
 
-        private static void SetModelCore(object viewModel, FrameworkElement view)
+        private static void SetModelCore(object viewModel, FrameworkElement view, bool setDataContext)
         {
             var context = string.IsNullOrEmpty(view.Name)
                 ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
@@ -114,7 +100,7 @@ namespace Caliburn.Light
             if (viewModelBinder == null)
                 throw new InvalidOperationException("Could not resolve type 'IViewModelBinder' from IoC.");
 
-            viewModelBinder.Bind(viewModel, view, context);
+            viewModelBinder.Bind(viewModel, view, context, setDataContext);
         }
 
         /// <summary>
@@ -122,7 +108,7 @@ namespace Caliburn.Light
         /// </summary>
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.RegisterAttached("CommandParameter",
             typeof (object), typeof (Bind), null);
-			
+
 		/// <summary>
         /// Gets the command parameter
         /// </summary>
