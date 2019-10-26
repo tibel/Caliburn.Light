@@ -131,7 +131,7 @@ namespace Caliburn.Light
             if (!(view is Popup popup))
             {
                 popup = new Popup { Child = view };
-                ViewHelper.SetIsGenerated(popup, true);
+                View.SetIsGenerated(popup, true);
             }
 
             return popup;
@@ -183,7 +183,7 @@ namespace Caliburn.Light
                     SizeToContent = SizeToContent.WidthAndHeight
                 };
 
-                ViewHelper.SetIsGenerated(window, true);
+                View.SetIsGenerated(window, true);
 
                 var owner = InferOwnerOf(window);
                 if (owner != null)
@@ -271,7 +271,7 @@ namespace Caliburn.Light
             if (!(view is Page page))
             {
                 page = new Page { Content = view };
-                ViewHelper.SetIsGenerated(page, true);
+                View.SetIsGenerated(page, true);
             }
 
             return page;
