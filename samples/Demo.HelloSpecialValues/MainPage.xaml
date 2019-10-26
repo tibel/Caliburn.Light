@@ -17,7 +17,7 @@
             
             <GridView.ItemTemplate>
                 <DataTemplate>
-                    <local:CharacterView cal:Bind.TrackDataContext="True" />
+                    <local:CharacterView cal:Bind.DataContext="True" />
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>

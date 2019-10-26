@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-#if NETFX_CORE
+﻿#if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 #else
@@ -18,8 +16,9 @@ namespace Caliburn.Light
         /// <summary>
         /// The DependencyProperty for the CommandParameter used in x:Bind scenarios.
         /// </summary>
-        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.RegisterAttached("CommandParameter",
-            typeof (object), typeof (Bind), null);
+        public static readonly DependencyProperty CommandParameterProperty =
+            DependencyProperty.RegisterAttached("CommandParameter",
+                typeof (object), typeof (Bind), null);
 
 		/// <summary>
         /// Gets the command parameter
@@ -44,18 +43,18 @@ namespace Caliburn.Light
         /// <summary>
         /// Whether changing DataContext is tracked for <see cref="IViewAware"/>.
         /// </summary>
-        public static readonly DependencyProperty TrackDataContextProperty =
-            DependencyProperty.RegisterAttached("TrackDataContext",
-                typeof(bool), typeof(Bind), new PropertyMetadata(BooleanBoxes.FalseBox, OnTrackDataContextChanged));
+        public static readonly DependencyProperty DataContextProperty =
+            DependencyProperty.RegisterAttached("DataContext",
+                typeof(bool), typeof(Bind), new PropertyMetadata(BooleanBoxes.FalseBox, OnBindDataContextChanged));
 
         /// <summary>
         /// Gets if changing DataContext is tracked.
         /// </summary>
         /// <param name="dependencyObject">The dependency object to bind to.</param>
         /// <returns>Whether changing DataContext is tracked.</returns>
-        public static bool GetTrackDataContext(DependencyObject dependencyObject)
+        public static bool GetDataContext(DependencyObject dependencyObject)
         {
-            return (bool) dependencyObject.GetValue(TrackDataContextProperty);
+            return (bool) dependencyObject.GetValue(DataContextProperty);
         }
 
         /// <summary>
@@ -63,12 +62,12 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="dependencyObject">The dependency object to bind to.</param>
         /// <param name="value">Whether changing DataContext should be tracked.</param>
-        public static void SetTrackDataContext(DependencyObject dependencyObject, bool value)
+        public static void SetDataContext(DependencyObject dependencyObject, bool value)
         {
-            dependencyObject.SetValue(TrackDataContextProperty, BooleanBoxes.Box(value));
+            dependencyObject.SetValue(DataContextProperty, BooleanBoxes.Box(value));
         }
 
-        private static void OnTrackDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnBindDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (ViewHelper.IsInDesignTool || e.NewValue == e.OldValue || !(d is FrameworkElement fe))
                 return;
@@ -115,7 +114,7 @@ namespace Caliburn.Light
         private static void OnDataContextChanged(FrameworkElement view, object oldValue, object newValue)
         {
             var context = string.IsNullOrEmpty(view.Name)
-                ? view.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                ? null
                 : view.Name;
 
             if (oldValue is IViewAware oldViewAware)

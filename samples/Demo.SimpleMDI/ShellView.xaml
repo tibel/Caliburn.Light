@@ -10,8 +10,8 @@
         <TabControl x:Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <!--<ContentControl cal:View.Model="{Binding}" />-->
-                    <local:TabView cal:Bind.TrackDataContext="True" />
+                    <ContentControl cal:View.Model="{Binding}" />
+                    <!--<local:TabView cal:Bind.DataContext="True" />-->
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>

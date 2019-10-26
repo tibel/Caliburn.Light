@@ -162,7 +162,7 @@ namespace Caliburn.Light
             if (page.DataContext == null)
             {
                 page.DataContext = _viewModelLocator.LocateForView(page);
-                Bind.SetTrackDataContext(page, true);
+                Bind.SetDataContext(page, true);
             }
 
             RestorePageState(page, e.NavigationMode, frameState);
