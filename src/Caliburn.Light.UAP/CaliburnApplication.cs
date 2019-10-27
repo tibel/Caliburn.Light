@@ -23,7 +23,7 @@ namespace Caliburn.Light
 
             try
             {
-                if (!View.IsInDesignTool)
+                if (!DesignMode.DesignModeEnabled)
                     PrepareApplication();
 
                 Configure();

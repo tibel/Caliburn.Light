@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+#if NETFX_CORE
+using Windows.ApplicationModel;
+#endif
 
 namespace Caliburn.Light
 {
@@ -278,7 +281,7 @@ namespace Caliburn.Light
         /// </remarks>
         public static Func<string, object, IEnumerable<string>> TransformName = (typeName, context) =>
         {
-            if (View.IsInDesignTool)
+            if (DesignMode.DesignModeEnabled)
             {
                 typeName = ModifyModelTypeAtDesignTime(typeName);
             }

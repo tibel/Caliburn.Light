@@ -1,9 +1,12 @@
 ﻿using System;
 #if NETFX_CORE
+using Windows.ApplicationModel;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 #else
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 #endif
 
@@ -17,7 +20,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Indicates whether or not the framework is running in the context of a designer.
         /// </summary>
-        public bool IsInDesignTool => View.IsInDesignTool;
+        public bool IsInDesignTool => DesignMode.DesignModeEnabled;
 
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.
@@ -26,11 +29,23 @@ namespace Caliburn.Light
         /// <returns>
         /// The root element that was not created by the framework.
         /// </returns>
+        /// <remarks>In certain instances the services create UI elements.
+        /// For example, if you ask the window manager to show a UserControl as a dialog, it creates a window to host the UserControl in.
+        /// The WindowManager marks that element as a framework-created element so that it can determine what it created vs. what was intended by the developer.
+        /// Calling GetFirstNonGeneratedView allows the framework to discover what the original element was. 
+        /// </remarks>
         public object GetFirstNonGeneratedView(object view)
         {
-            return view is DependencyObject dependencyObject
-                ? View.GetFirstNonGeneratedView(dependencyObject)
-                : view;
+            if (!(view is DependencyObject dependencyObject))
+                return view;
+
+            if (!View.GetIsGenerated(dependencyObject))
+                return view;
+
+            if (view is ContentControl contentControl)
+                return contentControl.Content;
+
+            throw new NotSupportedException("Generated view type is not supported.");
         }
 
         /// <summary>
@@ -93,9 +108,22 @@ namespace Caliburn.Light
         /// <returns>The command parameter.</returns>
         public object GetCommandParameter(object view)
         {
-            return view is DependencyObject dependencyObject
-                ? Bind.ResolveCommandParameter(dependencyObject)
-                : null;
+            if (!(view is DependencyObject element))
+                return null;
+
+            var commandParameter = Bind.GetCommandParameter(element);
+            if (commandParameter is object)
+                return commandParameter;
+
+#if NETFX_CORE
+            if (element is ButtonBase buttonBase)
+                return buttonBase.CommandParameter;
+#else
+            if (element is System.Windows.Input.ICommandSource commandSource)
+                return commandSource.CommandParameter;
+#endif
+
+            return null;
         }
     }
 }

@@ -18,30 +18,6 @@ namespace Caliburn.Light
     /// </summary>
     public static class View
     {
-        private static bool? _isInDesignTool;
-
-        /// <summary>
-        /// Gets a value that indicates whether the process is running in design mode.
-        /// </summary>
-        public static bool IsInDesignTool
-        {
-            get
-            {
-                if (!_isInDesignTool.HasValue)
-                {
-#if NETFX_CORE
-                    _isInDesignTool = DesignMode.DesignModeEnabled;
-#else
-                    var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
-                        typeof(FrameworkElement));
-                    _isInDesignTool = (bool)descriptor.Metadata.DefaultValue;
-#endif
-                }
-
-                return _isInDesignTool.Value;
-            }
-        }
-
         /// <summary>
         /// A dependency property for assigning a <see cref="IServiceLocator"/> to a particular portion of the UI.
         /// </summary>
@@ -159,7 +135,7 @@ namespace Caliburn.Light
                 return;
             }
 
-            if (IsInDesignTool)
+            if (DesignMode.DesignModeEnabled)
             {
                 var placeholder = new TextBlock { Text = string.Format("View for {0}", model.GetType()) };
                 SetContentProperty(targetLocation, placeholder);
@@ -218,26 +194,6 @@ namespace Caliburn.Light
         public static void SetIsGenerated(DependencyObject view, bool value)
         {
             view.SetValue(IsGeneratedProperty, BooleanBoxes.Box(value));
-        }
-
-        /// <summary>
-        /// Used to retrieve the root, non-framework-created view.
-        /// </summary>
-        /// <param name="view">The view to search.</param>
-        /// <returns>The root element that was not created by the framework.</returns>
-        /// <remarks>In certain instances the services create UI elements.
-        /// For example, if you ask the window manager to show a UserControl as a dialog, it creates a window to host the UserControl in.
-        /// The WindowManager marks that element as a framework-created element so that it can determine what it created vs. what was intended by the developer.
-        /// Calling GetFirstNonGeneratedView allows the framework to discover what the original element was. 
-        /// </remarks>
-        public static object GetFirstNonGeneratedView(DependencyObject view)
-        {
-            if (!GetIsGenerated(view)) return view;
-
-            if (!(view is ContentControl contentControl))
-                throw new NotSupportedException("Generated view type is not supported.");
-
-            return contentControl.Content;
         }
 
         private static readonly DependencyProperty PreviouslyAttachedProperty =
