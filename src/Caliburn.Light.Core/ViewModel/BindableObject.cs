@@ -8,9 +8,14 @@ namespace Caliburn.Light
     /// <summary>
     /// A base class for objects of which the properties must be observable.
     /// </summary>
-    public class BindableObject : IBindableObject
+    public class BindableObject : IBindableObject, INotifyPropertyChanging
     {
         private int _suspensionCount;
+
+        /// <summary>
+        /// Occurs when a property value is changing.
+        /// </summary>
+        public event PropertyChangingEventHandler PropertyChanging;
 
         /// <summary>
         /// Occurs when a property value changes.
@@ -37,6 +42,7 @@ namespace Caliburn.Light
         /// </summary>
         public void Refresh()
         {
+            RaisePropertyChanging(string.Empty);
             RaisePropertyChanged(string.Empty);
         }
 
@@ -50,16 +56,23 @@ namespace Caliburn.Light
         }
 
         /// <summary>
+        /// Raises the PropertyChanging event if needed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that is changing.</param>
+        protected virtual void RaisePropertyChanging([CallerMemberName] string propertyName = null)
+        {
+            if (AreNotificationsSuspended()) return;
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+
+        /// <summary>
         /// Raises the PropertyChanged event if needed.
         /// </summary>
         /// <param name="propertyName">The name of the property that changed.</param>
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (AreNotificationsSuspended()) return;
-
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -76,6 +89,7 @@ namespace Caliburn.Light
             if (EqualityComparer<T>.Default.Equals(field, newValue))
                 return false;
 
+            RaisePropertyChanging(propertyName);
             field = newValue;
             RaisePropertyChanged(propertyName);
             return true;

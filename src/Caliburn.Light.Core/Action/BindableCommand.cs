@@ -100,8 +100,7 @@ namespace Caliburn.Light
         {
             var resolvedParameter = UIContext.GetCommandParameter(sender);
 
-            var specialValue = resolvedParameter as ISpecialValue;
-            if (specialValue != null)
+            if (resolvedParameter is ISpecialValue specialValue)
             {
                 var context = new CoroutineExecutionContext
                 {
@@ -115,7 +114,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Raises <see cref="E:CanExecuteChanged"/> so every command invoker can requery to check if the command can execute.
+        /// Raises <see cref="E:CanExecuteChanged"/> so every command invoker can re-query to check if the command can execute.
         /// </summary>
         /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
         public void RaiseCanExecuteChanged()

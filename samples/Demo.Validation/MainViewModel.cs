@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Demo.Validation
 {
-    public class MainViewModel : BindableObject, INotifyDataErrorInfo
+    public class MainViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         private readonly Company _company;
 
@@ -19,13 +19,15 @@ namespace Demo.Validation
 
             _validation = new ValidationAdapter(OnErrorsChanged);
             _validation.Validator = SetupValidator();
-            
+
             SaveCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(() => Save())
                 .OnCanExecute(() => CanSave)
                 .Observe(this, nameof(CanSave))
                 .Build();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string CName
         {
@@ -86,7 +88,7 @@ namespace Demo.Validation
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             _validation.ValidateProperty(this, propertyName);
-            RaisePropertyChanged(propertyName);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #region Validation
@@ -104,14 +106,11 @@ namespace Demo.Validation
         {
             get { return _validation.HasErrors; }
         }
-       
+
         private void OnErrorsChanged(string propertyName)
         {
-            var handler = ErrorsChanged;
-            if (handler != null)
-                handler(this, new DataErrorsChangedEventArgs(propertyName));
-
-            RaisePropertyChanged(nameof(CanSave));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanSave)));
         }
 
         private static IValidator SetupValidator()

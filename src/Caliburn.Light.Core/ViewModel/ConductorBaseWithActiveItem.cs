@@ -1,4 +1,6 @@
-﻿namespace Caliburn.Light
+﻿using System.Collections.Generic;
+
+namespace Caliburn.Light
 {
     /// <summary>
     /// A base class for various implementations of <see cref="IConductor"/> that maintain an active item.
@@ -34,6 +36,10 @@
         /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
         protected virtual void ChangeActiveItem(T newItem, bool closePrevious)
         {
+            if (EqualityComparer<T>.Default.Equals(_activeItem, newItem))
+                return;
+
+            RaisePropertyChanging(nameof(ActiveItem));
             ScreenHelper.TryDeactivate(_activeItem, closePrevious);
 
             newItem = EnsureItem(newItem);
@@ -43,6 +49,7 @@
 
             _activeItem = newItem;
             RaisePropertyChanged(nameof(ActiveItem));
+
             OnActivationProcessed(_activeItem, true);
         }
     }
