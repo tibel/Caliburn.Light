@@ -25,7 +25,7 @@ namespace Caliburn.Light
         protected void OnCompleted(CoTaskCompletedEventArgs args)
         {
             var handler = Completed;
-            if (handler != null)
+            if (handler is object)
             {
                 handler(this, args);
             }

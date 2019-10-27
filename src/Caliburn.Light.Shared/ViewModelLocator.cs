@@ -27,10 +27,9 @@ namespace Caliburn.Light
         /// <param name="serviceLocator">The service locator.</param>
         public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceLocator serviceLocator)
         {
-            if (typeResolver == null)
+            if (typeResolver is null)
                 throw new ArgumentNullException(nameof(typeResolver));
-
-            if (serviceLocator == null)
+            if (serviceLocator is null)
                 throw new ArgumentNullException(nameof(serviceLocator));
 
             _typeResolver = typeResolver;
@@ -45,11 +44,11 @@ namespace Caliburn.Light
         /// <returns>The view.</returns>
         public UIElement LocateForModel(object model, string context)
         {
-            if (model == null)
+            if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
             var view = TryGetViewFromViewAware(model, context);
-            if (view != null)
+            if (view is object)
             {
                 Log.Info("Using cached view for {0}.", model);
                 return view;
@@ -57,19 +56,14 @@ namespace Caliburn.Light
 
             var modelType = model.GetType();
             var viewType = _typeResolver.GetViewType(modelType, context);
-            if (viewType == null)
+            if (viewType is null)
             {
                 Log.Error("Cannot find view for {0}.", modelType);
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
-            view = _serviceLocator.GetInstance(viewType) as UIElement;
-            if (view == null)
-            {
-                view = (UIElement)Activator.CreateInstance(viewType);
-            }
-
-            return view;
+            return _serviceLocator.GetInstance(viewType) as UIElement
+                ?? (UIElement)Activator.CreateInstance(viewType);
         }
 
         private UIElement TryGetViewFromViewAware(object model, string context)
@@ -101,11 +95,11 @@ namespace Caliburn.Light
         /// <returns>The view model.</returns>
         public object LocateForView(UIElement view)
         {
-            if (view == null)
+            if (view is null)
                 throw new ArgumentNullException(nameof(view));
 
             var frameworkElement = view as FrameworkElement;
-            if (frameworkElement != null && frameworkElement.DataContext != null)
+            if (frameworkElement is object && frameworkElement.DataContext is object)
             {
                 Log.Info("Using current data context for {0}.", view);
                 return frameworkElement.DataContext;
@@ -113,14 +107,14 @@ namespace Caliburn.Light
 
             var viewType = view.GetType();
             var modelType = _typeResolver.GetModelType(viewType);
-            if (modelType == null)
+            if (modelType is null)
             {
                 Log.Error("Cannot find model for {0}.", viewType);
                 return null;
             }
 
             var model = _serviceLocator.GetInstance(modelType);
-            if (model == null)
+            if (model is null)
             {
                 Log.Error("Cannot locate {0}.", modelType);
                 return null;

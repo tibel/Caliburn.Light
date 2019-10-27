@@ -16,7 +16,7 @@ namespace Caliburn.Light
         /// <param name="task">The task.</param>
         public TaskDecoratorCoTask(Task task)
         {
-            if (task == null)
+            if (task is null)
                 throw new ArgumentNullException(nameof(task));
 
             _innerTask = task;
@@ -44,7 +44,7 @@ namespace Caliburn.Light
         /// <param name="task">The completed task.</param>
         protected virtual void OnCompleted(Task task)
         {
-            var error = (task.Exception != null) ? task.Exception.InnerException : null;
+            var error = (task.Exception is object) ? task.Exception.InnerException : null;
             OnCompleted(new CoTaskCompletedEventArgs(error, task.IsCanceled));
         }
     }

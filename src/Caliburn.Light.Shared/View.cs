@@ -2,9 +2,11 @@
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 #else
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 #endif
 
 namespace Caliburn.Light
@@ -14,6 +16,49 @@ namespace Caliburn.Light
     /// </summary>
     public static class View
     {
+        /// <summary>
+        /// A dependency property for assigning a <see cref="IServiceLocator"/> to a particular portion of the UI.
+        /// </summary>
+        public static readonly DependencyProperty ServiceLocatorProperty =
+            DependencyProperty.RegisterAttached("ServiceLocator",
+                typeof(IServiceLocator), typeof(View), null);
+
+        /// <summary>
+        /// Gets the attached <see cref="IServiceLocator"/>.
+        /// </summary>
+        /// <param name="d">The element the <see cref="IServiceLocator"/> is attached to.</param>
+        /// <returns>The <see cref="IServiceLocator"/>.</returns>
+        public static IServiceLocator GetServiceLocator(DependencyObject d)
+        {
+            return (IServiceLocator)d.GetValue(ServiceLocatorProperty);
+        }
+
+        /// <summary>
+        /// Sets the <see cref="IServiceLocator"/>.
+        /// </summary>
+        /// <param name="d">The element to attach the <see cref="IServiceLocator"/> to.</param>
+        /// <param name="value">The <see cref="IServiceLocator"/>.</param>
+        public static void SetServiceLocator(DependencyObject d, IServiceLocator value)
+        {
+            d.SetValue(ServiceLocatorProperty, value);
+        }
+
+        private static IServiceLocator GetCurrentServiceLocator(DependencyObject d)
+        {
+            var serviceLocator = GetServiceLocator(d);
+
+            while (serviceLocator is null)
+            {
+                d = VisualTreeHelper.GetParent(d);
+                if (d is null)
+                    break;
+
+                serviceLocator = GetServiceLocator(d);
+            }
+
+            return serviceLocator;
+        }
+
         /// <summary>
         /// A dependency property for attaching a model to the UI.
         /// </summary>
@@ -95,9 +140,13 @@ namespace Caliburn.Light
                 return;
             }
 
-            var viewModelLocator = IoC.GetInstance<IViewModelLocator>();
+            var serviceLocator = GetCurrentServiceLocator(targetLocation);
+            if (serviceLocator is null)
+                throw new InvalidOperationException("Could not find 'IServiceLocator' in control hierarchy.");
+
+            var viewModelLocator = serviceLocator.GetInstance<IViewModelLocator>();
             if (viewModelLocator is null)
-                throw new InvalidOperationException("Could not resolve type 'IViewModelLocator' from IoC.");
+                throw new InvalidOperationException("Could not resolve type 'IViewModelLocator'.");
 
             var view = viewModelLocator.LocateForModel(model, context);
 

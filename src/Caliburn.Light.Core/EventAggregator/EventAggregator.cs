@@ -25,9 +25,9 @@ namespace Caliburn.Light
         public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
             where TTarget : class
         {
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (handler == null)
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             Func<TTarget, TMessage, Task> wrapper = (t, m) =>
@@ -51,9 +51,9 @@ namespace Caliburn.Light
         public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
             where TTarget : class
         {
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (handler == null)
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             return SubscribeCore(target, handler, threadOption);
@@ -79,7 +79,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler to unsubscribe.</param>
         public void Unsubscribe(IEventAggregatorHandler handler)
         {
-            if (handler == null)
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             lock (_handlers)
@@ -94,7 +94,7 @@ namespace Caliburn.Light
         /// <param name="message">The message instance.</param>
         public void Publish(object message)
         {
-            if (message == null)
+            if (message is null)
                 throw new ArgumentNullException(nameof(message));
 
             List<IEventAggregatorHandler> selectedHandlers;

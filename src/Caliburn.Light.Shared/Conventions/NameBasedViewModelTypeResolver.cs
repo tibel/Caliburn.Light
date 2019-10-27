@@ -63,7 +63,7 @@ namespace Caliburn.Light
 
         private Type FindTypeByNames(IEnumerable<string> names)
         {
-            if (names == null) return null;
+            if (names is null) return null;
 
             foreach (var name in names)
             {
@@ -90,7 +90,7 @@ namespace Caliburn.Light
             var candidates = classNames.Concat(interfaceNames).ToArray();
             var modelType = FindTypeByNames(candidates);
 
-            if (modelType == null)
+            if (modelType is null)
             {
                 Log.Warn("View Model not found. Searched: {0}.", string.Join(", ", candidates));
             }
@@ -110,7 +110,7 @@ namespace Caliburn.Light
             var viewTypeList = ViewModelTypeNameTransformer.TransformName(modelTypeName, context);
             var viewType = FindTypeByNames(viewTypeList);
 
-            if (viewType == null)
+            if (viewType is null)
             {
                 Log.Warn("View not found. Searched: {0}.", string.Join(", ", viewTypeList));
             }

@@ -22,15 +22,15 @@ namespace Caliburn.Light
         private static Window GetWindowFromContext(CoroutineExecutionContext context)
         {
             var view = context.Source as DependencyObject;
-            return view != null ? Window.GetWindow(view) : null;
+            return view is object ? Window.GetWindow(view) : null;
         }
 
         private static Window GetFirstActiveWindow()
         {
             var application = Application.Current;
-            if (application == null) return null;
+            if (application is null) return null;
             var active = application.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
-            if (active != null) return active;
+            if (active is object) return active;
             return application.MainWindow ?? application.Windows.OfType<Window>().FirstOrDefault();
         }
     }

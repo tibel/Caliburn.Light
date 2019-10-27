@@ -9,25 +9,31 @@ namespace Caliburn.Light
     /// <summary>
     /// Integrate framework lifetime handling into <see cref="Frame"/> navigation events.
     /// </summary>
-    public class FrameAdapter : IFrameAdapter
+    public sealed class FrameAdapter : IFrameAdapter
     {
-        private static DependencyProperty FrameAdapterProperty =
+        private static readonly DependencyProperty FrameAdapterProperty =
             DependencyProperty.RegisterAttached("_FrameAdapter", typeof(AdapterImpl), typeof(FrameAdapter), null);
-        private static DependencyProperty PageKeyProperty =
+
+        private static readonly DependencyProperty PageKeyProperty =
             DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(FrameAdapter), null);
 
         private readonly IViewModelLocator _viewModelLocator;
+        private readonly IServiceLocator _serviceLocator;
 
         /// <summary>
         /// Creates an instance of <see cref="FrameAdapter" />.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
-        public FrameAdapter(IViewModelLocator viewModelLocator)
+        /// <param name="serviceLocator">The service locator.</param>
+        public FrameAdapter(IViewModelLocator viewModelLocator, IServiceLocator serviceLocator)
         {
-            if (viewModelLocator == null)
+            if (viewModelLocator is null)
                 throw new ArgumentNullException(nameof(viewModelLocator));
+            if (serviceLocator is null)
+                throw new ArgumentNullException(nameof(serviceLocator));
 
             _viewModelLocator = viewModelLocator;
+            _serviceLocator = serviceLocator;
         }
 
         /// <summary>
@@ -36,15 +42,17 @@ namespace Caliburn.Light
         /// <param name="frame">The frame to attach to.</param>
         public void AttachTo(Frame frame)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
-            if (adapter != null) return;
+            if (adapter is object) return;
 
             adapter = new AdapterImpl(this, frame);
             adapter.FrameState = new Dictionary<string, object>();
+
             frame.SetValue(FrameAdapterProperty, adapter);
+            View.SetServiceLocator(frame, _serviceLocator);
         }
 
         /// <summary>
@@ -53,17 +61,19 @@ namespace Caliburn.Light
         /// <param name="frame">The frame to detach from.</param>
         public void DetatchFrom(Frame frame)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
-            if (adapter == null) return;
+            if (adapter is null) return;
 
             frame.ClearValue(FrameAdapterProperty);
+            frame.ClearValue(View.ServiceLocatorProperty);
+
             adapter.Dispose();
         }
 
-        private class AdapterImpl : IDisposable
+        private sealed class AdapterImpl : IDisposable
         {
             private readonly FrameAdapter _parent;
             private readonly Frame _frame;
@@ -84,7 +94,7 @@ namespace Caliburn.Light
             private void OnNavigating(object sender, NavigatingCancelEventArgs e)
             {
                 var page = _frame.Content as Page;
-                if (page == null) return;
+                if (page is null) return;
 
                 _parent.OnNavigatingFrom(page, e);
 
@@ -94,15 +104,14 @@ namespace Caliburn.Light
 
             private void OnNavigated(object sender, NavigationEventArgs e)
             {
-                if (_previousPage != null)
+                if (_previousPage is object)
                 {
                     var previousPage = _previousPage;
                     _previousPage = null;
                     _parent.OnNavigatedFrom(previousPage, e, FrameState);
                 }
 
-                var page = _frame.Content as Page;
-                if (page == null) return;
+                if (!(_frame.Content is Page page)) return;
 
                 _parent.OnNavigatedTo(page, e, FrameState);
             }
@@ -124,8 +133,7 @@ namespace Caliburn.Light
         {
             if (e.Cancel) return;
 
-            var guard = page.DataContext as ICloseGuard;
-            if (guard != null)
+            if (page.DataContext is ICloseGuard guard)
             {
                 var task = guard.CanCloseAsync();
                 if (!task.IsCompleted)
@@ -134,23 +142,20 @@ namespace Caliburn.Light
                 if (!task.Result)
                 {
                     e.Cancel = true;
-                    return;
                 }
             }
         }
 
         private void OnNavigatedFrom(Page page, NavigationEventArgs e, IDictionary<string, object> frameState)
         {
-            var navigationAware = page.DataContext as INavigationAware;
-            if (navigationAware != null)
+            if (page.DataContext is INavigationAware navigationAware)
             {
                 navigationAware.OnNavigatedFrom();
             }
 
             SavePageState(page, frameState);
 
-            var deactivator = page.DataContext as IDeactivate;
-            if (deactivator != null)
+            if (page.DataContext is IDeactivate deactivator)
             {
                 var close = page.NavigationCacheMode == NavigationCacheMode.Disabled;
                 deactivator.Deactivate(close);
@@ -159,7 +164,7 @@ namespace Caliburn.Light
 
         private void OnNavigatedTo(Page page, NavigationEventArgs e, IDictionary<string, object> frameState)
         {
-            if (page.DataContext == null)
+            if (page.DataContext is null)
             {
                 page.DataContext = _viewModelLocator.LocateForView(page);
                 Bind.SetDataContext(page, true);
@@ -167,14 +172,12 @@ namespace Caliburn.Light
 
             RestorePageState(page, e.NavigationMode, frameState);
 
-            var navigationAware = page.DataContext as INavigationAware;
-            if (navigationAware != null)
+            if (page.DataContext is INavigationAware navigationAware)
             {
                 navigationAware.OnNavigatedTo(e.Parameter);
             }
 
-            var activator = page.DataContext as IActivate;
-            if (activator != null)
+            if (page.DataContext is IActivate activator)
             {
                 activator.Activate();
             }
@@ -187,23 +190,22 @@ namespace Caliburn.Light
         /// <returns>The internal frame state dictionary.</returns>
         public IDictionary<string, object> SaveState(Frame frame)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
-            if (adapter == null)
+            if (adapter is null)
                 throw new InvalidOperationException("Adapter is not attached to frame.");
 
             var frameState = adapter.FrameState;
 
-            var currentPage = frame.Content as Page;
-            if (currentPage != null)
+            if (frame.Content is Page currentPage)
             {
                 SavePageState(currentPage, frameState);
             }
 
             frameState["Navigation"] = frame.GetNavigationState();
- 
+
             return frameState;
         }
 
@@ -214,13 +216,13 @@ namespace Caliburn.Light
         /// <param name="frameState">The state dictionary that will be used.</param>
         public void RestoreState(Frame frame, IDictionary<string, object> frameState)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
-            if (frameState == null)
+            if (frameState is null)
                 throw new ArgumentNullException(nameof(frameState));
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
-            if (adapter == null)
+            if (adapter is null)
                 throw new InvalidOperationException("Adapter is not attached to frame.");
 
             adapter.FrameState = frameState;
@@ -233,8 +235,7 @@ namespace Caliburn.Light
 
         private void SavePageState(Page page, IDictionary<string, object> frameState)
         {
-            var preserveState = page.DataContext as IPreserveState;
-            if (preserveState == null) return;
+            if (!(page.DataContext is IPreserveState preserveState)) return;
 
             var pageKey = (string)page.GetValue(PageKeyProperty);
             var pageState = new Dictionary<string, object>();
@@ -263,8 +264,7 @@ namespace Caliburn.Light
             {
                 // Pass the preserved page state to the page, 
                 // using the same strategy for loading suspended state and recreating pages discarded from cache
-                var preserveState = page.DataContext as IPreserveState;
-                if (preserveState != null)
+                if (page.DataContext is IPreserveState preserveState)
                 {
                     var pageState = (Dictionary<string, object>)frameState[pageKey];
                     preserveState.RestoreState(pageState);

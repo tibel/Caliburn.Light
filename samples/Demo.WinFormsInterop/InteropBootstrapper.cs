@@ -22,8 +22,7 @@ namespace Demo.WinFormsInterop
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, null);
 
-            var activator = viewModel as IActivate;
-            if (activator != null)
+            if (viewModel is IActivate activator)
                 activator.Activate();
 
             _elementHost.Child = view;

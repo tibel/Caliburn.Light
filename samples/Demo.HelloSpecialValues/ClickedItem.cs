@@ -8,7 +8,7 @@ namespace Demo.HelloSpecialValues
         public object Resolve(CoroutineExecutionContext context)
         {
             var args = context.EventArgs as ItemClickEventArgs;
-            return (args != null) ? args.ClickedItem : null;
+            return (args is object) ? args.ClickedItem : null;
         }
     }
 }

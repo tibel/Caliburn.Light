@@ -28,18 +28,18 @@ namespace Caliburn.Light
             _view = view;
 
             var activatable = model as IActivate;
-            if (activatable != null)
+            if (activatable is object)
                 activatable.Activate();
 
             var deactivatable = model as IDeactivate;
-            if (deactivatable != null)
+            if (deactivatable is object)
             {
                 view.Closed += OnViewClosed;
                 deactivatable.Deactivated += OnModelDeactivated;
             }
 
             var guard = model as ICloseGuard;
-            if (guard != null)
+            if (guard is object)
                 view.Closing += OnViewClosing;
         }
 

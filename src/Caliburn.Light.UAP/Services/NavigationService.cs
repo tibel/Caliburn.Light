@@ -18,9 +18,9 @@ namespace Caliburn.Light
         /// <param name="viewModelTypeResolver">The view-model type resolver.</param>
         public NavigationService(Frame frame, IViewModelTypeResolver viewModelTypeResolver)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
-            if (viewModelTypeResolver == null)
+            if (viewModelTypeResolver is null)
                 throw new ArgumentNullException(nameof(viewModelTypeResolver));
 
             _frame = frame;
@@ -35,7 +35,7 @@ namespace Caliburn.Light
         /// <returns> Whether or not navigation succeeded. </returns>
         public bool Navigate(Type viewType, object parameter = null)
         {
-            if (parameter == null)
+            if (parameter is null)
                 return _frame.Navigate(viewType);
             return _frame.Navigate(viewType, parameter);
         }
@@ -49,7 +49,7 @@ namespace Caliburn.Light
         public bool NavigateToViewModel(Type viewModelType, object parameter = null)
         {
             var viewType = _viewModelTypeResolver.GetViewType(viewModelType, null);
-            if (viewType == null)
+            if (viewType is null)
             {
                 throw new InvalidOperationException(string.Format("No view was found for {0}.", viewModelType.FullName));
             }

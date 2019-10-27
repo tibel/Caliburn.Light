@@ -16,7 +16,7 @@ namespace Caliburn.Light
         /// <param name="eventHandler">The event handler.</param>
         public void Add(EventHandler eventHandler)
         {
-            if (eventHandler == null) return;
+            if (eventHandler is null) return;
             lock (_list)
             {
                 _list.AddHandler(eventHandler);
@@ -29,7 +29,7 @@ namespace Caliburn.Light
         /// <param name="eventHandler">The event handler.</param>
         public void Remove(EventHandler eventHandler)
         {
-            if (eventHandler == null) return;
+            if (eventHandler is null) return;
             lock (_list)
             {
                 _list.RemoveHandler(eventHandler);
@@ -65,10 +65,10 @@ namespace Caliburn.Light
 
             foreach (var listener in listeners)
             {
-                if (listener.Target != null)
+                if (listener.Target is object)
                 {
                     var handler = (EventHandler)listener.Handler;
-                    if (handler != null)
+                    if (handler is object)
                     {
                         handler(sender, e);
                     }
@@ -98,7 +98,7 @@ namespace Caliburn.Light
         /// <param name="eventHandler">The event handler.</param>
         public void Add(EventHandler<TEventArgs> eventHandler)
         {
-            if (eventHandler == null) return;
+            if (eventHandler is null) return;
             lock (_list)
             {
                 _list.AddHandler(eventHandler);
@@ -111,7 +111,7 @@ namespace Caliburn.Light
         /// <param name="eventHandler">The event handler.</param>
         public void Remove(EventHandler<TEventArgs> eventHandler)
         {
-            if (eventHandler == null) return;
+            if (eventHandler is null) return;
             lock (_list)
             {
                 _list.RemoveHandler(eventHandler);
@@ -147,10 +147,10 @@ namespace Caliburn.Light
 
             foreach (var listener in listeners)
             {
-                if (listener.Target != null)
+                if (listener.Target is object)
                 {
                     var handler = (EventHandler<TEventArgs>)listener.Handler;
-                    if (handler != null)
+                    if (handler is object)
                     {
                         handler(sender, e);
                     }

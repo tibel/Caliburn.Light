@@ -49,7 +49,7 @@ namespace Caliburn.Light
         /// <returns>True if a handler is registered; false otherwise.</returns>
         public bool IsRegistered(Type service, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
 
             return _entries.Any(x => x.Service == service && x.Key == key);
@@ -74,9 +74,9 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterSingleton(Type service, Type implementation, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
-            if (implementation == null)
+            if (implementation is null)
                 throw new ArgumentNullException(nameof(implementation));
 
             object singleton = null;
@@ -113,7 +113,7 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterSingleton<TService>(Func<SimpleContainer, TService> handler, string key = null)
         {
-            if (handler == null)
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             object singleton = null;
@@ -128,7 +128,7 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterInstance(Type service, object instance, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
 
             GetOrCreateEntry(service, key).Add(_ => instance);
@@ -153,9 +153,9 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterPerRequest(Type service, Type implementation, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
-            if (implementation == null)
+            if (implementation is null)
                 throw new ArgumentNullException(nameof(implementation));
 
             GetOrCreateEntry(service, key).Add(c => c.BuildInstance(implementation));
@@ -191,9 +191,9 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterPerRequest(Type service, Func<SimpleContainer, object> handler, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
-            if (handler == null)
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             GetOrCreateEntry(service, key).Add(handler);
@@ -207,7 +207,7 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterPerRequest<TService>(Func<SimpleContainer, TService> handler, string key = null)
         {
-            if (handler == null)
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             GetOrCreateEntry(typeof(TService), key).Add(c => handler(c));
@@ -221,11 +221,11 @@ namespace Caliburn.Light
         /// <returns>true if handler is successfully removed; otherwise, false.</returns>
         public bool UnregisterHandler(Type service, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
 
             var entry = _entries.Find(x => x.Service == service && x.Key == key);
-            if (entry == null) return false;
+            if (entry is null) return false;
             return _entries.Remove(entry);
         }
 
@@ -259,11 +259,11 @@ namespace Caliburn.Light
         /// <returns>The instance.</returns>
         public object GetInstance(Type service, string key = null)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
 
             var entry = _entries.Find(x => x.Service == service && x.Key == key) ?? _entries.Find(x => x.Service == service);
-            if (entry != null)
+            if (entry is object)
             {
                 if (entry.Count != 1)
                     throw new InvalidOperationException(string.Format("Found multiple registrations for type '{0}' and key {1}.", service, key));
@@ -284,7 +284,7 @@ namespace Caliburn.Light
 
             if (serviceType.IsGenericType && EnumerableType.IsAssignableFrom(serviceType))
             {
-                if (key != null)
+                if (key is object)
                     throw new InvalidOperationException(string.Format("Requesting type '{0}' with key {1} is not supported.", service, key));
 
                 var listType = service.GenericTypeArguments[0];
@@ -331,7 +331,7 @@ namespace Caliburn.Light
         /// <returns>All the instances or an empty enumerable if none are found.</returns>
         public object[] GetAllInstances(Type service)
         {
-            if (service == null)
+            if (service is null)
                 throw new ArgumentNullException(nameof(service));
 
             var instances = _entries
@@ -350,7 +350,7 @@ namespace Caliburn.Light
         private ContainerEntry GetOrCreateEntry(Type service, string key)
         {
             var entry = _entries.Find(x => x.Service == service && x.Key == key);
-            if (entry == null)
+            if (entry is null)
             {
                 entry = new ContainerEntry { Service = service, Key = key };
                 _entries.Add(entry);
@@ -370,7 +370,7 @@ namespace Caliburn.Light
                 .OrderByDescending(c => c.GetParameters().Length)
                 .FirstOrDefault(c => c.IsPublic);
 
-            if (constructor == null)
+            if (constructor is null)
                 throw new InvalidOperationException(string.Format("Type '{0}' has no public constructor.", type));
 
             var args = constructor.GetParameters()

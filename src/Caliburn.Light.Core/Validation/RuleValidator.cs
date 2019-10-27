@@ -18,7 +18,7 @@ namespace Caliburn.Light
         /// <param name="rule">The rule to add.</param>
         public void AddRule(ValidationRule<T> rule)
         {
-            if (rule == null)
+            if (rule is null)
                 throw new ArgumentNullException(nameof(rule));
 
             IList<ValidationRule<T>> current;

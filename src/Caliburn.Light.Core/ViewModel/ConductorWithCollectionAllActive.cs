@@ -100,7 +100,7 @@ namespace Caliburn.Light
                 /// <param name="item">The item to activate.</param>
                 public override void ActivateItem(T item)
                 {
-                    if (item == null) return;
+                    if (item is null) return;
 
                     item = EnsureItem(item);
 
@@ -119,7 +119,7 @@ namespace Caliburn.Light
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
                 public override async void DeactivateItem(T item, bool close)
                 {
-                    if (item == null)
+                    if (item is null)
                         return;
 
                     if (!close)

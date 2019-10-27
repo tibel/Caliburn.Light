@@ -68,10 +68,10 @@ namespace Caliburn.Light
         /// <param name="success">if set to <c>true</c> activation was successful.</param>
         protected virtual void OnActivationProcessed(T item, bool success)
         {
-            if (item == null) return;
+            if (item is null) return;
 
             var handler = ActivationProcessed;
-            if (handler != null)
+            if (handler is object)
                 handler(this, new ActivationProcessedEventArgs(item, success));
         }
 
@@ -83,7 +83,7 @@ namespace Caliburn.Light
         protected virtual T EnsureItem(T newItem)
         {
             var node = newItem as IChild;
-            if (node != null && node.Parent != this)
+            if (node is object && node.Parent != this)
                 node.Parent = this;
 
             return newItem;

@@ -56,7 +56,7 @@ namespace Caliburn.Light
 
         internal DCB_nPs(Action execute)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
 
             _execute = execute;
@@ -69,7 +69,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPs OnCanExecute(Func<bool> canExecute)
         {
-            if (canExecute == null)
+            if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
 
             _canExecute = canExecute;
@@ -84,9 +84,9 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPs Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (propertyNames == null || propertyNames.Length == 0)
+            if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
             _target = target;
@@ -100,7 +100,7 @@ namespace Caliburn.Light
         /// <returns>The newly build command.</returns>
         public DelegateCommand Build()
         {
-            return (_target == null) ?
+            return (_target is null) ?
                 new DelegateCommand(_execute, _canExecute) :
                 new DelegateCommand(_execute, _canExecute, _target, _propertyNames);
         }
@@ -118,7 +118,7 @@ namespace Caliburn.Light
 
         internal DCB_nPa(Func<Task> execute)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
 
             _execute = execute;
@@ -131,7 +131,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPa OnCanExecute(Func<bool> canExecute)
         {
-            if (canExecute == null)
+            if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
 
             _canExecute = canExecute;
@@ -146,9 +146,9 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPa Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (propertyNames == null || propertyNames.Length == 0)
+            if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
             _target = target;
@@ -162,7 +162,7 @@ namespace Caliburn.Light
         /// <returns>The newly build command.</returns>
         public AsyncDelegateCommand Build()
         {
-            return (_target == null) ?
+            return (_target is null) ?
                 new AsyncDelegateCommand(_execute, _canExecute) :
                 new AsyncDelegateCommand(_execute, _canExecute, _target, _propertyNames);
         }
@@ -210,7 +210,7 @@ namespace Caliburn.Light
 
         internal DCB_wPs(Func<object, TParameter> coerceParameter, Action<TParameter> execute)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
 
             _coerceParameter = coerceParameter;
@@ -224,7 +224,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPs<TParameter> OnCanExecute(Func<TParameter, bool> canExecute)
         {
-            if (canExecute == null)
+            if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
 
             _canExecute = canExecute;
@@ -239,9 +239,9 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPs<TParameter> Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (propertyNames == null || propertyNames.Length == 0)
+            if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
             _target = target;
@@ -255,7 +255,7 @@ namespace Caliburn.Light
         /// <returns>The newly build command.</returns>
         public DelegateCommand<TParameter> Build()
         {
-            return (_target == null) ?
+            return (_target is null) ?
                 new DelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute) :
                 new DelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
         }
@@ -275,7 +275,7 @@ namespace Caliburn.Light
 
         internal DCB_wPa(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
 
             _coerceParameter = coerceParameter;
@@ -289,7 +289,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPa<TParameter> OnCanExecute(Func<TParameter, bool> canExecute)
         {
-            if (canExecute == null)
+            if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
 
             _canExecute = canExecute;
@@ -304,9 +304,9 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPa<TParameter> Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (propertyNames == null || propertyNames.Length == 0)
+            if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
             _target = target;
@@ -320,7 +320,7 @@ namespace Caliburn.Light
         /// <returns>The newly build command.</returns>
         public AsyncDelegateCommand<TParameter> Build()
         {
-            return (_target == null) ?
+            return (_target is null) ?
                 new AsyncDelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute) :
                 new AsyncDelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
         }

@@ -15,7 +15,7 @@ namespace Caliburn.Light
         /// <param name="action">The action.</param>
         public DelegateCoTask(Action action)
         {
-            if (action == null)
+            if (action is null)
                 throw new ArgumentNullException(nameof(action));
 
             _toExecute = action;
@@ -56,7 +56,7 @@ namespace Caliburn.Light
         /// <param name="action">The action.</param>
         public DelegateCoTask(Func<TResult> action)
         {
-            if (action == null)
+            if (action is null)
                 throw new ArgumentNullException(nameof(action));
 
             _toExecute = action;

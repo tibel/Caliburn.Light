@@ -99,7 +99,7 @@ namespace Caliburn.Light
 
         private void OnErrorsChanged(string propertyName)
         {
-            if (_onErrorsChanged != null)
+            if (_onErrorsChanged is object)
                 _onErrorsChanged(propertyName);
         }
     }

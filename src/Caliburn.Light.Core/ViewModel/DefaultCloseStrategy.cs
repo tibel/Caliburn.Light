@@ -35,7 +35,7 @@ namespace Caliburn.Light
             foreach (var item in toClose)
             {
                 var guard = item as ICloseGuard;
-                if (guard == null)
+                if (guard is null)
                 {
                     closables.Add(item);
                 }

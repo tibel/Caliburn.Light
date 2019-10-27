@@ -34,7 +34,7 @@ namespace Caliburn.Light
         /// <param name="frameAdapter">The view-model locator.</param>
         public SuspensionManager(IFrameAdapter frameAdapter)
         {
-            if (frameAdapter == null)
+            if (frameAdapter is null)
                 throw new ArgumentNullException(nameof(frameAdapter));
 
             _frameAdapter = frameAdapter;
@@ -163,12 +163,12 @@ namespace Caliburn.Light
         /// This can be used to distinguish between multiple application launch scenarios.</param>
         public void RegisterFrame(Frame frame, string sessionStateKey, string sessionBaseKey = null)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
             if (string.IsNullOrEmpty(sessionStateKey))
                 throw new ArgumentNullException(nameof(sessionStateKey));
 
-            if (frame.GetValue(FrameSessionStateKeyProperty) != null)
+            if (frame.GetValue(FrameSessionStateKeyProperty) is object)
             {
                 throw new InvalidOperationException("Frames can only be registered to one session state key.");
             }
@@ -196,11 +196,11 @@ namespace Caliburn.Light
         /// managed.</param>
         public void UnregisterFrame(Frame frame)
         {
-            if (frame == null)
+            if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
 
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
-            if (frameSessionKey == null)
+            if (frameSessionKey is null)
             {
                 throw new InvalidOperationException("Only previously registered frames can be unregistered.");
             }
@@ -220,7 +220,7 @@ namespace Caliburn.Light
         {
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
             var frameState = _frameAdapter.SaveState(frame);
-            if (frameState != null)
+            if (frameState is object)
             {
                 _sessionState[frameSessionKey] = frameState;
             }

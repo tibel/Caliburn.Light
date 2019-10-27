@@ -24,7 +24,7 @@ namespace Caliburn.Light
         /// <returns>The view model type or null, if not found.</returns>
         public Type GetModelType(Type viewType)
         {
-            if (viewType == null)
+            if (viewType is null)
                 throw new ArgumentNullException(nameof(viewType));
 
             Type modelType;
@@ -40,7 +40,7 @@ namespace Caliburn.Light
         /// <returns>The view type or null, if not found.</returns>
         public Type GetViewType(Type modelType, string context)
         {
-            if (modelType == null)
+            if (modelType is null)
                 throw new ArgumentNullException(nameof(modelType));
 
             Type viewType;
@@ -61,7 +61,7 @@ namespace Caliburn.Light
             var viewType = typeof(TView);
             var modelType = typeof(TViewModel);
 
-            if (context == null)
+            if (context is null)
                 _modelTypeLookup.Add(viewType, modelType);
 
             _viewTypeLookup.Add(new ViewTypeLookupKey(modelType, context ?? string.Empty), viewType);

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
 
 namespace Caliburn.Light
@@ -28,7 +26,7 @@ namespace Caliburn.Light
             try
             {
                 Application = Application.Current;
-                if (Application != null)
+                if (Application is object)
                     PrepareApplication();
                 else
                     UIContext.Initialize(new ViewAdapter());
@@ -87,37 +85,6 @@ namespace Caliburn.Light
         /// <param name="e">The event arguments.</param>
         protected virtual void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
-        }
-
-        /// <summary>
-        /// Locates the view model, locates the associate view, binds them and shows it as the root view.
-        /// </summary>
-        /// <param name="viewModelType">The view model type.</param>
-        /// <param name="settings">The optional window settings.</param>
-        protected void DisplayRootViewFor(Type viewModelType, IDictionary<string, object> settings = null)
-        {
-            if (viewModelType == null)
-                throw new ArgumentNullException(nameof(viewModelType));
-
-            var windowManager = IoC.GetInstance<IWindowManager>();
-            if (windowManager == null)
-                throw new InvalidOperationException("Could not resolve type 'IWindowManager' from IoC.");
-
-            var viewModel = IoC.GetInstance(viewModelType);
-            if (viewModel == null)
-                throw new InvalidOperationException(string.Format("Could not resolve type '{0}' from IoC.", viewModelType));
-
-            windowManager.ShowWindow(viewModel, null, settings);
-        }
-
-        /// <summary>
-        /// Locates the view model, locates the associate view, binds them and shows it as the root view.
-        /// </summary>
-        /// <typeparam name="TViewModel">The view model type.</typeparam>
-        /// <param name="settings">The optional window settings.</param>
-        protected void DisplayRootViewFor<TViewModel>(IDictionary<string, object> settings = null)
-        {
-            DisplayRootViewFor(typeof (TViewModel), settings);
         }
     }
 }

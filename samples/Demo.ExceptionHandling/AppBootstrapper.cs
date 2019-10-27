@@ -12,7 +12,6 @@ namespace Demo.ExceptionHandling
         protected override void Configure()
         {
             _container = new SimpleContainer();
-            IoC.Initialize(_container);
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
@@ -21,7 +20,7 @@ namespace Demo.ExceptionHandling
             var typeResolver = new ViewModelTypeResolver();
             typeResolver.AddMapping<ShellView, ShellViewModel>();
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
-            
+
             _container.RegisterPerRequest<ShellViewModel>();
         }
 
@@ -32,7 +31,7 @@ namespace Demo.ExceptionHandling
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DisplayRootViewFor<ShellViewModel>();
+            _container.ShowWindowFor<ShellViewModel>();
         }
     }
 }

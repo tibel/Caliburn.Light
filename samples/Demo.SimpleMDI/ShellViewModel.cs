@@ -13,7 +13,7 @@ namespace Demo.SimpleMDI
 
         public ShellViewModel(Func<TabViewModel> createTabViewModel)
         {
-            if (createTabViewModel == null)
+            if (createTabViewModel is null)
                 throw new ArgumentNullException(nameof(createTabViewModel));
 
             _createTabViewModel = createTabViewModel;

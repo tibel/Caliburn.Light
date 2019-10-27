@@ -22,7 +22,7 @@ namespace Caliburn.Light
         /// <param name="canExecute">The canExecute function.</param>
         public AsyncDelegateCommand(Func<Task> execute, Func<bool> canExecute = null)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
 
             _execute = execute;
@@ -38,13 +38,13 @@ namespace Caliburn.Light
         /// <param name="propertyNames">The property names.</param>
         public AsyncDelegateCommand(Func<Task> execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
-            if (canExecute == null)
+            if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (propertyNames == null || propertyNames.Length == 0)
+            if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
             _execute = execute;
@@ -67,7 +67,7 @@ namespace Caliburn.Light
         protected override bool CanExecuteCore(object parameter)
         {
             if (IsExecuting) return false;
-            if (_canExecute == null) return true;
+            if (_canExecute is null) return true;
             return _canExecute();
         }
 
@@ -102,9 +102,9 @@ namespace Caliburn.Light
         /// <param name="canExecute">The canExecute function.</param>
         public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute = null)
         {
-            if (coerceParameter == null)
+            if (coerceParameter is null)
                 throw new ArgumentNullException(nameof(coerceParameter));
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
 
             _coerceParameter = coerceParameter;
@@ -123,15 +123,15 @@ namespace Caliburn.Light
         public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute,
             INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (coerceParameter == null)
+            if (coerceParameter is null)
                 throw new ArgumentNullException(nameof(coerceParameter));
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
-            if (canExecute == null)
+            if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
-            if (target == null)
+            if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            if (propertyNames == null || propertyNames.Length == 0)
+            if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
             _coerceParameter = coerceParameter;
@@ -155,7 +155,7 @@ namespace Caliburn.Light
         protected override bool CanExecuteCore(object parameter)
         {
             if (IsExecuting) return false;
-            if (_canExecute == null) return true;
+            if (_canExecute is null) return true;
             var value = _coerceParameter(parameter);
             return _canExecute(value);
         }

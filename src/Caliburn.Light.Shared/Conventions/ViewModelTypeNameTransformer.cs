@@ -291,7 +291,7 @@ namespace Caliburn.Light
                 );
 
             Func<string, string> getReplaceString;
-            if (context == null)
+            if (context is null)
             {
                 getReplaceString = r => r;
                 return NameTransformer.Transform(typeName, getReplaceString);

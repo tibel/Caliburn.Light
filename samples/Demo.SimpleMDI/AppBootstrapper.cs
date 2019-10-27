@@ -16,7 +16,6 @@ namespace Demo.SimpleMDI
         protected override void Configure()
         {
             _container = new SimpleContainer();
-            IoC.Initialize(_container);
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
@@ -33,7 +32,7 @@ namespace Demo.SimpleMDI
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DisplayRootViewFor<ShellViewModel>();
+            _container.ShowWindowFor<ShellViewModel>();
         }
     }
 }

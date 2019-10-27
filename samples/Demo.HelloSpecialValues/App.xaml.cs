@@ -28,7 +28,6 @@ namespace Demo.HelloSpecialValues
         protected override void Configure()
         {
             _container = new SimpleContainer();
-            IoC.Initialize(_container);
 
             _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
@@ -64,7 +63,7 @@ namespace Demo.HelloSpecialValues
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (rootFrame == null)
+            if (rootFrame is null)
             {
                 // Create a Frame to act as the navigation context
                 rootFrame = new Frame();
@@ -79,7 +78,7 @@ namespace Demo.HelloSpecialValues
                 Window.Current.Content = rootFrame;
             }
 
-            if (rootFrame.Content == null)
+            if (rootFrame.Content is null)
             {
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation parameter

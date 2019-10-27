@@ -151,7 +151,7 @@ namespace Caliburn.Light
 #if NETFX_CORE
             var content = Window.Current.Content;
             var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
-            return parent != null || (content != null && element == content);
+            return parent is object || (content is object && element == content);
 #else
             return element.IsLoaded;
 #endif
@@ -166,7 +166,7 @@ namespace Caliburn.Light
         public static bool TryClose(object view, bool? dialogResult)
         {
             var window = view as Window;
-            if (window != null)
+            if (window is object)
             {
 #if !NETFX_CORE
                 if (dialogResult.HasValue)
@@ -180,7 +180,7 @@ namespace Caliburn.Light
             }
 
             var popup = view as Popup;
-            if (popup != null)
+            if (popup is object)
             {
                 popup.IsOpen = false;
                 return true;
@@ -198,16 +198,16 @@ namespace Caliburn.Light
         public static object GetCommandParameter(DependencyObject element)
         {
             var commandParameter = Bind.GetCommandParameter(element);
-            if (commandParameter != null)
+            if (commandParameter is object)
                 return commandParameter;
 
 #if NETFX_CORE
             var buttonBase = element as ButtonBase;
-            if (buttonBase != null)
+            if (buttonBase is object)
                 return buttonBase.CommandParameter;
 #else
             var commandSource = element as System.Windows.Input.ICommandSource;
-            if (commandSource != null)
+            if (commandSource is object)
                 return commandSource.CommandParameter;
 #endif
 

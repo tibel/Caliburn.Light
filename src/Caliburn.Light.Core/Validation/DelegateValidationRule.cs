@@ -20,7 +20,7 @@ namespace Caliburn.Light
         public DelegateValidationRule(string propertyName, Func<T, bool> rule, string errorMessage)
             : base(propertyName, errorMessage)
         {
-            if (rule == null)
+            if (rule is null)
                 throw new ArgumentNullException(nameof(rule));
 
             _rule = rule;

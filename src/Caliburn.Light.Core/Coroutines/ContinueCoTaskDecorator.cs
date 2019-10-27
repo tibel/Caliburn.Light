@@ -17,7 +17,7 @@ namespace Caliburn.Light
         public ContinueCoTaskDecorator(ICoTask coTask, Func<ICoTask> coroutine)
             : base(coTask)
         {
-            if (coroutine == null)
+            if (coroutine is null)
                 throw new ArgumentNullException(nameof(coroutine));
 
             _coroutine = coroutine;
@@ -32,7 +32,7 @@ namespace Caliburn.Light
         protected override void OnInnerResultCompleted(CoroutineExecutionContext context, ICoTask innerCoTask,
             CoTaskCompletedEventArgs args)
         {
-            if (args.Error != null || !args.WasCancelled)
+            if (args.Error is object || !args.WasCancelled)
             {
                 OnCompleted(new CoTaskCompletedEventArgs(args.Error, false));
             }
@@ -69,7 +69,7 @@ namespace Caliburn.Light
         private void ContinueCompleted(object sender, CoTaskCompletedEventArgs args)
         {
             ((ICoTask) sender).Completed -= ContinueCompleted;
-            OnCompleted(new CoTaskCompletedEventArgs(args.Error, args.Error == null));
+            OnCompleted(new CoTaskCompletedEventArgs(args.Error, args.Error is null));
         }
     }
 }

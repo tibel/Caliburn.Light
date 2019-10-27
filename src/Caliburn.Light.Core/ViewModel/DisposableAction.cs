@@ -15,7 +15,7 @@ namespace Caliburn.Light
         /// <param name="action">The action to execute on dispose.</param>
         public DisposableAction(Action action)
         {
-            if (action == null)
+            if (action is null)
                 throw new ArgumentNullException(nameof(action));
 
             _action = action;
@@ -26,7 +26,7 @@ namespace Caliburn.Light
         /// </summary>
         public void Dispose()
         {
-            if (_action == null) return;
+            if (_action is null) return;
             _action();
             _action = null;
         }

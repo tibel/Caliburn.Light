@@ -35,7 +35,7 @@ namespace Caliburn.Light
                 // 1% case - the target listens multiple times
                 // we store the delegates in a list
                 var list = value as List<Delegate>;
-                if (list == null)
+                if (list is null)
                 {
                     // lazily allocate the list, and add the old handler
                     var oldHandler = value as Delegate;
@@ -75,7 +75,7 @@ namespace Caliburn.Light
             if (_cwt.TryGetValue(target, out value))
             {
                 var list = value as List<Delegate>;
-                if (list == null)
+                if (list is null)
                 {
                     // 99% case - the target is removing its single handler
                     _cwt.Remove(target);
@@ -94,7 +94,7 @@ namespace Caliburn.Light
 
         public bool Purge()
         {
-            return _list.RemoveAll(l => l.Target == null) > 0;
+            return _list.RemoveAll(l => l.Target is null) > 0;
         }
 
         public List<WeakEventListener> GetCopy()

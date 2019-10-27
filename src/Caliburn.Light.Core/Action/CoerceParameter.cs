@@ -15,11 +15,11 @@ namespace Caliburn.Light
         /// <returns>The converted parameter value.</returns>
         public static TParameter Default(object parameter)
         {
-            if (parameter == null)
+            if (parameter is null)
                 return default(TParameter);
 
             var specialValue = parameter as ISpecialValue;
-            if (specialValue != null)
+            if (specialValue is object)
                 parameter = specialValue.Resolve(new CoroutineExecutionContext());
 
             if (parameter is TParameter)

@@ -139,10 +139,10 @@ namespace Caliburn.Light
         public virtual void TryClose(bool? dialogResult = null)
         {
             var child = this as IChild;
-            if (child != null)
+            if (child is object)
             {
                 var conductor = child.Parent as IConductor;
-                if (conductor != null)
+                if (conductor is object)
                 {
                     conductor.DeactivateItem(this, true);
                     return;

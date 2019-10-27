@@ -68,7 +68,7 @@ namespace Caliburn.Light
                 /// <param name="item">The item to activate.</param>
                 public override void ActivateItem(T item)
                 {
-                    if (item != null && ReferenceEquals(item, ActiveItem))
+                    if (item is object && ReferenceEquals(item, ActiveItem))
                     {
                         if (IsActive)
                         {
@@ -89,7 +89,7 @@ namespace Caliburn.Light
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
                 public override async void DeactivateItem(T item, bool close)
                 {
-                    if (item == null) return;
+                    if (item is null) return;
 
                     if (!close)
                     {
@@ -216,9 +216,9 @@ namespace Caliburn.Light
                 /// <returns>The item to be activated.</returns>
                 protected override T EnsureItem(T newItem)
                 {
-                    if (newItem == null)
+                    if (newItem is null)
                     {
-                        newItem = DetermineNextItemToActivate(_items, ActiveItem != null ? _items.IndexOf(ActiveItem) : 0);
+                        newItem = DetermineNextItemToActivate(_items, ActiveItem is object ? _items.IndexOf(ActiveItem) : 0);
                     }
                     else
                     {

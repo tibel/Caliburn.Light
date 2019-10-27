@@ -14,7 +14,7 @@ namespace Caliburn.Light
         public static void TryActivate(object potentialActivatable)
         {
             var activator = potentialActivatable as IActivate;
-            if (activator != null)
+            if (activator is object)
                 activator.Activate();
         }
 
@@ -26,7 +26,7 @@ namespace Caliburn.Light
         public static void TryDeactivate(object potentialDeactivatable, bool close)
         {
             var deactivator = potentialDeactivatable as IDeactivate;
-            if (deactivator != null)
+            if (deactivator is object)
                 deactivator.Deactivate(close);
         }
 
@@ -42,7 +42,7 @@ namespace Caliburn.Light
             handler = (s, e) =>
             {
                 var activatable = (IActivate) childReference.Target;
-                if (activatable == null)
+                if (activatable is null)
                     ((IActivate) s).Activated -= handler;
                 else
                     activatable.Activate();
@@ -62,7 +62,7 @@ namespace Caliburn.Light
             handler = (s, e) =>
             {
                 var deactivatable = (IDeactivate) childReference.Target;
-                if (deactivatable == null)
+                if (deactivatable is null)
                     ((IDeactivate) s).Deactivated -= handler;
                 else
                     deactivatable.Deactivate(e.WasClosed);

@@ -20,7 +20,7 @@ namespace Caliburn.Light
         public RescueCoTaskDecorator(ICoTask coTask, Func<TException, ICoTask> coroutine, bool cancelCoTask = true)
             : base(coTask)
         {
-            if (coroutine == null)
+            if (coroutine is null)
                 throw new ArgumentNullException(nameof(coroutine));
 
             _coroutine = coroutine;
@@ -37,7 +37,7 @@ namespace Caliburn.Light
             CoTaskCompletedEventArgs args)
         {
             var error = args.Error as TException;
-            if (error == null)
+            if (error is null)
             {
                 OnCompleted(args);
             }
@@ -75,7 +75,7 @@ namespace Caliburn.Light
         {
             ((ICoTask) sender).Completed -= RescueCompleted;
             OnCompleted(new CoTaskCompletedEventArgs(args.Error,
-                args.Error == null && (args.WasCancelled || _cancelCoTask)));
+                args.Error is null && (args.WasCancelled || _cancelCoTask)));
         }
     }
 }

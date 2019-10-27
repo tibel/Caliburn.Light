@@ -30,7 +30,7 @@ namespace Caliburn.Light
         public object GetFirstNonGeneratedView(object view)
         {
             var dependencyObject = view as DependencyObject;
-            if (dependencyObject == null) return view;
+            if (dependencyObject is null) return view;
             return ViewHelper.GetFirstNonGeneratedView(dependencyObject);
         }
 
@@ -42,7 +42,7 @@ namespace Caliburn.Light
         public void ExecuteOnFirstLoad(object view, Action<object> handler)
         {
             var element = view as FrameworkElement;
-            if (element != null)
+            if (element is object)
                 ViewHelper.ExecuteOnFirstLoad(element, handler);
         }
 
@@ -54,7 +54,7 @@ namespace Caliburn.Light
         public void ExecuteOnLayoutUpdated(object view, Action<object> handler)
         {
             var element = view as FrameworkElement;
-            if (element != null)
+            if (element is object)
                 ViewHelper.ExecuteOnLayoutUpdated(element, handler);
         }
 
@@ -78,7 +78,7 @@ namespace Caliburn.Light
         public object GetCommandParameter(object view)
         {
             var dependencyObject = view as DependencyObject;
-            if (dependencyObject == null) return null;
+            if (dependencyObject is null) return null;
             return ViewHelper.GetCommandParameter(dependencyObject);
         }
     }

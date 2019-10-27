@@ -17,7 +17,7 @@ namespace Caliburn.Light
         /// <param name = "enumerator">The enumerator.</param>
         public SequentialCoTask(IEnumerator<ICoTask> enumerator)
         {
-            if (enumerator == null)
+            if (enumerator is null)
                 throw new ArgumentNullException(nameof(enumerator));
 
             _enumerator = enumerator;
@@ -36,12 +36,12 @@ namespace Caliburn.Light
         private void ChildCompleted(object sender, CoTaskCompletedEventArgs args)
         {
             var previous = sender as ICoTask;
-            if (previous != null)
+            if (previous is object)
             {
                 previous.Completed -= ChildCompleted;
             }
 
-            if (args.Error != null || args.WasCancelled)
+            if (args.Error is object || args.WasCancelled)
             {
                 OnComplete(args.Error, args.WasCancelled);
                 return;

@@ -59,11 +59,11 @@ namespace Caliburn.Light
         {
 #if NETFX_CORE
             var bindingExpression = target.ReadLocalValue(property) as BindingExpression;
-            if (bindingExpression == null || bindingExpression.ParentBinding == null) return;
+            if (bindingExpression is null || bindingExpression.ParentBinding is null) return;
             BindingOperations.SetBinding(target, property, bindingExpression.ParentBinding);
 #else
             var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(target, property);
-            if (bindingExpressionBase == null) return;
+            if (bindingExpressionBase is null) return;
             bindingExpressionBase.UpdateTarget();
 #endif
         }

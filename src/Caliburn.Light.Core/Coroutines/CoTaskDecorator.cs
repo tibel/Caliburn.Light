@@ -16,7 +16,7 @@ namespace Caliburn.Light
         /// <param name="coTask">The CoTask to decorate.</param>
         protected CoTaskDecorator(ICoTask coTask)
         {
-            if (coTask == null)
+            if (coTask is null)
                 throw new ArgumentNullException(nameof(coTask));
 
             _innerCoTask = coTask;

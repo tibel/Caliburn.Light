@@ -42,14 +42,14 @@ namespace Caliburn.Light
             {
                 ((ICoTask)s).Completed -= completed;
 
-                if (e.Error != null)
+                if (e.Error is object)
                     taskSource.TrySetException(e.Error);
                 else if (e.WasCancelled)
                     taskSource.TrySetCanceled();
                 else
                 {
                     var rr = s as ICoTask<TResult>;
-                    taskSource.TrySetResult(rr != null ? rr.Result : default(TResult));
+                    taskSource.TrySetResult(rr is object ? rr.Result : default(TResult));
                 }
             };
 

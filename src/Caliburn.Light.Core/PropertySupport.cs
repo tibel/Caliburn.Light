@@ -26,7 +26,7 @@ namespace Caliburn.Light
         /// <returns>The name of the property.</returns>
         public static string ExtractPropertyName(LambdaExpression propertyExpression)
         {
-            if (propertyExpression == null)
+            if (propertyExpression is null)
                 throw new ArgumentNullException(nameof(propertyExpression));
 
             return GetMemberInfo(propertyExpression).Name;

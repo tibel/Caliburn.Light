@@ -16,69 +16,63 @@ namespace Caliburn.Light
     public class WindowManager : IWindowManager
     {
         private readonly IViewModelLocator _viewModelLocator;
+        private readonly IServiceLocator _serviceLocator;
 
         /// <summary>
         /// Creates an instance of <see cref="WindowManager"/>.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
-        public WindowManager(IViewModelLocator viewModelLocator)
+        /// <param name="serviceLocator">The service locator.</param>
+        public WindowManager(IViewModelLocator viewModelLocator, IServiceLocator serviceLocator)
         {
-            if (viewModelLocator == null)
+            if (viewModelLocator is null)
                 throw new ArgumentNullException(nameof(viewModelLocator));
+            if (serviceLocator is null)
+                throw new ArgumentNullException(nameof(serviceLocator));
 
             _viewModelLocator = viewModelLocator;
+            _serviceLocator = serviceLocator;
         }
 
         /// <summary>
         /// Shows a modal dialog for the specified model.
         /// </summary>
-        /// <param name="rootModel">The root model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
         /// <param name="settings">The dialog popup settings.</param>
         /// <returns>The dialog result.</returns>
-        public virtual bool? ShowDialog(object rootModel, string context = null,
-            IDictionary<string, object> settings = null)
+        public bool? ShowDialog(object viewModel, string context, IDictionary<string, object> settings)
         {
-            return CreateWindow(rootModel, true, context, settings).ShowDialog();
+            return CreateWindow(viewModel, true, context, settings).ShowDialog();
         }
 
         /// <summary>
         /// Shows a window for the specified model.
         /// </summary>
-        /// <param name="rootModel">The root model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
         /// <param name="settings">The optional window settings.</param>
-        public virtual void ShowWindow(object rootModel, string context = null,
-            IDictionary<string, object> settings = null)
+        public void ShowWindow(object viewModel, string context, IDictionary<string, object> settings)
         {
-            NavigationWindow navWindow = null;
-            var application = Application.Current;
-            if (application != null && application.MainWindow != null)
+            if (Application.Current?.MainWindow is NavigationWindow navWindow)
             {
-                navWindow = application.MainWindow as NavigationWindow;
-            }
-
-            if (navWindow != null)
-            {
-                var page = CreatePage(rootModel, context, settings);
-                navWindow.Navigate(page);
+                navWindow.Navigate(CreatePage(viewModel, context, settings));
             }
             else
             {
-                CreateWindow(rootModel, false, context, settings).Show();
+                CreateWindow(viewModel, false, context, settings).Show();
             }
         }
 
         /// <summary>
         /// Shows a popup at the current mouse position.
         /// </summary>
-        /// <param name="rootModel">The root model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
         /// <param name="settings">The optional popup settings.</param>
-        public virtual void ShowPopup(object rootModel, string context = null,
-            IDictionary<string, object> settings = null)
+        public void ShowPopup(object viewModel, string context, IDictionary<string, object> settings)
         {
-            var popup = CreatePopup(rootModel, context, settings);
+            var popup = CreatePopup(viewModel, context, settings);
 
             // defaults
             if (settings?.ContainsKey("Placement") != true)
@@ -93,26 +87,27 @@ namespace Caliburn.Light
         /// <summary>
         /// Creates a popup.
         /// </summary>
-        /// <param name="rootModel">The root model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The popup.</returns>
-        protected virtual Popup CreatePopup(object rootModel, string context, IDictionary<string, object> settings)
+        protected Popup CreatePopup(object viewModel, string context, IDictionary<string, object> settings)
         {
-            var view = EnsurePopup(rootModel, _viewModelLocator.LocateForModel(rootModel, context));
+            var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
+            View.SetServiceLocator(view, _serviceLocator);
 
-            view.DataContext = rootModel;
-            if (rootModel is IViewAware viewAware)
+            view.DataContext = viewModel;
+            if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
             ApplySettings(view, settings);
 
-            if (rootModel is IActivate activatable)
+            if (viewModel is IActivate activatable)
             {
                 activatable.Activate();
             }
 
-            if (rootModel is IDeactivate deactivator)
+            if (viewModel is IDeactivate deactivator)
             {
                 view.Closed += (s, e) => deactivator.Deactivate(true);
             }
@@ -123,10 +118,10 @@ namespace Caliburn.Light
         /// <summary>
         /// Ensures the view is a popup or provides one.
         /// </summary>
-        /// <param name="model">The model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="view">The view.</param>
         /// <returns>The popup.</returns>
-        protected virtual Popup EnsurePopup(object model, UIElement view)
+        protected virtual Popup EnsurePopup(object viewModel, UIElement view)
         {
             if (!(view is Popup popup))
             {
@@ -140,21 +135,21 @@ namespace Caliburn.Light
         /// <summary>
         /// Creates a window.
         /// </summary>
-        /// <param name="rootModel">The view model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <param name="context">The view context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The window.</returns>
-        protected virtual Window CreateWindow(object rootModel, bool isDialog, string context,
-            IDictionary<string, object> settings)
+        protected Window CreateWindow(object viewModel, bool isDialog, string context, IDictionary<string, object> settings)
         {
-            var view = EnsureWindow(rootModel, _viewModelLocator.LocateForModel(rootModel, context), isDialog);
+            var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context), isDialog);
+            View.SetServiceLocator(view, _serviceLocator);
 
-            view.DataContext = rootModel;
-            if (rootModel is IViewAware viewAware)
+            view.DataContext = viewModel;
+            if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
-            if (rootModel is IHaveDisplayName haveDisplayName && !BindingHelper.IsDataBound(view, Window.TitleProperty))
+            if (viewModel is IHaveDisplayName haveDisplayName && !BindingHelper.IsDataBound(view, Window.TitleProperty))
             {
                 var binding = new Binding("DisplayName") { Mode = BindingMode.OneWay };
                 view.SetBinding(Window.TitleProperty, binding);
@@ -162,18 +157,18 @@ namespace Caliburn.Light
 
             ApplySettings(view, settings);
 
-            var conductor = new WindowConductor(rootModel, view);
+            var conductor = new WindowConductor(viewModel, view);
             return conductor.View;
         }
 
         /// <summary>
         /// Makes sure the view is a window or is wrapped by one.
         /// </summary>
-        /// <param name="model">The view model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="view">The view.</param>
         /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <returns>The window.</returns>
-        protected virtual Window EnsureWindow(object model, UIElement view, bool isDialog)
+        protected virtual Window EnsureWindow(object viewModel, UIElement view, bool isDialog)
         {
             if (!(view is Window window))
             {
@@ -186,7 +181,7 @@ namespace Caliburn.Light
                 View.SetIsGenerated(window, true);
 
                 var owner = InferOwnerOf(window);
-                if (owner != null)
+                if (owner is object)
                 {
                     window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     window.Owner = owner;
@@ -199,7 +194,7 @@ namespace Caliburn.Light
             else
             {
                 var owner = InferOwnerOf(window);
-                if (owner != null && isDialog)
+                if (owner is object && isDialog)
                 {
                     window.Owner = owner;
                 }
@@ -227,19 +222,20 @@ namespace Caliburn.Light
         /// <summary>
         /// Creates the page.
         /// </summary>
-        /// <param name="rootModel">The root model.</param>
+        /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
         /// <param name="settings">The optional popup settings.</param>
         /// <returns>The page.</returns>
-        protected virtual Page CreatePage(object rootModel, string context, IDictionary<string, object> settings)
+        protected Page CreatePage(object viewModel, string context, IDictionary<string, object> settings)
         {
-            var view = EnsurePage(rootModel, _viewModelLocator.LocateForModel(rootModel, context));
+            var view = EnsurePage(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
+            View.SetServiceLocator(view, _serviceLocator);
 
-            view.DataContext = rootModel;
-            if (rootModel is IViewAware viewAware)
+            view.DataContext = viewModel;
+            if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
-            if (rootModel is IHaveDisplayName haveDisplayName && !BindingHelper.IsDataBound(view, Page.TitleProperty))
+            if (viewModel is IHaveDisplayName haveDisplayName && !BindingHelper.IsDataBound(view, Page.TitleProperty))
             {
                 var binding = new Binding("DisplayName") { Mode = BindingMode.OneWay };
                 view.SetBinding(Page.TitleProperty, binding);
@@ -247,12 +243,12 @@ namespace Caliburn.Light
 
             ApplySettings(view, settings);
 
-            if (rootModel is IActivate activatable)
+            if (viewModel is IActivate activatable)
             {
                 activatable.Activate();
             }
 
-            if (rootModel is IDeactivate deactivatable)
+            if (viewModel is IDeactivate deactivatable)
             {
                 view.Unloaded += (s, e) => deactivatable.Deactivate(true);
             }
@@ -263,10 +259,10 @@ namespace Caliburn.Light
         /// <summary>
         /// Ensures the view is a page or provides one.
         /// </summary>
-        /// <param name="model">The model.</param>
+        /// <param name="viewModel">The model.</param>
         /// <param name="view">The view.</param>
         /// <returns>The page.</returns>
-        protected virtual Page EnsurePage(object model, UIElement view)
+        protected virtual Page EnsurePage(object viewModel, UIElement view)
         {
             if (!(view is Page page))
             {
@@ -285,7 +281,7 @@ namespace Caliburn.Light
             foreach (var pair in settings)
             {
                 var propertyInfo = type.GetRuntimeProperty(pair.Key);
-                if (propertyInfo != null)
+                if (propertyInfo is object)
                     propertyInfo.SetValue(target, pair.Value, null);
             }
         }

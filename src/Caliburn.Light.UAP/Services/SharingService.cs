@@ -34,10 +34,10 @@ namespace Caliburn.Light
         protected virtual void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
         {
             var view = GetCurrentView();
-            if (view == null) return;
+            if (view is null) return;
 
             var supportSharing = view.DataContext as ISupportSharing;
-            if (supportSharing == null) return;
+            if (supportSharing is null) return;
 
             supportSharing.OnShareRequested(args.Request);
         }
@@ -51,7 +51,7 @@ namespace Caliburn.Light
             var content = Window.Current.Content;
 
             var frame = content as Frame;
-            if (frame != null)
+            if (frame is object)
                 return frame.Content as FrameworkElement;
 
             return content as FrameworkElement;

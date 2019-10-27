@@ -30,7 +30,7 @@ namespace Caliburn.Light
         public object Resolve(CoroutineExecutionContext context)
         {
             var sourceOverride = SourceOverride;
-            if (sourceOverride != null)
+            if (sourceOverride is object)
                 context.Source = sourceOverride;
 
             return context;

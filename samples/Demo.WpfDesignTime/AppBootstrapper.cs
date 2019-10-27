@@ -5,6 +5,8 @@ namespace Demo.WpfDesignTime
 {
     public class AppBootstrapper : BootstrapperBase
     {
+        private SimpleContainer _container;
+
         public AppBootstrapper()
         {
             LogManager.Initialize(new DebugLoggerFactory());
@@ -13,25 +15,24 @@ namespace Demo.WpfDesignTime
 
         protected override void Configure()
         {
-            var container = new SimpleContainer();
-            IoC.Initialize(container);
+            _container = new SimpleContainer();
 
-            container.RegisterSingleton<IWindowManager, WindowManager>();
-            container.RegisterSingleton<IEventAggregator, EventAggregator>();
-            container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IWindowManager, WindowManager>();
+            _container.RegisterSingleton<IEventAggregator, EventAggregator>();
+            _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
             var typeResolver = new ViewModelTypeResolver();
             typeResolver.AddMapping<ShellView, ShellViewModel>();
             typeResolver.AddMapping<NestedView, NestedViewModel>();
-            container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
+            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
-            container.RegisterPerRequest<ShellViewModel>();
-            container.RegisterPerRequest<NestedViewModel>();
+            _container.RegisterPerRequest<ShellViewModel>();
+            _container.RegisterPerRequest<NestedViewModel>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DisplayRootViewFor<ShellViewModel>();
+            _container.ShowWindowFor<ShellViewModel>();
         }
     }
 }

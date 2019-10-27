@@ -20,7 +20,7 @@ namespace Caliburn.Light
         protected PropertyValidationRule(string propertyName, Func<T, TProperty> getPropertyValue, string errorMessage)
             : base(propertyName, errorMessage)
         {
-            if (getPropertyValue == null)
+            if (getPropertyValue is null)
                 throw new ArgumentNullException(nameof(getPropertyValue));
 
             _getPropertyValue = getPropertyValue;

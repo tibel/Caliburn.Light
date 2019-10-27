@@ -71,7 +71,7 @@ namespace Caliburn.Light
         public override void BeginExecute(CoroutineExecutionContext context)
         {
             var activeWindow = CoTaskHelper.GetActiveWindow(context);
-            if (activeWindow != null)
+            if (activeWindow is object)
             {
                 Result = MessageBox.Show(activeWindow, _message, _caption, _button, _image);
             }
