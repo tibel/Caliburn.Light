@@ -3,39 +3,44 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Caliburn.Light;
 
 namespace Demo.ExceptionHandling
 {
     public class ShellViewModel : BindableObject
     {
+        private readonly Dispatcher _dispatcher;
+
         public ShellViewModel()
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
+
             ExecuteCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => OnExecute())
+                .OnExecute(OnExecute)
                 .Build();
 
             UIContextRunCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => OnUIContextRun())
+                .OnExecute(OnUIContextRun)
                 .Build();
 
             TaskRunCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => OnTaskRun())
+                .OnExecute(OnTaskRun)
                 .Build();
 
             AsyncCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => OnAsync())
+                .OnExecute(OnAsync)
                 .Build();
         }
 
-        public ICommand ExecuteCommand { get; private set; }
-        public ICommand UIContextRunCommand { get; private set; }
-        public ICommand TaskRunCommand { get; private set; }
-        public ICommand AsyncCommand { get; private set; }
+        public ICommand ExecuteCommand { get; }
+        public ICommand UIContextRunCommand { get; }
+        public ICommand TaskRunCommand { get; }
+        public ICommand AsyncCommand { get; }
 
         private void OnExecute()
         {
-            Debug.Assert(UIContext.CheckAccess());
+            Debug.Assert(_dispatcher.CheckAccess());
             throw new InvalidOperationException("Error on execute.");
         }
 
@@ -43,12 +48,12 @@ namespace Demo.ExceptionHandling
         {
             return Task.Run(() =>
             {
-                Debug.Assert(!UIContext.CheckAccess());
+                Debug.Assert(!_dispatcher.CheckAccess());
                 Thread.Sleep(100);
 
-                return UIContext.Run(new Action(() =>
+                return _dispatcher.InvokeAsync(new Action(() =>
                 {
-                    Debug.Assert(UIContext.CheckAccess());
+                    Debug.Assert(_dispatcher.CheckAccess());
                     Thread.Sleep(100);
                     throw new InvalidOperationException("Error on a background Task.");
                 }));
@@ -59,7 +64,7 @@ namespace Demo.ExceptionHandling
         {
             return Task.Run(() =>
             {
-                Debug.Assert(!UIContext.CheckAccess());
+                Debug.Assert(!_dispatcher.CheckAccess());
                 Thread.Sleep(100);
                 throw new InvalidOperationException("Error on a background Task.");
             });
@@ -67,9 +72,9 @@ namespace Demo.ExceptionHandling
 
         private async Task OnAsync()
         {
-            Debug.Assert(UIContext.CheckAccess());
+            Debug.Assert(_dispatcher.CheckAccess());
             await Task.Delay(100);
-            Debug.Assert(UIContext.CheckAccess());
+            Debug.Assert(_dispatcher.CheckAccess());
             throw new InvalidOperationException("Error on async execute.");
         }
     }
