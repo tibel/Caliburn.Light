@@ -10,16 +10,8 @@ namespace Demo.HelloSpecialValues
             Image = image;
         }
 
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; }
 
-        public string Image
-        {
-            get;
-            private set;
-        }
+        public string Image { get; }
     }
 }

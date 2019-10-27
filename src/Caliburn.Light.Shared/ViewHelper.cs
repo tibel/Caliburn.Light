@@ -165,8 +165,7 @@ namespace Caliburn.Light
         /// <returns>true, when close could be initiated; otherwise false.</returns>
         public static bool TryClose(object view, bool? dialogResult)
         {
-            var window = view as Window;
-            if (window is object)
+            if (view is Window window)
             {
 #if !NETFX_CORE
                 if (dialogResult.HasValue)
@@ -179,8 +178,7 @@ namespace Caliburn.Light
                 return true;
             }
 
-            var popup = view as Popup;
-            if (popup is object)
+            if (view is Popup popup)
             {
                 popup.IsOpen = false;
                 return true;
@@ -202,12 +200,10 @@ namespace Caliburn.Light
                 return commandParameter;
 
 #if NETFX_CORE
-            var buttonBase = element as ButtonBase;
-            if (buttonBase is object)
+            if (element is ButtonBase buttonBase)
                 return buttonBase.CommandParameter;
 #else
-            var commandSource = element as System.Windows.Input.ICommandSource;
-            if (commandSource is object)
+            if (element is System.Windows.Input.ICommandSource commandSource)
                 return commandSource.CommandParameter;
 #endif
 

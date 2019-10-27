@@ -4,7 +4,7 @@ namespace Demo.HelloEventAggregator
 {
     public class SubscriberViewModel : BindableObject
     {
-        private readonly BindableCollection<string> _messages = new BindableCollection<string>(); 
+        private readonly BindableCollection<string> _messages = new BindableCollection<string>();
 
         public SubscriberViewModel(IEventAggregator eventAggregator)
         {
@@ -16,9 +16,6 @@ namespace Demo.HelloEventAggregator
             _messages.Add(message);
         }
 
-        public IBindableCollection<string> Messages
-        {
-            get { return _messages; }
-        }
+        public IBindableCollection<string> Messages => _messages;
     }
 }

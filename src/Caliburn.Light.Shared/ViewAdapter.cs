@@ -15,10 +15,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Indicates whether or not the framework is running in the context of a designer.
         /// </summary>
-        public bool IsInDesignTool
-        {
-            get { return ViewHelper.IsInDesignTool; }
-        }
+        public bool IsInDesignTool => ViewHelper.IsInDesignTool;
 
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.
@@ -29,9 +26,9 @@ namespace Caliburn.Light
         /// </returns>
         public object GetFirstNonGeneratedView(object view)
         {
-            var dependencyObject = view as DependencyObject;
-            if (dependencyObject is null) return view;
-            return ViewHelper.GetFirstNonGeneratedView(dependencyObject);
+            return view is DependencyObject dependencyObject
+                ? ViewHelper.GetFirstNonGeneratedView(dependencyObject)
+                : view;
         }
 
         /// <summary>
@@ -41,8 +38,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler.</param>
         public void ExecuteOnFirstLoad(object view, Action<object> handler)
         {
-            var element = view as FrameworkElement;
-            if (element is object)
+            if (view is FrameworkElement element)
                 ViewHelper.ExecuteOnFirstLoad(element, handler);
         }
 
@@ -53,8 +49,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler.</param>
         public void ExecuteOnLayoutUpdated(object view, Action<object> handler)
         {
-            var element = view as FrameworkElement;
-            if (element is object)
+            if (view is FrameworkElement element)
                 ViewHelper.ExecuteOnLayoutUpdated(element, handler);
         }
 
@@ -77,9 +72,9 @@ namespace Caliburn.Light
         /// <returns>The command parameter.</returns>
         public object GetCommandParameter(object view)
         {
-            var dependencyObject = view as DependencyObject;
-            if (dependencyObject is null) return null;
-            return ViewHelper.GetCommandParameter(dependencyObject);
+            return view is DependencyObject dependencyObject
+                ? ViewHelper.GetCommandParameter(dependencyObject)
+                : null;
         }
     }
 }

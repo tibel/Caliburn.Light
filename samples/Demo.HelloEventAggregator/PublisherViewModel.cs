@@ -25,7 +25,7 @@ namespace Demo.HelloEventAggregator
             set { SetProperty(ref _message, value); }
         }
 
-        public ICommand PublishCommand { get; private set; }
+        public ICommand PublishCommand { get; }
 
         private void Publish()
         {

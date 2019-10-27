@@ -7,7 +7,8 @@ namespace Demo.HelloSpecialValues
 {
     public class MainPageViewModel : Screen
     {
-        public MainPageViewModel()
+        public MainPageViewModel(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
         {
             Characters = new BindableCollection<CharacterViewModel>
             {
@@ -21,7 +22,7 @@ namespace Demo.HelloSpecialValues
                 new CharacterViewModel("Sansa Stark", "ms-appx:///resources/images/sansa.jpg"),
                 new CharacterViewModel("Tyrion Lannister", "ms-appx:///resources/images/tyrion.jpg")
             };
-            
+
             CharacterSelectedCommand = DelegateCommandBuilder.WithParameter<CharacterViewModel>()
                 .OnExecute(p => CharacterSelected(p))
                 .Build();
@@ -33,16 +34,8 @@ namespace Demo.HelloSpecialValues
             await dialog.ShowAsync();
         }
 
-        public BindableCollection<CharacterViewModel> Characters
-        {
-            get;
-            private set;
-        }
+        public BindableCollection<CharacterViewModel> Characters { get; }
 
-        public AsyncCommand CharacterSelectedCommand
-        {
-            get;
-            private set;
-        }
+        public AsyncCommand CharacterSelectedCommand { get; }
     }
 }
