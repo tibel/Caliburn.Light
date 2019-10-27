@@ -43,6 +43,9 @@ namespace Caliburn.Light
         /// <returns>The dialog result.</returns>
         public bool? ShowDialog(object viewModel, string context, IDictionary<string, object> settings)
         {
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
+
             return CreateWindow(viewModel, true, context, settings).ShowDialog();
         }
 
@@ -54,14 +57,13 @@ namespace Caliburn.Light
         /// <param name="settings">The optional window settings.</param>
         public void ShowWindow(object viewModel, string context, IDictionary<string, object> settings)
         {
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
+
             if (Application.Current?.MainWindow is NavigationWindow navWindow)
-            {
                 navWindow.Navigate(CreatePage(viewModel, context, settings));
-            }
             else
-            {
                 CreateWindow(viewModel, false, context, settings).Show();
-            }
         }
 
         /// <summary>
@@ -72,6 +74,9 @@ namespace Caliburn.Light
         /// <param name="settings">The optional popup settings.</param>
         public void ShowPopup(object viewModel, string context, IDictionary<string, object> settings)
         {
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
+
             var popup = CreatePopup(viewModel, context, settings);
 
             // defaults

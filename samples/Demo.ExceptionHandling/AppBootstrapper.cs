@@ -31,7 +31,8 @@ namespace Demo.ExceptionHandling
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            _container.ShowWindowFor<ShellViewModel>();
+            _container.GetInstance<IWindowManager>()
+                .ShowWindow(_container.GetInstance<ShellViewModel>());
         }
     }
 }
