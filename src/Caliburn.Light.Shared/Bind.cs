@@ -1,5 +1,6 @@
 ﻿#if NETFX_CORE
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 #else
 using System.Windows;
@@ -41,6 +42,29 @@ namespace Caliburn.Light
         }
 
         /// <summary>
+        /// Gets the command parameter of the element.
+        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter'.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The command parameter.</returns>
+        public static object ResolveCommandParameter(DependencyObject element)
+        {
+            var commandParameter = GetCommandParameter(element);
+            if (commandParameter is object)
+                return commandParameter;
+
+#if NETFX_CORE
+            if (element is ButtonBase buttonBase)
+                return buttonBase.CommandParameter;
+#else
+            if (element is System.Windows.Input.ICommandSource commandSource)
+                return commandSource.CommandParameter;
+#endif
+
+            return null;
+        }
+
+        /// <summary>
         /// Whether changing DataContext is tracked for <see cref="IViewAware"/>.
         /// </summary>
         public static readonly DependencyProperty DataContextProperty =
@@ -69,7 +93,7 @@ namespace Caliburn.Light
 
         private static void OnBindDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (ViewHelper.IsInDesignTool || e.NewValue == e.OldValue || !(d is FrameworkElement fe))
+            if (View.IsInDesignTool || e.NewValue == e.OldValue || !(d is FrameworkElement fe))
                 return;
 
             if ((bool)e.NewValue)

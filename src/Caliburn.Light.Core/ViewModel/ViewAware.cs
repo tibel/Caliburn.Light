@@ -63,7 +63,7 @@ namespace Caliburn.Light
             else
                 views[index] = entry;
 
-            var nonGeneratedView = UIContext.GetFirstNonGeneratedView(view);
+            var nonGeneratedView = ViewHelper.GetFirstNonGeneratedView(view);
             OnViewAttached(nonGeneratedView, context);
         }
 

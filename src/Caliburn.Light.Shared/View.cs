@@ -1,9 +1,11 @@
 ﻿using System;
 #if NETFX_CORE
+using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 #else
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -16,6 +18,30 @@ namespace Caliburn.Light
     /// </summary>
     public static class View
     {
+        private static bool? _isInDesignTool;
+
+        /// <summary>
+        /// Gets a value that indicates whether the process is running in design mode.
+        /// </summary>
+        public static bool IsInDesignTool
+        {
+            get
+            {
+                if (!_isInDesignTool.HasValue)
+                {
+#if NETFX_CORE
+                    _isInDesignTool = DesignMode.DesignModeEnabled;
+#else
+                    var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
+                        typeof(FrameworkElement));
+                    _isInDesignTool = (bool)descriptor.Metadata.DefaultValue;
+#endif
+                }
+
+                return _isInDesignTool.Value;
+            }
+        }
+
         /// <summary>
         /// A dependency property for assigning a <see cref="IServiceLocator"/> to a particular portion of the UI.
         /// </summary>
@@ -133,7 +159,7 @@ namespace Caliburn.Light
                 return;
             }
 
-            if (ViewHelper.IsInDesignTool)
+            if (IsInDesignTool)
             {
                 var placeholder = new TextBlock { Text = string.Format("View for {0}", model.GetType()) };
                 SetContentProperty(targetLocation, placeholder);
@@ -172,7 +198,7 @@ namespace Caliburn.Light
         /// </summary>
         public static readonly DependencyProperty IsGeneratedProperty =
             DependencyProperty.RegisterAttached("IsGenerated",
-                typeof(bool), typeof(ViewHelper), new PropertyMetadata(BooleanBoxes.FalseBox));
+                typeof(bool), typeof(View), new PropertyMetadata(BooleanBoxes.FalseBox));
 
         /// <summary>
         /// Gets the IsGenerated property for <paramref name="view"/>.
@@ -192,6 +218,119 @@ namespace Caliburn.Light
         public static void SetIsGenerated(DependencyObject view, bool value)
         {
             view.SetValue(IsGeneratedProperty, BooleanBoxes.Box(value));
+        }
+
+        /// <summary>
+        /// Used to retrieve the root, non-framework-created view.
+        /// </summary>
+        /// <param name="view">The view to search.</param>
+        /// <returns>The root element that was not created by the framework.</returns>
+        /// <remarks>In certain instances the services create UI elements.
+        /// For example, if you ask the window manager to show a UserControl as a dialog, it creates a window to host the UserControl in.
+        /// The WindowManager marks that element as a framework-created element so that it can determine what it created vs. what was intended by the developer.
+        /// Calling GetFirstNonGeneratedView allows the framework to discover what the original element was. 
+        /// </remarks>
+        public static object GetFirstNonGeneratedView(DependencyObject view)
+        {
+            if (!GetIsGenerated(view)) return view;
+
+            if (!(view is ContentControl contentControl))
+                throw new NotSupportedException("Generated view type is not supported.");
+
+            return contentControl.Content;
+        }
+
+        private static readonly DependencyProperty PreviouslyAttachedProperty =
+            DependencyProperty.RegisterAttached("PreviouslyAttached",
+                typeof(bool), typeof(View), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// Executes the handler the fist time the element is loaded.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="handler">The handler.</param>
+        public static void ExecuteOnFirstLoad(FrameworkElement element, Action<FrameworkElement> handler)
+        {
+            if ((bool)element.GetValue(PreviouslyAttachedProperty)) return;
+            element.SetValue(PreviouslyAttachedProperty, BooleanBoxes.TrueBox);
+            ExecuteOnLoad(element, handler);
+        }
+
+        /// <summary>
+        /// Executes the handler immediately if the element is loaded, otherwise wires it to the Loaded event.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="handler">The handler.</param>
+        /// <returns>true if the handler was executed immediately; false otherwise</returns>
+        public static bool ExecuteOnLoad(FrameworkElement element, Action<FrameworkElement> handler)
+        {
+            if (IsElementLoaded(element))
+            {
+                handler(element);
+                return true;
+            }
+
+            RoutedEventHandler loaded = null;
+            loaded = delegate
+            {
+                element.Loaded -= loaded;
+                handler(element);
+            };
+            element.Loaded += loaded;
+            return false;
+        }
+
+        /// <summary>
+        /// Executes the handler when the element is unloaded.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="handler">The handler.</param>
+        public static void ExecuteOnUnload(FrameworkElement element, Action<FrameworkElement> handler)
+        {
+            RoutedEventHandler unloaded = null;
+            unloaded = delegate
+            {
+                element.Unloaded -= unloaded;
+                handler(element);
+            };
+            element.Unloaded += unloaded;
+        }
+
+        /// <summary>
+        /// Executes the handler the next time the elements's LayoutUpdated event fires.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="handler">The handler.</param>
+        public static void ExecuteOnLayoutUpdated(FrameworkElement element, Action<FrameworkElement> handler)
+        {
+#if NETFX_CORE
+            EventHandler<object> onLayoutUpdate = null;
+#else
+            EventHandler onLayoutUpdate = null;
+#endif
+            onLayoutUpdate = delegate
+            {
+                element.LayoutUpdated -= onLayoutUpdate;
+                handler(element);
+            };
+            element.LayoutUpdated += onLayoutUpdate;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <paramref name="element"/> is loaded.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>true if the element is loaded; otherwise, false.
+        /// </returns>
+        public static bool IsElementLoaded(FrameworkElement element)
+        {
+#if NETFX_CORE
+            var content = Window.Current.Content;
+            var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
+            return parent is object || (content is object && element == content);
+#else
+            return element.IsLoaded;
+#endif
         }
     }
 }

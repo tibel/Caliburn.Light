@@ -154,7 +154,7 @@ namespace Caliburn.Light
 
             foreach (var entry in Views)
             {
-                if (UIContext.TryClose(entry.Value.Target, dialogResult))
+                if (ViewHelper.TryClose(entry.Value.Target, dialogResult))
                     return;
             }
 

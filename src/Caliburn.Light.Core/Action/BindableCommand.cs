@@ -98,7 +98,7 @@ namespace Caliburn.Light
 
         private static object DetermineParameter(object sender, object eventArgs)
         {
-            var resolvedParameter = UIContext.GetCommandParameter(sender);
+            var resolvedParameter = ViewHelper.GetCommandParameter(sender);
 
             if (resolvedParameter is ISpecialValue specialValue)
             {

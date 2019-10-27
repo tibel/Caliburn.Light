@@ -11,20 +11,16 @@ namespace Caliburn.Light
     public sealed class EventAggregator : IEventAggregator
     {
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
-        private readonly IDispatcher _dispatcher;
         private readonly WaitCallback _publishWaitCallback;
+        private readonly SendOrPostCallback _publishSendOrPostCallback;
 
         /// <summary>
         /// Initializes a new instance of <see cref="EventAggregator"/>.
         /// </summary>
-        /// <param name="dispatcher">The UI dispatcher.</param>
-        public EventAggregator(IDispatcher dispatcher)
+        public EventAggregator()
         {
-            if (dispatcher is null)
-                throw new ArgumentNullException(nameof(dispatcher));
-
-            _dispatcher = dispatcher;
             _publishWaitCallback = PlublishCore;
+            _publishSendOrPostCallback = PlublishCore;
         }
 
         /// <summary>
@@ -120,7 +116,7 @@ namespace Caliburn.Light
 
             if (selectedHandlers.Count == 0) return;
 
-            var isUIThread = _dispatcher.CheckAccess();
+            var isUIThread = UIContext.CheckAccess();
             var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
             if (currentThreadHandlers.Count > 0)
                 PublishCore(message, currentThreadHandlers);
@@ -129,7 +125,7 @@ namespace Caliburn.Light
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    _dispatcher.BeginInvoke(_publishWaitCallback, Tuple.Create(message, uiThreadHandlers));
+                    UIContext.BeginInvoke(_publishSendOrPostCallback, Tuple.Create(message, uiThreadHandlers));
             }
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
@@ -154,12 +150,9 @@ namespace Caliburn.Light
             }
         }
 
-        private static void Observe(Task task)
+        private static async void Observe(Task task)
         {
-            task.ContinueWith(t => ThreadPool.QueueUserWorkItem(s => ((Task)s).GetAwaiter().GetResult(), t),
-                default(CancellationToken),
-                TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted,
-                TaskScheduler.Default);
+            await task.ConfigureAwait(false);
         }
 
         /// <summary>

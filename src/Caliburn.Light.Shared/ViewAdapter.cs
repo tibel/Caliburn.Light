@@ -1,8 +1,10 @@
 ﻿using System;
 #if NETFX_CORE
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 #else
 using System.Windows;
+using System.Windows.Controls.Primitives;
 #endif
 
 namespace Caliburn.Light
@@ -15,7 +17,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Indicates whether or not the framework is running in the context of a designer.
         /// </summary>
-        public bool IsInDesignTool => ViewHelper.IsInDesignTool;
+        public bool IsInDesignTool => View.IsInDesignTool;
 
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.
@@ -27,7 +29,7 @@ namespace Caliburn.Light
         public object GetFirstNonGeneratedView(object view)
         {
             return view is DependencyObject dependencyObject
-                ? ViewHelper.GetFirstNonGeneratedView(dependencyObject)
+                ? View.GetFirstNonGeneratedView(dependencyObject)
                 : view;
         }
 
@@ -39,7 +41,7 @@ namespace Caliburn.Light
         public void ExecuteOnFirstLoad(object view, Action<object> handler)
         {
             if (view is FrameworkElement element)
-                ViewHelper.ExecuteOnFirstLoad(element, handler);
+                View.ExecuteOnFirstLoad(element, handler);
         }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace Caliburn.Light
         public void ExecuteOnLayoutUpdated(object view, Action<object> handler)
         {
             if (view is FrameworkElement element)
-                ViewHelper.ExecuteOnLayoutUpdated(element, handler);
+                View.ExecuteOnLayoutUpdated(element, handler);
         }
 
         /// <summary>
@@ -61,7 +63,26 @@ namespace Caliburn.Light
         /// <returns>true, when close could be initiated; otherwise false.</returns>
         public bool TryClose(object view, bool? dialogResult)
         {
-            return ViewHelper.TryClose(view, dialogResult);
+            if (view is Window window)
+            {
+#if !NETFX_CORE
+                if (dialogResult.HasValue)
+                    window.DialogResult = dialogResult;
+                else
+                    window.Close();
+#else
+                window.Close();
+#endif
+                return true;
+            }
+
+            if (view is Popup popup)
+            {
+                popup.IsOpen = false;
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -73,7 +94,7 @@ namespace Caliburn.Light
         public object GetCommandParameter(object view)
         {
             return view is DependencyObject dependencyObject
-                ? ViewHelper.GetCommandParameter(dependencyObject)
+                ? Bind.ResolveCommandParameter(dependencyObject)
                 : null;
         }
     }

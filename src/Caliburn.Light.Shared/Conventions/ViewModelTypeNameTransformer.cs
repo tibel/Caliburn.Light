@@ -278,7 +278,7 @@ namespace Caliburn.Light
         /// </remarks>
         public static Func<string, object, IEnumerable<string>> TransformName = (typeName, context) =>
         {
-            if (ViewHelper.IsInDesignTool)
+            if (View.IsInDesignTool)
             {
                 typeName = ModifyModelTypeAtDesignTime(typeName);
             }

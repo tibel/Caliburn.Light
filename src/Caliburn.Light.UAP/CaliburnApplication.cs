@@ -18,11 +18,12 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            UIContext.Initialize(new ViewAdapter());
+            ViewHelper.Initialize(new ViewAdapter());
+            UIContext.Initialize();
 
             try
             {
-                if (!ViewHelper.IsInDesignTool)
+                if (!View.IsInDesignTool)
                     PrepareApplication();
 
                 Configure();
@@ -45,7 +46,7 @@ namespace Caliburn.Light
             // Because dispatchers are tied to windows Execute will fail in 
             // scenarios when the application has multiple windows open (though contract 
             // activation, this keeps Execute up to date with the currently activated window
-            args.Window.Activated += (s, e) => UIContext.Initialize(new ViewAdapter());
+            args.Window.Activated += (_, __) => UIContext.Initialize();
         }
 
         /// <summary>
@@ -53,9 +54,9 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void PrepareApplication()
         {
-            Resuming += (s, e) => OnResuming(e);
-            Suspending += (s, e) => OnSuspending(e);
-            UnhandledException += (s, e) => OnUnhandledException(e);
+            Resuming += (_, e) => OnResuming(e);
+            Suspending += (_, e) => OnSuspending(e);
+            UnhandledException += (_, e) => OnUnhandledException(e);
         }
 
         /// <summary>

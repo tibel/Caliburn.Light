@@ -22,7 +22,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)IViewModelTypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)View.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelTypeResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTypeLookupKey.cs" />

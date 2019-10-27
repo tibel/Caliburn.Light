@@ -3,18 +3,17 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Caliburn.Light;
 
 namespace Demo.ExceptionHandling
 {
     public class ShellViewModel : BindableObject
     {
-        private readonly Dispatcher _dispatcher;
+        private readonly System.Windows.Threading.Dispatcher _dispatcher;
 
         public ShellViewModel()
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
+            _dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
 
             ExecuteCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(OnExecute)
