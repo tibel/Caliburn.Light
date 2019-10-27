@@ -10,8 +10,22 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private static readonly SynchronizationContext ThreadPool = new SynchronizationContext();
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
+        private readonly IDispatcher _dispatcher;
+        private readonly WaitCallback _publishWaitCallback;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="EventAggregator"/>.
+        /// </summary>
+        /// <param name="dispatcher">The UI dispatcher.</param>
+        public EventAggregator(IDispatcher dispatcher)
+        {
+            if (dispatcher is null)
+                throw new ArgumentNullException(nameof(dispatcher));
+
+            _dispatcher = dispatcher;
+            _publishWaitCallback = PlublishCore;
+        }
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
@@ -106,7 +120,7 @@ namespace Caliburn.Light
 
             if (selectedHandlers.Count == 0) return;
 
-            var isUIThread = UIContext.CheckAccess();
+            var isUIThread = _dispatcher.CheckAccess();
             var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
             if (currentThreadHandlers.Count > 0)
                 PublishCore(message, currentThreadHandlers);
@@ -115,12 +129,18 @@ namespace Caliburn.Light
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    UIContext.BeginInvoke(() => PublishCore(message, uiThreadHandlers));
+                    _dispatcher.BeginInvoke(_publishWaitCallback, Tuple.Create(message, uiThreadHandlers));
             }
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundThreadHandlers.Count > 0)
-                ThreadPool.Post(state => PublishCore(message, backgroundThreadHandlers), null);
+                ThreadPool.QueueUserWorkItem(_publishWaitCallback, Tuple.Create(message, backgroundThreadHandlers));
+        }
+
+        private void PlublishCore(object state)
+        {
+            var tuple = (Tuple<object, List<IEventAggregatorHandler>>)state;
+            PublishCore(tuple.Item1, tuple.Item2);
         }
 
         private static void PublishCore(object message, List<IEventAggregatorHandler> handlers)
@@ -136,13 +156,11 @@ namespace Caliburn.Light
 
         private static void Observe(Task task)
         {
-            task.ContinueWith((t, state) => ((SynchronizationContext)state).Post(s => ((Task)s).GetAwaiter().GetResult(), t),
-                ThreadPool,
+            task.ContinueWith(t => ThreadPool.QueueUserWorkItem(s => ((Task)s).GetAwaiter().GetResult(), t),
                 default(CancellationToken),
                 TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted,
                 TaskScheduler.Default);
         }
-
 
         /// <summary>
         /// Occurs when <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
