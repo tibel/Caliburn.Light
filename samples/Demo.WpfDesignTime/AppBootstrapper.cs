@@ -21,9 +21,9 @@ namespace Demo.WpfDesignTime
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new ViewModelTypeResolver();
-            typeResolver.AddMapping<ShellView, ShellViewModel>();
-            typeResolver.AddMapping<NestedView, NestedViewModel>();
+            var typeResolver = new ViewModelTypeResolver()
+                .AddMapping<ShellView, ShellViewModel>()
+                .AddMapping<NestedView, NestedViewModel>();
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
             _container.RegisterPerRequest<ShellViewModel>();

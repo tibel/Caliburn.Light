@@ -17,8 +17,8 @@ namespace Demo.ExceptionHandling
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new ViewModelTypeResolver();
-            typeResolver.AddMapping<ShellView, ShellViewModel>();
+            var typeResolver = new ViewModelTypeResolver()
+                .AddMapping<ShellView, ShellViewModel>();
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
             _container.RegisterPerRequest<ShellViewModel>();

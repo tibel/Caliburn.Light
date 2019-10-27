@@ -21,9 +21,9 @@ namespace Demo.SimpleMDI
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new ViewModelTypeResolver();
-            typeResolver.AddMapping<ShellView, ShellViewModel>();
-            typeResolver.AddMapping<TabView, TabViewModel>();
+            var typeResolver = new ViewModelTypeResolver()
+                .AddMapping<ShellView, ShellViewModel>()
+                .AddMapping<TabView, TabViewModel>();
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
             _container.RegisterPerRequest<ShellViewModel>();

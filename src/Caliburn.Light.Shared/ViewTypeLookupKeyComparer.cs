@@ -2,7 +2,7 @@
 
 namespace Caliburn.Light
 {
-    internal sealed class ViewTypeLookupKeyComparer : IEqualityComparer<ViewTypeLookupKey>
+    internal readonly struct ViewTypeLookupKeyComparer : IEqualityComparer<ViewTypeLookupKey>
     {
         public bool Equals(ViewTypeLookupKey x, ViewTypeLookupKey y)
         {
@@ -13,7 +13,7 @@ namespace Caliburn.Light
         {
             var h1 = obj.ModelType.GetHashCode();
             var h2 = obj.Context.GetHashCode();
-            return (((h1 << 5) + h1) ^ h2);
+            return ((h1 << 5) + h1) ^ h2;
         }
     }
 }

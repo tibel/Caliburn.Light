@@ -12,7 +12,7 @@ namespace Caliburn.Light
     /// <summary>
     /// Resolves view and view-model types.
     /// </summary>
-    public class ViewModelTypeResolver : IViewModelTypeResolver
+    public sealed class ViewModelTypeResolver : IViewModelTypeResolver
     {
         private readonly Dictionary<Type, Type> _modelTypeLookup = new Dictionary<Type, Type>();
         private readonly Dictionary<ViewTypeLookupKey, Type> _viewTypeLookup = new Dictionary<ViewTypeLookupKey, Type>(new ViewTypeLookupKeyComparer());
@@ -54,7 +54,8 @@ namespace Caliburn.Light
         /// <typeparam name="TView">The view type.</typeparam>
         /// <typeparam name="TViewModel">The view-model type.</typeparam>
         /// <param name="context">The context instance (or null).</param>
-        public void AddMapping<TView, TViewModel>(string context = null)
+        /// <remarks>Return self for method chaining.</remarks>
+        public ViewModelTypeResolver AddMapping<TView, TViewModel>(string context = null)
             where TView : UIElement
             where TViewModel : INotifyPropertyChanged
         {
@@ -65,6 +66,7 @@ namespace Caliburn.Light
                 _modelTypeLookup.Add(viewType, modelType);
 
             _viewTypeLookup.Add(new ViewTypeLookupKey(modelType, context ?? string.Empty), viewType);
+            return this;
         }
     }
 }
