@@ -8,16 +8,17 @@ namespace Demo.SimpleMDI
     public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
     {
         private readonly Func<TabViewModel> _createTabViewModel;
-        private int _count = 0;
+        private int _count;
         private bool _canClosePending;
 
-        public ShellViewModel(Func<TabViewModel> createTabViewModel)
+        public ShellViewModel(ILoggerFactory loggerFactory, Func<TabViewModel> createTabViewModel)
+            : base(loggerFactory)
         {
             if (createTabViewModel is null)
                 throw new ArgumentNullException(nameof(createTabViewModel));
 
             _createTabViewModel = createTabViewModel;
-            
+
             OpenTabCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(() => OpenTab())
                 .Build();
@@ -27,9 +28,9 @@ namespace Demo.SimpleMDI
                 .Build();
         }
 
-        public ICommand OpenTabCommand { get; private set; }
+        public ICommand OpenTabCommand { get; }
 
-        public ICommand CloseTabCommand { get; private set; }
+        public ICommand CloseTabCommand { get; }
 
         private void OpenTab()
         {

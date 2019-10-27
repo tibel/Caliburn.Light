@@ -20,16 +20,18 @@ namespace Caliburn.Light
                 private readonly BindableCollection<T> _items = new BindableCollection<T>();
 
                 /// <summary>
-                /// Initializes a new instance of the <see cref="Conductor&lt;T&gt;.Collection.AllActive"/> class.
+                /// Initializes a new instance of <see cref="Conductor&lt;T&gt;.Collection.AllActive"/>.
                 /// </summary>
-                public AllActive()
+                /// <param name="loggerFactory">The logger factory.</param>
+                public AllActive(ILoggerFactory loggerFactory)
+                    : base(loggerFactory)
                 {
                     _items.CollectionChanged += (s, e) =>
                     {
                         switch (e.Action)
                         {
                             case NotifyCollectionChangedAction.Add:
-                                foreach(var x in e.NewItems.OfType<IChild>()) { x.Parent = this; }
+                                foreach (var x in e.NewItems.OfType<IChild>()) { x.Parent = this; }
                                 break;
                             case NotifyCollectionChangedAction.Remove:
                                 foreach (var x in e.OldItems.OfType<IChild>()) { x.Parent = null; }

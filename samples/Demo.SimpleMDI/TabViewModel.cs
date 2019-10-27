@@ -9,6 +9,11 @@ namespace Demo.SimpleMDI
         private string _displayName;
         private bool _canClosePending;
 
+        public TabViewModel(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        {
+        }
+
         /// <summary>
         /// Gets or Sets the Parent <see cref = "IConductor" />
         /// </summary>

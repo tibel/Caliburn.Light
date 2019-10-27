@@ -42,8 +42,6 @@ namespace Caliburn.Light
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static void Initialize(IViewAdapter viewAdapter, int? managedThreadId, SynchronizationContext synchronizationContext, TaskScheduler taskScheduler)
         {
-            LogManager.GetLogger(typeof(UIContext)).Info("Initialize");
-
             _viewAdapter = viewAdapter ?? NullViewAdapter.Instance;
             _managedThreadId = managedThreadId;
             _synchronizationContext = synchronizationContext ?? _nullSynchronizationContext;

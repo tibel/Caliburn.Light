@@ -13,6 +13,15 @@ namespace Caliburn.Light
         private ICloseStrategy<T> _closeStrategy;
 
         /// <summary>
+        /// Initializes a new instance of <see cref="ConductorBase&lt;T&gt;"/>.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        protected ConductorBase(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        {
+        }
+
+        /// <summary>
         /// Gets or sets the close strategy.
         /// </summary>
         /// <value>The close strategy.</value>

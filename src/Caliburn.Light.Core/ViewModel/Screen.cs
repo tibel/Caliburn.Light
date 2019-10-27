@@ -8,11 +8,19 @@ namespace Caliburn.Light
     /// </summary>
     public class Screen : ViewAware, IScreen
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(Screen));
         private static readonly Task<bool> TrueTask = Task.FromResult(true);
 
         private bool _isActive;
         private bool _isInitialized;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="Screen"/>.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public Screen(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        {
+        }
 
         /// <summary>
         /// Indicates whether or not this instance is currently active.

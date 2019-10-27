@@ -20,9 +20,11 @@ namespace Caliburn.Light
                 private readonly BindableCollection<T> _items = new BindableCollection<T>();
 
                 /// <summary>
-                /// Initializes a new instance of the <see cref="Conductor&lt;T&gt;.Collection.OneActive"/> class.
+                /// Initializes a new instance of <see cref="Conductor&lt;T&gt;.Collection.OneActive"/>.
                 /// </summary>
-                public OneActive()
+                /// <param name="loggerFactory">The logger factory.</param>
+                public OneActive(ILoggerFactory loggerFactory)
+                    : base(loggerFactory)
                 {
                     _items.CollectionChanged += (s, e) =>
                     {
