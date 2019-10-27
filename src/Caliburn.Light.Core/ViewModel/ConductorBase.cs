@@ -78,10 +78,7 @@ namespace Caliburn.Light
         protected virtual void OnActivationProcessed(T item, bool success)
         {
             if (item is null) return;
-
-            var handler = ActivationProcessed;
-            if (handler is object)
-                handler(this, new ActivationProcessedEventArgs(item, success));
+            ActivationProcessed?.Invoke(this, new ActivationProcessedEventArgs(item, success));
         }
 
         /// <summary>

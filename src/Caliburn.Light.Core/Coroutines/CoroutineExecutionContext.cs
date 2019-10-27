@@ -22,8 +22,7 @@ namespace Caliburn.Light
         {
             get
             {
-                object result;
-                _values.TryGetValue(key, out result);
+                _values.TryGetValue(key, out object result);
                 return result;
             }
             set { _values[key] = value; }

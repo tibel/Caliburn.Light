@@ -13,8 +13,7 @@ namespace Caliburn.Light
         /// <param name="potentialActivatable">The potential activatable.</param>
         public static void TryActivate(object potentialActivatable)
         {
-            var activator = potentialActivatable as IActivate;
-            if (activator is object)
+            if (potentialActivatable is IActivate activator)
                 activator.Activate();
         }
 
@@ -25,8 +24,7 @@ namespace Caliburn.Light
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
         public static void TryDeactivate(object potentialDeactivatable, bool close)
         {
-            var deactivator = potentialDeactivatable as IDeactivate;
-            if (deactivator is object)
+            if (potentialDeactivatable is IDeactivate deactivator)
                 deactivator.Deactivate(close);
         }
 

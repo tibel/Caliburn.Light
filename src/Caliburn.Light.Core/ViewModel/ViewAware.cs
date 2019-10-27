@@ -8,8 +8,8 @@ namespace Caliburn.Light
     /// </summary>
     public class ViewAware : BindableObject, IViewAware
     {
-        private readonly Dictionary<string, WeakReference> _views = new Dictionary<string, WeakReference>();
         private readonly ILoggerFactory _loggerFactory;
+        private List<KeyValuePair<string, WeakReference>> _views;
         private ILogger _logger;
 
         /// <summary>
@@ -34,27 +34,31 @@ namespace Caliburn.Light
         /// </summary>
         protected ILogger Log => _logger ?? (_logger = _loggerFactory.GetLogger(GetType()));
 
-        /// <summary>
-        /// The view cache for this instance.
-        /// </summary>
-        protected IDictionary<string, WeakReference> Views
+        private List<KeyValuePair<string, WeakReference>> EnsureViews()
         {
-            get { return _views; }
+            return _views ?? (_views = new List<KeyValuePair<string, WeakReference>>());
         }
 
         /// <summary>
-        /// Raised when a view is attached.
+        /// The view cache for this instance.
         /// </summary>
-        public event EventHandler<ViewAttachedEventArgs> ViewAttached;
+        protected IList<KeyValuePair<string, WeakReference>> Views => EnsureViews();
 
         void IViewAware.AttachView(object view, string context)
         {
             if (view is null)
                 throw new ArgumentNullException(nameof(view));
 
+            if (context is null)
+                context = DefaultContext;
+
             Log.Info("Attaching view {0} to {1}.", view, this);
 
-            _views[context ?? DefaultContext] = new WeakReference(view);
+            var views = EnsureViews();
+            var index = views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
+            if (index < 0)
+                views.Add(new KeyValuePair<string, WeakReference>(context, new WeakReference(view)));
+
             var nonGeneratedView = UIContext.GetFirstNonGeneratedView(view);
             OnViewAttached(nonGeneratedView, context);
         }
@@ -64,10 +68,17 @@ namespace Caliburn.Light
             if (view is null)
                 throw new ArgumentNullException(nameof(view));
 
-            Log.Info("Detaching view {0} from {1}.", view, this);
+            if (context is null)
+                context = DefaultContext;
 
-            return _views.Remove(context ?? DefaultContext);
+            Log.Info("Detaching view {0} from {1}.", view, this);
+            return _views?.RemoveAll(p => string.Equals(p.Key, context, StringComparison.Ordinal)) > 0;
         }
+
+        /// <summary>
+        /// Raised when a view is attached.
+        /// </summary>
+        public event EventHandler<ViewAttachedEventArgs> ViewAttached;
 
         /// <summary>
         /// Called when a view is attached.
@@ -86,9 +97,11 @@ namespace Caliburn.Light
         /// <returns>The view.</returns>
         public object GetView(string context = null)
         {
-            if (_views.TryGetValue(context ?? DefaultContext, out WeakReference view))
-                return view.Target;
-            return null;
+            if (context is null)
+                context = DefaultContext;
+
+            var entry = _views?.Find(p => string.Equals(p.Key, context, StringComparison.Ordinal)) ?? default;
+            return entry.Value?.Target;
         }
     }
 }

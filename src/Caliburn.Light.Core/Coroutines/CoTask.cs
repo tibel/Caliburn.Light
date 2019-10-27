@@ -24,11 +24,7 @@ namespace Caliburn.Light
         /// <param name="args">The <see cref="CoTaskCompletedEventArgs"/> instance containing the event data.</param>
         protected void OnCompleted(CoTaskCompletedEventArgs args)
         {
-            var handler = Completed;
-            if (handler is object)
-            {
-                handler(this, args);
-            }
+            Completed?.Invoke(this, args);
         }
     }
 }

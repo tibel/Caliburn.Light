@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,12 +33,7 @@ namespace Caliburn.Light
 
             foreach (var item in toClose)
             {
-                var guard = item as ICloseGuard;
-                if (guard is null)
-                {
-                    closables.Add(item);
-                }
-                else
+                if (item is ICloseGuard guard)
                 {
                     var canClose = await guard.CanCloseAsync();
                     if (canClose)
@@ -48,6 +42,10 @@ namespace Caliburn.Light
                     }
 
                     result = result && canClose;
+                }
+                else
+                {
+                    closables.Add(item);
                 }
             }
 

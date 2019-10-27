@@ -67,8 +67,7 @@ namespace Caliburn.Light
             {
                 if (listener.Target is object)
                 {
-                    var handler = (EventHandler)listener.Handler;
-                    if (handler is object)
+                    if (listener.Handler is EventHandler handler)
                     {
                         handler(sender, e);
                     }
@@ -149,8 +148,7 @@ namespace Caliburn.Light
             {
                 if (listener.Target is object)
                 {
-                    var handler = (EventHandler<TEventArgs>)listener.Handler;
-                    if (handler is object)
+                    if (listener.Handler is EventHandler<TEventArgs> handler)
                     {
                         handler(sender, e);
                     }

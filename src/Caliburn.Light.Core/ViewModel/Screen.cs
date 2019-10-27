@@ -146,20 +146,15 @@ namespace Caliburn.Light
         /// <param name="dialogResult">The dialog result.</param>
         public virtual void TryClose(bool? dialogResult = null)
         {
-            var child = this as IChild;
-            if (child is object)
+            if (this is IChild child && child.Parent is IConductor conductor)
             {
-                var conductor = child.Parent as IConductor;
-                if (conductor is object)
-                {
-                    conductor.DeactivateItem(this, true);
-                    return;
-                }
+                conductor.DeactivateItem(this, true);
+                return;
             }
 
-            foreach (var view in Views.Values)
+            foreach (var entry in Views)
             {
-                if (UIContext.TryClose(view.Target, dialogResult))
+                if (UIContext.TryClose(entry.Value.Target, dialogResult))
                     return;
             }
 
