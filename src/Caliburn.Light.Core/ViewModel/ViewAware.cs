@@ -36,7 +36,7 @@ namespace Caliburn.Light
 
         private List<KeyValuePair<string, WeakReference>> EnsureViews()
         {
-            return _views ?? (_views = new List<KeyValuePair<string, WeakReference>>());
+            return _views ?? (_views = new List<KeyValuePair<string, WeakReference>>(1));
         }
 
         /// <summary>
