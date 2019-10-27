@@ -19,7 +19,7 @@ namespace Caliburn.Light
             _isInitialized = true;
 
             ViewHelper.Initialize(new ViewAdapter());
-            UIContext.Initialize();
+            UIContext.Initialize(new DispatcherUIContext(Window.Current.Dispatcher));
 
             try
             {
@@ -46,7 +46,7 @@ namespace Caliburn.Light
             // Because dispatchers are tied to windows Execute will fail in 
             // scenarios when the application has multiple windows open (though contract 
             // activation, this keeps Execute up to date with the currently activated window
-            args.Window.Activated += (_, __) => UIContext.Initialize();
+            args.Window.Activated += (s, _) => UIContext.Initialize(new DispatcherUIContext(((Window)s).Dispatcher));
         }
 
         /// <summary>

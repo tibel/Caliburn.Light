@@ -29,9 +29,14 @@ namespace Caliburn.Light
 
                 Application = Application.Current;
                 if (Application is object)
+                {
+                    UIContext.Initialize(new DispatcherUIContext(Application.Dispatcher));
                     PrepareApplication();
+                }
                 else
-                    UIContext.Initialize();
+                {
+                    UIContext.Initialize(new DispatcherUIContext(Dispatcher.CurrentDispatcher));
+                }
 
                 Configure();
             }
@@ -47,7 +52,7 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void PrepareApplication()
         {
-            Application.Startup += OnStartup;
+            Application.Startup += (_, e) => OnStartup(e);
             Application.DispatcherUnhandledException += (_, e) => OnUnhandledException(e);
             Application.Exit += (_, e) => OnExit(e);
         }
@@ -57,12 +62,6 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void Configure()
         {
-        }
-
-        private void OnStartup(object s, StartupEventArgs e)
-        {
-            UIContext.Initialize();
-            OnStartup(e);
         }
 
         /// <summary>

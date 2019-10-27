@@ -30,6 +30,7 @@ namespace Demo.HelloEventAggregator
 
             _container.RegisterSingleton<ILoggerFactory, DebugLoggerFactory>();
             _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
+            _container.RegisterInstance<IUIContext>(new DispatcherUIContext(Window.Current.Dispatcher));
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 

@@ -1,53 +1,60 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Caliburn.Light
 {
     /// <summary>
-    /// The UI execution context.
+    /// A UI execution context based on <see cref="CoreDispatcher"/>.
     /// </summary>
-    public static class UIContext
+    public sealed class DispatcherUIContext : IUIContext
     {
-        private static IUIContext _uiContext = NullUIContext.Instance;
-
-        /// <summary>
-        /// Gets whether the <see cref="UIContext"/> is initialized.
-        /// </summary>
-        public static bool IsInitialized => !ReferenceEquals(_uiContext, NullUIContext.Instance);
+        private readonly CoreDispatcher _dispatcher;
+        private TaskScheduler _taskScheduler;
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
-        public static void Initialize(IUIContext uiContext)
+        public DispatcherUIContext(CoreDispatcher dispatcher)
         {
-            _uiContext = uiContext ?? NullUIContext.Instance;
+            if (dispatcher is null)
+                throw new ArgumentNullException(nameof(dispatcher));
+
+            _dispatcher = dispatcher;
         }
 
         /// <summary>
         /// Determines whether the calling thread is the thread associated with the UI context. 
         /// </summary>
-        /// <returns></returns>
-        public static bool CheckAccess()
+        public bool CheckAccess()
         {
-            return _uiContext.CheckAccess();
+            return _dispatcher.HasThreadAccess;
         }
 
         /// <summary>
         /// Verifies that the calling thread has access to the UI context.
         /// </summary>
-        public static void VerifyAccess()
+        public void VerifyAccess()
         {
-            _uiContext.VerifyAccess();
+            if (!CheckAccess())
+                throw new InvalidOperationException("The calling thread does not have access to the UI context.");
+        }
+
+        private static async void Observe(IAsyncAction asyncAction)
+        {
+            await asyncAction;
         }
 
         /// <summary>
         /// Queues the specified work to run on the UI thread.
         /// </summary>
         /// <param name="action">The work to execute asynchronously.</param>
-        public static void BeginInvoke(Action action)
+        public void BeginInvoke(Action action)
         {
-            _uiContext.BeginInvoke(action);
+            var asyncAction = _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
+            Observe(asyncAction);
         }
 
         /// <summary>
@@ -55,9 +62,10 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="callback">A <see cref="WaitCallback"/> that represents the method to be executed.</param>
         /// <param name="state">An object containing data to be used by the method.</param>
-        public static void BeginInvoke(SendOrPostCallback callback, object state)
+        public void BeginInvoke(SendOrPostCallback callback, object state)
         {
-            _uiContext.BeginInvoke(callback, state);
+            var asyncAction = _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => callback(state));
+            Observe(asyncAction);
         }
 
         /// <summary>
@@ -65,9 +73,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="action">The work to execute asynchronously.</param>
         /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
-        public static Task Run(Action action)
+        public Task Run(Action action)
         {
-            return _uiContext.Run(action);
+            return _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action()).AsTask();
         }
 
         /// <summary>
@@ -76,9 +84,9 @@ namespace Caliburn.Light
         /// <typeparam name="TResult">The type of the result returned by the proxy task.</typeparam>
         /// <param name="function">The work to execute asynchronously</param>
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents a proxy for the <see cref="Task&lt;TResult&gt;"/> returned by function.</returns>
-        public static Task<TResult> Run<TResult>(Func<Task<TResult>> function)
+        public Task<TResult> Run<TResult>(Func<Task<TResult>> function)
         {
-            return _uiContext.Run(function);
+            return RunCore(function).Unwrap();
         }
 
         /// <summary>
@@ -86,9 +94,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="function">The work to execute asynchronously</param>
         /// <returns>A task that represents a proxy for the task returned by function.</returns>
-        public static Task Run(Func<Task> function)
+        public Task Run(Func<Task> function)
         {
-            return _uiContext.Run(function);
+            return RunCore(function).Unwrap();
         }
 
         /// <summary>
@@ -97,14 +105,33 @@ namespace Caliburn.Light
         /// <typeparam name="TResult">The result type of the task.</typeparam>
         /// <param name="function">The work to execute asynchronously</param>
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents the work queued to execute in the UI thread.</returns>
-        public static Task<TResult> Run<TResult>(Func<TResult> function)
+        public Task<TResult> Run<TResult>(Func<TResult> function)
         {
-            return _uiContext.Run(function);
+            return RunCore(function);
+        }
+
+        private Task<TResult> RunCore<TResult>(Func<TResult> function)
+        {
+            var tcs = new TaskCompletionSource<TResult>();
+
+            var ignored = _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                try
+                {
+                    tcs.TrySetResult(function());
+                }
+                catch (Exception e)
+                {
+                    tcs.TrySetException(e);
+                }
+            });
+
+            return tcs.Task;
         }
 
         /// <summary>
         /// The <see cref="System.Threading.Tasks.TaskScheduler"/> associated with the UI context.
         /// </summary>
-        public static TaskScheduler TaskScheduler => _uiContext.TaskScheduler;
+        public TaskScheduler TaskScheduler => _taskScheduler ?? (_taskScheduler = new DispatcherTaskScheduler(_dispatcher));
     }
 }

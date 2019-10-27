@@ -11,16 +11,22 @@ namespace Caliburn.Light
     public sealed class EventAggregator : IEventAggregator
     {
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
+        private readonly IUIContext _uiContext;
         private readonly WaitCallback _publishWaitCallback;
         private readonly SendOrPostCallback _publishSendOrPostCallback;
 
         /// <summary>
         /// Initializes a new instance of <see cref="EventAggregator"/>.
         /// </summary>
-        public EventAggregator()
+        /// <param name="uiContext">The UI context.</param>
+        public EventAggregator(IUIContext uiContext)
         {
+            if (uiContext is null)
+                throw new ArgumentNullException(nameof(uiContext));
+
+            _uiContext = uiContext;
             _publishWaitCallback = PlublishCore;
-            _publishSendOrPostCallback = PlublishCore;
+            _publishSendOrPostCallback = PlublishCore;  
         }
 
         /// <summary>
@@ -116,7 +122,7 @@ namespace Caliburn.Light
 
             if (selectedHandlers.Count == 0) return;
 
-            var isUIThread = UIContext.CheckAccess();
+            var isUIThread = _uiContext.CheckAccess();
             var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
             if (currentThreadHandlers.Count > 0)
                 PublishCore(message, currentThreadHandlers);
@@ -125,7 +131,7 @@ namespace Caliburn.Light
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    UIContext.BeginInvoke(_publishSendOrPostCallback, Tuple.Create(message, uiThreadHandlers));
+                    _uiContext.BeginInvoke(_publishSendOrPostCallback, Tuple.Create(message, uiThreadHandlers));
             }
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
