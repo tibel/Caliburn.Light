@@ -51,12 +51,14 @@ namespace Demo.ExceptionHandling
                 Debug.Assert(!_dispatcher.CheckAccess());
                 Thread.Sleep(100);
 
-                return _dispatcher.InvokeAsync(new Action(() =>
+                var operation = _dispatcher.InvokeAsync(new Action(() =>
                 {
                     Debug.Assert(_dispatcher.CheckAccess());
                     Thread.Sleep(100);
                     throw new InvalidOperationException("Error on a background Task.");
                 }));
+
+                return operation.Task;
             });
         }
 
@@ -75,7 +77,7 @@ namespace Demo.ExceptionHandling
             Debug.Assert(_dispatcher.CheckAccess());
             await Task.Delay(100);
             Debug.Assert(_dispatcher.CheckAccess());
-            throw new InvalidOperationException("Error on async execute.");
+            throw new InvalidOperationException("Error on asynchronous execute.");
         }
     }
 }
