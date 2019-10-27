@@ -14,12 +14,23 @@ namespace Caliburn.Light
     /// <summary>
     /// Resolves view and view-model types based on the type names.
     /// </summary>
-    public class NameBasedViewModelTypeResolver : IViewModelTypeResolver
+    public sealed class NameBasedViewModelTypeResolver : IViewModelTypeResolver
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(NameBasedViewModelTypeResolver));
-
         private readonly List<Assembly> _assemblies = new List<Assembly>();
         private readonly Dictionary<string, Type> _typeNameCache = new Dictionary<string, Type>();
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="NameBasedViewModelTypeResolver"/>.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public NameBasedViewModelTypeResolver(ILoggerFactory loggerFactory)
+        {
+            if (loggerFactory is null)
+                throw new ArgumentNullException(nameof(loggerFactory));
+
+            _logger = loggerFactory.GetLogger(typeof(NameBasedViewModelTypeResolver));
+        }
 
         /// <summary>
         /// The assemblies inspected by the <seealso cref="NameBasedViewModelTypeResolver"/>.
@@ -33,24 +44,26 @@ namespace Caliburn.Light
         /// Add an assembly to the <seealso cref="NameBasedViewModelTypeResolver"/>.
         /// </summary>
         /// <param name="assembly">The assembly to inspect.</param>
-        public void AddAssembly(Assembly assembly)
+        public NameBasedViewModelTypeResolver AddAssembly(Assembly assembly)
         {
-            if (_assemblies.Contains(assembly)) return;
+            if (_assemblies.Contains(assembly)) return this;
 
-            var types = ExtractTypes(assembly);
-            foreach (var type in types)
+            foreach (var type in ExtractTypes(assembly))
             {
                 _typeNameCache.Add(type.FullName, type);
             }
+
+            return this;
         }
 
         /// <summary>
         /// Removes all registered types.
         /// </summary>
-        public void Reset()
+        public NameBasedViewModelTypeResolver Reset()
         {
             _assemblies.Clear();
             _typeNameCache.Clear();
+            return this;
         }
 
         private static IEnumerable<Type> ExtractTypes(Assembly assembly)
@@ -92,7 +105,7 @@ namespace Caliburn.Light
 
             if (modelType is null)
             {
-                Log.Warn("View Model not found. Searched: {0}.", string.Join(", ", candidates));
+                _logger.Warn("View Model not found. Searched: {0}.", string.Join(", ", candidates));
             }
 
             return modelType;
@@ -112,7 +125,7 @@ namespace Caliburn.Light
 
             if (viewType is null)
             {
-                Log.Warn("View not found. Searched: {0}.", string.Join(", ", viewTypeList));
+                _logger.Warn("View not found. Searched: {0}.", string.Join(", ", viewTypeList));
             }
 
             return viewType;

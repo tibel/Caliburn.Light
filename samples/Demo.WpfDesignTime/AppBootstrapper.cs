@@ -9,7 +9,6 @@ namespace Demo.WpfDesignTime
 
         public AppBootstrapper()
         {
-            LogManager.Initialize(new DebugLoggerFactory());
             Initialize();
         }
 
@@ -17,6 +16,7 @@ namespace Demo.WpfDesignTime
         {
             _container = new SimpleContainer();
 
+            _container.RegisterSingleton<ILoggerFactory, DebugLoggerFactory>();
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();

@@ -30,6 +30,9 @@ namespace Caliburn.Light
 
         void IViewAware.AttachView(object view, string context)
         {
+            if (view is null)
+                throw new ArgumentNullException(nameof(view));
+
             _views[context ?? DefaultContext] = new WeakReference(view);
             var nonGeneratedView = UIContext.GetFirstNonGeneratedView(view);
             OnViewAttached(nonGeneratedView, context);
@@ -37,6 +40,9 @@ namespace Caliburn.Light
 
         bool IViewAware.DetachView(object view, string context)
         {
+            if (view is null)
+                throw new ArgumentNullException(nameof(view));
+
             return _views.Remove(context ?? DefaultContext);
         }
 
@@ -57,8 +63,7 @@ namespace Caliburn.Light
         /// <returns>The view.</returns>
         public object GetView(string context = null)
         {
-            WeakReference view;
-            if (_views.TryGetValue(context ?? DefaultContext, out view))
+            if (_views.TryGetValue(context ?? DefaultContext, out WeakReference view))
                 return view.Target;
             return null;
         }

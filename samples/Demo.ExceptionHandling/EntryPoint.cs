@@ -15,8 +15,6 @@ namespace Demo.ExceptionHandling
                 AppDomain.CurrentDomain.UnhandledException += (sender, e) => Debug.WriteLine(">>> AppDomain - {0}", e.ExceptionObject);
                 TaskScheduler.UnobservedTaskException      += (sender, e) => Debug.WriteLine(">>> TaskScheduler - {0}", e.Exception);
 
-                LogManager.Initialize(new DebugLoggerFactory());
-
                 var app = new App();
                 //app.InitializeComponent();
 

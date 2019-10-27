@@ -20,7 +20,6 @@ namespace Demo.HelloSpecialValues
         public App()
         {
             InitializeComponent();
-            LogManager.Initialize(new DebugLoggerFactory());
         }
 
         private SimpleContainer _container;
@@ -29,12 +28,13 @@ namespace Demo.HelloSpecialValues
         {
             _container = new SimpleContainer();
 
+            _container.RegisterSingleton<ILoggerFactory, DebugLoggerFactory>();
             _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new NameBasedViewModelTypeResolver();
-            typeResolver.AddAssembly(typeof(App).GetTypeInfo().Assembly);
+            var typeResolver = new NameBasedViewModelTypeResolver(_container.GetInstance<ILoggerFactory>())
+                .AddAssembly(typeof(App).GetTypeInfo().Assembly);
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
             _container.RegisterSingleton<MainPageViewModel>();
