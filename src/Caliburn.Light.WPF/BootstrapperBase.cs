@@ -26,11 +26,12 @@ namespace Caliburn.Light
             try
             {
                 ViewHelper.Initialize(new ViewAdapter());
-                UIContext.Initialize();
 
                 Application = Application.Current;
                 if (Application is object)
                     PrepareApplication();
+                else
+                    UIContext.Initialize();
 
                 Configure();
             }
@@ -46,7 +47,7 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void PrepareApplication()
         {
-            Application.Startup += (_, e) => OnStartup(e);
+            Application.Startup += OnStartup;
             Application.DispatcherUnhandledException += (_, e) => OnUnhandledException(e);
             Application.Exit += (_, e) => OnExit(e);
         }
@@ -56,6 +57,12 @@ namespace Caliburn.Light
         /// </summary>
         protected virtual void Configure()
         {
+        }
+
+        private void OnStartup(object s, StartupEventArgs e)
+        {
+            UIContext.Initialize();
+            OnStartup(e);
         }
 
         /// <summary>
