@@ -56,8 +56,12 @@ namespace Caliburn.Light
 
             var views = EnsureViews();
             var index = views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
+
+            var entry = new KeyValuePair<string, WeakReference>(context, new WeakReference(view));
             if (index < 0)
-                views.Add(new KeyValuePair<string, WeakReference>(context, new WeakReference(view)));
+                views.Add(entry);
+            else
+                views[index] = entry;
 
             var nonGeneratedView = UIContext.GetFirstNonGeneratedView(view);
             OnViewAttached(nonGeneratedView, context);
