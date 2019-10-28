@@ -9,19 +9,28 @@ namespace Caliburn.Light
     /// </summary>
     public static class UIContext
     {
-        private static IUIContext _uiContext = NullUIContext.Instance;
+        private static IUIContext _uiContext;
 
         /// <summary>
         /// Gets whether the <see cref="UIContext"/> is initialized.
         /// </summary>
-        public static bool IsInitialized => !ReferenceEquals(_uiContext, NullUIContext.Instance);
+        public static bool IsInitialized => _uiContext is object;
+
+        /// <summary>
+        /// Verifies that <see cref="UIContext"/> is initialized.
+        /// </summary>
+        public static void VerifyInitialized()
+        {
+            if (!IsInitialized)
+                throw new InvalidOperationException(nameof(UIContext) + " is not initialized.");
+        }
 
         /// <summary>
         /// Initializes the <see cref="UIContext"/>.
         /// </summary>
         public static void Initialize(IUIContext uiContext)
         {
-            _uiContext = uiContext ?? NullUIContext.Instance;
+            _uiContext = uiContext;
         }
 
         /// <summary>
@@ -30,6 +39,7 @@ namespace Caliburn.Light
         /// <returns></returns>
         public static bool CheckAccess()
         {
+            VerifyInitialized();
             return _uiContext.CheckAccess();
         }
 
@@ -38,6 +48,7 @@ namespace Caliburn.Light
         /// </summary>
         public static void VerifyAccess()
         {
+            VerifyInitialized();
             _uiContext.VerifyAccess();
         }
 
@@ -47,6 +58,7 @@ namespace Caliburn.Light
         /// <param name="action">The work to execute asynchronously.</param>
         public static void BeginInvoke(Action action)
         {
+            VerifyInitialized();
             _uiContext.BeginInvoke(action);
         }
 
@@ -57,6 +69,7 @@ namespace Caliburn.Light
         /// <param name="state">An object containing data to be used by the method.</param>
         public static void BeginInvoke(SendOrPostCallback callback, object state)
         {
+            VerifyInitialized();
             _uiContext.BeginInvoke(callback, state);
         }
 
@@ -67,6 +80,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task"/> that represents the work queued to execute on the UI thread.</returns>
         public static Task Run(Action action)
         {
+            VerifyInitialized();
             return _uiContext.Run(action);
         }
 
@@ -78,6 +92,7 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents a proxy for the <see cref="Task&lt;TResult&gt;"/> returned by function.</returns>
         public static Task<TResult> Run<TResult>(Func<Task<TResult>> function)
         {
+            VerifyInitialized();
             return _uiContext.Run(function);
         }
 
@@ -88,6 +103,7 @@ namespace Caliburn.Light
         /// <returns>A task that represents a proxy for the task returned by function.</returns>
         public static Task Run(Func<Task> function)
         {
+            VerifyInitialized();
             return _uiContext.Run(function);
         }
 
@@ -99,12 +115,20 @@ namespace Caliburn.Light
         /// <returns>A <see cref="Task&lt;TResult&gt;"/> that represents the work queued to execute in the UI thread.</returns>
         public static Task<TResult> Run<TResult>(Func<TResult> function)
         {
+            VerifyInitialized();
             return _uiContext.Run(function);
         }
 
         /// <summary>
         /// The <see cref="System.Threading.Tasks.TaskScheduler"/> associated with the UI context.
         /// </summary>
-        public static TaskScheduler TaskScheduler => _uiContext.TaskScheduler;
+        public static TaskScheduler TaskScheduler
+        {
+            get
+            {
+                VerifyInitialized();
+                return _uiContext.TaskScheduler;
+            }
+        }
     }
 }
