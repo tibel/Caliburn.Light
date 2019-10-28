@@ -11,8 +11,7 @@ namespace Demo.SimpleMDI
         private int _count;
         private bool _canClosePending;
 
-        public ShellViewModel(ILoggerFactory loggerFactory, Func<TabViewModel> createTabViewModel)
-            : base(loggerFactory)
+        public ShellViewModel(Func<TabViewModel> createTabViewModel)
         {
             if (createTabViewModel is null)
                 throw new ArgumentNullException(nameof(createTabViewModel));

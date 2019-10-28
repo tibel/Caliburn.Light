@@ -22,9 +22,7 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Initializes a new instance of <see cref="Conductor&lt;T&gt;.Collection.OneActive"/>.
                 /// </summary>
-                /// <param name="loggerFactory">The logger factory.</param>
-                public OneActive(ILoggerFactory loggerFactory)
-                    : base(loggerFactory)
+                public OneActive()
                 {
                     _items.CollectionChanged += (s, e) =>
                     {

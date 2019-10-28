@@ -11,15 +11,6 @@ namespace Caliburn.Light
         private T _activeItem;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ConductorBaseWithActiveItem&lt;T&gt;"/>.
-        /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        protected ConductorBaseWithActiveItem(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
-        {
-        }
-
-        /// <summary>
         /// The currently active item.
         /// </summary>
         public T ActiveItem

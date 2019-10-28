@@ -17,27 +17,25 @@ namespace Caliburn.Light
     {
         private readonly IViewModelTypeResolver _typeResolver;
         private readonly IServiceLocator _serviceLocator;
-        private readonly ILogger _logger;
+        private ILogger _logger;
 
         /// <summary>
         /// Creates an instance of <see cref="ViewModelLocator"/>.
         /// </summary>
         /// <param name="typeResolver">The type resolver.</param>
         /// <param name="serviceLocator">The service locator.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceLocator serviceLocator, ILoggerFactory loggerFactory)
+        public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceLocator serviceLocator)
         {
             if (typeResolver is null)
                 throw new ArgumentNullException(nameof(typeResolver));
             if (serviceLocator is null)
                 throw new ArgumentNullException(nameof(serviceLocator));
-            if (loggerFactory is null)
-                throw new ArgumentNullException(nameof(loggerFactory));
 
             _typeResolver = typeResolver;
             _serviceLocator = serviceLocator;
-            _logger = loggerFactory.GetLogger(typeof(ViewModelLocator));
         }
+
+        private ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
 
         /// <summary>
         /// Locates the view for the specified model instance.
@@ -53,7 +51,7 @@ namespace Caliburn.Light
             var view = TryGetViewFromViewAware(model, context);
             if (view is object)
             {
-                _logger.Info("Using cached view for {0}.", model);
+                Log.Info("Using cached view for {0}.", model);
                 return view;
             }
 
@@ -61,7 +59,7 @@ namespace Caliburn.Light
             var viewType = _typeResolver.GetViewType(modelType, context);
             if (viewType is null)
             {
-                _logger.Error("Cannot find view for {0}.", modelType);
+                Log.Error("Cannot find view for {0}.", modelType);
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
@@ -104,7 +102,7 @@ namespace Caliburn.Light
             var frameworkElement = view as FrameworkElement;
             if (frameworkElement is object && frameworkElement.DataContext is object)
             {
-                _logger.Info("Using current data context for {0}.", view);
+                Log.Info("Using current data context for {0}.", view);
                 return frameworkElement.DataContext;
             }
 
@@ -112,14 +110,14 @@ namespace Caliburn.Light
             var modelType = _typeResolver.GetModelType(viewType);
             if (modelType is null)
             {
-                _logger.Error("Cannot find model for {0}.", viewType);
+                Log.Error("Cannot find model for {0}.", viewType);
                 return null;
             }
 
             var model = _serviceLocator.GetInstance(modelType);
             if (model is null)
             {
-                _logger.Error("Cannot locate {0}.", modelType);
+                Log.Error("Cannot locate {0}.", modelType);
                 return null;
             }
 

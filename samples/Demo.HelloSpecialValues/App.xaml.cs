@@ -26,14 +26,15 @@ namespace Demo.HelloSpecialValues
 
         protected override void Configure()
         {
+            LogManager.Initialize(new DebugLoggerFactory());
+
             _container = new SimpleContainer();
 
-            _container.RegisterSingleton<ILoggerFactory, DebugLoggerFactory>();
             _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new NameBasedViewModelTypeResolver(_container.GetInstance<ILoggerFactory>())
+            var typeResolver = new NameBasedViewModelTypeResolver()
                 .AddAssembly(typeof(App).GetTypeInfo().Assembly);
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 

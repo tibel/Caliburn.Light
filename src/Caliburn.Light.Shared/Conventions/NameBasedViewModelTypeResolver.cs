@@ -18,19 +18,9 @@ namespace Caliburn.Light
     {
         private readonly List<Assembly> _assemblies = new List<Assembly>();
         private readonly Dictionary<string, Type> _typeNameCache = new Dictionary<string, Type>();
-        private readonly ILogger _logger;
+        private ILogger _logger;
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="NameBasedViewModelTypeResolver"/>.
-        /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public NameBasedViewModelTypeResolver(ILoggerFactory loggerFactory)
-        {
-            if (loggerFactory is null)
-                throw new ArgumentNullException(nameof(loggerFactory));
-
-            _logger = loggerFactory.GetLogger(typeof(NameBasedViewModelTypeResolver));
-        }
+        private ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
 
         /// <summary>
         /// The assemblies inspected by the <seealso cref="NameBasedViewModelTypeResolver"/>.
@@ -105,7 +95,7 @@ namespace Caliburn.Light
 
             if (modelType is null)
             {
-                _logger.Warn("View Model not found. Searched: {0}.", string.Join(", ", candidates));
+                Log.Warn("View Model not found. Searched: {0}.", string.Join(", ", candidates));
             }
 
             return modelType;
@@ -125,7 +115,7 @@ namespace Caliburn.Light
 
             if (viewType is null)
             {
-                _logger.Warn("View not found. Searched: {0}.", string.Join(", ", viewTypeList));
+                Log.Warn("View not found. Searched: {0}.", string.Join(", ", viewTypeList));
             }
 
             return viewType;

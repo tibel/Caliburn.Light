@@ -8,7 +8,6 @@ namespace Caliburn.Light
     /// </summary>
     public class ViewAware : BindableObject, IViewAware
     {
-        private readonly ILoggerFactory _loggerFactory;
         private List<KeyValuePair<string, WeakReference>> _views;
         private ILogger _logger;
 
@@ -18,26 +17,11 @@ namespace Caliburn.Light
         public static readonly string DefaultContext = "__default__";
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ViewAware"/>.
-        /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public ViewAware(ILoggerFactory loggerFactory)
-        {
-            if (loggerFactory is null)
-                throw new ArgumentNullException(nameof(loggerFactory));
-
-            _loggerFactory = loggerFactory;
-        }
-
-        /// <summary>
         /// Gets the associated logger.
         /// </summary>
-        protected ILogger Log => _logger ?? (_logger = _loggerFactory.GetLogger(GetType()));
+        protected ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
 
-        private List<KeyValuePair<string, WeakReference>> EnsureViews()
-        {
-            return _views ?? (_views = new List<KeyValuePair<string, WeakReference>>(1));
-        }
+        private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ?? (_views = new List<KeyValuePair<string, WeakReference>>(1));
 
         /// <summary>
         /// The view cache for this instance.

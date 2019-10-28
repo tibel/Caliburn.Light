@@ -7,8 +7,7 @@ namespace Demo.HelloSpecialValues
 {
     public class MainPageViewModel : Screen
     {
-        public MainPageViewModel(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
+        public MainPageViewModel()
         {
             Characters = new BindableCollection<CharacterViewModel>
             {

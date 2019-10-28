@@ -9,15 +9,6 @@ namespace Caliburn.Light
     public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : class
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="Conductor&lt;T&gt;"/>.
-        /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public Conductor(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
-        {
-        }
-
-        /// <summary>
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>

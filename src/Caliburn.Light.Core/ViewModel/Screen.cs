@@ -14,15 +14,6 @@ namespace Caliburn.Light
         private bool _isInitialized;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="Screen"/>.
-        /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public Screen(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
-        {
-        }
-
-        /// <summary>
         /// Indicates whether or not this instance is currently active.
         /// </summary>
         public bool IsActive

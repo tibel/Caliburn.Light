@@ -10,16 +10,8 @@ namespace Caliburn.Light
     /// <typeparam name="T">The type that is being conducted.</typeparam>
     public abstract class ConductorBase<T> : Screen, IConductor where T : class
     {
+        private static readonly DefaultCloseStrategy<T> _defaultCloseStrategy = new DefaultCloseStrategy<T>();
         private ICloseStrategy<T> _closeStrategy;
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="ConductorBase&lt;T&gt;"/>.
-        /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        protected ConductorBase(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
-        {
-        }
 
         /// <summary>
         /// Gets or sets the close strategy.
@@ -27,7 +19,7 @@ namespace Caliburn.Light
         /// <value>The close strategy.</value>
         public ICloseStrategy<T> CloseStrategy
         {
-            get { return _closeStrategy ?? (_closeStrategy = new DefaultCloseStrategy<T>()); }
+            get { return _closeStrategy ?? (_closeStrategy = _defaultCloseStrategy); }
             set { _closeStrategy = value; }
         }
 
@@ -88,8 +80,7 @@ namespace Caliburn.Light
         /// <returns>The item to be activated.</returns>
         protected virtual T EnsureItem(T newItem)
         {
-            var node = newItem as IChild;
-            if (node is object && node.Parent != this)
+            if (newItem is IChild node && node.Parent != this)
                 node.Parent = this;
 
             return newItem;
