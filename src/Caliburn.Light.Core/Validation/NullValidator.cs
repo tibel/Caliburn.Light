@@ -7,18 +7,23 @@ namespace Caliburn.Light
     {
         public static readonly NullValidator Instance = new NullValidator();
 
+        private static readonly ReadOnlyCollection<string> _emtpyList = new ReadOnlyCollection<string>(new List<string>());
+
+        private static readonly ReadOnlyDictionary<string, ICollection<string>> _emptyDictionary =
+            new ReadOnlyDictionary<string, ICollection<string>>(new Dictionary<string, ICollection<string>>());
+
         private NullValidator()
         {
         }
 
         public ICollection<string> ValidateProperty(object obj, string propertyName)
         {
-            return new List<string>();
+            return _emtpyList;
         }
 
         public IDictionary<string, ICollection<string>> Validate(object obj)
         {
-            return new Dictionary<string, ICollection<string>>();
+            return _emptyDictionary;
         }
     }
 }

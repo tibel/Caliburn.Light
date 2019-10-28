@@ -92,15 +92,11 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets a value indicating whether any property has validation errors.
         /// </summary>
-        public bool HasErrors
-        {
-            get { return _errors.Count > 0; }
-        }
+        public bool HasErrors => _errors.Count > 0;
 
         private void OnErrorsChanged(string propertyName)
         {
-            if (_onErrorsChanged is object)
-                _onErrorsChanged(propertyName);
+            _onErrorsChanged?.Invoke(propertyName);
         }
     }
 }

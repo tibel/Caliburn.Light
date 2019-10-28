@@ -8,9 +8,6 @@ namespace Caliburn.Light
     /// <typeparam name="T">The type of the object the rule applies to.</typeparam>
     public abstract class ValidationRule<T>
     {
-        private readonly string _propertyName;
-        private readonly string _errorMessage;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationRule&lt;T&gt;"/> class.
         /// </summary>
@@ -23,25 +20,19 @@ namespace Caliburn.Light
             if (string.IsNullOrEmpty(errorMessage))
                 throw new ArgumentNullException(nameof(errorMessage));
 
-            _propertyName = propertyName;
-            _errorMessage = errorMessage;
+            PropertyName = propertyName;
+            ErrorMessage = errorMessage;
         }
 
         /// <summary>
         /// Gets the name of the property this instance applies to.
         /// </summary>
-        public string PropertyName
-        {
-            get { return _propertyName; }
-        }
+        public string PropertyName { get; }
 
         /// <summary>
         /// Gets the error message if the rules fails.
         /// </summary>
-        public string ErrorMessage
-        {
-            get { return _errorMessage; }
-        }
+        public string ErrorMessage { get; }
 
         /// <summary>
         /// Applies the rule to the specified object.
