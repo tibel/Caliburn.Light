@@ -11,7 +11,7 @@ namespace Caliburn.Light
     {
         private readonly Action<string> _onErrorsChanged;
         private readonly Dictionary<string, ICollection<string>> _errors = new Dictionary<string, ICollection<string>>();
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationAdapter"/> class.
         /// </summary>
@@ -67,7 +67,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Gets all validation errors of the spezified property.
+        /// Gets all validation errors of the specified property.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>List of validation errors.</returns>
@@ -80,7 +80,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Determines whether the spezified property has validation errors.
+        /// Determines whether the specified property has validation errors.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>True, if the property has validation errors.</returns>
