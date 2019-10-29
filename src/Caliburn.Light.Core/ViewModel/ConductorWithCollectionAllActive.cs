@@ -104,10 +104,8 @@ namespace Caliburn.Light
 
                     item = EnsureItem(item);
 
-                    if (IsActive)
-                    {
-                        ScreenHelper.TryActivate(item);
-                    }
+                    if (IsActive && item is IActivate activator)
+                        activator.Activate();
 
                     OnActivationProcessed(item, true);
                 }
@@ -124,7 +122,8 @@ namespace Caliburn.Light
 
                     if (!close)
                     {
-                        ScreenHelper.TryDeactivate(item, false);
+                        if (item is IDeactivate deactivator)
+                            deactivator.Deactivate(false);
                     }
                     else
                     {
@@ -145,7 +144,9 @@ namespace Caliburn.Light
 
                 private void CloseItemCore(T item)
                 {
-                    ScreenHelper.TryDeactivate(item, true);
+                    if (item is IDeactivate deactivator)
+                        deactivator.Deactivate(true);
+
                     _items.Remove(item);
                 }
 

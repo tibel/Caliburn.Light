@@ -72,7 +72,9 @@ namespace Caliburn.Light
                     {
                         if (IsActive)
                         {
-                            ScreenHelper.TryActivate(item);
+                            if (item is IActivate activator)
+                                activator.Activate();
+
                             OnActivationProcessed(item, true);
                         }
 
@@ -93,7 +95,8 @@ namespace Caliburn.Light
 
                     if (!close)
                     {
-                        ScreenHelper.TryDeactivate(item, false);
+                        if (item is IDeactivate deactivator)
+                            deactivator.Deactivate(false);
                     }
                     else
                     {
@@ -114,7 +117,8 @@ namespace Caliburn.Light
                     }
                     else
                     {
-                        ScreenHelper.TryDeactivate(item, true);
+                        if (item is IDeactivate deactivator)
+                            deactivator.Deactivate(true);
                     }
 
                     _items.Remove(item);
@@ -189,7 +193,8 @@ namespace Caliburn.Light
                 /// </summary>
                 protected override void OnActivate()
                 {
-                    ScreenHelper.TryActivate(ActiveItem);
+                    if (ActiveItem is IActivate activator)
+                        activator.Activate();
                 }
 
                 /// <summary>
@@ -205,7 +210,8 @@ namespace Caliburn.Light
                     }
                     else
                     {
-                        ScreenHelper.TryDeactivate(ActiveItem, false);
+                        if (ActiveItem is IDeactivate deactivator)
+                            deactivator.Deactivate(false);
                     }
                 }
 

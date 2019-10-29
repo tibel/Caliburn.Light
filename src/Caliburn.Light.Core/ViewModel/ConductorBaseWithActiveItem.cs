@@ -40,12 +40,14 @@ namespace Caliburn.Light
                 return;
 
             RaisePropertyChanging(nameof(ActiveItem));
-            ScreenHelper.TryDeactivate(_activeItem, closePrevious);
+
+            if (_activeItem is IDeactivate deactivator)
+                deactivator.Deactivate(closePrevious);
 
             newItem = EnsureItem(newItem);
 
-            if (IsActive)
-                ScreenHelper.TryActivate(newItem);
+            if (IsActive && newItem is IActivate activator)
+                activator.Activate();
 
             _activeItem = newItem;
             RaisePropertyChanged(nameof(ActiveItem));

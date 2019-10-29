@@ -18,7 +18,9 @@ namespace Caliburn.Light
             {
                 if (IsActive)
                 {
-                    ScreenHelper.TryActivate(item);
+                    if (item is IActivate activator)
+                        activator.Activate();
+
                     OnActivationProcessed(item, true);
                 }
                 return;
@@ -63,7 +65,8 @@ namespace Caliburn.Light
         /// </summary>
         protected override void OnActivate()
         {
-            ScreenHelper.TryActivate(ActiveItem);
+            if (ActiveItem is IActivate activator)
+                activator.Activate();
         }
 
         /// <summary>
@@ -72,7 +75,8 @@ namespace Caliburn.Light
         /// <param name="close">Indicates whether this instance will be closed.</param>
         protected override void OnDeactivate(bool close)
         {
-            ScreenHelper.TryDeactivate(ActiveItem, close);
+            if (ActiveItem is IDeactivate deactivator)
+                deactivator.Deactivate(close);
         }
 
         /// <summary>

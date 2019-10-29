@@ -19,7 +19,7 @@ namespace Caliburn.Light
         /// <value>The close strategy.</value>
         public ICloseStrategy<T> CloseStrategy
         {
-            get { return _closeStrategy ?? (_closeStrategy = _defaultCloseStrategy); }
+            get { return _closeStrategy ?? _defaultCloseStrategy; }
             set { _closeStrategy = value; }
         }
 
