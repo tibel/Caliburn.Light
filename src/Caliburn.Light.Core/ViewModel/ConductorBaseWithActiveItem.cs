@@ -26,7 +26,6 @@ namespace Caliburn.Light
         object IHaveActiveItem.ActiveItem
         {
             get { return ActiveItem; }
-            set { ActiveItem = (T) value; }
         }
 
         /// <summary>
