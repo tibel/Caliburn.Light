@@ -8,18 +8,12 @@ namespace Caliburn.Light
     /// </summary>
     public class ViewAware : BindableObject, IViewAware
     {
+        private static readonly string DefaultContext = "__default__";
+
         private List<KeyValuePair<string, WeakReference>> _views;
         private ILogger _logger;
 
-        /// <summary>
-        /// The default view context.
-        /// </summary>
-        public static readonly string DefaultContext = "__default__";
-
-        /// <summary>
-        /// Gets the associated logger.
-        /// </summary>
-        protected ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
+        internal ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
 
         private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ?? (_views = new List<KeyValuePair<string, WeakReference>>(1));
 
@@ -78,12 +72,7 @@ namespace Caliburn.Light
             ViewAttached?.Invoke(this, new ViewAttachedEventArgs(view, context));
         }
 
-        /// <summary>
-        /// Gets a view previously attached to this instance.
-        /// </summary>
-        /// <param name="context">The context denoting which view to retrieve.</param>
-        /// <returns>The view.</returns>
-        public object GetView(string context = null)
+        object IViewAware.GetView(string context)
         {
             if (context is null)
                 context = DefaultContext;
