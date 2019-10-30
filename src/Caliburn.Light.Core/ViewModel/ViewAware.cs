@@ -20,7 +20,7 @@ namespace Caliburn.Light
         /// <summary>
         /// The view cache for this instance.
         /// </summary>
-        protected IList<KeyValuePair<string, WeakReference>> Views => EnsureViews();
+        protected IReadOnlyList<KeyValuePair<string, WeakReference>> Views => EnsureViews();
 
         void IViewAware.AttachView(object view, string context)
         {
@@ -79,6 +79,11 @@ namespace Caliburn.Light
 
             var entry = _views?.Find(p => string.Equals(p.Key, context, StringComparison.Ordinal)) ?? default;
             return entry.Value?.Target;
+        }
+
+        internal void ClearViews()
+        {
+            _views?.Clear();
         }
     }
 }

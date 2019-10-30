@@ -107,7 +107,7 @@ namespace Caliburn.Light
 
                 if (close)
                 {
-                    Views.Clear();
+                    ClearViews();
                     Log.Info("Closed {0}.", this);
                 }
             }
