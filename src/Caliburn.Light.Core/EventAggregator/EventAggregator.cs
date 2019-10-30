@@ -150,15 +150,10 @@ namespace Caliburn.Light
             for (var i = 0; i < handlers.Count; i++)
             {
                 var task = handlers[i].HandleAsync(message);
-                Observe(task);
+                task.Observe();
                 if (!task.IsCompleted)
                     Executing?.Invoke(null, new TaskEventArgs(task));
             }
-        }
-
-        private static async void Observe(Task task)
-        {
-            await task.ConfigureAwait(false);
         }
 
         /// <summary>

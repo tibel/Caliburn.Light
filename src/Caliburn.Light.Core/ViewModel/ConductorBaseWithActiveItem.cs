@@ -38,8 +38,6 @@ namespace Caliburn.Light
             if (EqualityComparer<T>.Default.Equals(_activeItem, newItem))
                 return;
 
-            RaisePropertyChanging(nameof(ActiveItem));
-
             if (_activeItem is IDeactivate deactivator)
                 deactivator.Deactivate(closePrevious);
 
@@ -48,9 +46,7 @@ namespace Caliburn.Light
             if (IsActive && newItem is IActivate activator)
                 activator.Activate();
 
-            _activeItem = newItem;
-            RaisePropertyChanged(nameof(ActiveItem));
-
+            SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
             OnActivationProcessed(_activeItem, true);
         }
     }
