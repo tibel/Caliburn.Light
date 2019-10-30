@@ -19,10 +19,6 @@ namespace Caliburn.Light
             set { ActivateItem(value); }
         }
 
-        /// <summary>
-        /// The currently active item.
-        /// </summary>
-        /// <value></value>
         object IHaveActiveItem.ActiveItem
         {
             get { return ActiveItem; }
