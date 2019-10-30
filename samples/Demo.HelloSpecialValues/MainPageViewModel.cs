@@ -33,7 +33,7 @@ namespace Demo.HelloSpecialValues
             await dialog.ShowAsync();
         }
 
-        public BindableCollection<CharacterViewModel> Characters { get; }
+        public IReadOnlyBindableCollection<CharacterViewModel> Characters { get; }
 
         public AsyncCommand CharacterSelectedCommand { get; }
     }
