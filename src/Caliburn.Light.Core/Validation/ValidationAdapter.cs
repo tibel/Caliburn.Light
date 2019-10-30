@@ -76,7 +76,7 @@ namespace Caliburn.Light
             ICollection<string> errors;
             if (_errors.TryGetValue(propertyName, out errors))
                 return errors;
-            return System.Linq.Enumerable.Empty<string>();
+            return Array.Empty<string>();
         }
 
         /// <summary>

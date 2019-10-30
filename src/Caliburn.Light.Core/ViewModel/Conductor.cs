@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -26,6 +27,12 @@ namespace Caliburn.Light
                 return;
             }
 
+            if (ActiveItem is null)
+            {
+                ChangeActiveItem(item, true);
+                return;
+            }
+
             var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
             if (result.CanClose)
                 ChangeActiveItem(item, true);
@@ -41,9 +48,7 @@ namespace Caliburn.Light
         public override async void DeactivateItem(T item, bool close)
         {
             if (item is null || !ReferenceEquals(item, ActiveItem))
-            {
                 return;
-            }
 
             var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
             if (result.CanClose)
@@ -56,6 +61,9 @@ namespace Caliburn.Light
         /// <returns>A task containing the result of the close check.</returns>
         public override async Task<bool> CanCloseAsync()
         {
+            if (ActiveItem is null)
+                return true;
+
             var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
             return result.CanClose;
         }
@@ -85,7 +93,7 @@ namespace Caliburn.Light
         /// <returns>The collection of children.</returns>
         public override IEnumerable<T> GetChildren()
         {
-            return new[] {ActiveItem};
+            return ActiveItem is null ? Array.Empty<T>() : new[] {ActiveItem};
         }
     }
 }

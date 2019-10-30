@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -49,7 +49,7 @@ namespace Caliburn.Light
                 }
             }
 
-            return new CloseResult<T>(result, _closeConductedItemsWhenConductorCannotClose ? closables : Enumerable.Empty<T>());
+            return new CloseResult<T>(result, _closeConductedItemsWhenConductorCannotClose ? (IEnumerable<T>)closables : Array.Empty<T>());
         }
     }
 }
