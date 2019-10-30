@@ -10,7 +10,7 @@ namespace Caliburn.Light
         /// <summary>
         /// An implementation of <see cref="IConductor"/> that holds on many items.
         /// </summary>
-        public partial class Collection
+        public static partial class Collection
         {
             /// <summary>
             /// An implementation of <see cref="IConductor"/> that holds on many items but only activates one at a time.
