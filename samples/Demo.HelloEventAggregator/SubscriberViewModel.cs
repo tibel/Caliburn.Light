@@ -16,6 +16,6 @@ namespace Demo.HelloEventAggregator
             _messages.Add(message);
         }
 
-        public IBindableCollection<string> Messages => _messages;
+        public IReadOnlyBindableCollection<string> Messages => _messages;
     }
 }
