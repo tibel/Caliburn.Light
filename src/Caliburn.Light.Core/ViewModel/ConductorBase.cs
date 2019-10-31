@@ -69,7 +69,9 @@ namespace Caliburn.Light
         /// <param name="success">if set to <c>true</c> activation was successful.</param>
         protected virtual void OnActivationProcessed(T item, bool success)
         {
-            if (item is null) return;
+            if (item is null)
+                return;
+
             ActivationProcessed?.Invoke(this, new ActivationProcessedEventArgs(item, success));
         }
 

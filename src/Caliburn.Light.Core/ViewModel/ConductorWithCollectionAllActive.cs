@@ -48,17 +48,21 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Gets the items that are currently being conducted.
                 /// </summary>
-                public IBindableCollection<T> Items
-                {
-                    get { return _items; }
-                }
+                public IBindableCollection<T> Items => _items;
+
+                /// <summary>
+                /// Gets the children.
+                /// </summary>
+                /// <returns>The collection of children.</returns>
+                public sealed override IEnumerable<T> GetChildren() => _items;
 
                 /// <summary>
                 /// Called when activating.
                 /// </summary>
                 protected override void OnActivate()
                 {
-                    foreach(var x in _items.OfType<IActivate>()) { x.Activate(); }
+                    foreach(var x in _items.OfType<IActivate>())
+                        x.Activate();
                 }
 
                 /// <summary>
@@ -67,11 +71,11 @@ namespace Caliburn.Light
                 /// <param name="close">Indicates whether this instance will be closed.</param>
                 protected override void OnDeactivate(bool close)
                 {
-                    foreach (var x in _items.OfType<IDeactivate>()) { x.Deactivate(close); }
+                    foreach (var x in _items.OfType<IDeactivate>())
+                        x.Deactivate(close);
+
                     if (close)
-                    {
                         _items.Clear();
-                    }
                 }
 
                 /// <summary>
@@ -87,7 +91,9 @@ namespace Caliburn.Light
 
                     if (!canClose && closeables.Any())
                     {
-                        foreach (var x in closeables.OfType<IDeactivate>()) { x.Deactivate(true); }
+                        foreach (var x in closeables.OfType<IDeactivate>()) 
+                            x.Deactivate(true);
+
                         _items.RemoveRange(closeables);
                     }
 
@@ -100,7 +106,8 @@ namespace Caliburn.Light
                 /// <param name="item">The item to activate.</param>
                 public override void ActivateItem(T item)
                 {
-                    if (item is null) return;
+                    if (item is null)
+                        return;
 
                     item = EnsureItem(item);
 
@@ -117,37 +124,17 @@ namespace Caliburn.Light
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
                 public override async void DeactivateItem(T item, bool close)
                 {
-                    if (item is null)
+                    if (item is null || !close)
                         return;
 
-                    if (!close)
+                    var result = await CloseStrategy.ExecuteAsync(new[] { item });
+                    if (result.CanClose)
                     {
                         if (item is IDeactivate deactivator)
-                            deactivator.Deactivate(false);
+                            deactivator.Deactivate(true);
+
+                        _items.Remove(item);
                     }
-                    else
-                    {
-                        var result = await CloseStrategy.ExecuteAsync(new[] {item});
-                        if (result.CanClose)
-                            CloseItemCore(item);
-                    }
-                }
-
-                /// <summary>
-                /// Gets the children.
-                /// </summary>
-                /// <returns>The collection of children.</returns>
-                public override IEnumerable<T> GetChildren()
-                {
-                    return _items;
-                }
-
-                private void CloseItemCore(T item)
-                {
-                    if (item is IDeactivate deactivator)
-                        deactivator.Deactivate(true);
-
-                    _items.Remove(item);
                 }
 
                 /// <summary>
@@ -160,13 +147,9 @@ namespace Caliburn.Light
                     var index = _items.IndexOf(newItem);
 
                     if (index < 0)
-                    {
                         _items.Add(newItem);
-                    }
                     else
-                    {
                         newItem = _items[index];
-                    }
 
                     return base.EnsureItem(newItem);
                 }

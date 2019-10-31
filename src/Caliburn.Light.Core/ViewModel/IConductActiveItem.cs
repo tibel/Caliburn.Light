@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace Caliburn.Light
+﻿namespace Caliburn.Light
 {
-
     /// <summary>
     /// An <see cref="IConductor"/> that also implements <see cref="IHaveActiveItem"/>.
     /// </summary>
