@@ -48,19 +48,13 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Gets the items that are currently being conducted.
                 /// </summary>
-                public IBindableCollection<T> Items
-                {
-                    get { return _items; }
-                }
+                public IBindableCollection<T> Items => _items;
 
                 /// <summary>
                 /// Gets the children.
                 /// </summary>
                 /// <returns>The collection of children.</returns>
-                public override IEnumerable<T> GetChildren()
-                {
-                    return _items;
-                }
+                public sealed override IEnumerable<T> GetChildren() => _items;
 
                 /// <summary>
                 /// Activates the specified item.
@@ -68,12 +62,19 @@ namespace Caliburn.Light
                 /// <param name="item">The item to activate.</param>
                 public override void ActivateItem(T item)
                 {
-                    if (item is object && ReferenceEquals(item, ActiveItem))
+                    if (item is null)
+                    {
+                        DeactivateItem(ActiveItem, false);
+                        return;
+                    }
+
+                    var isActiveItem = ReferenceEquals(item, ActiveItem);
+                    if (isActiveItem)
                     {
                         if (IsActive)
                         {
-                            if (item is IActivate activator)
-                                activator.Activate();
+                            if (item is IActivate activeItem)
+                                activeItem.Activate();
 
                             OnActivationProcessed(item, true);
                         }
@@ -91,37 +92,48 @@ namespace Caliburn.Light
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
                 public override async void DeactivateItem(T item, bool close)
                 {
-                    if (item is null) return;
+                    if (item is null)
+                        return;
 
                     if (!close)
                     {
                         if (item is IDeactivate deactivator)
                             deactivator.Deactivate(false);
+
+                        return;
                     }
-                    else
+
+                    var result = await CloseStrategy.ExecuteAsync(new[] { item });
+                    if (result.CanClose)
                     {
-                        var result = await CloseStrategy.ExecuteAsync(new[] {item});
-                        if (result.CanClose)
-                            CloseItemCore(item);
+                        if (!ReferenceEquals(item, ActiveItem))
+                        {
+                            if (item is IDeactivate deactivator)
+                                deactivator.Deactivate(true);
+                        }
+                        else
+                        {
+                            var index = _items.IndexOf(item);
+                            var next = DetermineNextItemToActivate(_items, index);
+                            ChangeActiveItem(next, true);
+                        }
+
+                        _items.Remove(item);
                     }
                 }
 
-                private void CloseItemCore(T item)
+                private void ChangeActiveItem(T newItem, bool closePrevious)
                 {
-                    if (ReferenceEquals(item, ActiveItem))
-                    {
-                        var index = _items.IndexOf(item);
-                        var next = DetermineNextItemToActivate(_items, index);
+                    if (ActiveItem is IDeactivate deactivator)
+                        deactivator.Deactivate(closePrevious);
 
-                        ChangeActiveItem(next, true);
-                    }
-                    else
-                    {
-                        if (item is IDeactivate deactivator)
-                            deactivator.Deactivate(true);
-                    }
+                    newItem = EnsureItem(newItem);
 
-                    _items.Remove(item);
+                    if (IsActive && newItem is IActivate activator)
+                        activator.Activate();
+
+                    SetActiveItem(newItem);
+                    OnActivationProcessed(newItem, true);
                 }
 
                 /// <summary>
@@ -145,7 +157,7 @@ namespace Caliburn.Light
                         return list[toRemoveAt];
                     }
 
-                    return default(T);
+                    return default;
                 }
 
                 /// <summary>

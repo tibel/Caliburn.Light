@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.ComponentModel;
 
 namespace Caliburn.Light
 {
@@ -19,31 +19,16 @@ namespace Caliburn.Light
             set { ActivateItem(value); }
         }
 
-        object IHaveActiveItem.ActiveItem
-        {
-            get { return ActiveItem; }
-        }
+        object IHaveActiveItem.ActiveItem => ActiveItem;
 
         /// <summary>
-        /// Changes the active item.
+        /// Sets the <see cref="ActiveItem"/> property to <paramref name="newItem"/>.
         /// </summary>
-        /// <param name="newItem">The new item to activate.</param>
-        /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
-        protected virtual void ChangeActiveItem(T newItem, bool closePrevious)
+        /// <param name="newItem">The new item to set</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected void SetActiveItem(T newItem)
         {
-            if (EqualityComparer<T>.Default.Equals(_activeItem, newItem))
-                return;
-
-            if (_activeItem is IDeactivate deactivator)
-                deactivator.Deactivate(closePrevious);
-
-            newItem = EnsureItem(newItem);
-
-            if (IsActive && newItem is IActivate activator)
-                activator.Activate();
-
             SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
-            OnActivationProcessed(_activeItem, true);
         }
     }
 }

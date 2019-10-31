@@ -15,29 +15,43 @@ namespace Caliburn.Light
         /// <param name="item">The item to activate.</param>
         public override async void ActivateItem(T item)
         {
-            if (item is object && ReferenceEquals(item, ActiveItem))
+            if (item is null)
+            {
+                DeactivateItem(ActiveItem, true);
+                return;
+            }
+
+            var isActiveItem = ReferenceEquals(item, ActiveItem);
+            if (isActiveItem)
             {
                 if (IsActive)
                 {
-                    if (item is IActivate activator)
-                        activator.Activate();
+                    if (item is IActivate activeItem)
+                        activeItem.Activate();
 
                     OnActivationProcessed(item, true);
                 }
+
                 return;
             }
 
-            if (ActiveItem is null)
+            var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
+            if (!result.CanClose)
             {
-                ChangeActiveItem(item, true);
+                OnActivationProcessed(item, false);
                 return;
             }
 
-            var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
-            if (result.CanClose)
-                ChangeActiveItem(item, true);
-            else
-                OnActivationProcessed(item, false);
+            if (ActiveItem is IDeactivate deactivator)
+                deactivator.Deactivate(true);
+
+            item = EnsureItem(item);
+
+            if (IsActive && item is IActivate activator)
+                activator.Activate();
+
+            SetActiveItem(item);
+            OnActivationProcessed(item, true);
         }
 
         /// <summary>
@@ -50,9 +64,18 @@ namespace Caliburn.Light
             if (item is null || !ReferenceEquals(item, ActiveItem))
                 return;
 
-            var result = await CloseStrategy.ExecuteAsync(new[] {ActiveItem});
-            if (result.CanClose)
-                ChangeActiveItem(default(T), close);
+            if (close)
+            {
+                var result = await CloseStrategy.ExecuteAsync(new[] { item });
+                if (!result.CanClose)
+                    return;
+            }
+
+            if (item is IDeactivate deactivator)
+                deactivator.Deactivate(close);
+
+            if (close)
+                SetActiveItem(null);
         }
 
         /// <summary>
@@ -85,6 +108,9 @@ namespace Caliburn.Light
         {
             if (ActiveItem is IDeactivate deactivator)
                 deactivator.Deactivate(close);
+
+            if (close)
+                SetActiveItem(null);
         }
 
         /// <summary>

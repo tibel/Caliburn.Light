@@ -91,7 +91,7 @@ namespace Caliburn.Light
 
                     if (!canClose && closeables.Any())
                     {
-                        foreach (var x in closeables.OfType<IDeactivate>()) 
+                        foreach (var x in closeables.OfType<IDeactivate>())
                             x.Deactivate(true);
 
                         _items.RemoveRange(closeables);
