@@ -36,22 +36,10 @@ namespace Caliburn.Light
             }
 
             var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
-            if (!result.CanClose)
-            {
+            if (result.CanClose)
+                ChangeActiveItem(item, true);
+            else
                 OnActivationProcessed(item, false);
-                return;
-            }
-
-            if (ActiveItem is IDeactivate deactivator)
-                deactivator.Deactivate(true);
-
-            item = EnsureItem(item);
-
-            if (IsActive && item is IActivate activator)
-                activator.Activate();
-
-            SetActiveItem(item);
-            OnActivationProcessed(item, true);
         }
 
         /// <summary>
@@ -67,15 +55,14 @@ namespace Caliburn.Light
             if (close)
             {
                 var result = await CloseStrategy.ExecuteAsync(new[] { item });
-                if (!result.CanClose)
-                    return;
+                if (result.CanClose)
+                    ChangeActiveItem(null, true);
             }
-
-            if (item is IDeactivate deactivator)
-                deactivator.Deactivate(close);
-
-            if (close)
-                SetActiveItem(null);
+            else
+            {
+                if (item is IDeactivate deactivator)
+                    deactivator.Deactivate(false);
+            }
         }
 
         /// <summary>
@@ -106,11 +93,15 @@ namespace Caliburn.Light
         /// <param name="close">Indicates whether this instance will be closed.</param>
         protected override void OnDeactivate(bool close)
         {
-            if (ActiveItem is IDeactivate deactivator)
-                deactivator.Deactivate(close);
-
             if (close)
-                SetActiveItem(null);
+            {
+                ChangeActiveItem(null, true);
+            }
+            else
+            {
+                if (ActiveItem is IDeactivate deactivator)
+                    deactivator.Deactivate(false);
+            }
         }
 
         /// <summary>

@@ -122,20 +122,6 @@ namespace Caliburn.Light
                     }
                 }
 
-                private void ChangeActiveItem(T newItem, bool closePrevious)
-                {
-                    if (ActiveItem is IDeactivate deactivator)
-                        deactivator.Deactivate(closePrevious);
-
-                    newItem = EnsureItem(newItem);
-
-                    if (IsActive && newItem is IActivate activator)
-                        activator.Activate();
-
-                    SetActiveItem(newItem);
-                    OnActivationProcessed(newItem, true);
-                }
-
                 /// <summary>
                 /// Determines the next item to activate based on the last active index.
                 /// </summary>

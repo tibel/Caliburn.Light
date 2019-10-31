@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Caliburn.Light
+﻿namespace Caliburn.Light
 {
     /// <summary>
     /// A base class for various implementations of <see cref="IConductor"/> that maintain an active item.
@@ -22,13 +20,25 @@ namespace Caliburn.Light
         object IHaveActiveItem.ActiveItem => ActiveItem;
 
         /// <summary>
-        /// Sets the <see cref="ActiveItem"/> property to <paramref name="newItem"/>.
+        /// Changes the active item.
         /// </summary>
-        /// <param name="newItem">The new item to set</param>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        protected void SetActiveItem(T newItem)
+        /// <param name="newItem">The new item to activate.</param>
+        /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
+        protected void ChangeActiveItem(T newItem, bool closePrevious)
         {
+            if (ActiveItem is IDeactivate deactivator)
+                deactivator.Deactivate(closePrevious);
+
+            if (newItem is object)
+                newItem = EnsureItem(newItem);
+
+            if (IsActive && newItem is IActivate activator)
+                activator.Activate();
+
             SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
+
+            if (newItem is object)
+                OnActivationProcessed(newItem, true);
         }
     }
 }
