@@ -100,16 +100,10 @@ namespace Caliburn.Light
                 OnDeactivating(close);
 
                 IsActive = false;
-                Log.Info("Deactivating {0}.", this);
+                Log.Info("Deactivating {0} (close={1}).", this, close);
                 OnDeactivate(close);
 
                 OnDeactivated(close);
-
-                if (close)
-                {
-                    ClearViews();
-                    Log.Info("Closed {0}.", this);
-                }
             }
         }
 

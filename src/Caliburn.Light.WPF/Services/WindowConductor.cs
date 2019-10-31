@@ -108,7 +108,7 @@ namespace Caliburn.Light
             var task = ((ICloseGuard)_model).CanCloseAsync();
             if (task.IsCompleted)
                 return task.Result;
-            
+
             CloseViewAsync(task);
             return false;
         }

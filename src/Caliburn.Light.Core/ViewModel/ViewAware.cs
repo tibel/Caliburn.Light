@@ -80,10 +80,5 @@ namespace Caliburn.Light
             var entry = _views?.Find(p => string.Equals(p.Key, context, StringComparison.Ordinal)) ?? default;
             return entry.Value?.Target;
         }
-
-        internal void ClearViews()
-        {
-            _views?.Clear();
-        }
     }
 }

@@ -102,20 +102,15 @@ namespace Caliburn.Light
             View.SetServiceLocator(view, _serviceLocator);
 
             view.DataContext = viewModel;
+            view.Closed += (s, _) => DeactivateAndDetach((FrameworkElement)s, context);
+
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
             ApplySettings(view, settings);
 
             if (viewModel is IActivate activatable)
-            {
                 activatable.Activate();
-            }
-
-            if (viewModel is IDeactivate deactivator)
-            {
-                view.Closed += (s, e) => deactivator.Deactivate(true);
-            }
 
             return view;
         }
@@ -151,6 +146,7 @@ namespace Caliburn.Light
             View.SetServiceLocator(view, _serviceLocator);
 
             view.DataContext = viewModel;
+
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
@@ -163,6 +159,8 @@ namespace Caliburn.Light
             ApplySettings(view, settings);
 
             var conductor = new WindowConductor(viewModel, view);
+            view.Closed += (s, _) => Detach((FrameworkElement)s, context);
+
             return conductor.View;
         }
 
@@ -198,11 +196,8 @@ namespace Caliburn.Light
             }
             else
             {
-                var owner = InferOwnerOf(window);
-                if (owner is object && isDialog)
-                {
+                if (isDialog && InferOwnerOf(window) is Window owner)
                     window.Owner = owner;
-                }
             }
 
             return window;
@@ -237,6 +232,8 @@ namespace Caliburn.Light
             View.SetServiceLocator(view, _serviceLocator);
 
             view.DataContext = viewModel;
+            view.Unloaded += (s, _) => DeactivateAndDetach((FrameworkElement)s, context);
+
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
@@ -249,14 +246,7 @@ namespace Caliburn.Light
             ApplySettings(view, settings);
 
             if (viewModel is IActivate activatable)
-            {
                 activatable.Activate();
-            }
-
-            if (viewModel is IDeactivate deactivatable)
-            {
-                view.Unloaded += (s, e) => deactivatable.Deactivate(true);
-            }
 
             return view;
         }
@@ -289,6 +279,21 @@ namespace Caliburn.Light
                 if (propertyInfo is object)
                     propertyInfo.SetValue(target, pair.Value, null);
             }
+        }
+
+        private static void DeactivateAndDetach(FrameworkElement view, string context)
+        {
+            if (view.DataContext is IDeactivate deactivatable)
+                deactivatable.Deactivate(true);
+
+            if (view.DataContext is IViewAware viewAware)
+                viewAware.DetachView(view, context);
+        }
+
+        private static void Detach(FrameworkElement view, string context)
+        {
+            if (view.DataContext is IViewAware viewAware)
+                viewAware.DetachView(view, context);
         }
     }
 }
