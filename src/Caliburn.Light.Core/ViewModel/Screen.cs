@@ -8,8 +8,6 @@ namespace Caliburn.Light
     /// </summary>
     public class Screen : ViewAware, IScreen
     {
-        private static readonly Task<bool> TrueTask = Task.FromResult(true);
-
         private bool _isActive;
         private bool _isInitialized;
 
@@ -121,7 +119,7 @@ namespace Caliburn.Light
         /// <returns>A task containing the result of the close check.</returns>
         public virtual Task<bool> CanCloseAsync()
         {
-            return TrueTask;
+            return TaskHelper.TrueTask;
         }
 
         /// <summary>
