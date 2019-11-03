@@ -24,14 +24,14 @@ namespace Caliburn.Light
             set { _closeStrategy = value; }
         }
 
-        void IConductor.ActivateItem(object item)
+        Task IConductor.ActivateItem(object item)
         {
-            ActivateItem((T) item).Observe();
+            return ActivateItem((T) item);
         }
 
-        void IConductor.DeactivateItem(object item, bool close)
+        Task IConductor.DeactivateItem(object item, bool close)
         {
-            DeactivateItem((T) item, close).Observe();
+            return DeactivateItem((T) item, close);
         }
 
         IEnumerable IParent.GetChildren()

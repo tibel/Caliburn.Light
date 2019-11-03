@@ -131,7 +131,7 @@ namespace Caliburn.Light
         {
             if (this is IChild child && child.Parent is IConductor conductor)
             {
-                conductor.DeactivateItem(this, true);
+                conductor.DeactivateItem(this, true).Observe();
                 return;
             }
 

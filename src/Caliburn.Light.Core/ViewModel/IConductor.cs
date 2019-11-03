@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -15,14 +16,14 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        void ActivateItem(object item);
+        Task ActivateItem(object item);
 
         /// <summary>
         /// Deactivates the specified item.
         /// </summary>
         /// <param name="item">The item to close.</param>
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-        void DeactivateItem(object item, bool close);
+        Task DeactivateItem(object item, bool close);
 
         /// <summary>
         /// Occurs when an activation request is processed.
