@@ -104,10 +104,10 @@ namespace Caliburn.Light
                 /// Activates the specified item.
                 /// </summary>
                 /// <param name="item">The item to activate.</param>
-                public override void ActivateItem(T item)
+                public override Task ActivateItem(T item)
                 {
                     if (item is null)
-                        return;
+                        return Task.CompletedTask;
 
                     item = EnsureItem(item);
 
@@ -115,6 +115,7 @@ namespace Caliburn.Light
                         activator.Activate();
 
                     OnActivationProcessed(item, true);
+                    return Task.CompletedTask;
                 }
 
                 /// <summary>
@@ -122,7 +123,7 @@ namespace Caliburn.Light
                 /// </summary>
                 /// <param name="item">The item to close.</param>
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-                public override async void DeactivateItem(T item, bool close)
+                public override async Task DeactivateItem(T item, bool close)
                 {
                     if (item is null || !close)
                         return;

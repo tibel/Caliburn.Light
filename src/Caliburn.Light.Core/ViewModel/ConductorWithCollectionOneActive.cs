@@ -60,11 +60,11 @@ namespace Caliburn.Light
                 /// Activates the specified item.
                 /// </summary>
                 /// <param name="item">The item to activate.</param>
-                public override void ActivateItem(T item)
+                public override async Task ActivateItem(T item)
                 {
                     if (item is null)
                     {
-                        DeactivateItem(ActiveItem, false);
+                        await DeactivateItem(ActiveItem, false);
                         return;
                     }
 
@@ -90,7 +90,7 @@ namespace Caliburn.Light
                 /// </summary>
                 /// <param name="item">The item to close.</param>
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-                public override async void DeactivateItem(T item, bool close)
+                public override async Task DeactivateItem(T item, bool close)
                 {
                     if (item is null)
                         return;
@@ -134,14 +134,10 @@ namespace Caliburn.Light
                     var toRemoveAt = lastIndex - 1;
 
                     if (toRemoveAt == -1 && list.Count > 1)
-                    {
                         return list[1];
-                    }
 
                     if (toRemoveAt > -1 && toRemoveAt < list.Count - 1)
-                    {
                         return list[toRemoveAt];
-                    }
 
                     return default;
                 }

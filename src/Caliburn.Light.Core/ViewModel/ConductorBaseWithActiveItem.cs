@@ -14,7 +14,7 @@
         public T ActiveItem
         {
             get { return _activeItem; }
-            set { ActivateItem(value); }
+            set { ActivateItem(value).Observe(); }
         }
 
         object IHaveActiveItem.ActiveItem => ActiveItem;
