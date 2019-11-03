@@ -104,7 +104,7 @@ namespace Caliburn.Light
                 /// Activates the specified item.
                 /// </summary>
                 /// <param name="item">The item to activate.</param>
-                public override Task ActivateItem(T item)
+                public override Task ActivateItemAsync(T item)
                 {
                     if (item is null)
                         return Task.CompletedTask;
@@ -123,7 +123,7 @@ namespace Caliburn.Light
                 /// </summary>
                 /// <param name="item">The item to close.</param>
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-                public override async Task DeactivateItem(T item, bool close)
+                public override async Task DeactivateItemAsync(T item, bool close)
                 {
                     if (item is null || !close)
                         return;

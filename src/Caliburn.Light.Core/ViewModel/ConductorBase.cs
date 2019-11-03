@@ -24,14 +24,14 @@ namespace Caliburn.Light
             set { _closeStrategy = value; }
         }
 
-        Task IConductor.ActivateItem(object item)
+        Task IConductor.ActivateItemAsync(object item)
         {
-            return ActivateItem((T) item);
+            return ActivateItemAsync((T) item);
         }
 
-        Task IConductor.DeactivateItem(object item, bool close)
+        Task IConductor.DeactivateItemAsync(object item, bool close)
         {
-            return DeactivateItem((T) item, close);
+            return DeactivateItemAsync((T) item, close);
         }
 
         IEnumerable IParent.GetChildren()
@@ -54,14 +54,14 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        public abstract Task ActivateItem(T item);
+        public abstract Task ActivateItemAsync(T item);
 
         /// <summary>
         /// Deactivates the specified item.
         /// </summary>
         /// <param name="item">The item to close.</param>
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-        public abstract Task DeactivateItem(T item, bool close);
+        public abstract Task DeactivateItemAsync(T item, bool close);
 
         /// <summary>
         /// Called by a subclass when an activation needs processing.

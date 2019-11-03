@@ -16,14 +16,14 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        Task ActivateItem(object item);
+        Task ActivateItemAsync(object item);
 
         /// <summary>
         /// Deactivates the specified item.
         /// </summary>
         /// <param name="item">The item to close.</param>
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
-        Task DeactivateItem(object item, bool close);
+        Task DeactivateItemAsync(object item, bool close);
 
         /// <summary>
         /// Occurs when an activation request is processed.
