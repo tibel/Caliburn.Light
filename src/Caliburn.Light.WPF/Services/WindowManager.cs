@@ -16,22 +16,17 @@ namespace Caliburn.Light
     public class WindowManager : IWindowManager
     {
         private readonly IViewModelLocator _viewModelLocator;
-        private readonly IServiceLocator _serviceLocator;
 
         /// <summary>
         /// Creates an instance of <see cref="WindowManager"/>.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
-        /// <param name="serviceLocator">The service locator.</param>
-        public WindowManager(IViewModelLocator viewModelLocator, IServiceLocator serviceLocator)
+        public WindowManager(IViewModelLocator viewModelLocator)
         {
             if (viewModelLocator is null)
                 throw new ArgumentNullException(nameof(viewModelLocator));
-            if (serviceLocator is null)
-                throw new ArgumentNullException(nameof(serviceLocator));
 
             _viewModelLocator = viewModelLocator;
-            _serviceLocator = serviceLocator;
         }
 
         /// <summary>
@@ -99,7 +94,7 @@ namespace Caliburn.Light
         protected Popup CreatePopup(object viewModel, string context, IDictionary<string, object> settings)
         {
             var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
-            View.SetServiceLocator(view, _serviceLocator);
+            View.SetViewModelLocator(view, _viewModelLocator);
 
             view.DataContext = viewModel;
             view.Closed += (s, _) => DeactivateAndDetach((FrameworkElement)s, context);
@@ -143,7 +138,7 @@ namespace Caliburn.Light
         protected Window CreateWindow(object viewModel, bool isDialog, string context, IDictionary<string, object> settings)
         {
             var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context), isDialog);
-            View.SetServiceLocator(view, _serviceLocator);
+            View.SetViewModelLocator(view, _viewModelLocator);
 
             view.DataContext = viewModel;
 
@@ -229,7 +224,7 @@ namespace Caliburn.Light
         protected Page CreatePage(object viewModel, string context, IDictionary<string, object> settings)
         {
             var view = EnsurePage(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
-            View.SetServiceLocator(view, _serviceLocator);
+            View.SetViewModelLocator(view, _viewModelLocator);
 
             view.DataContext = viewModel;
             view.Unloaded += (s, _) => DeactivateAndDetach((FrameworkElement)s, context);

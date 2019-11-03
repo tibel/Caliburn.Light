@@ -18,22 +18,17 @@ namespace Caliburn.Light
             DependencyProperty.RegisterAttached("_PageKey", typeof(string), typeof(FrameAdapter), null);
 
         private readonly IViewModelLocator _viewModelLocator;
-        private readonly IServiceLocator _serviceLocator;
 
         /// <summary>
         /// Creates an instance of <see cref="FrameAdapter" />.
         /// </summary>
         /// <param name="viewModelLocator">The view-model locator.</param>
-        /// <param name="serviceLocator">The service locator.</param>
-        public FrameAdapter(IViewModelLocator viewModelLocator, IServiceLocator serviceLocator)
+        public FrameAdapter(IViewModelLocator viewModelLocator)
         {
             if (viewModelLocator is null)
                 throw new ArgumentNullException(nameof(viewModelLocator));
-            if (serviceLocator is null)
-                throw new ArgumentNullException(nameof(serviceLocator));
 
             _viewModelLocator = viewModelLocator;
-            _serviceLocator = serviceLocator;
         }
 
         /// <summary>
@@ -52,7 +47,7 @@ namespace Caliburn.Light
             adapter.FrameState = new Dictionary<string, object>();
 
             frame.SetValue(FrameAdapterProperty, adapter);
-            View.SetServiceLocator(frame, _serviceLocator);
+            View.SetViewModelLocator(frame, _viewModelLocator);
         }
 
         /// <summary>
@@ -68,7 +63,7 @@ namespace Caliburn.Light
             if (adapter is null) return;
 
             frame.ClearValue(FrameAdapterProperty);
-            frame.ClearValue(View.ServiceLocatorProperty);
+            frame.ClearValue(View.ViewModelLocatorProperty);
 
             adapter.Dispose();
         }

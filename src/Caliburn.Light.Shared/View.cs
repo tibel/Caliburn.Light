@@ -19,46 +19,46 @@ namespace Caliburn.Light
     public static class View
     {
         /// <summary>
-        /// A dependency property for assigning a <see cref="IServiceLocator"/> to a particular portion of the UI.
+        /// A dependency property for assigning a <see cref="IViewModelLocator"/> to a particular portion of the UI.
         /// </summary>
-        public static readonly DependencyProperty ServiceLocatorProperty =
-            DependencyProperty.RegisterAttached("ServiceLocator",
-                typeof(IServiceLocator), typeof(View), null);
+        public static readonly DependencyProperty ViewModelLocatorProperty =
+            DependencyProperty.RegisterAttached("ViewModelLocator",
+                typeof(IViewModelLocator), typeof(View), null);
 
         /// <summary>
-        /// Gets the attached <see cref="IServiceLocator"/>.
+        /// Gets the attached <see cref="IViewModelLocator"/>.
         /// </summary>
-        /// <param name="d">The element the <see cref="IServiceLocator"/> is attached to.</param>
-        /// <returns>The <see cref="IServiceLocator"/>.</returns>
-        public static IServiceLocator GetServiceLocator(DependencyObject d)
+        /// <param name="d">The element the <see cref="IViewModelLocator"/> is attached to.</param>
+        /// <returns>The <see cref="IViewModelLocator"/>.</returns>
+        public static IViewModelLocator GetViewModelLocator(DependencyObject d)
         {
-            return (IServiceLocator)d.GetValue(ServiceLocatorProperty);
+            return (IViewModelLocator)d.GetValue(ViewModelLocatorProperty);
         }
 
         /// <summary>
-        /// Sets the <see cref="IServiceLocator"/>.
+        /// Sets the <see cref="IViewModelLocator"/>.
         /// </summary>
-        /// <param name="d">The element to attach the <see cref="IServiceLocator"/> to.</param>
-        /// <param name="value">The <see cref="IServiceLocator"/>.</param>
-        public static void SetServiceLocator(DependencyObject d, IServiceLocator value)
+        /// <param name="d">The element to attach the <see cref="IViewModelLocator"/> to.</param>
+        /// <param name="value">The <see cref="IViewModelLocator"/>.</param>
+        public static void SetViewModelLocator(DependencyObject d, IViewModelLocator value)
         {
-            d.SetValue(ServiceLocatorProperty, value);
+            d.SetValue(ViewModelLocatorProperty, value);
         }
 
-        private static IServiceLocator GetCurrentServiceLocator(DependencyObject d)
+        private static IViewModelLocator GetCurrentViewModelLocator(DependencyObject d)
         {
-            var serviceLocator = GetServiceLocator(d);
+            var viewModelLocator = GetViewModelLocator(d);
 
-            while (serviceLocator is null)
+            while (viewModelLocator is null)
             {
                 d = VisualTreeHelper.GetParent(d);
                 if (d is null)
                     break;
 
-                serviceLocator = GetServiceLocator(d);
+                viewModelLocator = GetViewModelLocator(d);
             }
 
-            return serviceLocator;
+            return viewModelLocator;
         }
 
         /// <summary>
@@ -142,13 +142,9 @@ namespace Caliburn.Light
                 return;
             }
 
-            var serviceLocator = GetCurrentServiceLocator(targetLocation);
-            if (serviceLocator is null)
-                throw new InvalidOperationException("Could not find 'IServiceLocator' in control hierarchy.");
-
-            var viewModelLocator = serviceLocator.GetInstance<IViewModelLocator>();
+            var viewModelLocator = GetCurrentViewModelLocator(targetLocation);
             if (viewModelLocator is null)
-                throw new InvalidOperationException("Could not resolve type 'IViewModelLocator'.");
+                throw new InvalidOperationException("Could not find 'IViewModelLocator' in control hierarchy.");
 
             var view = viewModelLocator.LocateForModel(model, context);
 
