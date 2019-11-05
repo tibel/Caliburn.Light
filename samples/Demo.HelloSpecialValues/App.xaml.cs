@@ -34,8 +34,9 @@ namespace Demo.HelloSpecialValues
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new NameBasedViewModelTypeResolver()
-                .AddAssembly(typeof(App).GetTypeInfo().Assembly);
+            var typeResolver = new ViewModelTypeResolver()
+                .AddMapping<CharacterView, CharacterViewModel>()
+                .AddMapping<MainPage, MainPageViewModel>();
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
             _container.RegisterSingleton<MainPageViewModel>();

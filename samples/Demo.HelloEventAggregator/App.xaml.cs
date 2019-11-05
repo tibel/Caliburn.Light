@@ -35,8 +35,10 @@ namespace Demo.HelloEventAggregator
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
-            var typeResolver = new NameBasedViewModelTypeResolver()
-                .AddAssembly(typeof(App).GetTypeInfo().Assembly);
+            var typeResolver = new ViewModelTypeResolver()
+                .AddMapping<PublisherView, PublisherViewModel>()
+                .AddMapping<SubscriberView, SubscriberViewModel>()
+                .AddMapping<MainPage, MainPageViewModel>();
             _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
 
             _container.RegisterSingleton<MainPageViewModel>();
