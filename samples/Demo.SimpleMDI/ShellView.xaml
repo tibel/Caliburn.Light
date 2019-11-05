@@ -10,8 +10,7 @@
         <TabControl x:Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl cal:View.Model="{Binding}" />
-                    <!--<local:TabView cal:Bind.DataContext="True" />-->
+                    <local:TabView cal:Bind.DataContext="True" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>
@@ -19,8 +18,10 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding DisplayName}" />
 
-                        <Button Content="X" Command="{Binding Path=DataContext.CloseTabCommand, ElementName=Items, Mode=OneTime}" CommandParameter="{Binding}" />
-
+                        <Button Content="X"
+                                Command="{Binding Path=DataContext.CloseTabCommand, ElementName=Items, Mode=OneTime}"
+                                CommandParameter="{Binding}"
+                                Focusable="False" />
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
