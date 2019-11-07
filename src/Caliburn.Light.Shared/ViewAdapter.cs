@@ -22,6 +22,11 @@ namespace Caliburn.Light
         /// </summary>
         public bool IsInDesignTool => DesignMode.DesignModeEnabled;
 
+        bool IViewAdapter.CanHandle(object view)
+        {
+            return view is DependencyObject;
+        }
+
         /// <summary>
         /// Used to retrieve the root, non-framework-created view.
         /// </summary>

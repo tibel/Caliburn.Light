@@ -13,6 +13,13 @@ namespace Caliburn.Light
         bool IsInDesignTool { get; }
 
         /// <summary>
+        /// Determines whether this instance can handle the provided view type.
+        /// </summary>
+        /// <param name="view">The view to verify.</param>
+        /// <returns>True when this instance can handle the provided view; otherwise false.</returns>
+        bool CanHandle(object view);
+
+        /// <summary>
         /// Used to retrieve the root, non-framework-created view.
         /// </summary>
         /// <param name="view">The view to search.</param>
