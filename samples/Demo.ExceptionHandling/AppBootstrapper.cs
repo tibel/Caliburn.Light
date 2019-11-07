@@ -15,6 +15,7 @@ namespace Demo.ExceptionHandling
 
             _container = new SimpleContainer();
 
+            _container.RegisterInstance<IUIContext>(new DispatcherUIContext(Dispatcher.CurrentDispatcher));
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();

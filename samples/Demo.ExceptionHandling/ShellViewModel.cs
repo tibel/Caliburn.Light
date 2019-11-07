@@ -9,11 +9,11 @@ namespace Demo.ExceptionHandling
 {
     public class ShellViewModel : BindableObject
     {
-        private readonly System.Windows.Threading.Dispatcher _dispatcher;
+        private readonly IUIContext _uIContext;
 
-        public ShellViewModel()
+        public ShellViewModel(IUIContext uIContext)
         {
-            _dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+            _uIContext = uIContext;
 
             ExecuteCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(OnExecute)
@@ -39,7 +39,7 @@ namespace Demo.ExceptionHandling
 
         private void OnExecute()
         {
-            Debug.Assert(_dispatcher.CheckAccess());
+            Debug.Assert(_uIContext.CheckAccess());
             throw new InvalidOperationException("Error on execute.");
         }
 
@@ -47,17 +47,17 @@ namespace Demo.ExceptionHandling
         {
             return Task.Run(() =>
             {
-                Debug.Assert(!_dispatcher.CheckAccess());
+                Debug.Assert(!_uIContext.CheckAccess());
                 Thread.Sleep(100);
 
-                var operation = _dispatcher.InvokeAsync(new Action(() =>
+                var operation = _uIContext.Run(new Action(() =>
                 {
-                    Debug.Assert(_dispatcher.CheckAccess());
+                    Debug.Assert(_uIContext.CheckAccess());
                     Thread.Sleep(100);
                     throw new InvalidOperationException("Error on a background Task.");
                 }));
 
-                return operation.Task;
+                return operation;
             });
         }
 
@@ -65,7 +65,7 @@ namespace Demo.ExceptionHandling
         {
             return Task.Run(() =>
             {
-                Debug.Assert(!_dispatcher.CheckAccess());
+                Debug.Assert(!_uIContext.CheckAccess());
                 Thread.Sleep(100);
                 throw new InvalidOperationException("Error on a background Task.");
             });
@@ -73,9 +73,9 @@ namespace Demo.ExceptionHandling
 
         private async Task OnAsync()
         {
-            Debug.Assert(_dispatcher.CheckAccess());
+            Debug.Assert(_uIContext.CheckAccess());
             await Task.Delay(100);
-            Debug.Assert(_dispatcher.CheckAccess());
+            Debug.Assert(_uIContext.CheckAccess());
             throw new InvalidOperationException("Error on asynchronous execute.");
         }
     }

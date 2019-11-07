@@ -19,7 +19,6 @@ namespace Caliburn.Light
             _isInitialized = true;
 
             ViewHelper.Initialize(new ViewAdapter());
-            UIContext.Initialize(new DispatcherUIContext(Window.Current.Dispatcher));
 
             try
             {
@@ -33,20 +32,6 @@ namespace Caliburn.Light
                 _isInitialized = false;
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Invoked when the application creates a window.
-        /// </summary>
-        /// <param name="args">Event data for the event.</param>
-        protected override void OnWindowCreated(WindowCreatedEventArgs args)
-        {
-            base.OnWindowCreated(args);
-
-            // Because dispatchers are tied to windows Execute will fail in 
-            // scenarios when the application has multiple windows open (though contract 
-            // activation, this keeps Execute up to date with the currently activated window
-            args.Window.Activated += (s, _) => UIContext.Initialize(new DispatcherUIContext(((Window)s).Dispatcher));
         }
 
         /// <summary>

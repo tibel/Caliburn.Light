@@ -29,14 +29,7 @@ namespace Caliburn.Light
 
                 Application = Application.Current;
                 if (Application is object)
-                {
-                    UIContext.Initialize(new DispatcherUIContext(Application.Dispatcher));
                     PrepareApplication();
-                }
-                else
-                {
-                    UIContext.Initialize(new DispatcherUIContext(Dispatcher.CurrentDispatcher));
-                }
 
                 Configure();
             }
