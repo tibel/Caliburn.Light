@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 #else
@@ -67,6 +68,35 @@ namespace Caliburn.Light
 
             _viewTypeLookup.Add(new ViewTypeLookupKey(modelType, context ?? string.Empty), viewType);
             return this;
+        }
+
+        [DebuggerDisplay("ModelType = {ModelType.Name} Context = {Context}")]
+        private readonly struct ViewTypeLookupKey
+        {
+            public ViewTypeLookupKey(Type modelType, string context)
+            {
+                ModelType = modelType;
+                Context = context;
+            }
+
+            public Type ModelType { get; }
+
+            public string Context { get; }
+        }
+
+        private readonly struct ViewTypeLookupKeyComparer : IEqualityComparer<ViewTypeLookupKey>
+        {
+            public bool Equals(ViewTypeLookupKey x, ViewTypeLookupKey y)
+            {
+                return x.ModelType.Equals(y.ModelType) && x.Context.Equals(y.Context);
+            }
+
+            public int GetHashCode(ViewTypeLookupKey obj)
+            {
+                var h1 = obj.ModelType.GetHashCode();
+                var h2 = obj.Context.GetHashCode();
+                return ((h1 << 5) + h1) ^ h2;
+            }
         }
     }
 }

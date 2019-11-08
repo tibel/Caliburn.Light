@@ -145,7 +145,7 @@ namespace Caliburn.Light
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
-            if (viewModel is IHaveDisplayName haveDisplayName && !BindingHelper.IsDataBound(view, Window.TitleProperty))
+            if (viewModel is IHaveDisplayName haveDisplayName && !BindingOperations.IsDataBound(view, Window.TitleProperty))
             {
                 var binding = new Binding("DisplayName") { Mode = BindingMode.OneWay };
                 view.SetBinding(Window.TitleProperty, binding);
@@ -232,7 +232,7 @@ namespace Caliburn.Light
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
-            if (viewModel is IHaveDisplayName haveDisplayName && !BindingHelper.IsDataBound(view, Page.TitleProperty))
+            if (viewModel is IHaveDisplayName haveDisplayName && !BindingOperations.IsDataBound(view, Page.TitleProperty))
             {
                 var binding = new Binding("DisplayName") { Mode = BindingMode.OneWay };
                 view.SetBinding(Page.TitleProperty, binding);

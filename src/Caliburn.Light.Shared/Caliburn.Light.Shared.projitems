@@ -18,7 +18,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelTypeResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTypeLookupKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTypeLookupKeyComparer.cs" />
   </ItemGroup>
 </Project>
