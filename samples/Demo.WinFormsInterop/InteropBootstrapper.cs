@@ -1,4 +1,5 @@
 ﻿using Caliburn.Light;
+using Caliburn.Light.WPF;
 using System.Windows.Forms.Integration;
 
 namespace Demo.WinFormsInterop

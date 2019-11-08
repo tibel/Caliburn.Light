@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// A UI execution context based on <see cref="Dispatcher"/>.

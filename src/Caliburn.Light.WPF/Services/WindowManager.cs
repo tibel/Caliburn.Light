@@ -8,7 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Navigation;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// A service that manages windows.

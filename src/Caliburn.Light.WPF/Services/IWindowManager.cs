@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// A service that manages windows.

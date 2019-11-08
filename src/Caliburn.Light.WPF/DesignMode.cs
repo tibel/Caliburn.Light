@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// Enables you to detect whether your app is in design mode in a visual designer.

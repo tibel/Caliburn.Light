@@ -1,4 +1,4 @@
-﻿namespace Caliburn.Light
+﻿namespace Caliburn.Light.WPF
 {
     internal static class BooleanBoxes
     {

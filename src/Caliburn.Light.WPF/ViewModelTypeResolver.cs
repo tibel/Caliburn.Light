@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 using System.Windows;
 #endif
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// Resolves view and view-model types.

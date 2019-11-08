@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     internal sealed class DispatcherTaskScheduler : TaskScheduler
     {

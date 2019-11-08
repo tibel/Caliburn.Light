@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// A Caliburn.Light CoTask that lets you show messages.

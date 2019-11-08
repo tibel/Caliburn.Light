@@ -13,5 +13,5 @@ using System.Windows.Markup;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-[assembly: XmlnsDefinition("https://github.com/tibel/Caliburn.Light/", "Caliburn.Light")]
+[assembly: XmlnsDefinition("https://github.com/tibel/Caliburn.Light/", "Caliburn.Light.WPF")]
 [assembly: XmlnsPrefix("https://github.com/tibel/Caliburn.Light/", "cal")]

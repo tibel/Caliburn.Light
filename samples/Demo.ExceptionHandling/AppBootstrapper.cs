@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using Caliburn.Light;
+using Caliburn.Light.WPF;
 
 namespace Demo.ExceptionHandling
 {

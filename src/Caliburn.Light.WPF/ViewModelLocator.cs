@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 #endif
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// Locates view and view-model instances.

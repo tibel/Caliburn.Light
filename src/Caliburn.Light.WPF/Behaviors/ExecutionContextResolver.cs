@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WPF
 {
     /// <summary>
     /// Special value to resolve <see cref="CoroutineExecutionContext"/> parameter.
