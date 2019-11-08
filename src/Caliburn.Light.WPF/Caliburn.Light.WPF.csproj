@@ -28,6 +28,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
   </ItemGroup>
-
-  <Import Project="..\Caliburn.Light.Shared\Caliburn.Light.Shared.projitems" Label="Shared" />
 </Project>
