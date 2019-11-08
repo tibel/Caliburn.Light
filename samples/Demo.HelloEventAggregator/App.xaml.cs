@@ -1,6 +1,6 @@
 ﻿using Caliburn.Light;
+using Caliburn.Light.WinUI;
 using System;
-using System.Reflection;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
