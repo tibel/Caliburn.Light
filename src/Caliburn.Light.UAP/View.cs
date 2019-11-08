@@ -1,15 +1,8 @@
 ﻿using System;
-#if NETFX_CORE
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-#else
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-#endif
 
 namespace Caliburn.Light.WinUI
 {
@@ -255,11 +248,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnLayoutUpdated(FrameworkElement element, Action<FrameworkElement> handler)
         {
-#if NETFX_CORE
             EventHandler<object> onLayoutUpdate = null;
-#else
-            EventHandler onLayoutUpdate = null;
-#endif
             onLayoutUpdate = delegate
             {
                 element.LayoutUpdated -= onLayoutUpdate;
@@ -276,13 +265,9 @@ namespace Caliburn.Light.WinUI
         /// </returns>
         public static bool IsElementLoaded(FrameworkElement element)
         {
-#if NETFX_CORE
             var content = Window.Current.Content;
             var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
             return parent is object || (content is object && element == content);
-#else
-            return element.IsLoaded;
-#endif
         }
     }
 }

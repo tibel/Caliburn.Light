@@ -1,8 +1,4 @@
-﻿#if NETFX_CORE
-using Windows.UI.Xaml;
-#else
-using System.Windows;
-#endif
+﻿using Windows.UI.Xaml;
 
 namespace Caliburn.Light.WinUI
 {

@@ -1,12 +1,4 @@
-﻿#if NETFX_CORE
-using Windows.ApplicationModel;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-#else
-using System.Windows;
-using System.Windows.Data;
-#endif
+﻿using System.Windows;
 
 namespace Caliburn.Light.WPF
 {
@@ -77,41 +69,18 @@ namespace Caliburn.Light.WPF
             if ((bool)e.NewValue)
             {
                 fe.DataContextChanged += OnDataContextChanged;
-
-#if NETFX_CORE
-                fe.SetValue(CurrentDataContextProperty, fe.DataContext);
-#endif
-
                 OnDataContextChanged(fe, null, fe.DataContext);
             }
             else
             {
-#if NETFX_CORE
-                fe.ClearValue(CurrentDataContextProperty);
-#endif
-
                 fe.DataContextChanged -= OnDataContextChanged;
             }
         }
 
-#if NETFX_CORE
-        private static readonly DependencyProperty CurrentDataContextProperty =
-            DependencyProperty.RegisterAttached("CurrentDataContext",
-                typeof(object), typeof(Bind), new PropertyMetadata(null));
-
-        private static void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs e)
-        {
-            var oldValue = sender.ReadLocalValue(CurrentDataContextProperty);
-            sender.SetValue(CurrentDataContextProperty, e.NewValue);
-
-            OnDataContextChanged(sender, oldValue, e.NewValue);
-        }
-#else
         private static void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             OnDataContextChanged((FrameworkElement)sender, e.OldValue, e.NewValue);
         }
-#endif
 
         private static void OnDataContextChanged(FrameworkElement view, object oldValue, object newValue)
         {

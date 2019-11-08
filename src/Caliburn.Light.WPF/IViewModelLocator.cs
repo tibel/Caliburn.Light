@@ -1,8 +1,4 @@
-﻿#if NETFX_CORE
-using Windows.UI.Xaml;
-#else
-using System.Windows;
-#endif
+﻿using System.Windows;
 
 namespace Caliburn.Light.WPF
 {

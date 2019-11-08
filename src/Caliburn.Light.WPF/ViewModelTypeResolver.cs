@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-#if NETFX_CORE
-using Windows.UI.Xaml;
-#else
 using System.Windows;
-#endif
 
 namespace Caliburn.Light.WPF
 {

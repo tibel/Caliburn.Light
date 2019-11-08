@@ -1,12 +1,7 @@
 ﻿using System;
-#if NETFX_CORE
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-#else
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
-#endif
 
 namespace Caliburn.Light.WPF
 {
@@ -73,14 +68,12 @@ namespace Caliburn.Light.WPF
             {
                 if (viewAware.GetView(context) is UIElement view)
                 {
-#if !NETFX_CORE
                     if (view is Window window && (window.IsLoaded || new WindowInteropHelper(window).Handle == IntPtr.Zero))
                         return null;
-#endif
 
                     // remove from parent
                     if (view is FrameworkElement fe && fe.Parent is ContentControl parent)
-                            parent.Content = null;
+                        parent.Content = null;
 
                     return view;
                 }

@@ -1,14 +1,8 @@
 ﻿using System;
-#if NETFX_CORE
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-#else
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-#endif
 
 namespace Caliburn.Light.WinUI
 {
@@ -94,14 +88,7 @@ namespace Caliburn.Light.WinUI
         {
             if (view is Window window)
             {
-#if !NETFX_CORE
-                if (dialogResult.HasValue)
-                    window.DialogResult = dialogResult;
-                else
-                    window.Close();
-#else
                 window.Close();
-#endif
                 return true;
             }
 
@@ -129,13 +116,8 @@ namespace Caliburn.Light.WinUI
             if (commandParameter is object)
                 return commandParameter;
 
-#if NETFX_CORE
             if (element is ButtonBase buttonBase)
                 return buttonBase.CommandParameter;
-#else
-            if (element is System.Windows.Input.ICommandSource commandSource)
-                return commandSource.CommandParameter;
-#endif
 
             return null;
         }
