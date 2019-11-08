@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Xaml;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Special value to resolve <see cref="CoroutineExecutionContext"/> parameter.

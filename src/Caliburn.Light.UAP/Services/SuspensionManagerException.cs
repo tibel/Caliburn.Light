@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// The exception that is thrown when a <see cref="SuspensionManager"/> operation failed.

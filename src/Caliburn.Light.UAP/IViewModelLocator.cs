@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 using System.Windows;
 #endif
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Locates view and view-model instances.

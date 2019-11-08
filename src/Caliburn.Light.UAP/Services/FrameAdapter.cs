@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Integrate framework lifetime handling into <see cref="Frame"/> navigation events.

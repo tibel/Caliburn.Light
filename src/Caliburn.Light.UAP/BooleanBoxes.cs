@@ -1,4 +1,4 @@
-﻿namespace Caliburn.Light
+﻿namespace Caliburn.Light.WinUI
 {
     internal static class BooleanBoxes
     {

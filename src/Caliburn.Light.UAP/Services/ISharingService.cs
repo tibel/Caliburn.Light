@@ -1,4 +1,4 @@
-﻿namespace Caliburn.Light
+﻿namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Service that handles sharing data with the Share Charm.

@@ -1,7 +1,7 @@
 ﻿using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Encapsulates the application and its available services.

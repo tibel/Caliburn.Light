@@ -1,7 +1,7 @@
 using System;
 using Windows.UI.Xaml.Controls;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// A basic implementation of <see cref="INavigationService" /> designed to adapt the <see cref="Frame" /> control.

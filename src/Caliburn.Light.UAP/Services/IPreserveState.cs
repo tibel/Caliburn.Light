@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Denotes a class which wants to preserve state across session lifetime.

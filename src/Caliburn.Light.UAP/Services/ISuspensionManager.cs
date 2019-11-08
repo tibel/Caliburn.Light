@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// SuspensionManager captures global session state to simplify process lifetime management

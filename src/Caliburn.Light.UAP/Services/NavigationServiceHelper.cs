@@ -1,5 +1,5 @@
 ﻿
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Extension methods related to navigation.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Resolves view and view-model types.

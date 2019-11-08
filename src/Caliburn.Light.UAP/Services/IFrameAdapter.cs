@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Windows.UI.Xaml.Controls;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// The interface to attach the framework to a <see cref="Frame"/>.

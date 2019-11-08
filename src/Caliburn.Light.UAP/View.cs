@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 #endif
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Hosts attached properties related to ViewModel-First.

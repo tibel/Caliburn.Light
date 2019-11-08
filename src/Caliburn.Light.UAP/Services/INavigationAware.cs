@@ -1,4 +1,4 @@
-﻿namespace Caliburn.Light
+﻿namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Denotes a class which is aware of navigation handling.

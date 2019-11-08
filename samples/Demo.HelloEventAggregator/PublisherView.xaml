@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:cal="using:Caliburn.Light"
+    xmlns:cal="using:Caliburn.Light.WinUI"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">

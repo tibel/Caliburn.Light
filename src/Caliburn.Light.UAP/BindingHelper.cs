@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Data;
 #endif
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Some helper methods when dealing with data bindings.

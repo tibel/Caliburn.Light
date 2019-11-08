@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 #endif
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Hosts attached properties related to View-First.

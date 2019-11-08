@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// A UI execution context based on <see cref="CoreDispatcher"/>.

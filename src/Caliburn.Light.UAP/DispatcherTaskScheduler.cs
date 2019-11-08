@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-namespace Caliburn.Light
+namespace Caliburn.Light.WinUI
 {
     internal sealed class DispatcherTaskScheduler : TaskScheduler
     {
