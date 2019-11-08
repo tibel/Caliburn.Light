@@ -15,7 +15,7 @@ namespace Caliburn.Light
         private TaskScheduler _taskScheduler;
 
         /// <summary>
-        /// Initializes the <see cref="UIContext"/>.
+        /// Initializes this <see cref="DispatcherUIContext"/>.
         /// </summary>
         public DispatcherUIContext(CoreDispatcher dispatcher)
         {
