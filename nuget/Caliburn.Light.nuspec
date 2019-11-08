@@ -3,7 +3,7 @@
   <metadata minClientVersion="4.0">
     <id>Caliburn.Light</id>
     <title>Caliburn.Light</title>
-    <version>3.3.0</version>
+    <version>4.0.0</version>
     <authors>Thomas Ibel</authors>
     <description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</description>
     <language>en-US</language>
@@ -13,9 +13,7 @@
     <projectUrl>https://tibel.github.io/Caliburn.Light/</projectUrl>
     <repository type="git" url="https://github.com/tibel/Caliburn.Light.git" />
     <releaseNotes>
-- migrated from PCL to .NET Standard 2.0
-- changed minimum supported frameworks to NET 4.6.1 and UAP 10.0.16299
-- added .NET Core 3.0 WPF support
+many changes
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
