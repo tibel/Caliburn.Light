@@ -7,7 +7,7 @@
     <ProjectGuid>{83CB8852-880D-4334-845A-6CFCBCE86071}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Caliburn.Light</RootNamespace>
+    <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
     <AssemblyName>Caliburn.´Light.UAP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
