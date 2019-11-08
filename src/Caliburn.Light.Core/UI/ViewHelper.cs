@@ -8,7 +8,7 @@ namespace Caliburn.Light
     /// </summary>
     public static class ViewHelper
     {
-        private static List<IViewAdapter> _viewAdapters = new List<IViewAdapter>();
+        private static readonly List<IViewAdapter> _viewAdapters = new List<IViewAdapter>();
 
         /// <summary>
         /// Gets whether the <see cref="ViewHelper"/> is initialized.
@@ -21,7 +21,7 @@ namespace Caliburn.Light
         /// <param name="viewAdapter">The adapter to interact with view elements.</param>
         public static void Initialize(IViewAdapter viewAdapter)
         {
-            if (_viewAdapters.Exists(v => v.GetType() == viewAdapter.GetType()))
+            if (_viewAdapters.Contains(viewAdapter))
                 return;
 
             _viewAdapters.Add(viewAdapter);
@@ -32,17 +32,18 @@ namespace Caliburn.Light
         /// </summary>
         public static bool IsInDesignTool
         {
-            get { return _viewAdapters.Exists(v => v.IsInDesignTool); }
+            get { return _viewAdapters.Count == 0 || _viewAdapters.Exists(v => v.IsInDesignTool); }
         }
 
-        private static IViewAdapter GetViewAdapter(object view)
+        private static IViewAdapter ResolveViewAdapter(object view)
         {
             var viewAdapter = _viewAdapters.Find(v => v.CanHandle(view));
+            return viewAdapter ?? ThrowNotInitializedException(view);
+        }
 
-            if (viewAdapter is null)
-                throw new InvalidOperationException("No view adapter for " + view.GetType() + " is initialized.");
-
-            return viewAdapter;
+        private static IViewAdapter ThrowNotInitializedException(object view)
+        {
+            throw new InvalidOperationException("No view adapter for " + view.GetType() + " is initialized.");
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace Caliburn.Light
         /// <returns>The root element that was not created by the framework.</returns>
         public static object GetFirstNonGeneratedView(object view)
         {
-            return GetViewAdapter(view).GetFirstNonGeneratedView(view);
+            return ResolveViewAdapter(view).GetFirstNonGeneratedView(view);
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnFirstLoad(object view, Action<object> handler)
         {
-            GetViewAdapter(view).ExecuteOnFirstLoad(view, handler);
+            ResolveViewAdapter(view).ExecuteOnFirstLoad(view, handler);
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnLayoutUpdated(object view, Action<object> handler)
         {
-            GetViewAdapter(view).ExecuteOnLayoutUpdated(view, handler);
+            ResolveViewAdapter(view).ExecuteOnLayoutUpdated(view, handler);
         }
 
         /// <summary>
@@ -83,7 +84,7 @@ namespace Caliburn.Light
         /// <returns>true, when close could be initiated; otherwise false.</returns>
         public static bool TryClose(object view, bool? dialogResult)
         {
-            return GetViewAdapter(view).TryClose(view, dialogResult);
+            return ResolveViewAdapter(view).TryClose(view, dialogResult);
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Caliburn.Light
         /// <returns>The command parameter.</returns>
         public static object GetCommandParameter(object view)
         {
-            return GetViewAdapter(view).GetCommandParameter(view);
+            return ResolveViewAdapter(view).GetCommandParameter(view);
         }
     }
 }

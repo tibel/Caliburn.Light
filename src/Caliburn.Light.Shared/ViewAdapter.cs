@@ -18,6 +18,15 @@ namespace Caliburn.Light
     public sealed class ViewAdapter : IViewAdapter
     {
         /// <summary>
+        /// The instance.
+        /// </summary>
+        public static readonly ViewAdapter Instance = new ViewAdapter();
+
+        private ViewAdapter()
+        {
+        }
+
+        /// <summary>
         /// Indicates whether or not the framework is running in the context of a designer.
         /// </summary>
         public bool IsInDesignTool => DesignMode.DesignModeEnabled;

@@ -18,7 +18,7 @@ namespace Caliburn.Light
             if (_isInitialized) return;
             _isInitialized = true;
 
-            ViewHelper.Initialize(new ViewAdapter());
+            ViewHelper.Initialize(ViewAdapter.Instance);
 
             try
             {

@@ -25,7 +25,7 @@ namespace Caliburn.Light
 
             try
             {
-                ViewHelper.Initialize(new ViewAdapter());
+                ViewHelper.Initialize(ViewAdapter.Instance);
 
                 Application = Application.Current;
                 if (Application is object)
