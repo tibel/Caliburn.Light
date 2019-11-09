@@ -25,6 +25,7 @@ namespace Caliburn.Light
 
             RegisterPerRequest(c => c);
             RegisterPerRequest<IServiceLocator>(c => c);
+            RegisterPerRequest<IServiceProvider>(c => c);
         }
 
         private SimpleContainer(IEnumerable<ContainerEntry> entries)
