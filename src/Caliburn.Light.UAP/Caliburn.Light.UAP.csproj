@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
-    <AssemblyName>Caliburn.´Light.UAP</AssemblyName>
+    <AssemblyName>Caliburn.Light.WinUI</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Caliburn.´Light.UAP.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Caliburn.Light.WinUI.xml</DocumentationFile>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +38,7 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Caliburn.´Light.UAP.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Caliburn.Light.WinUI.xml</DocumentationFile>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
   <PropertyGroup>
