@@ -9,7 +9,7 @@ namespace Caliburn.Light
     /// <summary>
     /// A simple IoC container.
     /// </summary>
-    public class SimpleContainer : IServiceLocator, IServiceProvider
+    public class SimpleContainer : IServiceProvider
     {
         private static readonly TypeInfo DelegateType = typeof(Delegate).GetTypeInfo();
         private static readonly TypeInfo EnumerableType = typeof(IEnumerable).GetTypeInfo();
@@ -24,7 +24,6 @@ namespace Caliburn.Light
             _entries = new List<ContainerEntry>();
 
             RegisterPerRequest(c => c);
-            RegisterPerRequest<IServiceLocator>(c => c);
             RegisterPerRequest<IServiceProvider>(c => c);
         }
 
@@ -325,11 +324,6 @@ namespace Caliburn.Light
             return instances;
         }
 
-        IEnumerable<TService> IServiceLocator.GetAllInstances<TService>()
-        {
-            return GetAllInstances<TService>();
-        }
-
         /// <summary>
         /// Requests all instances of a given type.
         /// </summary>
@@ -346,11 +340,6 @@ namespace Caliburn.Light
                 .ToArray();
 
             return instances;
-        }
-
-        IEnumerable IServiceLocator.GetAllInstances(Type service)
-        {
-            return GetAllInstances(service);
         }
 
         private ContainerEntry GetOrCreateEntry(Type service, string key)
@@ -397,13 +386,13 @@ namespace Caliburn.Light
             return (args.Length > 0) ? Activator.CreateInstance(type, args) : Activator.CreateInstance(type);
         }
 
-        private class ContainerEntry : List<Func<SimpleContainer, object>>
+        private sealed class ContainerEntry : List<Func<SimpleContainer, object>>
         {
             public string Key;
             public Type Service;
         }
 
-        private class FactoryFactory<T>
+        private sealed class FactoryFactory<T>
         {
             public Func<T> Create(SimpleContainer container, string key)
             {
