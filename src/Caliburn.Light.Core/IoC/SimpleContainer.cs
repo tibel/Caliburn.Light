@@ -9,7 +9,7 @@ namespace Caliburn.Light
     /// <summary>
     /// A simple IoC container.
     /// </summary>
-    public class SimpleContainer : IServiceLocator
+    public class SimpleContainer : IServiceLocator, IServiceProvider
     {
         private static readonly TypeInfo DelegateType = typeof(Delegate).GetTypeInfo();
         private static readonly TypeInfo EnumerableType = typeof(IEnumerable).GetTypeInfo();
@@ -238,6 +238,11 @@ namespace Caliburn.Light
         public bool UnregisterHandler<TService>(string key = null)
         {
             return UnregisterHandler(typeof(TService), key);
+        }
+
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            return GetInstance(serviceType, null);
         }
 
         /// <summary>

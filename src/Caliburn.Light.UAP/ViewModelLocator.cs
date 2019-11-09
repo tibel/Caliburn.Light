@@ -10,23 +10,23 @@ namespace Caliburn.Light.WinUI
     public sealed class ViewModelLocator : IViewModelLocator
     {
         private readonly IViewModelTypeResolver _typeResolver;
-        private readonly IServiceLocator _serviceLocator;
+        private readonly IServiceProvider _serviceProvider;
         private ILogger _logger;
 
         /// <summary>
         /// Creates an instance of <see cref="ViewModelLocator"/>.
         /// </summary>
         /// <param name="typeResolver">The type resolver.</param>
-        /// <param name="serviceLocator">The service locator.</param>
-        public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceLocator serviceLocator)
+        /// <param name="serviceProvider">The service provider.</param>
+        public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceProvider serviceProvider)
         {
             if (typeResolver is null)
                 throw new ArgumentNullException(nameof(typeResolver));
-            if (serviceLocator is null)
-                throw new ArgumentNullException(nameof(serviceLocator));
+            if (serviceProvider is null)
+                throw new ArgumentNullException(nameof(serviceProvider));
 
             _typeResolver = typeResolver;
-            _serviceLocator = serviceLocator;
+            _serviceProvider = serviceProvider;
         }
 
         private ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
@@ -57,7 +57,7 @@ namespace Caliburn.Light.WinUI
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
-            return _serviceLocator.GetInstance(viewType) as UIElement
+            return _serviceProvider.GetService(viewType) as UIElement
                 ?? (UIElement)Activator.CreateInstance(viewType);
         }
 
@@ -103,7 +103,7 @@ namespace Caliburn.Light.WinUI
                 return null;
             }
 
-            var model = _serviceLocator.GetInstance(modelType);
+            var model = _serviceProvider.GetService(modelType);
             if (model is null)
             {
                 Log.Error("Cannot locate {0}.", modelType);
