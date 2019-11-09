@@ -85,7 +85,7 @@
     <Compile Include="ViewAdapter.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModelTypeResolver.cs" />
-    <EmbeddedResource Include="Properties\Caliburn.Light.UAP.rd.xml" />
+    <EmbeddedResource Include="Properties\Caliburn.Light.WinUI.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj">
