@@ -36,7 +36,7 @@ many changes
 
     <file src="..\src\Caliburn.Light.WPF\bin\Release\netcoreapp3.0\Caliburn.*" exclude="**\*.deps.json" target="lib\netcoreapp3.0" />
 
-    <file src="..\src\Caliburn.Light.UAP\bin\Release\Caliburn.*" exclude="**\*.deps.json" target="lib\uap10.0.16299" />
+    <file src="..\src\Caliburn.Light.WinUI\bin\Release\Caliburn.*" exclude="**\*.deps.json" target="lib\uap10.0.16299" />
 
     <file src="..\LICENSE" target="LICENSE" />
     <file src="..\logo.png" target="" />
