@@ -4,17 +4,20 @@ using System.Windows;
 
 namespace Demo.SimpleMDI
 {
-    public class AppBootstrapper : BootstrapperBase
+    public class AppBootstrapper
     {
         private SimpleContainer _container;
 
         public AppBootstrapper()
         {
-            Initialize();
+            Configure();
+
+            Application.Current.Startup += (_, e) => OnStartup(e);
         }
 
-        protected override void Configure()
+        private void Configure()
         {
+            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
             _container = new SimpleContainer();
@@ -32,7 +35,7 @@ namespace Demo.SimpleMDI
             _container.RegisterPerRequest<TabViewModel>();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        private void OnStartup(StartupEventArgs e)
         {
             _container.GetInstance<IWindowManager>()
                 .ShowWindow(_container.GetInstance<ShellViewModel>());

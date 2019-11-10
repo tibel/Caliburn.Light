@@ -6,13 +6,17 @@ using Caliburn.Light.WPF;
 
 namespace Demo.ExceptionHandling
 {
-    public class AppBootstrapper : BootstrapperBase
+    public class AppBootstrapper
     {
         private SimpleContainer _container;
 
-        protected override void Configure()
+        public void Initialize()
         {
+            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
+
+            Application.Current.DispatcherUnhandledException += (_, e) => OnUnhandledException(e);
+            Application.Current.Startup += (_, e) => OnStartup(e);
 
             _container = new SimpleContainer();
 
@@ -28,12 +32,12 @@ namespace Demo.ExceptionHandling
             _container.RegisterPerRequest<ShellViewModel>();
         }
 
-        protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
+        private void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
             Debug.WriteLine(">>> Dispatcher - {0}", e.Exception);
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        private void OnStartup(StartupEventArgs e)
         {
             _container.GetInstance<IWindowManager>()
                 .ShowWindow(_container.GetInstance<ShellViewModel>());

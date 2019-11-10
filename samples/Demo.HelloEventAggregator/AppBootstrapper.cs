@@ -5,17 +5,20 @@ using System.Windows.Threading;
 
 namespace Demo.HelloEventAggregator
 {
-    public class AppBootstrapper : BootstrapperBase
+    public class AppBootstrapper
     {
         private SimpleContainer _container;
 
         public AppBootstrapper()
         {
-            Initialize();
+            Configure();
+
+            Application.Current.Startup += (_, e) => OnStartup(e);
         }
 
-        protected override void Configure()
+        private void Configure()
         {
+            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
             _container = new SimpleContainer();
@@ -37,7 +40,7 @@ namespace Demo.HelloEventAggregator
             _container.RegisterPerRequest<SubscriberViewModel>();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        private void OnStartup(StartupEventArgs e)
         {
             _container.GetInstance<IWindowManager>()
                 .ShowWindow(_container.GetInstance<ShellViewModel>());

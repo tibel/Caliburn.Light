@@ -4,7 +4,7 @@ using System.Windows.Forms.Integration;
 
 namespace Demo.WinFormsInterop
 {
-    public class InteropBootstrapper : BootstrapperBase
+    public class InteropBootstrapper
     {
         private readonly ElementHost _elementHost;
 
@@ -13,7 +13,7 @@ namespace Demo.WinFormsInterop
             _elementHost = elementHost;
         }
 
-        protected override void Configure()
+        public void Initialize()
         {
             var viewModel = new MainViewModel();
 
