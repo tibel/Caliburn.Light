@@ -5,7 +5,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/tibel/")]
 [assembly: AssemblyProduct("Caliburn.Light")]
-[assembly: AssemblyCopyright("Copyright © Thomas Ibel 2014-2016")]
+[assembly: AssemblyCopyright("Copyright © Thomas Ibel 2014-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
