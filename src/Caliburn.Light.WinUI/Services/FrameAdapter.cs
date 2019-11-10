@@ -150,7 +150,7 @@ namespace Caliburn.Light.WinUI
 
             SavePageState(page, frameState);
 
-            if (page.DataContext is IDeactivate deactivator)
+            if (page.DataContext is IActivatable deactivator)
             {
                 var close = page.NavigationCacheMode == NavigationCacheMode.Disabled;
                 deactivator.Deactivate(close);
@@ -172,7 +172,7 @@ namespace Caliburn.Light.WinUI
                 navigationAware.OnNavigatedTo(e.Parameter);
             }
 
-            if (page.DataContext is IActivate activator)
+            if (page.DataContext is IActivatable activator)
             {
                 activator.Activate();
             }

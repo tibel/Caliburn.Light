@@ -59,7 +59,7 @@ namespace Caliburn.Light
             Deactivated?.Invoke(this, new DeactivationEventArgs(wasClosed));
         }
 
-        void IActivate.Activate()
+        void IActivatable.Activate()
         {
             if (IsActive) return;
 
@@ -91,7 +91,7 @@ namespace Caliburn.Light
         {
         }
 
-        void IDeactivate.Deactivate(bool close)
+        void IActivatable.Deactivate(bool close)
         {
             if (IsActive || (IsInitialized && close))
             {

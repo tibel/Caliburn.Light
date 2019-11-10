@@ -8,7 +8,7 @@ namespace Caliburn.Light
     /// </summary>
     /// <remarks>
     /// Conducted instances can opt-in to the life-cycle by implementing any of the following 
-    /// <see cref="IActivate"/>, <see cref="IDeactivate"/>, <see cref="ICloseGuard"/>, <see cref="IChild"/>.
+    /// <see cref="IActivatable"/>, <see cref="ICloseGuard"/>, <see cref="IChild"/>.
     /// </remarks>
     public interface IConductor : IParent, IBindableObject
     {

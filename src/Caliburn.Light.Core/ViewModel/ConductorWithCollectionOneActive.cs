@@ -73,7 +73,7 @@ namespace Caliburn.Light
                     {
                         if (IsActive)
                         {
-                            if (item is IActivate activeItem)
+                            if (item is IActivatable activeItem)
                                 activeItem.Activate();
 
                             OnActivationProcessed(item, true);
@@ -97,7 +97,7 @@ namespace Caliburn.Light
 
                     if (!close)
                     {
-                        if (item is IDeactivate deactivator)
+                        if (item is IActivatable deactivator)
                             deactivator.Deactivate(false);
 
                         return;
@@ -108,7 +108,7 @@ namespace Caliburn.Light
                     {
                         if (!ReferenceEquals(item, ActiveItem))
                         {
-                            if (item is IDeactivate deactivator)
+                            if (item is IActivatable deactivator)
                                 deactivator.Deactivate(true);
                         }
                         else
@@ -175,7 +175,7 @@ namespace Caliburn.Light
                             closables = stillToClose;
                         }
 
-                        foreach (var x in closables.OfType<IDeactivate>()) { x.Deactivate(true); }
+                        foreach (var x in closables.OfType<IActivatable>()) { x.Deactivate(true); }
                         _items.RemoveRange(closables);
                     }
 
@@ -187,7 +187,7 @@ namespace Caliburn.Light
                 /// </summary>
                 protected override void OnActivate()
                 {
-                    if (ActiveItem is IActivate activator)
+                    if (ActiveItem is IActivatable activator)
                         activator.Activate();
                 }
 
@@ -199,12 +199,12 @@ namespace Caliburn.Light
                 {
                     if (close)
                     {
-                        foreach (var x in _items.OfType<IDeactivate>()) { x.Deactivate(true); }
+                        foreach (var x in _items.OfType<IActivatable>()) { x.Deactivate(true); }
                         _items.Clear();
                     }
                     else
                     {
-                        if (ActiveItem is IDeactivate deactivator)
+                        if (ActiveItem is IActivatable deactivator)
                             deactivator.Deactivate(false);
                     }
                 }

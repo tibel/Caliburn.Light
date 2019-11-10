@@ -27,11 +27,11 @@ namespace Caliburn.Light.WPF
             _model = model;
             _view = view;
 
-            var activatable = model as IActivate;
+            var activatable = model as IActivatable;
             if (activatable is object)
                 activatable.Activate();
 
-            var deactivatable = model as IDeactivate;
+            var deactivatable = model as IActivatable;
             if (deactivatable is object)
             {
                 view.Closed += OnViewClosed;
@@ -82,7 +82,7 @@ namespace Caliburn.Light.WPF
                 return;
 
             _deactivatingFromView = true;
-            ((IDeactivate)_model).Deactivate(true);
+            ((IActivatable)_model).Deactivate(true);
             _deactivatingFromView = false;
         }
 
@@ -91,7 +91,7 @@ namespace Caliburn.Light.WPF
             if (!e.WasClosed)
                 return;
 
-            ((IDeactivate)_model).Deactivated -= OnModelDeactivated;
+            ((IActivatable)_model).Deactivated -= OnModelDeactivated;
 
             if (_deactivatingFromView)
                 return;

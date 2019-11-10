@@ -61,7 +61,7 @@ namespace Caliburn.Light
                 /// </summary>
                 protected override void OnActivate()
                 {
-                    foreach(var x in _items.OfType<IActivate>())
+                    foreach(var x in _items.OfType<IActivatable>())
                         x.Activate();
                 }
 
@@ -71,7 +71,7 @@ namespace Caliburn.Light
                 /// <param name="close">Indicates whether this instance will be closed.</param>
                 protected override void OnDeactivate(bool close)
                 {
-                    foreach (var x in _items.OfType<IDeactivate>())
+                    foreach (var x in _items.OfType<IActivatable>())
                         x.Deactivate(close);
 
                     if (close)
@@ -91,7 +91,7 @@ namespace Caliburn.Light
 
                     if (!canClose && closeables.Any())
                     {
-                        foreach (var x in closeables.OfType<IDeactivate>())
+                        foreach (var x in closeables.OfType<IActivatable>())
                             x.Deactivate(true);
 
                         _items.RemoveRange(closeables);
@@ -111,7 +111,7 @@ namespace Caliburn.Light
 
                     item = EnsureItem(item);
 
-                    if (IsActive && item is IActivate activator)
+                    if (IsActive && item is IActivatable activator)
                         activator.Activate();
 
                     OnActivationProcessed(item, true);
@@ -131,7 +131,7 @@ namespace Caliburn.Light
                     var result = await CloseStrategy.ExecuteAsync(new[] { item });
                     if (result.CanClose)
                     {
-                        if (item is IDeactivate deactivator)
+                        if (item is IActivatable deactivator)
                             deactivator.Deactivate(true);
 
                         _items.Remove(item);

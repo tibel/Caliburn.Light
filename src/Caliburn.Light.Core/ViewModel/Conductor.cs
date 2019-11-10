@@ -26,7 +26,7 @@ namespace Caliburn.Light
             {
                 if (IsActive)
                 {
-                    if (item is IActivate activeItem)
+                    if (item is IActivatable activeItem)
                         activeItem.Activate();
 
                     OnActivationProcessed(item, true);
@@ -60,7 +60,7 @@ namespace Caliburn.Light
             }
             else
             {
-                if (item is IDeactivate deactivator)
+                if (item is IActivatable deactivator)
                     deactivator.Deactivate(false);
             }
         }
@@ -83,7 +83,7 @@ namespace Caliburn.Light
         /// </summary>
         protected override void OnActivate()
         {
-            if (ActiveItem is IActivate activator)
+            if (ActiveItem is IActivatable activator)
                 activator.Activate();
         }
 
@@ -99,7 +99,7 @@ namespace Caliburn.Light
             }
             else
             {
-                if (ActiveItem is IDeactivate deactivator)
+                if (ActiveItem is IActivatable deactivator)
                     deactivator.Deactivate(false);
             }
         }

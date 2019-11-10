@@ -26,13 +26,13 @@
         /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
         protected void ChangeActiveItem(T newItem, bool closePrevious)
         {
-            if (ActiveItem is IDeactivate deactivator)
+            if (ActiveItem is IActivatable deactivator)
                 deactivator.Deactivate(closePrevious);
 
             if (newItem is object)
                 newItem = EnsureItem(newItem);
 
-            if (IsActive && newItem is IActivate activator)
+            if (IsActive && newItem is IActivatable activator)
                 activator.Activate();
 
             SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
