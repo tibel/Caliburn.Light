@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -26,30 +27,47 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="toClose">Items that are requesting close.</param>
         /// <returns>A task containing the aggregated close results.</returns>
-        public async Task<CloseResult<T>> ExecuteAsync(IEnumerable<T> toClose)
+        public Task<CloseResult<T>> ExecuteAsync(IEnumerable<T> toClose)
+        {
+            return _closeConductedItemsWhenConductorCannotClose
+                ? CanCloseAsyncWithClosables(toClose)
+                : CanCloseAsync(toClose);
+        }
+
+        private static async Task<CloseResult<T>> CanCloseAsyncWithClosables(IEnumerable<T> toClose)
         {
             var closables = new List<T>();
-            var result = true;
+            var results = await Task.WhenAll(toClose
+                .Select(x => CanCloseItemAsync(x, closables)));
 
-            foreach (var item in toClose)
+            return new CloseResult<T>(Array.TrueForAll(results, x => x), closables);
+        }
+
+        private static async Task<bool> CanCloseItemAsync(T item, List<T> closables)
+        {
+            if (item is ICloseGuard guard)
             {
-                if (item is ICloseGuard guard)
-                {
-                    var canClose = await guard.CanCloseAsync();
-                    if (canClose)
-                    {
-                        closables.Add(item);
-                    }
-
-                    result = result && canClose;
-                }
-                else
-                {
+                var canClose = await guard.CanCloseAsync();
+                if (canClose)
                     closables.Add(item);
-                }
-            }
 
-            return new CloseResult<T>(result, _closeConductedItemsWhenConductorCannotClose ? (IEnumerable<T>)closables : Array.Empty<T>());
+                return canClose;
+            }
+            else
+            {
+                closables.Add(item);
+                return true;
+            }
+        }
+
+        private static async Task<CloseResult<T>> CanCloseAsync(IEnumerable<T> toClose)
+        {
+            var results = await Task.WhenAll(toClose
+                .OfType<ICloseGuard>()
+                .Select(x => x.CanCloseAsync()));
+
+            var result = Array.TrueForAll(results, x => x);
+            return new CloseResult<T>(result, Array.Empty<T>());
         }
     }
 }

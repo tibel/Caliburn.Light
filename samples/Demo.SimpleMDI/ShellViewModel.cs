@@ -43,7 +43,8 @@ namespace Demo.SimpleMDI
             if (_canClosePending) return false;
             _canClosePending = true;
 
-            await Task.Delay(1000);
+            await base.CanCloseAsync();
+            await Task.Delay(500);
 
             _canClosePending = false;
             return true;
