@@ -62,7 +62,6 @@
     <Compile Include="BindingHelper.cs" />
     <Compile Include="BooleanBoxes.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
-    <Compile Include="CaliburnApplication.cs" />
     <Compile Include="DispatcherTaskScheduler.cs" />
     <Compile Include="DispatcherUIContext.cs" />
     <Compile Include="IViewModelLocator.cs" />

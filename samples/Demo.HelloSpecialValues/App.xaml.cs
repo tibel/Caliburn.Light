@@ -11,8 +11,10 @@ namespace Demo.HelloSpecialValues
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : CaliburnApplication
+    sealed partial class App : Application
     {
+        private SimpleContainer _container;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -22,10 +24,9 @@ namespace Demo.HelloSpecialValues
             InitializeComponent();
         }
 
-        private SimpleContainer _container;
-
-        protected override void Configure()
+        private void Configure()
         {
+            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
             _container = new SimpleContainer();
@@ -59,7 +60,7 @@ namespace Demo.HelloSpecialValues
 #endif
 
             // Start the framework
-            Initialize();
+            Configure();
 
             var rootFrame = Window.Current.Content as Frame;
 
