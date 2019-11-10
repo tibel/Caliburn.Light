@@ -141,7 +141,12 @@ namespace Caliburn.Light.WPF
             var view = viewModelLocator.LocateForModel(model, context);
 
             if (view is FrameworkElement fe)
+            {
+                if (IsCurrentView(targetLocation, fe) && fe.DataContext is IViewAware currentViewAware)
+                    currentViewAware.DetachView(view, context);
+
                 fe.DataContext = model;
+            }
 
             if (model is IViewAware viewAware)
                 viewAware.AttachView(view, context);
@@ -149,7 +154,13 @@ namespace Caliburn.Light.WPF
             SetContentProperty(targetLocation, view);
         }
 
-        private static void SetContentProperty(DependencyObject targetLocation, DependencyObject view)
+        private static bool IsCurrentView(DependencyObject targetLocation, UIElement view)
+        {
+            var currentView = targetLocation is ContentControl contentControl ? contentControl.Content : null;
+            return currentView is object && ReferenceEquals(currentView, view);
+        }
+
+        private static void SetContentProperty(DependencyObject targetLocation, UIElement view)
         {
             if (targetLocation is ContentControl contentControl)
                 contentControl.Content = view;
