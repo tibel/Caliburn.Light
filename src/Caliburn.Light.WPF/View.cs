@@ -142,7 +142,7 @@ namespace Caliburn.Light.WPF
 
             if (view is FrameworkElement fe)
             {
-                if (IsCurrentView(targetLocation, fe) && fe.DataContext is IViewAware currentViewAware)
+                if (IsCurrentView(targetLocation, view) && fe.DataContext is IViewAware currentViewAware)
                     currentViewAware.DetachView(view, context);
 
                 fe.DataContext = model;
