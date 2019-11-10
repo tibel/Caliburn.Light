@@ -1,4 +1,7 @@
 ![Logo](logo.png)
+
+[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light)](https://www.nuget.org/packages/Caliburn.Light/)
+
 # Caliburn.Light
 
 Caliburn.Light is a fork of [Caliburn.Micro](https://caliburnmicro.com/) that
