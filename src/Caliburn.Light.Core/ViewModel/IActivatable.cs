@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -15,13 +16,13 @@ namespace Caliburn.Light
         /// <summary>
         /// Activates this instance.
         /// </summary>
-        void Activate();
+        Task ActivateAsync();
 
         /// <summary>
         /// Deactivates this instance.
         /// </summary>
         /// <param name="close">Indicates whether or not this instance is being closed.</param>
-        void Deactivate(bool close);
+        Task DeactivateAsync(bool close);
 
         /// <summary>
         /// Raised after activation occurs.

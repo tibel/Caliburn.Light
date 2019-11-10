@@ -132,7 +132,7 @@ namespace Caliburn.Light.WinUI
             {
                 var task = guard.CanCloseAsync();
                 if (!task.IsCompleted)
-                    throw new NotSupportedException("Asynchronous task is not supported.");
+                    throw new NotSupportedException("Asynchronous task is not supported yet.");
 
                 if (!task.Result)
                 {
@@ -153,7 +153,7 @@ namespace Caliburn.Light.WinUI
             if (page.DataContext is IActivatable deactivator)
             {
                 var close = page.NavigationCacheMode == NavigationCacheMode.Disabled;
-                deactivator.Deactivate(close);
+                deactivator.DeactivateAsync(close).Observe();
             }
         }
 
@@ -174,7 +174,7 @@ namespace Caliburn.Light.WinUI
 
             if (page.DataContext is IActivatable activator)
             {
-                activator.Activate();
+                activator.ActivateAsync().Observe();
             }
         }
 

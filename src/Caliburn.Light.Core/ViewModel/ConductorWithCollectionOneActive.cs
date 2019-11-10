@@ -74,7 +74,7 @@ namespace Caliburn.Light
                         if (IsActive)
                         {
                             if (item is IActivatable activeItem)
-                                activeItem.Activate();
+                                await activeItem.ActivateAsync();
 
                             OnActivationProcessed(item, true);
                         }
@@ -82,7 +82,7 @@ namespace Caliburn.Light
                         return;
                     }
 
-                    ChangeActiveItem(item, false);
+                    await ChangeActiveItemAsync(item, false);
                 }
 
                 /// <summary>
@@ -98,7 +98,7 @@ namespace Caliburn.Light
                     if (!close)
                     {
                         if (item is IActivatable deactivator)
-                            deactivator.Deactivate(false);
+                            await deactivator.DeactivateAsync(false);
 
                         return;
                     }
@@ -109,13 +109,13 @@ namespace Caliburn.Light
                         if (!ReferenceEquals(item, ActiveItem))
                         {
                             if (item is IActivatable deactivator)
-                                deactivator.Deactivate(true);
+                                await deactivator.DeactivateAsync(true);
                         }
                         else
                         {
                             var index = _items.IndexOf(item);
                             var next = DetermineNextItemToActivate(_items, index);
-                            ChangeActiveItem(next, true);
+                            await ChangeActiveItemAsync(next, true);
                         }
 
                         _items.Remove(item);
@@ -167,7 +167,7 @@ namespace Caliburn.Light
                             } while (closables.Contains(next));
 
                             var previousActive = ActiveItem;
-                            ChangeActiveItem(next, true);
+                            await ChangeActiveItemAsync(next, true);
                             _items.Remove(previousActive);
 
                             var stillToClose = closables.ToList();
@@ -175,7 +175,10 @@ namespace Caliburn.Light
                             closables = stillToClose;
                         }
 
-                        foreach (var x in closables.OfType<IActivatable>()) { x.Deactivate(true); }
+                        await Task.WhenAll(closables
+                            .OfType<IActivatable>()
+                            .Select(x => x.DeactivateAsync(true)));
+
                         _items.RemoveRange(closables);
                     }
 
@@ -185,27 +188,30 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Called when activating.
                 /// </summary>
-                protected override void OnActivate()
+                protected override async Task OnActivateAsync()
                 {
                     if (ActiveItem is IActivatable activator)
-                        activator.Activate();
+                        await activator.ActivateAsync();
                 }
 
                 /// <summary>
                 /// Called when deactivating.
                 /// </summary>
                 /// <param name="close">Indicates whether this instance will be closed.</param>
-                protected override void OnDeactivate(bool close)
+                protected override async Task OnDeactivateAsync(bool close)
                 {
                     if (close)
                     {
-                        foreach (var x in _items.OfType<IActivatable>()) { x.Deactivate(true); }
+                        await Task.WhenAll(_items
+                            .OfType<IActivatable>()
+                            .Select(x => x.DeactivateAsync(true)));
+
                         _items.Clear();
                     }
                     else
                     {
                         if (ActiveItem is IActivatable deactivator)
-                            deactivator.Deactivate(false);
+                            await deactivator.DeactivateAsync(false);
                     }
                 }
 

@@ -105,7 +105,7 @@ namespace Caliburn.Light.WPF
             ApplySettings(view, settings);
 
             if (viewModel is IActivatable activatable)
-                activatable.Activate();
+                activatable.ActivateAsync().Observe();
 
             return view;
         }
@@ -241,7 +241,7 @@ namespace Caliburn.Light.WPF
             ApplySettings(view, settings);
 
             if (viewModel is IActivatable activatable)
-                activatable.Activate();
+                activatable.ActivateAsync().Observe();
 
             return view;
         }
@@ -279,7 +279,7 @@ namespace Caliburn.Light.WPF
         private static void DeactivateAndDetach(FrameworkElement view, string context)
         {
             if (view.DataContext is IActivatable deactivatable)
-                deactivatable.Deactivate(true);
+                deactivatable.DeactivateAsync(true).Observe();
 
             if (view.DataContext is IViewAware viewAware)
                 viewAware.DetachView(view, context);

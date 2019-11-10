@@ -1,4 +1,6 @@
-﻿namespace Caliburn.Light
+﻿using System.Threading.Tasks;
+
+namespace Caliburn.Light
 {
     /// <summary>
     /// A base class for various implementations of <see cref="IConductor"/> that maintain an active item.
@@ -24,16 +26,16 @@
         /// </summary>
         /// <param name="newItem">The new item to activate.</param>
         /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
-        protected void ChangeActiveItem(T newItem, bool closePrevious)
+        protected async Task ChangeActiveItemAsync(T newItem, bool closePrevious)
         {
             if (ActiveItem is IActivatable deactivator)
-                deactivator.Deactivate(closePrevious);
+                await deactivator.DeactivateAsync(closePrevious);
 
             if (newItem is object)
                 newItem = EnsureItem(newItem);
 
             if (IsActive && newItem is IActivatable activator)
-                activator.Activate();
+                await activator.ActivateAsync();
 
             SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
 

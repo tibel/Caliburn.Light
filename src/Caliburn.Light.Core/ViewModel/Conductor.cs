@@ -27,7 +27,7 @@ namespace Caliburn.Light
                 if (IsActive)
                 {
                     if (item is IActivatable activeItem)
-                        activeItem.Activate();
+                        await activeItem.ActivateAsync();
 
                     OnActivationProcessed(item, true);
                 }
@@ -37,7 +37,7 @@ namespace Caliburn.Light
 
             var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
             if (result.CanClose)
-                ChangeActiveItem(item, true);
+                await ChangeActiveItemAsync(item, true);
             else
                 OnActivationProcessed(item, false);
         }
@@ -56,12 +56,12 @@ namespace Caliburn.Light
             {
                 var result = await CloseStrategy.ExecuteAsync(new[] { item });
                 if (result.CanClose)
-                    ChangeActiveItem(null, true);
+                    await ChangeActiveItemAsync(null, true);
             }
             else
             {
                 if (item is IActivatable deactivator)
-                    deactivator.Deactivate(false);
+                    await deactivator.DeactivateAsync(false);
             }
         }
 
@@ -81,26 +81,26 @@ namespace Caliburn.Light
         /// <summary>
         /// Called when activating.
         /// </summary>
-        protected override void OnActivate()
+        protected override async Task OnActivateAsync()
         {
             if (ActiveItem is IActivatable activator)
-                activator.Activate();
+                await activator.ActivateAsync();
         }
 
         /// <summary>
         /// Called when deactivating.
         /// </summary>
         /// <param name="close">Indicates whether this instance will be closed.</param>
-        protected override void OnDeactivate(bool close)
+        protected override async Task OnDeactivateAsync(bool close)
         {
             if (close)
             {
-                ChangeActiveItem(null, true);
+                await ChangeActiveItemAsync(null, true);
             }
             else
             {
                 if (ActiveItem is IActivatable deactivator)
-                    deactivator.Deactivate(false);
+                    await deactivator.DeactivateAsync(false);
             }
         }
 

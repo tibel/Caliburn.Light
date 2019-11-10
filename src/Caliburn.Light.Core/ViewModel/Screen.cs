@@ -59,7 +59,7 @@ namespace Caliburn.Light
             Deactivated?.Invoke(this, new DeactivationEventArgs(wasClosed));
         }
 
-        void IActivatable.Activate()
+        async Task IActivatable.ActivateAsync()
         {
             if (IsActive) return;
 
@@ -67,12 +67,12 @@ namespace Caliburn.Light
             if (!IsInitialized)
             {
                 IsInitialized = initialized = true;
-                OnInitialize();
+                await OnInitializeAsync();
             }
 
             IsActive = true;
             Log.Info("Activating {0}.", this);
-            OnActivate();
+            await OnActivateAsync();
 
             OnActivated(initialized);
         }
@@ -80,18 +80,20 @@ namespace Caliburn.Light
         /// <summary>
         /// Called when initializing.
         /// </summary>
-        protected virtual void OnInitialize()
+        protected virtual Task OnInitializeAsync()
         {
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// Called when activating.
         /// </summary>
-        protected virtual void OnActivate()
+        protected virtual Task OnActivateAsync()
         {
+            return Task.CompletedTask;
         }
 
-        void IActivatable.Deactivate(bool close)
+        async Task IActivatable.DeactivateAsync(bool close)
         {
             if (IsActive || (IsInitialized && close))
             {
@@ -99,7 +101,7 @@ namespace Caliburn.Light
 
                 IsActive = false;
                 Log.Info("Deactivating {0} (close={1}).", this, close);
-                OnDeactivate(close);
+                await OnDeactivateAsync(close);
 
                 OnDeactivated(close);
             }
@@ -109,8 +111,9 @@ namespace Caliburn.Light
         /// Called when deactivating.
         /// </summary>
         /// <param name = "close">Indicates whether this instance will be closed.</param>
-        protected virtual void OnDeactivate(bool close)
+        protected virtual Task OnDeactivateAsync(bool close)
         {
+            return Task.CompletedTask;
         }
 
         /// <summary>

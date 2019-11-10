@@ -59,20 +59,22 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Called when activating.
                 /// </summary>
-                protected override void OnActivate()
+                protected override Task OnActivateAsync()
                 {
-                    foreach(var x in _items.OfType<IActivatable>())
-                        x.Activate();
+                    return Task.WhenAll(_items
+                        .OfType<IActivatable>()
+                        .Select(x => x.ActivateAsync()));
                 }
 
                 /// <summary>
                 /// Called when deactivating.
                 /// </summary>
                 /// <param name="close">Indicates whether this instance will be closed.</param>
-                protected override void OnDeactivate(bool close)
+                protected override async Task OnDeactivateAsync(bool close)
                 {
-                    foreach (var x in _items.OfType<IActivatable>())
-                        x.Deactivate(close);
+                    await Task.WhenAll(_items
+                        .OfType<IActivatable>()
+                        .Select(x => x.DeactivateAsync(close)));
 
                     if (close)
                         _items.Clear();
@@ -86,36 +88,33 @@ namespace Caliburn.Light
                 {
                     var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
 
-                    var canClose = result.CanClose;
-                    var closeables = result.Closeables;
-
-                    if (!canClose && closeables.Any())
+                    if (!result.CanClose && result.Closeables.Any())
                     {
-                        foreach (var x in closeables.OfType<IActivatable>())
-                            x.Deactivate(true);
+                        await Task.WhenAll(result.Closeables.OfType<IActivatable>()
+                            .Select(x => x.DeactivateAsync(true)));
 
-                        _items.RemoveRange(closeables);
+                        _items.RemoveRange(result.Closeables);
                     }
 
-                    return canClose;
+                    return result.CanClose;
                 }
 
                 /// <summary>
                 /// Activates the specified item.
                 /// </summary>
                 /// <param name="item">The item to activate.</param>
-                public override Task ActivateItemAsync(T item)
+                public override async Task ActivateItemAsync(T item)
                 {
                     if (item is null)
-                        return Task.CompletedTask;
+                        return;
 
                     item = EnsureItem(item);
 
                     if (IsActive && item is IActivatable activator)
-                        activator.Activate();
+                        await activator.ActivateAsync();
 
                     OnActivationProcessed(item, true);
-                    return Task.CompletedTask;
+                    return;
                 }
 
                 /// <summary>
@@ -132,7 +131,7 @@ namespace Caliburn.Light
                     if (result.CanClose)
                     {
                         if (item is IActivatable deactivator)
-                            deactivator.Deactivate(true);
+                            await deactivator.DeactivateAsync(true);
 
                         _items.Remove(item);
                     }
