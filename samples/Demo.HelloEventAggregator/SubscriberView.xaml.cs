@@ -1,8 +1,11 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System.Windows.Controls;
 
 namespace Demo.HelloEventAggregator
 {
-    public sealed partial class SubscriberView : UserControl
+    /// <summary>
+    /// Interaction logic for SubscriberView.xaml
+    /// </summary>
+    public partial class SubscriberView : UserControl
     {
         public SubscriberView()
         {

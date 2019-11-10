@@ -1,8 +1,11 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System.Windows.Controls;
 
 namespace Demo.HelloEventAggregator
 {
-    public sealed partial class PublisherView : UserControl
+    /// <summary>
+    /// Interaction logic for PublisherView.xaml
+    /// </summary>
+    public partial class PublisherView : UserControl
     {
         public PublisherView()
         {

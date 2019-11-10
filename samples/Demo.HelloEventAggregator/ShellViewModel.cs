@@ -2,9 +2,9 @@
 
 namespace Demo.HelloEventAggregator
 {
-    public class MainPageViewModel : BindableObject
+    public class ShellViewModel : BindableObject
     {
-        public MainPageViewModel(PublisherViewModel publisher, SubscriberViewModel subscriber)
+        public ShellViewModel(PublisherViewModel publisher, SubscriberViewModel subscriber)
         {
             Publisher = publisher;
             Subscriber = subscriber;
