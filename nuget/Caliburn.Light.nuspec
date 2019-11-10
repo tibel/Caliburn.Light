@@ -13,7 +13,17 @@
     <projectUrl>https://tibel.github.io/Caliburn.Light/</projectUrl>
     <repository type="git" url="https://github.com/tibel/Caliburn.Light.git" />
     <releaseNotes>
-many changes
+- Support view model life cycles where async operations are happening
+- Merged IActivate and IDeactivate into IActivatable
+- Removed BootstrapperBase and CaliburnApplication
+- Removed conventions (NameBasedViewModelTypeResolver)
+- Replaced IServiceLocator by IServiceProvider
+- Introduce WPF and WinUI namespaces
+- Removed UIContext
+- Added IReadOnlyBindableCollection
+- Removed ScreenHelper
+- Removed PropertySupport
+- Added INotifyPropertyChanging
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2016</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
