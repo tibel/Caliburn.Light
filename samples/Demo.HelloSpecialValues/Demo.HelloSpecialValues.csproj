@@ -150,9 +150,9 @@
       <Project>{53D2D831-73B0-4879-B07C-ABD8BB41EF08}</Project>
       <Name>Caliburn.Light.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Caliburn.Light.UAP\Caliburn.Light.UAP.csproj">
+    <ProjectReference Include="..\..\src\Caliburn.Light.WinUI\Caliburn.Light.WinUI.csproj">
       <Project>{83CB8852-880D-4334-845A-6CFCBCE86071}</Project>
-      <Name>Caliburn.Light.UAP</Name>
+      <Name>Caliburn.Light.WinUI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
