@@ -9,7 +9,6 @@ namespace Demo.SimpleMDI
     {
         private readonly Func<TabViewModel> _createTabViewModel;
         private int _count;
-        private bool _canClosePending;
 
         public ShellViewModel(Func<TabViewModel> createTabViewModel)
         {
@@ -40,13 +39,8 @@ namespace Demo.SimpleMDI
 
         public override async Task<bool> CanCloseAsync()
         {
-            if (_canClosePending) return false;
-            _canClosePending = true;
-
             await base.CanCloseAsync();
             await Task.Delay(500);
-
-            _canClosePending = false;
             return true;
         }
     }
