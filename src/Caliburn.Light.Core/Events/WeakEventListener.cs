@@ -2,7 +2,7 @@
 
 namespace Caliburn.Light
 {
-    internal struct WeakEventListener
+    internal readonly struct WeakEventListener
     {
         private readonly WeakReference _target;
         private readonly WeakReference _handler;

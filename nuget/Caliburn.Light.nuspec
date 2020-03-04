@@ -25,14 +25,14 @@
 - Removed PropertySupport
 - Added INotifyPropertyChanging
     </releaseNotes>
-    <copyright>Copyright Thomas Ibel 2014-2019</copyright>
+    <copyright>Copyright Thomas Ibel 2014-2020</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
     <dependencies>
       <group targetFramework="netstandard2.0">
       </group>
       <group targetFramework="net461">
       </group>
-      <group targetFramework="netcoreapp3.0">
+      <group targetFramework="netcoreapp3.1">
       </group>
       <group targetFramework="uap10.0.16299">
       </group>
@@ -44,7 +44,7 @@
 
     <file src="..\src\Caliburn.Light.WPF\bin\Release\net461\Caliburn.*" exclude="**\*.deps.json" target="lib\net461" />
 
-    <file src="..\src\Caliburn.Light.WPF\bin\Release\netcoreapp3.0\Caliburn.*" exclude="**\*.deps.json" target="lib\netcoreapp3.0" />
+    <file src="..\src\Caliburn.Light.WPF\bin\Release\netcoreapp3.1\Caliburn.*" exclude="**\*.deps.json" target="lib\netcoreapp3.1" />
 
     <file src="..\src\Caliburn.Light.WinUI\bin\Release\Caliburn.*" exclude="**\*.deps.json" target="lib\uap10.0.16299" />
 

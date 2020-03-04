@@ -6,7 +6,7 @@ namespace Caliburn.Light
     /// The result of an <see cref="ICloseStrategy&lt;Task&gt;"/>.
     /// </summary>
     /// <typeparam name="T">The type of child element.</typeparam>
-    public struct CloseResult<T>
+    public readonly struct CloseResult<T>
         where T : class
     {
         /// <summary>
