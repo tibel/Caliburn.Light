@@ -82,6 +82,7 @@
     <Compile Include="Services\SuspensionManagerException.cs" />
     <Compile Include="View.cs" />
     <Compile Include="ViewAdapter.cs" />
+    <Compile Include="ViewDispatcher.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModelTypeResolver.cs" />
     <EmbeddedResource Include="Properties\Caliburn.Light.WinUI.rd.xml" />

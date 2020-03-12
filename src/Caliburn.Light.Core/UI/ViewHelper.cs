@@ -97,5 +97,15 @@ namespace Caliburn.Light
         {
             return ResolveViewAdapter(view).GetCommandParameter(view);
         }
+
+        /// <summary>
+        /// Gets the Dispatcher this view is associated with.
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <returns>The dispatcher for the view.</returns>
+        public static IDispatcher GetDispatcher(object view)
+        {
+            return ResolveViewAdapter(view).GetDispatcher(view);
+        }
     }
 }

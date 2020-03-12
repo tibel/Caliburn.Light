@@ -124,5 +124,18 @@ namespace Caliburn.Light.WPF
 
             return null;
         }
+
+        /// <summary>
+        /// Gets the Dispatcher this view is associated with.
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <returns>The dispatcher for the view.</returns>
+        public IDispatcher GetDispatcher(object view)
+        {
+            if (!(view is DependencyObject element))
+                return null;
+
+            return new ViewDispatcher(element.Dispatcher);
+        }
     }
 }
