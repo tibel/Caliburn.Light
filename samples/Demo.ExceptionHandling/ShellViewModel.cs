@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Light;
 
 namespace Demo.ExceptionHandling
 {
-    public class ShellViewModel : BindableObject
+    public class ShellViewModel : ViewAware
     {
-        private readonly IUIContext _uIContext;
+        private IDispatcher _dispatcher;
 
-        public ShellViewModel(IUIContext uIContext)
+        public ShellViewModel()
         {
-            _uIContext = uIContext;
 
             ExecuteCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(OnExecute)
@@ -37,46 +35,42 @@ namespace Demo.ExceptionHandling
         public ICommand TaskRunCommand { get; }
         public ICommand AsyncCommand { get; }
 
+        protected override void OnViewAttached(object view, object context)
+        {
+            _dispatcher = ViewHelper.GetDispatcher(view);
+            base.OnViewAttached(view, context);
+        }
+
         private void OnExecute()
         {
-            Debug.Assert(_uIContext.CheckAccess());
+            Debug.Assert(_dispatcher.CheckAccess());
             throw new InvalidOperationException("Error on execute.");
         }
 
-        private Task OnUIContextRun()
+        private async Task OnUIContextRun()
         {
-            return Task.Run(() =>
-            {
-                Debug.Assert(!_uIContext.CheckAccess());
-                Thread.Sleep(100);
+            await Task.Delay(10).ConfigureAwait(false);
+            Debug.Assert(!_dispatcher.CheckAccess());
 
-                var operation = _uIContext.Run(new Action(() =>
-                {
-                    Debug.Assert(_uIContext.CheckAccess());
-                    Thread.Sleep(100);
-                    throw new InvalidOperationException("Error on a background Task.");
-                }));
+            await _dispatcher.SwitchToUI();
+            Debug.Assert(_dispatcher.CheckAccess());
 
-                return operation;
-            });
+            throw new InvalidOperationException("Error on a UI task.");
         }
 
-        private Task OnTaskRun()
+        private async Task OnTaskRun()
         {
-            return Task.Run(() =>
-            {
-                Debug.Assert(!_uIContext.CheckAccess());
-                Thread.Sleep(100);
-                throw new InvalidOperationException("Error on a background Task.");
-            });
+            await Task.Delay(10).ConfigureAwait(false);
+            Debug.Assert(!_dispatcher.CheckAccess());
+            throw new InvalidOperationException("Error on a background task.");
         }
 
         private async Task OnAsync()
         {
-            Debug.Assert(_uIContext.CheckAccess());
-            await Task.Delay(100);
-            Debug.Assert(_uIContext.CheckAccess());
-            throw new InvalidOperationException("Error on asynchronous execute.");
+            Debug.Assert(_dispatcher.CheckAccess());
+            await Task.Delay(10).ConfigureAwait(true);
+            Debug.Assert(_dispatcher.CheckAccess());
+            throw new InvalidOperationException("Error on UI task.");
         }
     }
 }
