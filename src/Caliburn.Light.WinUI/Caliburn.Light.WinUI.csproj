@@ -62,8 +62,6 @@
     <Compile Include="BindingHelper.cs" />
     <Compile Include="BooleanBoxes.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
-    <Compile Include="DispatcherTaskScheduler.cs" />
-    <Compile Include="DispatcherUIContext.cs" />
     <Compile Include="IViewModelLocator.cs" />
     <Compile Include="IViewModelTypeResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

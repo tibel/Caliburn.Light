@@ -23,7 +23,7 @@ namespace Demo.HelloEventAggregator
 
             _container = new SimpleContainer();
 
-            _container.RegisterInstance<IUIContext>(new DispatcherUIContext(Dispatcher.CurrentDispatcher));
+            _container.RegisterInstance<IDispatcher>(new ViewDispatcher(Dispatcher.CurrentDispatcher));
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();

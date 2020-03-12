@@ -11,22 +11,18 @@ namespace Caliburn.Light
     public sealed class EventAggregator : IEventAggregator
     {
         private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
-        private readonly IUIContext _uiContext;
-        private readonly WaitCallback _publishWaitCallback;
-        private readonly SendOrPostCallback _publishSendOrPostCallback;
+        private readonly IDispatcher _dispatcher;
 
         /// <summary>
         /// Initializes a new instance of <see cref="EventAggregator"/>.
         /// </summary>
-        /// <param name="uiContext">The UI context.</param>
-        public EventAggregator(IUIContext uiContext)
+        /// <param name="dispatcher">The UI context.</param>
+        public EventAggregator(IDispatcher dispatcher)
         {
-            if (uiContext is null)
-                throw new ArgumentNullException(nameof(uiContext));
+            if (dispatcher is null)
+                throw new ArgumentNullException(nameof(dispatcher));
 
-            _uiContext = uiContext;
-            _publishWaitCallback = PlublishCore;
-            _publishSendOrPostCallback = PlublishCore;  
+            _dispatcher = dispatcher;
         }
 
         /// <summary>
@@ -122,7 +118,7 @@ namespace Caliburn.Light
 
             if (selectedHandlers.Count == 0) return;
 
-            var isUIThread = _uiContext.CheckAccess();
+            var isUIThread = _dispatcher.CheckAccess();
             var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
             if (currentThreadHandlers.Count > 0)
                 PublishCore(message, currentThreadHandlers);
@@ -131,18 +127,12 @@ namespace Caliburn.Light
             {
                 var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
                 if (uiThreadHandlers.Count > 0)
-                    _uiContext.BeginInvoke(_publishSendOrPostCallback, Tuple.Create(message, uiThreadHandlers));
+                    _dispatcher.BeginInvoke(() => PublishCore(message, uiThreadHandlers));
             }
 
             var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
             if (backgroundThreadHandlers.Count > 0)
-                ThreadPool.QueueUserWorkItem(_publishWaitCallback, Tuple.Create(message, backgroundThreadHandlers));
-        }
-
-        private void PlublishCore(object state)
-        {
-            var tuple = (Tuple<object, List<IEventAggregatorHandler>>)state;
-            PublishCore(tuple.Item1, tuple.Item2);
+                ThreadPool.QueueUserWorkItem(_ => PublishCore(message, backgroundThreadHandlers));
         }
 
         private static void PublishCore(object message, List<IEventAggregatorHandler> handlers)
