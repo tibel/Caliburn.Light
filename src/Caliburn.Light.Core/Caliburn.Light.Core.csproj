@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\Caliburn.Light.snk" Link="Caliburn.Light.snk" />
+    <None Include="..\Caliburn.Light.snk" Link="Properties\Caliburn.Light.snk" />
   </ItemGroup>
 
   <ItemGroup>

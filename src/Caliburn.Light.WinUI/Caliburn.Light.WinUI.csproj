@@ -57,7 +57,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Behaviors\ExecutionContextResolver.cs" />
+    <Compile Include="ExecutionContextResolver.cs" />
     <Compile Include="Bind.cs" />
     <Compile Include="BindingHelper.cs" />
     <Compile Include="BooleanBoxes.cs" />

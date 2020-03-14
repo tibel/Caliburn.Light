@@ -21,8 +21,7 @@ namespace Caliburn.Light.WPF
 
         private static Window GetWindowFromContext(CoroutineExecutionContext context)
         {
-            var view = context.Source as DependencyObject;
-            return view is object ? Window.GetWindow(view) : null;
+            return context.Source is DependencyObject view ? Window.GetWindow(view) : null;
         }
 
         private static Window GetFirstActiveWindow()
