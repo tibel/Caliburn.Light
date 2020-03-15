@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -144,7 +145,7 @@ namespace Caliburn.Light.WPF
             public MultipleFilesCoTask(string title)
                 : base(true, title)
             {
-                Result = new FileInfo[0];
+                Result = Array.Empty<FileInfo>();
             }
 
             protected override void OnCompleted(OpenFileDialog openFileDialog, CoTaskCompletedEventArgs args)

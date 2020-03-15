@@ -96,8 +96,11 @@ namespace Caliburn.Light.WPF
             var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
 
+            if (context is object)
+                View.SetContext(view, context);
+
             view.DataContext = viewModel;
-            view.Closed += (s, _) => DeactivateAndDetach((FrameworkElement)s, context);
+            view.Closed += (s, _) => DeactivateAndDetach((FrameworkElement)s);
 
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
@@ -140,6 +143,9 @@ namespace Caliburn.Light.WPF
             var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context), isDialog);
             View.SetViewModelLocator(view, _viewModelLocator);
 
+            if (context is object)
+                View.SetContext(view, context);
+
             view.DataContext = viewModel;
 
             if (viewModel is IViewAware viewAware)
@@ -154,7 +160,7 @@ namespace Caliburn.Light.WPF
             ApplySettings(view, settings);
 
             var conductor = new WindowConductor(viewModel, view);
-            view.Closed += (s, _) => Detach((FrameworkElement)s, context);
+            view.Closed += (s, _) => Detach((FrameworkElement)s);
 
             return conductor.View;
         }
@@ -226,8 +232,11 @@ namespace Caliburn.Light.WPF
             var view = EnsurePage(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
 
+            if (context is object)
+                View.SetContext(view, context);
+
             view.DataContext = viewModel;
-            view.Unloaded += (s, _) => DeactivateAndDetach((FrameworkElement)s, context);
+            view.Unloaded += (s, _) => DeactivateAndDetach((FrameworkElement)s);
 
             if (viewModel is IViewAware viewAware)
                 viewAware.AttachView(view, context);
@@ -276,19 +285,19 @@ namespace Caliburn.Light.WPF
             }
         }
 
-        private static void DeactivateAndDetach(FrameworkElement view, string context)
+        private static void DeactivateAndDetach(FrameworkElement view)
         {
             if (view.DataContext is IActivatable deactivatable)
                 deactivatable.DeactivateAsync(true).Observe();
 
             if (view.DataContext is IViewAware viewAware)
-                viewAware.DetachView(view, context);
+                viewAware.DetachView(view, View.GetContext(view));
         }
 
-        private static void Detach(FrameworkElement view, string context)
+        private static void Detach(FrameworkElement view)
         {
             if (view.DataContext is IViewAware viewAware)
-                viewAware.DetachView(view, context);
+                viewAware.DetachView(view, View.GetContext(view));
         }
     }
 }

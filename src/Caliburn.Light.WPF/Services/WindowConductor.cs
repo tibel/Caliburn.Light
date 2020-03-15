@@ -27,37 +27,27 @@ namespace Caliburn.Light.WPF
             _model = model;
             _view = view;
 
-            var activatable = model as IActivatable;
-            if (activatable is object)
+            if (model is IActivatable activatable)
+            {
                 activatable.ActivateAsync().Observe();
 
-            var deactivatable = model as IActivatable;
-            if (deactivatable is object)
-            {
                 view.Closed += OnViewClosed;
-                deactivatable.Deactivated += OnModelDeactivated;
+                activatable.Deactivated += OnModelDeactivated;
             }
 
-            var guard = model as ICloseGuard;
-            if (guard is object)
+            if (model is ICloseGuard guard)
                 view.Closing += OnViewClosing;
         }
 
         /// <summary>
         /// Gets the view-model.
         /// </summary>
-        public object Model
-        {
-            get { return _model; }
-        }
+        public object Model => _model;
 
         /// <summary>
         /// Gets the view.
         /// </summary>
-        public Window View
-        {
-            get { return _view; }
-        }
+        public Window View => _view;
 
         private void OnViewClosing(object sender, CancelEventArgs e)
         {
@@ -115,7 +105,7 @@ namespace Caliburn.Light.WPF
 
         private async void CloseViewAsync(Task<bool> task)
         {
-            var canClose = await task;
+            var canClose = await task.ConfigureAwait(true);
             if (!canClose)
                 return;
 
