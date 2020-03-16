@@ -34,14 +34,26 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        /// <param name="settings">The dialog popup settings.</param>
+        /// <param name="settings">The optional dialog settings.</param>
         /// <returns>The dialog result.</returns>
         public bool? ShowDialog(object viewModel, string context, IDictionary<string, object> settings)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
 
-            return CreateWindow(viewModel, true, context, settings).ShowDialog();
+            var window = CreateWindow(viewModel, context, settings);
+
+            var owner = InferOwnerOf(window);
+            if (owner is object)
+                window.Owner = owner;
+
+            // defaults
+            if (View.GetIsGenerated(window) && settings?.ContainsKey("WindowStartupLocation") != true)
+                window.WindowStartupLocation = owner is object
+                    ? WindowStartupLocation.CenterOwner
+                    : WindowStartupLocation.CenterScreen;
+
+            return window.ShowDialog();
         }
 
         /// <summary>
@@ -58,7 +70,7 @@ namespace Caliburn.Light.WPF
             if (Application.Current?.MainWindow is NavigationWindow navWindow)
                 navWindow.Navigate(CreatePage(viewModel, context, settings));
             else
-                CreateWindow(viewModel, false, context, settings).Show();
+                CreateWindow(viewModel, context, settings).Show();
         }
 
         /// <summary>
@@ -100,6 +112,7 @@ namespace Caliburn.Light.WPF
                 View.SetContext(view, context);
 
             view.DataContext = viewModel;
+
             view.Closed += (s, _) => DeactivateAndDetach((FrameworkElement)s);
 
             if (viewModel is IViewAware viewAware)
@@ -123,7 +136,11 @@ namespace Caliburn.Light.WPF
         {
             if (!(view is Popup popup))
             {
-                popup = new Popup { Child = view };
+                popup = new Popup
+                {
+                    Child = view
+                };
+
                 View.SetIsGenerated(popup, true);
             }
 
@@ -134,13 +151,12 @@ namespace Caliburn.Light.WPF
         /// Creates a window.
         /// </summary>
         /// <param name="viewModel">The view model.</param>
-        /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <param name="context">The view context.</param>
-        /// <param name="settings">The optional popup settings.</param>
+        /// <param name="settings">The optional window settings.</param>
         /// <returns>The window.</returns>
-        protected Window CreateWindow(object viewModel, bool isDialog, string context, IDictionary<string, object> settings)
+        protected Window CreateWindow(object viewModel, string context, IDictionary<string, object> settings)
         {
-            var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context), isDialog);
+            var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
 
             if (context is object)
@@ -170,9 +186,8 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="view">The view.</param>
-        /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <returns>The window.</returns>
-        protected virtual Window EnsureWindow(object viewModel, UIElement view, bool isDialog)
+        protected virtual Window EnsureWindow(object viewModel, UIElement view)
         {
             if (!(view is Window window))
             {
@@ -183,22 +198,6 @@ namespace Caliburn.Light.WPF
                 };
 
                 View.SetIsGenerated(window, true);
-
-                var owner = InferOwnerOf(window);
-                if (owner is object)
-                {
-                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    window.Owner = owner;
-                }
-                else
-                {
-                    window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                }
-            }
-            else
-            {
-                if (isDialog && InferOwnerOf(window) is Window owner)
-                    window.Owner = owner;
             }
 
             return window;
@@ -225,7 +224,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        /// <param name="settings">The optional popup settings.</param>
+        /// <param name="settings">The optional page settings.</param>
         /// <returns>The page.</returns>
         protected Page CreatePage(object viewModel, string context, IDictionary<string, object> settings)
         {
@@ -236,6 +235,7 @@ namespace Caliburn.Light.WPF
                 View.SetContext(view, context);
 
             view.DataContext = viewModel;
+
             view.Unloaded += (s, _) => DeactivateAndDetach((FrameworkElement)s);
 
             if (viewModel is IViewAware viewAware)
@@ -265,7 +265,11 @@ namespace Caliburn.Light.WPF
         {
             if (!(view is Page page))
             {
-                page = new Page { Content = view };
+                page = new Page
+                {
+                    Content = view
+                };
+
                 View.SetIsGenerated(page, true);
             }
 
@@ -280,15 +284,14 @@ namespace Caliburn.Light.WPF
             foreach (var pair in settings)
             {
                 var propertyInfo = type.GetRuntimeProperty(pair.Key);
-                if (propertyInfo is object)
-                    propertyInfo.SetValue(target, pair.Value, null);
+                propertyInfo?.SetValue(target, pair.Value, null);
             }
         }
 
         private static void DeactivateAndDetach(FrameworkElement view)
         {
-            if (view.DataContext is IActivatable deactivatable)
-                deactivatable.DeactivateAsync(true).Observe();
+            if (view.DataContext is IActivatable activatable)
+                activatable.DeactivateAsync(true).Observe();
 
             if (view.DataContext is IViewAware viewAware)
                 viewAware.DetachView(view, View.GetContext(view));
