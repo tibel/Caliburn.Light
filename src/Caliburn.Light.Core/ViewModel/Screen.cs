@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A base implementation of <see cref = "IScreen" />.
+    /// A base implementation that requires activation and may prevent closing.
     /// </summary>
-    public class Screen : ViewAware, IScreen
+    public class Screen : ViewAware, IActivatable, ICloseGuard
     {
         private bool _isActive;
         private bool _isInitialized;
