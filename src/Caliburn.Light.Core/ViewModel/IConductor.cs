@@ -7,7 +7,7 @@ namespace Caliburn.Light
     /// Denotes an instance which conducts other objects by maintaining a strict life-cycle.
     /// </summary>
     /// <remarks>
-    /// Conducted instances can opt-in to the life-cycle by implementing any of the following 
+    /// Conducted instances can opt-in to the life-cycle by implementing any of the following
     /// <see cref="IActivatable"/>, <see cref="ICloseGuard"/>, <see cref="IChild"/>.
     /// </remarks>
     public interface IConductor : IParent, IBindableObject

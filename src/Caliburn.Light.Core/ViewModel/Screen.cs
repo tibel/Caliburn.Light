@@ -144,7 +144,7 @@ namespace Caliburn.Light
                     return;
             }
 
-            Log.Info("TryClose requires an IChild.Parent of IConductor or a view with a Close method or IsOpen property.");
+            Log.Info("TryClose requires an IChild.Parent of IConductor or a top-level view.");
         }
     }
 }

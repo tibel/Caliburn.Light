@@ -8,18 +8,12 @@ namespace Demo.SimpleMDI
         private object _parent;
         private string _displayName;
 
-        /// <summary>
-        /// Gets or Sets the Parent <see cref = "IConductor" />
-        /// </summary>
         public object Parent
         {
             get { return _parent; }
             set { SetProperty(ref _parent, value); }
         }
 
-        /// <summary>
-        /// Gets or Sets the Display Name.
-        /// </summary>
         public string DisplayName
         {
             get { return _displayName; }

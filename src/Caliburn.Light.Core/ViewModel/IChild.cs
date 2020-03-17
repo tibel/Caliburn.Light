@@ -6,7 +6,7 @@ namespace Caliburn.Light
     public interface IChild
     {
         /// <summary>
-        /// Gets or Sets the Parent
+        /// Gets or sets the parent.
         /// </summary>
         object Parent { get; set; }
     }
