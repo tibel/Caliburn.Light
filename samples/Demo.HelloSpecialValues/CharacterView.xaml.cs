@@ -8,7 +8,9 @@ namespace Demo.HelloSpecialValues
     {
         public CharacterView()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
+
+        public CharacterViewModel Model => DataContext as CharacterViewModel;
     }
 }

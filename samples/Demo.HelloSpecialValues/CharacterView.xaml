@@ -10,6 +10,8 @@
     d:DesignWidth="400">
 
     <Grid Margin="0,0,10,10">
-        <Image Source="{Binding Image}" Width="100" Stretch="Uniform" />
+        <Image Source="{x:Bind Model.Image}"
+               Width="100"
+               Stretch="Uniform" />
     </Grid>
 </UserControl>

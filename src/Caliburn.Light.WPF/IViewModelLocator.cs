@@ -10,7 +10,7 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Locates the view for the specified model instance.
         /// </summary>
-        /// <param name="model">the model instance.</param>
+        /// <param name="model">The model instance.</param>
         /// <param name="context">The context (or null).</param>
         /// <returns>The view.</returns>
         UIElement LocateForModel(object model, string context);

@@ -10,7 +10,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <GridView ItemsSource="{Binding Characters}" SelectionMode="None" IsSwipeEnabled="False" IsItemClickEnabled="True" Margin="20" ItemClick="{x:Bind Model.CharacterSelectedCommand.OnEvent}">
+        <GridView ItemsSource="{x:Bind Model.Characters}"
+                  SelectionMode="None"
+                  IsSwipeEnabled="False"
+                  IsItemClickEnabled="True"
+                  Margin="20"
+                  ItemClick="{x:Bind Model.CharacterSelectedCommand.OnEvent}">
             <cal:Bind.CommandParameter>
                 <local:ClickedItem />
             </cal:Bind.CommandParameter>

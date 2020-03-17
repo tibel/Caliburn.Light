@@ -17,9 +17,6 @@ namespace Demo.HelloSpecialValues
             NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        public MainPageViewModel Model
-        {
-            get { return DataContext as MainPageViewModel; }
-        }
+        public MainPageViewModel Model => DataContext as MainPageViewModel;
     }
 }
