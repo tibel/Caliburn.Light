@@ -34,7 +34,7 @@ namespace Caliburn.Light
             return DeactivateItemAsync((T) item, close);
         }
 
-        IEnumerable IParent.GetChildren()
+        IEnumerable IConductor.GetChildren()
         {
             return GetChildren();
         }

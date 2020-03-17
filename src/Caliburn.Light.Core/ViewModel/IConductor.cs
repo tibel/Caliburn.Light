@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -10,7 +11,7 @@ namespace Caliburn.Light
     /// Conducted instances can opt-in to the life-cycle by implementing any of the following
     /// <see cref="IActivatable"/>, <see cref="ICloseGuard"/>, <see cref="IChild"/>.
     /// </remarks>
-    public interface IConductor : IParent, IBindableObject
+    public interface IConductor
     {
         /// <summary>
         /// Activates the specified item.
@@ -29,5 +30,11 @@ namespace Caliburn.Light
         /// Occurs when an activation request is processed.
         /// </summary>
         event EventHandler<ActivationProcessedEventArgs> ActivationProcessed;
+
+        /// <summary>
+        /// Gets the children.
+        /// </summary>
+        /// <returns>The collection of children.</returns>
+        IEnumerable GetChildren();
     }
 }
