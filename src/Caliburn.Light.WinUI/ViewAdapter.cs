@@ -53,6 +53,12 @@ namespace Caliburn.Light.WinUI
             if (view is ContentControl contentControl)
                 return contentControl.Content;
 
+            if (view is UserControl userControl)
+                return userControl.Content;
+
+            if (view is Popup popup)
+                return popup.Child;
+
             throw new NotSupportedException("Generated view type is not supported.");
         }
 

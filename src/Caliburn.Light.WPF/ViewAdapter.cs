@@ -52,6 +52,12 @@ namespace Caliburn.Light.WPF
             if (view is ContentControl contentControl)
                 return contentControl.Content;
 
+            if (view is Page page)
+                return page.Content;
+
+            if (view is Popup popup)
+                return popup.Child;
+
             throw new NotSupportedException("Generated view type is not supported.");
         }
 
