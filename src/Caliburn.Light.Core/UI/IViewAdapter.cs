@@ -44,9 +44,8 @@ namespace Caliburn.Light
         /// Tries to close the specified view.
         /// </summary>
         /// <param name="view">The view to close.</param>
-        /// <param name="dialogResult">The dialog result.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        bool TryClose(object view, bool? dialogResult);
+        bool TryClose(object view);
 
         /// <summary>
         /// Gets the command parameter of the view.

@@ -88,9 +88,8 @@ namespace Caliburn.Light.WinUI
         /// Tries to close the specified view.
         /// </summary>
         /// <param name="view">The view to close.</param>
-        /// <param name="dialogResult">The dialog result.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        public bool TryClose(object view, bool? dialogResult)
+        public bool TryClose(object view)
         {
             if (view is Window window)
             {

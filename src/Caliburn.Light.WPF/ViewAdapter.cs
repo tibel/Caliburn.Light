@@ -87,17 +87,12 @@ namespace Caliburn.Light.WPF
         /// Tries to close the specified view.
         /// </summary>
         /// <param name="view">The view to close.</param>
-        /// <param name="dialogResult">The dialog result.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        public bool TryClose(object view, bool? dialogResult)
+        public bool TryClose(object view)
         {
             if (view is Window window)
             {
-                if (dialogResult.HasValue)
-                    window.DialogResult = dialogResult;
-                else
-                    window.Close();
-
+                window.Close();
                 return true;
             }
 

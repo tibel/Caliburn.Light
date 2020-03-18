@@ -127,10 +127,8 @@ namespace Caliburn.Light
 
         /// <summary>
         /// Tries to close this instance by asking its Parent to initiate shutdown or by asking its corresponding view to close.
-        /// Also provides an opportunity to pass a dialog result to it's corresponding view.
         /// </summary>
-        /// <param name="dialogResult">The dialog result.</param>
-        public virtual void TryClose(bool? dialogResult = null)
+        public virtual void TryClose()
         {
             if (this is IChild child && child.Parent is IConductor conductor)
             {
@@ -140,7 +138,7 @@ namespace Caliburn.Light
 
             foreach (var entry in Views)
             {
-                if (ViewHelper.TryClose(entry.Value.Target, dialogResult))
+                if (ViewHelper.TryClose(entry.Value.Target))
                     return;
             }
 

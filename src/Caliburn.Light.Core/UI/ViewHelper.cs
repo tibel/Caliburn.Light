@@ -80,11 +80,10 @@ namespace Caliburn.Light
         /// Tries to close the specified view.
         /// </summary>
         /// <param name="view">The view to close.</param>
-        /// <param name="dialogResult">The dialog result.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        public static bool TryClose(object view, bool? dialogResult)
+        public static bool TryClose(object view)
         {
-            return ResolveViewAdapter(view).TryClose(view, dialogResult);
+            return ResolveViewAdapter(view).TryClose(view);
         }
 
         /// <summary>
