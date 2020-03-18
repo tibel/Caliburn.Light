@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Navigation;
 
 namespace Caliburn.Light.WPF
 {
@@ -67,10 +65,7 @@ namespace Caliburn.Light.WPF
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
 
-            if (Application.Current?.MainWindow is NavigationWindow navWindow)
-                navWindow.Navigate(CreatePage(viewModel, context, settings));
-            else
-                CreateWindow(viewModel, context, settings).Show();
+            CreateWindow(viewModel, context, settings).Show();
         }
 
         /// <summary>
@@ -108,22 +103,10 @@ namespace Caliburn.Light.WPF
             var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
 
-            if (context is object)
-                View.SetContext(view, context);
-
             view.DataContext = viewModel;
 
-            view.Closed += (s, _) => DeactivateAndDetach((FrameworkElement)s);
-
-            if (viewModel is IViewAware viewAware)
-                viewAware.AttachView(view, context);
-
             ApplySettings(view, settings);
-
-            if (viewModel is IActivatable activatable)
-                activatable.ActivateAsync().Observe();
-
-            return view;
+            return new PopupLifecycle(view, context).View;
         }
 
         /// <summary>
@@ -159,26 +142,16 @@ namespace Caliburn.Light.WPF
             var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
 
-            if (context is object)
-                View.SetContext(view, context);
-
             view.DataContext = viewModel;
 
-            if (viewModel is IViewAware viewAware)
-                viewAware.AttachView(view, context);
-
-            if (viewModel is IHaveDisplayName haveDisplayName && !BindingOperations.IsDataBound(view, Window.TitleProperty))
+            if (viewModel is IHaveDisplayName && !BindingOperations.IsDataBound(view, Window.TitleProperty))
             {
-                var binding = new Binding("DisplayName") { Mode = BindingMode.OneWay };
+                var binding = new Binding(nameof(IHaveDisplayName.DisplayName)) { Mode = BindingMode.OneWay };
                 view.SetBinding(Window.TitleProperty, binding);
             }
 
             ApplySettings(view, settings);
-
-            var conductor = new WindowConductor(viewModel, view);
-            view.Closed += (s, _) => Detach((FrameworkElement)s);
-
-            return conductor.View;
+            return new WindowLifecycle(view, context, false).View;
         }
 
         /// <summary>
@@ -219,63 +192,6 @@ namespace Caliburn.Light.WPF
             return ReferenceEquals(active, window) ? null : active;
         }
 
-        /// <summary>
-        /// Creates the page.
-        /// </summary>
-        /// <param name="viewModel">The view model.</param>
-        /// <param name="context">The context.</param>
-        /// <param name="settings">The optional page settings.</param>
-        /// <returns>The page.</returns>
-        protected Page CreatePage(object viewModel, string context, IDictionary<string, object> settings)
-        {
-            var view = EnsurePage(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
-            View.SetViewModelLocator(view, _viewModelLocator);
-
-            if (context is object)
-                View.SetContext(view, context);
-
-            view.DataContext = viewModel;
-
-            view.Unloaded += (s, _) => DeactivateAndDetach((FrameworkElement)s);
-
-            if (viewModel is IViewAware viewAware)
-                viewAware.AttachView(view, context);
-
-            if (viewModel is IHaveDisplayName haveDisplayName && !BindingOperations.IsDataBound(view, Page.TitleProperty))
-            {
-                var binding = new Binding("DisplayName") { Mode = BindingMode.OneWay };
-                view.SetBinding(Page.TitleProperty, binding);
-            }
-
-            ApplySettings(view, settings);
-
-            if (viewModel is IActivatable activatable)
-                activatable.ActivateAsync().Observe();
-
-            return view;
-        }
-
-        /// <summary>
-        /// Ensures the view is a page or provides one.
-        /// </summary>
-        /// <param name="viewModel">The model.</param>
-        /// <param name="view">The view.</param>
-        /// <returns>The page.</returns>
-        protected virtual Page EnsurePage(object viewModel, UIElement view)
-        {
-            if (!(view is Page page))
-            {
-                page = new Page
-                {
-                    Content = view
-                };
-
-                View.SetIsGenerated(page, true);
-            }
-
-            return page;
-        }
-
         private static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
         {
             if (settings is null) return;
@@ -286,21 +202,6 @@ namespace Caliburn.Light.WPF
                 var propertyInfo = type.GetRuntimeProperty(pair.Key);
                 propertyInfo?.SetValue(target, pair.Value, null);
             }
-        }
-
-        private static void DeactivateAndDetach(FrameworkElement view)
-        {
-            if (view.DataContext is IActivatable activatable)
-                activatable.DeactivateAsync(true).Observe();
-
-            if (view.DataContext is IViewAware viewAware)
-                viewAware.DetachView(view, View.GetContext(view));
-        }
-
-        private static void Detach(FrameworkElement view)
-        {
-            if (view.DataContext is IViewAware viewAware)
-                viewAware.DetachView(view, View.GetContext(view));
         }
     }
 }
