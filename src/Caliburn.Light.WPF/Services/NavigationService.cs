@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -17,9 +15,9 @@ namespace Caliburn.Light.WPF
             _viewModelLocator = viewModelLocator;
         }
 
-        public void Navigate(object viewModel, string context, IDictionary<string, object> settings)
+        public void Navigate(object viewModel, string context)
         {
-            var page = CreatePage(viewModel, context, settings);
+            var page = CreatePage(viewModel, context);
             PageLifecycle.AttachTo(_frame);
             _frame.Navigate(page);
         }
@@ -29,9 +27,8 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        /// <param name="settings">The optional page settings.</param>
         /// <returns>The page.</returns>
-        protected Page CreatePage(object viewModel, string context, IDictionary<string, object> settings)
+        protected Page CreatePage(object viewModel, string context)
         {
             var view = EnsurePage(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
@@ -43,8 +40,6 @@ namespace Caliburn.Light.WPF
                 var binding = new Binding(nameof(IHaveDisplayName.DisplayName)) { Mode = BindingMode.OneWay };
                 view.SetBinding(Page.TitleProperty, binding);
             }
-
-            ApplySettings(view, settings);
 
             return view;
         }
@@ -68,18 +63,6 @@ namespace Caliburn.Light.WPF
             }
 
             return page;
-        }
-
-        private static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
-        {
-            if (settings is null) return;
-
-            var type = target.GetType();
-            foreach (var pair in settings)
-            {
-                var propertyInfo = type.GetRuntimeProperty(pair.Key);
-                propertyInfo?.SetValue(target, pair.Value, null);
-            }
         }
     }
 }

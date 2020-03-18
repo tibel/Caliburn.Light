@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
@@ -28,44 +26,57 @@ namespace Caliburn.Light.WPF
         }
 
         /// <summary>
-        /// Shows a modal dialog for the specified model.
+        /// Shows a non-modal window for the specified model.
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        /// <param name="settings">The optional dialog settings.</param>
-        /// <returns>The dialog result.</returns>
-        public bool? ShowDialog(object viewModel, string context, IDictionary<string, object> settings)
+        public void ShowWindow(object viewModel, string context = null)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
 
-            var window = CreateWindow(viewModel, context, settings);
-
-            var owner = InferOwnerOf(window);
-            if (owner is object)
-                window.Owner = owner;
-
-            // defaults
-            if (View.GetIsGenerated(window) && settings?.ContainsKey("WindowStartupLocation") != true)
-                window.WindowStartupLocation = owner is object
-                    ? WindowStartupLocation.CenterOwner
-                    : WindowStartupLocation.CenterScreen;
-
-            return window.ShowDialog();
+            CreateWindow(viewModel, context).Show();
         }
 
         /// <summary>
-        /// Shows a window for the specified model.
+        /// Shows a modal window for the specified model.
         /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        /// <param name="settings">The optional window settings.</param>
-        public void ShowWindow(object viewModel, string context, IDictionary<string, object> settings)
+        public Task ShowDialog(object ownerViewModel, object viewModel, string context = null)
+        {
+            if (ownerViewModel is null)
+                throw new ArgumentNullException(nameof(ownerViewModel));
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
+
+            var owner = GetWindow(ownerViewModel);
+            if (owner is null)
+                throw new InvalidOperationException("Could not infer Owner window.");
+
+            var window = CreateWindow(viewModel, context);
+            window.Owner = owner;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            return window.ShowModal();
+        }
+
+        /// <summary>
+        /// Attempts to bring the window to the foreground and activates it.
+        /// </summary>
+        /// <param name="viewModel">The view model of the window.</param>
+        /// <returns>true if the window was successfully activated; otherwise, false.</returns>
+        public bool Activate(object viewModel)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
 
-            CreateWindow(viewModel, context, settings).Show();
+            var window = GetWindow(viewModel);
+            if (window is null)
+                throw new InvalidOperationException("Could not infer window.");
+
+            return window.Activate();
         }
 
         /// <summary>
@@ -73,20 +84,12 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
-        /// <param name="settings">The optional popup settings.</param>
-        public void ShowPopup(object viewModel, string context, IDictionary<string, object> settings)
+        public void ShowPopup(object viewModel, string context)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
 
-            var popup = CreatePopup(viewModel, context, settings);
-
-            // defaults
-            if (settings?.ContainsKey("Placement") != true)
-                popup.Placement = PlacementMode.MousePoint;
-            if (settings?.ContainsKey("AllowsTransparency") != true)
-                popup.AllowsTransparency = true;
-
+            var popup = CreatePopup(viewModel, context);
             popup.IsOpen = true;
             popup.CaptureMouse();
         }
@@ -96,16 +99,14 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
-        /// <param name="settings">The optional popup settings.</param>
         /// <returns>The popup.</returns>
-        protected Popup CreatePopup(object viewModel, string context, IDictionary<string, object> settings)
+        protected Popup CreatePopup(object viewModel, string context)
         {
             var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
 
             view.DataContext = viewModel;
 
-            ApplySettings(view, settings);
             return new PopupLifecycle(view, context).View;
         }
 
@@ -121,7 +122,9 @@ namespace Caliburn.Light.WPF
             {
                 popup = new Popup
                 {
-                    Child = view
+                    Child = view,
+                    Placement = PlacementMode.MousePoint,
+                    AllowsTransparency = true
                 };
 
                 View.SetIsGenerated(popup, true);
@@ -135,9 +138,8 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
-        /// <param name="settings">The optional window settings.</param>
         /// <returns>The window.</returns>
-        protected Window CreateWindow(object viewModel, string context, IDictionary<string, object> settings)
+        protected Window CreateWindow(object viewModel, string context)
         {
             var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
@@ -150,7 +152,6 @@ namespace Caliburn.Light.WPF
                 view.SetBinding(Window.TitleProperty, binding);
             }
 
-            ApplySettings(view, settings);
             return new WindowLifecycle(view, context, false).View;
         }
 
@@ -167,7 +168,7 @@ namespace Caliburn.Light.WPF
                 window = new Window
                 {
                     Content = view,
-                    SizeToContent = SizeToContent.WidthAndHeight
+                    SizeToContent = SizeToContent.WidthAndHeight,
                 };
 
                 View.SetIsGenerated(window, true);
@@ -176,32 +177,26 @@ namespace Caliburn.Light.WPF
             return window;
         }
 
-        /// <summary>
-        /// Infers the owner of the window.
-        /// </summary>
-        /// <param name="window">The window to whose owner needs to be determined.</param>
-        /// <returns>The owner.</returns>
-        protected virtual Window InferOwnerOf(Window window)
+        private static Window GetWindow(object viewModel)
         {
-            var application = Application.Current;
-            if (application is null)
-                return null;
+            object view = null;
 
-            var active = application.Windows.Cast<Window>().FirstOrDefault(x => x.IsActive);
-            active = active ?? application.MainWindow;
-            return ReferenceEquals(active, window) ? null : active;
-        }
-
-        private static void ApplySettings(object target, IEnumerable<KeyValuePair<string, object>> settings)
-        {
-            if (settings is null) return;
-
-            var type = target.GetType();
-            foreach (var pair in settings)
+            while(viewModel is object)
             {
-                var propertyInfo = type.GetRuntimeProperty(pair.Key);
-                propertyInfo?.SetValue(target, pair.Value, null);
+                if (viewModel is IViewAware viewAware)
+                    view = viewAware.GetView();
+
+                if (view is object)
+                    break;
+
+                viewModel = viewModel is IChild child
+                    ? child.Parent
+                    : null;
             }
+
+            return view is DependencyObject d
+                ? Window.GetWindow(d)
+                : null;
         }
     }
 }
