@@ -11,6 +11,6 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The resolved value.</returns>
-        object Resolve(CoroutineExecutionContext context);
+        object Resolve(CommandExecutionContext context);
     }
 }

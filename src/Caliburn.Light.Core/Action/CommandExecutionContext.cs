@@ -3,9 +3,9 @@
 namespace Caliburn.Light
 {
     /// <summary>
-    /// The context used during the execution of a coroutine.
+    /// The context used during the execution of a command.
     /// </summary>
-    public sealed class CoroutineExecutionContext
+    public sealed class CommandExecutionContext
     {
         private const string SourceKey = "source";
         private const string TargetKey = "target";
@@ -14,7 +14,7 @@ namespace Caliburn.Light
         private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets additional data needed to invoke the coroutine.
+        /// Gets or sets additional data needed to invoke the command.
         /// </summary>
         /// <param name="key">The data key.</param>
         /// <returns>Custom data associated with the context.</returns>
@@ -29,7 +29,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// The source from which the coroutine originates.
+        /// The source from which the command originates.
         /// </summary>
         public object Source
         {
@@ -38,7 +38,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// The instance on which the coroutine is invoked.
+        /// The instance on which the command is invoked.
         /// </summary>
         public object Target
         {
@@ -47,7 +47,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Any event arguments associated with the coroutine invocation.
+        /// Any event arguments associated with the command invocation.
         /// </summary>
         public object EventArgs
         {

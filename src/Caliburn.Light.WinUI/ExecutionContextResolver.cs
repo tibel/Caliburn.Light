@@ -3,7 +3,7 @@
 namespace Caliburn.Light.WinUI
 {
     /// <summary>
-    /// Special value to resolve <see cref="CoroutineExecutionContext"/> parameter.
+    /// Special value to resolve <see cref="CommandExecutionContext"/> parameter.
     /// </summary>
     public sealed class ExecutionContextResolver : DependencyObject, ISpecialValue
     {
@@ -14,7 +14,7 @@ namespace Caliburn.Light.WinUI
             "SourceOverride", typeof (object), typeof (ExecutionContextResolver), new PropertyMetadata(null));
 
         /// <summary>
-        /// Gets or sets the override for <see cref="CoroutineExecutionContext.Source"/>.
+        /// Gets or sets the override for <see cref="CommandExecutionContext.Source"/>.
         /// </summary>
         public object SourceOverride
         {
@@ -27,7 +27,7 @@ namespace Caliburn.Light.WinUI
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The resolved value.</returns>
-        public object Resolve(CoroutineExecutionContext context)
+        public object Resolve(CommandExecutionContext context)
         {
             var sourceOverride = SourceOverride;
             if (sourceOverride is object)

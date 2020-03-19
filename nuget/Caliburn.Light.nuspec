@@ -26,7 +26,7 @@
 - Added INotifyPropertyChanging
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2020</copyright>
-    <tags>Caliburn MVVM WPF Win10 UAP Screen Coroutine EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
+    <tags>Caliburn MVVM WPF Win10 UAP Screen EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
     <dependencies>
       <group targetFramework="netstandard2.0">
       </group>

@@ -102,7 +102,7 @@ namespace Caliburn.Light
 
             if (resolvedParameter is ISpecialValue specialValue)
             {
-                var context = new CoroutineExecutionContext
+                var context = new CommandExecutionContext
                 {
                     Source = sender,
                     EventArgs = eventArgs,

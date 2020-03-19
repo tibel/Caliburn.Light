@@ -5,7 +5,7 @@ namespace Demo.HelloSpecialValues
 {
     public class ClickedItem : ISpecialValue
     {
-        public object Resolve(CoroutineExecutionContext context)
+        public object Resolve(CommandExecutionContext context)
         {
             var args = context.EventArgs as ItemClickEventArgs;
             return (args is object) ? args.ClickedItem : null;

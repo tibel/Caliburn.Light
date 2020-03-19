@@ -20,7 +20,7 @@ namespace Caliburn.Light
 
             var specialValue = parameter as ISpecialValue;
             if (specialValue is object)
-                parameter = specialValue.Resolve(new CoroutineExecutionContext());
+                parameter = specialValue.Resolve(new CommandExecutionContext());
 
             if (parameter is TParameter)
                 return (TParameter)parameter;
