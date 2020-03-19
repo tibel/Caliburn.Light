@@ -10,15 +10,6 @@ namespace Demo.Validation
         public MainWindow()
         {
             InitializeComponent();
-
-            var company = new Company
-            {
-                Name = "The Company",
-                Address = "Some Road",
-                Website = "http://thecompany.com",
-            };
-
-            DataContext = new MainViewModel(company);
         }
     }
 }

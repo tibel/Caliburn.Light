@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -30,7 +32,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        public void ShowWindow(object viewModel, string context = null)
+        public void ShowWindow(object viewModel, string context)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
@@ -44,7 +46,7 @@ namespace Caliburn.Light.WPF
         /// <param name="ownerViewModel">The owner view model.</param>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        public Task ShowDialog(object ownerViewModel, object viewModel, string context = null)
+        public Task ShowDialog(object ownerViewModel, object viewModel, string context)
         {
             if (ownerViewModel is null)
                 throw new ArgumentNullException(nameof(ownerViewModel));
@@ -92,6 +94,117 @@ namespace Caliburn.Light.WPF
             var popup = CreatePopup(viewModel, context);
             popup.IsOpen = true;
             popup.CaptureMouse();
+        }
+
+        /// <summary>
+        /// Shows a message box.
+        /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <param name="settings">The message box settings.</param>
+        /// <returns>The message box result.</returns>
+        public Task<MessageBoxResult> ShowMessageBox(object ownerViewModel, MessageBoxSettings settings)
+        {
+            if (ownerViewModel is null)
+                throw new ArgumentNullException(nameof(ownerViewModel));
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
+
+            var owner = GetWindow(ownerViewModel);
+            if (owner is null)
+                throw new InvalidOperationException("Could not infer Owner window.");
+
+            var result = MessageBox.Show(owner, settings.Text, settings.Caption, settings.Button, settings.Image);
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// Shows a file open dialog.
+        /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <param name="settings">The open file dialog settings.</param>
+        /// <returns>A list of selected files.</returns>
+        public Task<IReadOnlyList<string>> ShowOpenFileDialog(object ownerViewModel, OpenFileDialogSettings settings)
+        {
+            if (ownerViewModel is null)
+                throw new ArgumentNullException(nameof(ownerViewModel));
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
+
+            var owner = GetWindow(ownerViewModel);
+            if (owner is null)
+                throw new InvalidOperationException("Could not infer Owner window.");
+
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.CheckPathExists = true;
+
+            openFileDialog.Multiselect = settings.Multiselect;
+            openFileDialog.Filter = settings.FileTypeFilter;
+            openFileDialog.Title = settings.Title;
+            openFileDialog.InitialDirectory = settings.InitialDirectory;
+
+            bool result;
+            try
+            {
+                result = openFileDialog.ShowDialog(owner).GetValueOrDefault();
+            }
+            catch
+            {
+                if (string.IsNullOrEmpty(openFileDialog.InitialDirectory)) throw;
+                openFileDialog.InitialDirectory = null;
+                result = openFileDialog.ShowDialog(owner).GetValueOrDefault();
+            }
+
+            var selectedFiles = result ? openFileDialog.FileNames : Array.Empty<string>();
+            return Task.FromResult<IReadOnlyList<string>>(selectedFiles);
+        }
+
+        /// <summary>
+        /// Shows a file save dialog.
+        /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <param name="settings">The save file dialog settings.</param>
+        /// <returns>The selected file.</returns>
+        public Task<string> ShowSaveFileDialog(object ownerViewModel, SaveFileDialogSettings settings)
+        {
+            if (ownerViewModel is null)
+                throw new ArgumentNullException(nameof(ownerViewModel));
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
+
+            var owner = GetWindow(ownerViewModel);
+            if (owner is null)
+                throw new InvalidOperationException("Could not infer Owner window.");
+
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.CheckPathExists = true;
+
+            saveFileDialog.Filter = settings.FileTypeFilter;
+            saveFileDialog.DefaultExt = settings.DefaultFileExtension;
+
+            saveFileDialog.Title = settings.Title;
+            saveFileDialog.FileName = settings.InitialFileName;
+            saveFileDialog.CreatePrompt = settings.PromptForCreate;
+            saveFileDialog.OverwritePrompt = settings.PromptForOverwrite;
+            saveFileDialog.InitialDirectory = settings.InitialDirectory;
+
+            bool result;
+            try
+            {
+                result = saveFileDialog.ShowDialog(owner).GetValueOrDefault();
+            }
+            catch
+            {
+                if (string.IsNullOrEmpty(saveFileDialog.InitialDirectory)) throw;
+                saveFileDialog.InitialDirectory = null;
+                result = saveFileDialog.ShowDialog(owner).GetValueOrDefault();
+            }
+
+            var selectedFile = result ? saveFileDialog.FileName : string.Empty;
+            return Task.FromResult(selectedFile);
         }
 
         /// <summary>

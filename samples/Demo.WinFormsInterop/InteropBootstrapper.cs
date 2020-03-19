@@ -1,10 +1,11 @@
-﻿using Caliburn.Light;
-using Caliburn.Light.WPF;
+﻿using Caliburn.Light.WPF;
+using System;
+using System.Windows;
 using System.Windows.Forms.Integration;
 
 namespace Demo.WinFormsInterop
 {
-    public class InteropBootstrapper
+    public sealed class InteropBootstrapper
     {
         private readonly ElementHost _elementHost;
 
@@ -15,18 +16,30 @@ namespace Demo.WinFormsInterop
 
         public void Initialize()
         {
-            var viewModel = new MainViewModel();
+            var windowManager = new WindowManager(new NullViewModelLocator());
+
+            var viewModel = new MainViewModel(windowManager);
 
             var view = new MainView();
 
-            view.DataContext = viewModel;
-            if (viewModel is IViewAware viewAware)
-                viewAware.AttachView(view, null);
+            Bind.SetDataContext(view, true);
 
-            if (viewModel is IActivatable activator)
-                activator.ActivateAsync().Observe();
+            view.DataContext = viewModel;
 
             _elementHost.Child = view;
+        }
+
+        private sealed class NullViewModelLocator : IViewModelLocator
+        {
+            public UIElement LocateForModel(object model, string context)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object LocateForView(UIElement view)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

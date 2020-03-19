@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Caliburn.Light.WPF
 {
@@ -35,5 +37,29 @@ namespace Caliburn.Light.WPF
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
         void ShowPopup(object viewModel, string context = null);
+
+        /// <summary>
+        /// Shows a message box.
+        /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <param name="settings">The message box settings.</param>
+        /// <returns>The message box result.</returns>
+        Task<MessageBoxResult> ShowMessageBox(object ownerViewModel, MessageBoxSettings settings);
+
+        /// <summary>
+        /// Shows a file open dialog.
+        /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <param name="settings">The open file dialog settings.</param>
+        /// <returns>A list of selected files.</returns>
+        Task<IReadOnlyList<string>> ShowOpenFileDialog(object ownerViewModel, OpenFileDialogSettings settings);
+
+        /// <summary>
+        /// Shows a file save dialog.
+        /// </summary>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <param name="settings">The save file dialog settings.</param>
+        /// <returns>The selected file.</returns>
+        Task<string> ShowSaveFileDialog(object ownerViewModel, SaveFileDialogSettings settings);
     }
 }

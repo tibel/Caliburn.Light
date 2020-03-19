@@ -10,86 +10,72 @@ using System.Windows.Input;
 
 namespace Demo.Validation
 {
-    public class MainViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
+    public sealed class MainViewModel : ViewAware, INotifyDataErrorInfo
     {
-        private readonly Company _company;
+        private readonly IWindowManager _windowManager;
 
-        public MainViewModel(Company company)
+        private string _name;
+        private string _address;
+        private string _contact;
+        private string _website;
+
+        public MainViewModel(IWindowManager windowManager)
         {
-            _company = company;
+            if (windowManager is null)
+                throw new ArgumentNullException(nameof(windowManager));
+
+            _windowManager = windowManager;
 
             _validation = new ValidationAdapter(OnErrorsChanged);
             _validation.Validator = SetupValidator();
 
+            Name = "The Company";
+            Address = "Some Road";
+            Website = "http://thecompany.com";
+
             SaveCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(() => Save())
-                .OnCanExecute(() => CanSave)
-                .Observe(this, nameof(CanSave))
+                .OnCanExecute(() => !HasErrors)
+                .Observe(this, nameof(HasErrors))
                 .Build();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string CName
+        public string Name
         {
-            get { return _company.Name; }
-            set
-            {
-                _company.Name = value;
-                OnPropertyChanged();
-            }
+            get => _name;
+            set => SetProperty(ref _name, value);
         }
 
         public string Address
         {
-            get { return _company.Address; }
-            set
-            {
-                _company.Address = value;
-                OnPropertyChanged();
-            }
+            get => _address;
+            set => SetProperty(ref _address, value);
         }
 
         public string Website
         {
-            get { return _company.Website; }
-            set
-            {
-                _company.Website = value;
-                OnPropertyChanged();
-            }
+            get => _website;
+            set => SetProperty(ref _website, value);
         }
 
         public string Contact
         {
-            get { return _company.Contact; }
-            set
-            {
-                _company.Contact = value;
-                OnPropertyChanged();
-            }
+            get => _contact;
+            set => SetProperty(ref _contact, value);
         }
 
-        public ICommand SaveCommand { get; private set; }
+        public ICommand SaveCommand { get; }
 
         private Task Save()
         {
-            var message = new MessageBoxCoTask("Your changes where saved.")
-                .Caption("Save")
-                .Image(MessageBoxImage.Information);
+            var settings = new MessageBoxSettings
+            {
+                Caption = "Save",
+                Text = "Your changes where saved.",
+                Image = MessageBoxImage.Information,
+            };
 
-            return message.ExecuteAsync();
-        }
-
-        public bool CanSave
-        {
-            get { return !_validation.HasErrors; }
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            _validation.ValidateProperty(this, propertyName);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return _windowManager.ShowMessageBox(this, settings);
         }
 
         #region Validation
@@ -98,26 +84,28 @@ namespace Demo.Validation
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        public IEnumerable GetErrors(string propertyName)
+        protected override bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
         {
-            return _validation.GetPropertyErrors(propertyName);
+            var result = base.SetProperty(ref field, newValue, propertyName);
+            if (result)
+                _validation.ValidateProperty(this, propertyName);
+            return result;
         }
 
-        public bool HasErrors
-        {
-            get { return _validation.HasErrors; }
-        }
+        public IEnumerable GetErrors(string propertyName) => _validation.GetPropertyErrors(propertyName);
+
+        public bool HasErrors => _validation.HasErrors;
 
         private void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanSave)));
+            RaisePropertyChanged(nameof(HasErrors));
         }
 
         private static IValidator SetupValidator()
         {
             var ruleValidator = new RuleValidator<MainViewModel>();
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(CName), m => m.CName, 1, 100, "Name is required."));
+            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Name), m => m.Name, 1, 100, "Name is required."));
             ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Address), m => m.Address, 1, 100, "Address is required."));
             ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Website), m => m.Website, 1, 100, "Website is required."));
             ruleValidator.AddRule(new RegexValidationRule<MainViewModel>(nameof(Website), m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid."));
