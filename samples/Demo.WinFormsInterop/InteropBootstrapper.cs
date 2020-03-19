@@ -1,6 +1,5 @@
-﻿using Caliburn.Light.WPF;
-using System;
-using System.Windows;
+﻿using Caliburn.Light;
+using Caliburn.Light.WPF;
 using System.Windows.Forms.Integration;
 
 namespace Demo.WinFormsInterop
@@ -16,9 +15,16 @@ namespace Demo.WinFormsInterop
 
         public void Initialize()
         {
-            var windowManager = new WindowManager(new NullViewModelLocator());
+            ViewHelper.Initialize(ViewAdapter.Instance);
+            LogManager.Initialize(new DebugLoggerFactory());
 
-            var viewModel = new MainViewModel(windowManager);
+            var container = new SimpleContainer();
+
+            container.RegisterSingleton<IWindowManager, WindowManager>();
+            container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
+
+            var viewModel = new MainViewModel(container.GetInstance<IWindowManager>());
 
             var view = new MainView();
 
@@ -27,19 +33,6 @@ namespace Demo.WinFormsInterop
             view.DataContext = viewModel;
 
             _elementHost.Child = view;
-        }
-
-        private sealed class NullViewModelLocator : IViewModelLocator
-        {
-            public UIElement LocateForModel(object model, string context)
-            {
-                throw new NotImplementedException();
-            }
-
-            public object LocateForView(UIElement view)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

@@ -54,14 +54,19 @@ namespace Caliburn.Light.WPF
                 throw new ArgumentNullException(nameof(viewModel));
 
             var owner = GetWindow(ownerViewModel);
-            if (owner is null)
-                throw new InvalidOperationException("Could not infer Owner window.");
-
             var window = CreateWindow(viewModel, context);
-            window.Owner = owner;
-            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            return window.ShowModal();
+            if (owner is null)
+            {
+                window.ShowDialog();
+                return Task.CompletedTask;
+            }
+            else
+            {
+                window.Owner = owner;
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                return window.ShowModal();
+            }
         }
 
         /// <summary>
@@ -75,10 +80,7 @@ namespace Caliburn.Light.WPF
                 throw new ArgumentNullException(nameof(viewModel));
 
             var window = GetWindow(viewModel);
-            if (window is null)
-                throw new InvalidOperationException("Could not infer window.");
-
-            return window.Activate();
+            return window?.Activate() ?? false;
         }
 
         /// <summary>
@@ -110,10 +112,11 @@ namespace Caliburn.Light.WPF
                 throw new ArgumentNullException(nameof(settings));
 
             var owner = GetWindow(ownerViewModel);
-            if (owner is null)
-                throw new InvalidOperationException("Could not infer Owner window.");
 
-            var result = MessageBox.Show(owner, settings.Text, settings.Caption, settings.Button, settings.Image);
+            var result = owner is null
+                ? MessageBox.Show(settings.Text, settings.Caption, settings.Button, settings.Image)
+                : MessageBox.Show(owner, settings.Text, settings.Caption, settings.Button, settings.Image);
+
             return Task.FromResult(result);
         }
 
@@ -131,8 +134,6 @@ namespace Caliburn.Light.WPF
                 throw new ArgumentNullException(nameof(settings));
 
             var owner = GetWindow(ownerViewModel);
-            if (owner is null)
-                throw new InvalidOperationException("Could not infer Owner window.");
 
             var openFileDialog = new OpenFileDialog();
             openFileDialog.RestoreDirectory = true;
@@ -144,19 +145,24 @@ namespace Caliburn.Light.WPF
             openFileDialog.Title = settings.Title;
             openFileDialog.InitialDirectory = settings.InitialDirectory;
 
-            bool result;
+            bool? result;
             try
             {
-                result = openFileDialog.ShowDialog(owner).GetValueOrDefault();
+                result = owner is null
+                    ? openFileDialog.ShowDialog()
+                    : openFileDialog.ShowDialog(owner);
             }
             catch
             {
                 if (string.IsNullOrEmpty(openFileDialog.InitialDirectory)) throw;
                 openFileDialog.InitialDirectory = null;
-                result = openFileDialog.ShowDialog(owner).GetValueOrDefault();
+
+                result = owner is null
+                    ? openFileDialog.ShowDialog()
+                    : openFileDialog.ShowDialog(owner);
             }
 
-            var selectedFiles = result ? openFileDialog.FileNames : Array.Empty<string>();
+            var selectedFiles = result.GetValueOrDefault() ? openFileDialog.FileNames : Array.Empty<string>();
             return Task.FromResult<IReadOnlyList<string>>(selectedFiles);
         }
 
@@ -174,8 +180,6 @@ namespace Caliburn.Light.WPF
                 throw new ArgumentNullException(nameof(settings));
 
             var owner = GetWindow(ownerViewModel);
-            if (owner is null)
-                throw new InvalidOperationException("Could not infer Owner window.");
 
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.RestoreDirectory = true;
@@ -191,19 +195,24 @@ namespace Caliburn.Light.WPF
             saveFileDialog.OverwritePrompt = settings.PromptForOverwrite;
             saveFileDialog.InitialDirectory = settings.InitialDirectory;
 
-            bool result;
+            bool? result;
             try
             {
-                result = saveFileDialog.ShowDialog(owner).GetValueOrDefault();
+                result = owner is null
+                    ? saveFileDialog.ShowDialog()
+                    : saveFileDialog.ShowDialog(owner);
             }
             catch
             {
                 if (string.IsNullOrEmpty(saveFileDialog.InitialDirectory)) throw;
                 saveFileDialog.InitialDirectory = null;
-                result = saveFileDialog.ShowDialog(owner).GetValueOrDefault();
+
+                result = owner is null
+                    ? saveFileDialog.ShowDialog()
+                    : saveFileDialog.ShowDialog(owner);
             }
 
-            var selectedFile = result ? saveFileDialog.FileName : string.Empty;
+            var selectedFile = result.GetValueOrDefault() ? saveFileDialog.FileName : string.Empty;
             return Task.FromResult(selectedFile);
         }
 
@@ -290,7 +299,12 @@ namespace Caliburn.Light.WPF
             return window;
         }
 
-        private static Window GetWindow(object viewModel)
+        /// <summary>
+        /// Gets the window from the given view model.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns>The window or null.</returns>
+        protected static Window GetWindow(object viewModel)
         {
             object view = null;
 
