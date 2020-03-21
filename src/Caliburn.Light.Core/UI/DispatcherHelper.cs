@@ -6,14 +6,14 @@ namespace Caliburn.Light
     /// <summary>
     /// Extensions for <see cref="IDispatcher"/>.
     /// </summary>
-    public static class DispatcherExtensions
+    public static class DispatcherHelper
     {
         /// <summary>
         /// Gets an awaiter instance that enables to switch to the dispatcher thread.
         /// </summary>
         /// <param name="dispatcher">The dispatcher.</param>
         /// <returns>An awaiter instance.</returns>
-        public static DispatcherAwaitable SwitchToUI(this IDispatcher dispatcher)
+        public static DispatcherAwaitable SwitchTo(this IDispatcher dispatcher)
         {
             return new DispatcherAwaitable(dispatcher);
         }

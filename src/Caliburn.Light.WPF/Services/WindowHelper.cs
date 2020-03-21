@@ -6,7 +6,7 @@ using System.Windows.Interop;
 
 namespace Caliburn.Light.WPF
 {
-    internal static class WindowExtensions
+    internal static class WindowHelper
     {
         public static Task ShowModal(this Window window)
         {

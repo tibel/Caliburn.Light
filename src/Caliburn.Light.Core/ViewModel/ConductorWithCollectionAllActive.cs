@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,25 +23,7 @@ namespace Caliburn.Light
                 /// </summary>
                 public AllActive()
                 {
-                    _items.CollectionChanged += (s, e) =>
-                    {
-                        switch (e.Action)
-                        {
-                            case NotifyCollectionChangedAction.Add:
-                                foreach (var x in e.NewItems.OfType<IChild>()) { x.Parent = this; }
-                                break;
-                            case NotifyCollectionChangedAction.Remove:
-                                foreach (var x in e.OldItems.OfType<IChild>()) { x.Parent = null; }
-                                break;
-                            case NotifyCollectionChangedAction.Replace:
-                                foreach (var x in e.NewItems.OfType<IChild>()) { x.Parent = this; }
-                                foreach (var x in e.OldItems.OfType<IChild>()) { x.Parent = null; }
-                                break;
-                            case NotifyCollectionChangedAction.Reset:
-                                foreach (var x in _items.OfType<IChild>()) { x.Parent = this; }
-                                break;
-                        }
-                    };
+                    _items.AreChildrenOf(this);
                 }
 
                 /// <summary>

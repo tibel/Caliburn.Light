@@ -43,10 +43,10 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Shows a modal window for the specified model.
         /// </summary>
-        /// <param name="ownerViewModel">The owner view model.</param>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        public Task ShowDialog(object ownerViewModel, object viewModel, string context)
+        /// <param name="ownerViewModel">The owner view model.</param>
+        public Task ShowDialog(object viewModel, string context, object ownerViewModel)
         {
             if (ownerViewModel is null)
                 throw new ArgumentNullException(nameof(ownerViewModel));
@@ -101,10 +101,10 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Shows a message box.
         /// </summary>
-        /// <param name="ownerViewModel">The owner view model.</param>
         /// <param name="settings">The message box settings.</param>
+        /// <param name="ownerViewModel">The owner view model.</param>
         /// <returns>The message box result.</returns>
-        public Task<MessageBoxResult> ShowMessageBox(object ownerViewModel, MessageBoxSettings settings)
+        public Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings settings, object ownerViewModel)
         {
             if (ownerViewModel is null)
                 throw new ArgumentNullException(nameof(ownerViewModel));
@@ -123,10 +123,10 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Shows a file open dialog.
         /// </summary>
-        /// <param name="ownerViewModel">The owner view model.</param>
         /// <param name="settings">The open file dialog settings.</param>
+        /// <param name="ownerViewModel">The owner view model.</param>
         /// <returns>A list of selected files.</returns>
-        public Task<IReadOnlyList<string>> ShowOpenFileDialog(object ownerViewModel, OpenFileDialogSettings settings)
+        public Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings settings, object ownerViewModel)
         {
             if (ownerViewModel is null)
                 throw new ArgumentNullException(nameof(ownerViewModel));
@@ -169,10 +169,10 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Shows a file save dialog.
         /// </summary>
-        /// <param name="ownerViewModel">The owner view model.</param>
         /// <param name="settings">The save file dialog settings.</param>
+        /// <param name="ownerViewModel">The owner view model.</param>
         /// <returns>The selected file.</returns>
-        public Task<string> ShowSaveFileDialog(object ownerViewModel, SaveFileDialogSettings settings)
+        public Task<string> ShowSaveFileDialog(SaveFileDialogSettings settings, object ownerViewModel)
         {
             if (ownerViewModel is null)
                 throw new ArgumentNullException(nameof(ownerViewModel));

@@ -75,7 +75,7 @@ namespace Demo.Validation
                 Image = MessageBoxImage.Information,
             };
 
-            return _windowManager.ShowMessageBox(this, settings);
+            return _windowManager.ShowMessageBox(settings, this);
         }
 
         #region Validation

@@ -40,7 +40,7 @@ namespace Demo.WinFormsInterop
                 Text = string.Format("Hello {0}!", Name)
             };
 
-            return _windowManager.ShowMessageBox(this, settings);
+            return _windowManager.ShowMessageBox(settings, this);
         }
     }
 }

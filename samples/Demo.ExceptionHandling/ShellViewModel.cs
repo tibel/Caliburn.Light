@@ -52,7 +52,7 @@ namespace Demo.ExceptionHandling
             await Task.Delay(10).ConfigureAwait(false);
             Debug.Assert(!_dispatcher.CheckAccess());
 
-            await _dispatcher.SwitchToUI();
+            await _dispatcher.SwitchTo();
             Debug.Assert(_dispatcher.CheckAccess());
 
             throw new InvalidOperationException("Error on a UI task.");
