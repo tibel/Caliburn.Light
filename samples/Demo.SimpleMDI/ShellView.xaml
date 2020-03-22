@@ -10,7 +10,7 @@
         <TabControl x:Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <local:TabView cal:Bind.DataContext="True" />
+                    <local:TabView cal:View.Bind="True" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>

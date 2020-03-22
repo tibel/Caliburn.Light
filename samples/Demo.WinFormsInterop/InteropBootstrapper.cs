@@ -28,7 +28,7 @@ namespace Demo.WinFormsInterop
 
             var view = new MainView();
 
-            Bind.SetDataContext(view, true);
+            View.SetBind(view, true);
 
             view.DataContext = viewModel;
 

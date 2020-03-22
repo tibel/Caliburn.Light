@@ -107,7 +107,7 @@ namespace Caliburn.Light.WPF
 
         /// <summary>
         /// Gets the command parameter of the view.
-        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:Bind.CommandParameter'.
+        /// This can be <see cref="P:ICommandSource.CommandParameter"/> or 'cal:View.CommandParameter'.
         /// </summary>
         /// <param name="view">The view.</param>
         /// <returns>The command parameter.</returns>
@@ -116,7 +116,7 @@ namespace Caliburn.Light.WPF
             if (!(view is DependencyObject element))
                 return null;
 
-            var commandParameter = Bind.GetCommandParameter(element);
+            var commandParameter = View.GetCommandParameter(element);
             if (commandParameter is object)
                 return commandParameter;
 

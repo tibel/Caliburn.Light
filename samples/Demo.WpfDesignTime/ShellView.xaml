@@ -14,7 +14,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <ContentControl Grid.Row="0" cal:View.Model="{Binding NestedViewModel, Mode=OneWay}" />
+        <ContentControl Grid.Row="0" DataContext="{Binding NestedViewModel, Mode=OneWay}" cal:View.Create="True" />
         <Label Grid.Row="1" FontSize="16" Background="RoyalBlue" Content="{Binding Name, Mode=OneWay}" />
     </Grid>
 </UserControl>

@@ -58,7 +58,6 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ExecutionContextResolver.cs" />
-    <Compile Include="Bind.cs" />
     <Compile Include="BindingHelper.cs" />
     <Compile Include="BooleanBoxes.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
@@ -93,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.9</Version>
+      <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="SourceLink.Embed.AllSourceFiles">
       <Version>2.8.3</Version>

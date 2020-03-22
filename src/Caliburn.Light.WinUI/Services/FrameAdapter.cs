@@ -162,7 +162,7 @@ namespace Caliburn.Light.WinUI
             if (page.DataContext is null)
             {
                 page.DataContext = _viewModelLocator.LocateForView(page);
-                Bind.SetDataContext(page, true);
+                View.SetBind(page, true);
             }
 
             RestorePageState(page, e.NavigationMode, frameState);

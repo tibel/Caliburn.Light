@@ -6,7 +6,7 @@ using System.Windows.Media;
 namespace Caliburn.Light.WPF
 {
     /// <summary>
-    /// Hosts attached properties related to ViewModel-First.
+    /// Hosts attached properties.
     /// </summary>
     public static class View
     {
@@ -54,36 +54,57 @@ namespace Caliburn.Light.WPF
         }
 
         /// <summary>
-        /// A dependency property for attaching a model to the UI.
+        /// Whether to bind the view-model to the view.
         /// </summary>
-        public static readonly DependencyProperty ModelProperty =
-            DependencyProperty.RegisterAttached("Model",
-                typeof (object), typeof (View), new PropertyMetadata(null, OnModelChanged));
+        public static readonly DependencyProperty BindProperty =
+            DependencyProperty.RegisterAttached("Bind",
+                typeof(bool), typeof(View), new PropertyMetadata(BooleanBoxes.FalseBox, OnBindChanged));
 
         /// <summary>
-        /// Sets the model.
+        /// Gets whether binding the view-model to the view.
         /// </summary>
-        /// <param name="d">The element to attach the model to.</param>
-        /// <param name="value">The model.</param>
-        public static void SetModel(DependencyObject d, object value)
+        /// <param name="dependencyObject">The view to bind to.</param>
+        /// <returns>Whether binding the view-model to the view.</returns>
+        public static bool GetBind(DependencyObject dependencyObject)
         {
-            d.SetValue(ModelProperty, value);
+            return (bool)dependencyObject.GetValue(BindProperty);
         }
 
         /// <summary>
-        /// Gets the model.
+        /// Sets whether binding the view-model to the view.
         /// </summary>
-        /// <param name="d">The element the model is attached to.</param>
-        /// <returns>The model.</returns>
-        public static object GetModel(DependencyObject d)
+        /// <param name="dependencyObject">The view to bind to.</param>
+        /// <param name="value">Whether to bind the view-model to the view.</param>
+        public static void SetBind(DependencyObject dependencyObject, bool value)
         {
-            return d.GetValue(ModelProperty);
+            dependencyObject.SetValue(BindProperty, BooleanBoxes.Box(value));
         }
 
-        private static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// Whether to create a view for the view-model.
+        /// </summary>
+        public static readonly DependencyProperty CreateProperty =
+            DependencyProperty.RegisterAttached("Create",
+                typeof(bool), typeof(View), new PropertyMetadata(BooleanBoxes.FalseBox, OnCreateChanged));
+
+        /// <summary>
+        /// Gets whether creating a view for the view-model.
+        /// </summary>
+        /// <param name="dependencyObject">The parent control.</param>
+        /// <returns>Whether creating a view for the view-model.</returns>
+        public static bool GetCreate(DependencyObject dependencyObject)
         {
-            if (e.OldValue == e.NewValue) return;
-            SetContentCore(targetLocation, e.NewValue, GetContext(targetLocation));
+            return (bool)dependencyObject.GetValue(CreateProperty);
+        }
+
+        /// <summary>
+        /// Sets whether creating a view for the view-model.
+        /// </summary>
+        /// <param name="dependencyObject">The parent control</param>
+        /// <param name="value">Whether to create a view for the view-model.</param>
+        public static void SetCreate(DependencyObject dependencyObject, bool value)
+        {
+            dependencyObject.SetValue(CreateProperty, BooleanBoxes.Box(value));
         }
 
         /// <summary>
@@ -94,17 +115,17 @@ namespace Caliburn.Light.WPF
                 typeof(string), typeof(View), new PropertyMetadata(null, OnContextChanged));
 
         /// <summary>
-        /// Gets the context.
+        /// Gets the view context.
         /// </summary>
         /// <param name="d">The element the context is attached to.</param>
         /// <returns>The context.</returns>
         public static string GetContext(DependencyObject d)
         {
-            return (string) d.GetValue(ContextProperty);
+            return (string)d.GetValue(ContextProperty);
         }
 
         /// <summary>
-        /// Sets the context.
+        /// Sets the view context.
         /// </summary>
         /// <param name="d">The element to attach the context to.</param>
         /// <param name="value">The context.</param>
@@ -113,28 +134,85 @@ namespace Caliburn.Light.WPF
             d.SetValue(ContextProperty, value);
         }
 
-        private static void OnContextChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
+        private static void OnBindChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue) return;
-            SetContentCore(targetLocation, GetModel(targetLocation), (string)e.NewValue);
+            if (e.OldValue == e.NewValue || !(d is FrameworkElement fe)) return;
+            HandleDataContext(fe, (bool)e.NewValue, GetCreate(fe));
         }
 
-        private static void SetContentCore(DependencyObject targetLocation, object model, string context)
+        private static void OnCreateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue == e.NewValue || !(d is FrameworkElement fe)) return;
+            HandleDataContext(fe, GetBind(fe), (bool)e.NewValue);
+        }
+
+        private static void HandleDataContext(FrameworkElement fe, bool bind, bool create)
+        {
+            if (bind && create)
+                throw new InvalidOperationException("Cannot use Create and Bind at the same time.");
+
+            if (bind || create)
+            {
+                fe.DataContextChanged += OnDataContextChanged;
+
+                OnDataContextChanged(fe, new DependencyPropertyChangedEventArgs(FrameworkElement.DataContextProperty, null, fe.DataContext));
+            }
+            else
+            {
+                fe.DataContextChanged -= OnDataContextChanged;
+            }
+        }
+
+        private static void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue == e.NewValue || !(sender is FrameworkElement fe)) return;
+
+            if (GetBind(fe))
+            {
+                var context = GetContext(fe);
+                BindViewModel(fe, e.OldValue, e.NewValue, context, context);
+            }
+
+            if (GetCreate(fe))
+                CreateView(fe, e.NewValue, GetContext(fe));
+        }
+
+        private static void OnContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue == e.NewValue || !(d is FrameworkElement fe)) return;
+
+            if (GetBind(fe))
+                BindViewModel(fe, fe.DataContext, fe.DataContext, (string)e.OldValue, (string)e.NewValue);
+
+            if (GetCreate(fe))
+                CreateView(fe, fe.DataContext, (string)e.NewValue);
+        }
+
+        private static void BindViewModel(FrameworkElement view, object oldModel, object newModel, string oldContext, string newContext)
+        {
+            if (oldModel is IViewAware oldViewAware)
+                oldViewAware.DetachView(view, oldContext);
+
+            if (newModel is IViewAware newViewAware)
+                newViewAware.AttachView(view, newContext);
+        }
+
+        private static void CreateView(FrameworkElement parentElement, object model, string context)
         {
             if (model is null)
             {
-                SetContentProperty(targetLocation, null);
+                SetContent(parentElement, null);
                 return;
             }
 
             if (DesignMode.DesignModeEnabled)
             {
                 var placeholder = new TextBlock { Text = string.Format("View for {0}", model.GetType()) };
-                SetContentProperty(targetLocation, placeholder);
+                SetContent(parentElement, placeholder);
                 return;
             }
 
-            var viewModelLocator = GetCurrentViewModelLocator(targetLocation);
+            var viewModelLocator = GetCurrentViewModelLocator(parentElement);
             if (viewModelLocator is null)
                 throw new InvalidOperationException("Could not find 'IViewModelLocator' in control hierarchy.");
 
@@ -142,7 +220,7 @@ namespace Caliburn.Light.WPF
 
             if (view is FrameworkElement fe)
             {
-                if (IsCurrentView(targetLocation, view) && fe.DataContext is IViewAware currentViewAware)
+                if (ReferenceEquals(GetContent(parentElement), view) && fe.DataContext is IViewAware currentViewAware)
                     currentViewAware.DetachView(view, context);
 
                 fe.DataContext = model;
@@ -151,21 +229,50 @@ namespace Caliburn.Light.WPF
             if (model is IViewAware viewAware)
                 viewAware.AttachView(view, context);
 
-            SetContentProperty(targetLocation, view);
+            SetContent(parentElement, view);
         }
 
-        private static bool IsCurrentView(DependencyObject targetLocation, UIElement view)
+        private static object GetContent(DependencyObject targetLocation)
         {
-            var currentView = targetLocation is ContentControl contentControl ? contentControl.Content : null;
-            return currentView is object && ReferenceEquals(currentView, view);
+            if (targetLocation is ContentControl contentControl)
+                return contentControl.Content;
+
+            throw new NotSupportedException("Only ContentControl is supported.");
         }
 
-        private static void SetContentProperty(DependencyObject targetLocation, UIElement view)
+        private static void SetContent(DependencyObject targetLocation, object view)
         {
             if (targetLocation is ContentControl contentControl)
                 contentControl.Content = view;
             else
                 throw new NotSupportedException("Only ContentControl is supported.");
+        }
+
+        /// <summary>
+        /// The DependencyProperty for the CommandParameter used in x:Bind scenarios.
+        /// </summary>
+        public static readonly DependencyProperty CommandParameterProperty =
+            DependencyProperty.RegisterAttached("CommandParameter",
+                typeof(object), typeof(View), null);
+
+        /// <summary>
+        /// Gets the command parameter
+        /// </summary>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <returns>The command parameter.</returns>
+        public static object GetCommandParameter(DependencyObject dependencyObject)
+        {
+            return dependencyObject.GetValue(CommandParameterProperty);
+        }
+
+        /// <summary>
+        /// Sets the command parameter.
+        /// </summary>
+        /// <param name="dependencyObject">The dependency object to bind to.</param>
+        /// <param name="value">The command parameter.</param>
+        public static void SetCommandParameter(DependencyObject dependencyObject, object value)
+        {
+            dependencyObject.SetValue(CommandParameterProperty, value);
         }
 
         /// <summary>

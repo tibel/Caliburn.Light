@@ -12,11 +12,13 @@
 
         <ContentControl HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
-                        cal:View.Model="{Binding Publisher}" />
+                        DataContext="{Binding Publisher, Mode=OneWay}"
+                        cal:View.Create="True" />
 
         <ContentControl Grid.Column="1"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
-                        cal:View.Model="{Binding Subscriber}" />
+                        DataContext="{Binding Subscriber, Mode=OneWay}"
+                        cal:View.Create="True" />
     </Grid>
 </Window>
