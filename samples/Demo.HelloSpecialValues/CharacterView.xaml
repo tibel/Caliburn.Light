@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
     <Grid Margin="0,0,10,10">
-        <Image Source="{x:Bind Model.Image}"
+        <Image Source="{x:Bind Model.Entity.Image, Mode=OneWay}"
                Width="100"
                Stretch="Uniform" />
     </Grid>

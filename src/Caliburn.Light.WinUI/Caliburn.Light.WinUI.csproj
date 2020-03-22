@@ -64,6 +64,7 @@
     <Compile Include="IViewModelLocator.cs" />
     <Compile Include="IViewModelTypeResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DataContextWrapper.cs" />
     <Compile Include="Services\IFrameAdapter.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\FrameAdapter.cs" />

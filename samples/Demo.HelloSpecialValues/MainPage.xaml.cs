@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Caliburn.Light.WinUI;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
@@ -15,8 +16,9 @@ namespace Demo.HelloSpecialValues
             InitializeComponent();
 
             NavigationCacheMode = NavigationCacheMode.Required;
+            Model = new DataContextWrapper<MainPageViewModel>(this);
         }
 
-        public MainPageViewModel Model => DataContext as MainPageViewModel;
+        public DataContextWrapper<MainPageViewModel> Model { get; }
     }
 }
