@@ -276,9 +276,15 @@ namespace Caliburn.Light.WinUI
         /// </returns>
         public static bool IsElementLoaded(FrameworkElement element)
         {
-            var content = Window.Current.Content;
-            var parent = element.Parent ?? VisualTreeHelper.GetParent(element);
-            return parent is object || (content is object && element == content);
+            if (element.Parent is object || VisualTreeHelper.GetParent(element) is object)
+            {
+                return true;
+            }
+            else
+            {
+                var rootVisual = Window.Current.Content;
+                return rootVisual is object && ReferenceEquals(element, rootVisual);
+            }
         }
     }
 }
