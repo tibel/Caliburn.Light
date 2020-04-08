@@ -20,15 +20,9 @@ namespace Demo.SimpleMDI
             OpenTabCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(() => OpenTabAsync())
                 .Build();
-
-            CloseTabCommand = DelegateCommandBuilder.WithParameter<TabViewModel>()
-                .OnExecute(item => DeactivateItemAsync(item, true))
-                .Build();
         }
 
         public ICommand OpenTabCommand { get; }
-
-        public ICommand CloseTabCommand { get; }
 
         private Task OpenTabAsync()
         {

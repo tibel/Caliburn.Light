@@ -128,17 +128,17 @@ namespace Caliburn.Light
         /// <summary>
         /// Tries to close this instance by asking its Parent to initiate shutdown or by asking its corresponding view to close.
         /// </summary>
-        public virtual void TryClose()
+        public virtual async Task TryCloseAsync()
         {
             if (this is IChild child && child.Parent is IConductor conductor)
             {
-                conductor.DeactivateItemAsync(this, true).Observe();
+                await conductor.DeactivateItemAsync(this, true);
                 return;
             }
 
             foreach (var entry in Views)
             {
-                if (ViewHelper.TryClose(entry.Value.Target))
+                if (await ViewHelper.TryCloseAsync(entry.Value.Target))
                     return;
             }
 

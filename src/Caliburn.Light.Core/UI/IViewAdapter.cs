@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -45,7 +46,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view to close.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        bool TryClose(object view);
+        Task<bool> TryCloseAsync(object view);
 
         /// <summary>
         /// Gets the command parameter of the view.

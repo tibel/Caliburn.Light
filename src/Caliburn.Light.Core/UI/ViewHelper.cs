@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Caliburn.Light
 {
@@ -81,9 +82,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view to close.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        public static bool TryClose(object view)
+        public static Task<bool> TryCloseAsync(object view)
         {
-            return ResolveViewAdapter(view).TryClose(view);
+            return ResolveViewAdapter(view).TryCloseAsync(view);
         }
 
         /// <summary>

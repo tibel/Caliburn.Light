@@ -14,13 +14,12 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="{x:Type local:TabViewModel}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding DisplayName}" />
 
                         <Button Content="X"
-                                Command="{Binding Path=DataContext.CloseTabCommand, ElementName=Items, Mode=OneTime}"
-                                CommandParameter="{Binding}"
+                                Command="{Binding CloseCommand, Mode=OneTime}"
                                 Focusable="False" />
                     </StackPanel>
                 </DataTemplate>

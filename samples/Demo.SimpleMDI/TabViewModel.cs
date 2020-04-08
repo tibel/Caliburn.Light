@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using Caliburn.Light;
 
 namespace Demo.SimpleMDI
@@ -7,6 +8,15 @@ namespace Demo.SimpleMDI
     {
         private object _parent;
         private string _displayName;
+
+        public TabViewModel()
+        {
+            CloseCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(() => TryCloseAsync())
+                .Build();
+        }
+
+        public ICommand CloseCommand { get; }
 
         public object Parent
         {

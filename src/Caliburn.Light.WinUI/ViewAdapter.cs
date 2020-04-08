@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -89,21 +90,21 @@ namespace Caliburn.Light.WinUI
         /// </summary>
         /// <param name="view">The view to close.</param>
         /// <returns>true, when close could be initiated; otherwise false.</returns>
-        public bool TryClose(object view)
+        public Task<bool> TryCloseAsync(object view)
         {
             if (view is Window window)
             {
                 window.Close();
-                return true;
+                return TaskHelper.TrueTask;
             }
 
             if (view is Popup popup)
             {
                 popup.IsOpen = false;
-                return true;
+                return TaskHelper.TrueTask;
             }
 
-            return false;
+            return TaskHelper.FalseTask;
         }
 
         /// <summary>

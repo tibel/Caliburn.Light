@@ -13,6 +13,11 @@ namespace Caliburn.Light
         public static readonly Task<bool> TrueTask = Task.FromResult(true);
 
         /// <summary>
+        /// A completed boolean task with false.
+        /// </summary>
+        public static readonly Task<bool> FalseTask = Task.FromResult(false);
+
+        /// <summary>
         /// Awaits a task to observe the exception.
         /// </summary>
         /// <param name="task">The task to observe.</param>

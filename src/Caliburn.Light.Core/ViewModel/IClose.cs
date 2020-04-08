@@ -1,4 +1,6 @@
-﻿namespace Caliburn.Light
+﻿using System.Threading.Tasks;
+
+namespace Caliburn.Light
 {
     /// <summary>
     /// Denotes an object that can be closed.
@@ -8,6 +10,6 @@
         /// <summary>
         /// Tries to close this instance.
         /// </summary>
-        void TryClose();
+        Task TryCloseAsync();
     }
 }
