@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
 
 namespace Caliburn.Light.WPF
 {
@@ -138,35 +137,7 @@ namespace Caliburn.Light.WPF
             if (!(view is DependencyObject element))
                 return null;
 
-            return new ViewDispatcher(element.Dispatcher);
-        }
-
-        /// <summary>
-        /// Gets the <see cref="IDispatcher"/> from a <see cref="Dispatcher"/>.
-        /// </summary>
-        /// <param name="dispatcher">The UI dispatcher.</param>
-        /// <returns>The dispatcher.</returns>
-        public IDispatcher GetDispatcherFrom(Dispatcher dispatcher)
-        {
-            if (dispatcher is null)
-                throw new ArgumentNullException(nameof(dispatcher));
-
-            return new ViewDispatcher(dispatcher);
-        }
-
-        private sealed class ViewDispatcher : IDispatcher
-        {
-            private readonly Dispatcher _dispatcher;
-
-            public ViewDispatcher(Dispatcher dispatcher) => _dispatcher = dispatcher;
-
-            public bool CheckAccess() => _dispatcher.CheckAccess();
-
-            public void BeginInvoke(Action action) => _dispatcher.InvokeAsync(action);
-
-            public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
-
-            public override int GetHashCode() => _dispatcher.Thread.ManagedThreadId;
+            return View.GetDispatcherFrom(element.Dispatcher);
         }
     }
 }

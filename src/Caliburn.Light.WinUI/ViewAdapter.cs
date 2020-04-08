@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Foundation;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -140,37 +138,7 @@ namespace Caliburn.Light.WinUI
             if (!(view is DependencyObject element))
                 return null;
 
-            return new ViewDispatcher(element.Dispatcher);
-        }
-
-        /// <summary>
-        /// Gets the <see cref="IDispatcher"/> from a <see cref="CoreDispatcher"/>.
-        /// </summary>
-        /// <param name="dispatcher">The UI dispatcher.</param>
-        /// <returns>The dispatcher.</returns>
-        public IDispatcher GetDispatcherFrom(CoreDispatcher dispatcher)
-        {
-            if (dispatcher is null)
-                throw new ArgumentNullException(nameof(dispatcher));
-
-            return new ViewDispatcher(dispatcher);
-        }
-
-        private sealed class ViewDispatcher : IDispatcher
-        {
-            private readonly CoreDispatcher _dispatcher;
-
-            public ViewDispatcher(CoreDispatcher dispatcher) => _dispatcher = dispatcher;
-
-            public bool CheckAccess() => _dispatcher.HasThreadAccess;
-
-            public void BeginInvoke(Action action) => Observe(_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action()));
-
-            private static async void Observe(IAsyncAction asyncAction) => await asyncAction;
-
-            public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
-
-            public override int GetHashCode() => _dispatcher.GetHashCode();
+            return View.GetDispatcherFrom(element.Dispatcher);
         }
     }
 }

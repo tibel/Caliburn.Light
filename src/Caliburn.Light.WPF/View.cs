@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Caliburn.Light.WPF
 {
@@ -383,6 +384,31 @@ namespace Caliburn.Light.WPF
         public static bool IsElementLoaded(FrameworkElement element)
         {
             return element.IsLoaded;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IDispatcher"/> from a <see cref="Dispatcher"/>.
+        /// </summary>
+        /// <param name="dispatcher">The UI dispatcher.</param>
+        /// <returns>The dispatcher.</returns>
+        public static IDispatcher GetDispatcherFrom(Dispatcher dispatcher)
+        {
+            return new ViewDispatcher(dispatcher);
+        }
+
+        private sealed class ViewDispatcher : IDispatcher
+        {
+            private readonly Dispatcher _dispatcher;
+
+            public ViewDispatcher(Dispatcher dispatcher) => _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+            public bool CheckAccess() => _dispatcher.CheckAccess();
+
+            public void BeginInvoke(Action action) => _dispatcher.InvokeAsync(action);
+
+            public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
+
+            public override int GetHashCode() => _dispatcher.Thread.ManagedThreadId;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.ApplicationModel;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -405,6 +406,31 @@ namespace Caliburn.Light.WinUI
                 var rootVisual = Window.Current.Content;
                 return rootVisual is object && ReferenceEquals(element, rootVisual);
             }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IDispatcher"/> from a <see cref="CoreDispatcher"/>.
+        /// </summary>
+        /// <param name="dispatcher">The UI dispatcher.</param>
+        /// <returns>The dispatcher.</returns>
+        public static IDispatcher GetDispatcherFrom(CoreDispatcher dispatcher)
+        {
+            return new ViewDispatcher(dispatcher);
+        }
+
+        private sealed class ViewDispatcher : IDispatcher
+        {
+            private readonly CoreDispatcher _dispatcher;
+
+            public ViewDispatcher(CoreDispatcher dispatcher) => _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+            public bool CheckAccess() => _dispatcher.HasThreadAccess;
+
+            public void BeginInvoke(Action action) => _dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(action)).AsTask().Observe();
+
+            public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
+
+            public override int GetHashCode() => _dispatcher.GetHashCode();
         }
     }
 }
