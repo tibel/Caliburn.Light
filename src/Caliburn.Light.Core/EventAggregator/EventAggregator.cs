@@ -132,7 +132,12 @@ namespace Caliburn.Light
         {
             for (var i = 0; i < handlers.Count; i++)
             {
-                var task = handlers[i].HandleAsync(message);
+                var handler = handlers[i];
+
+                if (!handler.CanHandle(message))
+                    continue;
+
+                var task = handler.HandleAsync(message);
 
                 task.Observe();
 
