@@ -8,38 +8,23 @@ namespace Caliburn.Light
     {
         private readonly WeakReference<TTarget> _weakTarget; 
         private readonly Func<TTarget, TMessage, Task> _handler;
-        private readonly ThreadOption _threadOption;
 
-        public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption)
+        public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher dispatcher)
         {
             _weakTarget = new WeakReference<TTarget>(target);
             _handler = handler;
-            _threadOption = threadOption;
+            Dispatcher = dispatcher;
         }
 
-        public ThreadOption ThreadOption
-        {
-            get { return _threadOption; }
-        }
+        public IDispatcher Dispatcher { get; }
 
-        public bool IsDead
-        {
-            get
-            {
-                TTarget target;
-                return !_weakTarget.TryGetTarget(out target);
-            }
-        }
+        public bool IsDead => !_weakTarget.TryGetTarget(out _);
 
-        public bool CanHandle(object message)
-        {
-            return message is TMessage;
-        }
+        public bool CanHandle(object message) => message is TMessage;
 
         public Task HandleAsync(object message)
         {
-            TTarget target;
-            if (!_weakTarget.TryGetTarget(out target))
+            if (!_weakTarget.TryGetTarget(out TTarget target))
                 return Task.CompletedTask;
 
             return _handler(target, (TMessage)message);

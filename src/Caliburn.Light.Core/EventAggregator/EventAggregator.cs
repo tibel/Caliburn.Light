@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -10,20 +9,8 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class EventAggregator : IEventAggregator
     {
-        private readonly List<IEventAggregatorHandler> _handlers = new List<IEventAggregatorHandler>();
-        private readonly IDispatcher _dispatcher;
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="EventAggregator"/>.
-        /// </summary>
-        /// <param name="dispatcher">The UI context.</param>
-        public EventAggregator(IDispatcher dispatcher)
-        {
-            if (dispatcher is null)
-                throw new ArgumentNullException(nameof(dispatcher));
-
-            _dispatcher = dispatcher;
-        }
+        private readonly object _lockObject = new object();
+        private readonly List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>> _contexts = new List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>>();
 
         /// <summary>
         /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
@@ -32,9 +19,9 @@ namespace Caliburn.Light
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
         /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
+        /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher dispatcher = default)
             where TTarget : class
         {
             if (target is null)
@@ -48,7 +35,9 @@ namespace Caliburn.Light
                 return Task.CompletedTask;
             };
 
-            return SubscribeCore(target, wrapper, threadOption);
+            var item = new EventAggregatorHandler<TTarget, TMessage>(target, wrapper, dispatcher ?? CurrentThreadDispatcher.Instance);
+            SubscribeCore(item);
+            return item;
         }
 
         /// <summary>
@@ -58,9 +47,9 @@ namespace Caliburn.Light
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
         /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler" /> is executed.</param>
+        /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher dispatcher = default)
             where TTarget : class
         {
             if (target is null)
@@ -68,21 +57,27 @@ namespace Caliburn.Light
             if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
-            return SubscribeCore(target, handler, threadOption);
+            var item = new EventAggregatorHandler<TTarget, TMessage>(target, handler, dispatcher ?? CurrentThreadDispatcher.Instance);
+            SubscribeCore(item);
+            return item;
         }
 
-        private IEventAggregatorHandler SubscribeCore<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption)
-            where TTarget : class
+        private void SubscribeCore(IEventAggregatorHandler handler)
         {
-            var item = new EventAggregatorHandler<TTarget, TMessage>(target, handler, threadOption);
-
-            lock (_handlers)
+            lock (_lockObject)
             {
-                _handlers.RemoveAll(h => h.IsDead);
-                _handlers.Add(item);
-            }
+                // find or create target context
+                var targetContext = _contexts.Find(x => x.Key.Equals(handler.Dispatcher));
+                if (targetContext.Key is null)
+                {
+                    targetContext = new KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>(handler.Dispatcher, new List<IEventAggregatorHandler>());
+                    _contexts.Add(targetContext);
+                }
 
-            return item;
+                targetContext.Value.Add(handler);
+
+                CleanupCore(_contexts);
+            }
         }
 
         /// <summary>
@@ -94,9 +89,13 @@ namespace Caliburn.Light
             if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
-            lock (_handlers)
+            lock (_lockObject)
             {
-                _handlers.RemoveAll(h => h.IsDead || ReferenceEquals(h, handler));
+                var targetContext = _contexts.Find(x => x.Key.Equals(handler.Dispatcher));
+                if (targetContext.Key is object)
+                    targetContext.Value.RemoveAll(h => ReferenceEquals(h, handler));
+
+                CleanupCore(_contexts);
             }
         }
 
@@ -109,30 +108,24 @@ namespace Caliburn.Light
             if (message is null)
                 throw new ArgumentNullException(nameof(message));
 
-            List<IEventAggregatorHandler> selectedHandlers;
-            lock (_handlers)
+            lock (_lockObject)
             {
-                _handlers.RemoveAll(h => h.IsDead);
-                selectedHandlers = _handlers.FindAll(h => h.CanHandle(message));
+                CleanupCore(_contexts);
+
+                // publish to current context
+                foreach (var context in _contexts)
+                {
+                    if (context.Key.CheckAccess())
+                        PublishCore(message, context.Value);
+                }
+
+                // publish to other contexts
+                foreach (var context in _contexts)
+                {
+                    if (!context.Key.CheckAccess())
+                        context.Key.BeginInvoke(() => PublishCore(message, context.Value));
+                }
             }
-
-            if (selectedHandlers.Count == 0) return;
-
-            var isUIThread = _dispatcher.CheckAccess();
-            var currentThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.PublisherThread || isUIThread && h.ThreadOption == ThreadOption.UIThread);
-            if (currentThreadHandlers.Count > 0)
-                PublishCore(message, currentThreadHandlers);
-
-            if (!isUIThread)
-            {
-                var uiThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.UIThread);
-                if (uiThreadHandlers.Count > 0)
-                    _dispatcher.BeginInvoke(() => PublishCore(message, uiThreadHandlers));
-            }
-
-            var backgroundThreadHandlers = selectedHandlers.FindAll(h => h.ThreadOption == ThreadOption.BackgroundThread);
-            if (backgroundThreadHandlers.Count > 0)
-                ThreadPool.QueueUserWorkItem(_ => PublishCore(message, backgroundThreadHandlers));
         }
 
         private static void PublishCore(object message, List<IEventAggregatorHandler> handlers)
@@ -140,9 +133,25 @@ namespace Caliburn.Light
             for (var i = 0; i < handlers.Count; i++)
             {
                 var task = handlers[i].HandleAsync(message);
+
                 task.Observe();
+
                 if (!task.IsCompleted)
                     Executing?.Invoke(null, new TaskEventArgs(task));
+            }
+        }
+
+        private static void CleanupCore(List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>> contexts)
+        {
+            // remove dead subscribers
+            foreach (var context in contexts)
+                context.Value.RemoveAll(h => h.IsDead);
+
+            // cleanup contexts
+            for (var i = contexts.Count - 1; i >= 0; i--)
+            {
+                if (contexts[i].Value.Count == 0)
+                    contexts.RemoveAt(i);
             }
         }
 
@@ -150,5 +159,18 @@ namespace Caliburn.Light
         /// Occurs when <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
         /// </summary>
         public static event EventHandler<TaskEventArgs> Executing;
+
+        private sealed class CurrentThreadDispatcher : IDispatcher
+        {
+            public static CurrentThreadDispatcher Instance = new CurrentThreadDispatcher();
+
+            private CurrentThreadDispatcher()
+            {
+            }
+
+            public void BeginInvoke(Action action) => action.Invoke();
+
+            public bool CheckAccess() => true;
+        }
     }
 }

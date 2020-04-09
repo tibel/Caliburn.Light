@@ -15,9 +15,9 @@ namespace Caliburn.Light
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
         /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
+        /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher dispatcher = default)
             where TTarget : class;
 
         /// <summary>
@@ -27,9 +27,9 @@ namespace Caliburn.Light
         /// <typeparam name="TMessage">The type of the message.</typeparam>
         /// <param name="target">The message handler target.</param>
         /// <param name="handler">The message handler to register.</param>
-        /// <param name="threadOption">Specifies on which Thread the <paramref name="handler"/> is executed.</param>
+        /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher dispatcher = default)
             where TTarget : class;
 
         /// <summary>

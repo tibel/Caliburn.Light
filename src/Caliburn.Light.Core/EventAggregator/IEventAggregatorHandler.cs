@@ -8,9 +8,9 @@ namespace Caliburn.Light
     public interface IEventAggregatorHandler
     {
         /// <summary>
-        /// Gets on which Thread the handler is executed.
+        /// Gets the execution context.
         /// </summary>
-        ThreadOption ThreadOption { get; }
+        IDispatcher Dispatcher { get; }
 
         /// <summary>
         /// Gets a value indicating whether this handler is dead.

@@ -1,7 +1,6 @@
 ﻿using Caliburn.Light;
 using Caliburn.Light.WPF;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace Demo.HelloEventAggregator
 {
@@ -23,9 +22,7 @@ namespace Demo.HelloEventAggregator
 
             _container = new SimpleContainer();
 
-            _container.RegisterInstance<IDispatcher>(View.GetDispatcherFrom(Dispatcher.CurrentDispatcher));
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
-
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
