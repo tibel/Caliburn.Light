@@ -14,6 +14,6 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="toClose">Items that are requesting close.</param>
         /// <returns>A task containing the aggregated close results.</returns>
-        Task<CloseResult<T>> ExecuteAsync(IEnumerable<T> toClose);
+        Task<CloseResult<T>> ExecuteAsync(IReadOnlyList<T> toClose);
     }
 }

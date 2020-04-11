@@ -27,14 +27,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="toClose">Items that are requesting close.</param>
         /// <returns>A task containing the aggregated close results.</returns>
-        public Task<CloseResult<T>> ExecuteAsync(IEnumerable<T> toClose)
+        public Task<CloseResult<T>> ExecuteAsync(IReadOnlyList<T> toClose)
         {
             return _closeConductedItemsWhenConductorCannotClose
                 ? CanCloseAsyncWithClosables(toClose)
                 : CanCloseAsync(toClose);
         }
 
-        private static async Task<CloseResult<T>> CanCloseAsyncWithClosables(IEnumerable<T> toClose)
+        private static async Task<CloseResult<T>> CanCloseAsyncWithClosables(IReadOnlyList<T> toClose)
         {
             var closables = new List<T>();
             var results = await Task.WhenAll(toClose
@@ -60,7 +60,7 @@ namespace Caliburn.Light
             }
         }
 
-        private static async Task<CloseResult<T>> CanCloseAsync(IEnumerable<T> toClose)
+        private static async Task<CloseResult<T>> CanCloseAsync(IReadOnlyList<T> toClose)
         {
             var results = await Task.WhenAll(toClose
                 .OfType<ICloseGuard>()

@@ -14,7 +14,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canClose">Indicates whether close can occur.</param>
         /// <param name="closeables">Indicates which children should close if the parent cannot.</param>
-        public CloseResult(bool canClose, IEnumerable<T> closeables)
+        public CloseResult(bool canClose, IReadOnlyList<T> closeables)
         {
             CanClose = canClose;
             Closeables = closeables;
@@ -28,6 +28,6 @@ namespace Caliburn.Light
         /// <summary>
         /// Indicates which children should close if the parent cannot.
         /// </summary>
-        public IEnumerable<T> Closeables { get; }
+        public IReadOnlyList<T> Closeables { get; }
     }
 }

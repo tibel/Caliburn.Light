@@ -35,7 +35,7 @@ namespace Caliburn.Light
                 /// Gets the children.
                 /// </summary>
                 /// <returns>The collection of children.</returns>
-                public sealed override IEnumerable<T> GetChildren() => _items;
+                public sealed override IReadOnlyList<T> GetChildren() => _items;
 
                 /// <summary>
                 /// Activates the specified item.

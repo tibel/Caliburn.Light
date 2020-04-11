@@ -48,7 +48,7 @@ namespace Caliburn.Light
         /// Gets the children.
         /// </summary>
         /// <returns>The collection of children.</returns>
-        public abstract IEnumerable<T> GetChildren();
+        public abstract IReadOnlyList<T> GetChildren();
 
         /// <summary>
         /// Activates the specified item.

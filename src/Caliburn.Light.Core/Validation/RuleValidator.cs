@@ -9,8 +9,8 @@ namespace Caliburn.Light
     /// <typeparam name="T">The type of the object the validator applies to.</typeparam>
     public sealed class RuleValidator<T> : IValidator
     {
-        private readonly Dictionary<string, IList<ValidationRule<T>>> _rules =
-            new Dictionary<string, IList<ValidationRule<T>>>();
+        private readonly Dictionary<string, List<ValidationRule<T>>> _rules =
+            new Dictionary<string, List<ValidationRule<T>>>();
 
         /// <summary>
         /// Adds a rule to the validator.
@@ -21,8 +21,7 @@ namespace Caliburn.Light
             if (rule is null)
                 throw new ArgumentNullException(nameof(rule));
 
-            IList<ValidationRule<T>> current;
-            if (!_rules.TryGetValue(rule.PropertyName, out current))
+            if (!_rules.TryGetValue(rule.PropertyName, out var current))
             {
                 current = new List<ValidationRule<T>>();
                 _rules.Add(rule.PropertyName, current);
@@ -57,17 +56,17 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the name of all properties that can be validated by this instance.
         /// </summary>
-        public ICollection<string> ValidatableProperties
+        public IReadOnlyCollection<string> ValidatableProperties
         {
             get { return _rules.Keys; }
         }
 
-        ICollection<string> IValidator.ValidateProperty(object obj, string propertyName)
+        IReadOnlyCollection<string> IValidator.ValidateProperty(object obj, string propertyName)
         {
             return ValidateProperty((T)obj, propertyName);
         }
 
-        IDictionary<string, ICollection<string>> IValidator.Validate(object obj)
+        IReadOnlyDictionary<string, IReadOnlyCollection<string>> IValidator.Validate(object obj)
         {
             return Validate((T)obj);
         }
@@ -78,10 +77,9 @@ namespace Caliburn.Light
         /// <param name="obj">The object to apply the rules to.</param>
         /// <param name="propertyName">Name of the property we want to apply rules for.</param>
         /// <returns>A collection of errors.</returns>
-        public ICollection<string> ValidateProperty(T obj, string propertyName)
+        public IReadOnlyCollection<string> ValidateProperty(T obj, string propertyName)
         {
-            IList<ValidationRule<T>> propertyRules;
-            if (!_rules.TryGetValue(propertyName, out propertyRules))
+            if (!_rules.TryGetValue(propertyName, out var propertyRules))
                 return new List<string>();
 
             return ValidateCore(propertyRules, obj);
@@ -92,9 +90,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="obj">The object to apply the rules to.</param>
         /// <returns>A collection of errors.</returns>
-        public IDictionary<string, ICollection<string>> Validate(T obj)
+        public IReadOnlyDictionary<string, IReadOnlyCollection<string>> Validate(T obj)
         {
-            var errors = new Dictionary<string, ICollection<string>>();
+            var errors = new Dictionary<string, IReadOnlyCollection<string>>();
 
             foreach (var propertyRules in _rules)
             {
@@ -109,7 +107,7 @@ namespace Caliburn.Light
             return errors;
         }
 
-        private static ICollection<string> ValidateCore(IList<ValidationRule<T>> rules, T obj)
+        private static IReadOnlyCollection<string> ValidateCore(List<ValidationRule<T>> rules, T obj)
         {
             var errors = new List<string>();
 

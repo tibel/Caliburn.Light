@@ -10,7 +10,7 @@ namespace Caliburn.Light
     public sealed class ValidationAdapter
     {
         private readonly Action<string> _onErrorsChanged;
-        private readonly Dictionary<string, ICollection<string>> _errors = new Dictionary<string, ICollection<string>>();
+        private readonly Dictionary<string, IReadOnlyCollection<string>> _errors = new Dictionary<string, IReadOnlyCollection<string>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationAdapter"/> class.
@@ -71,10 +71,9 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>List of validation errors.</returns>
-        public IEnumerable<string> GetPropertyErrors(string propertyName)
+        public IReadOnlyCollection<string> GetPropertyErrors(string propertyName)
         {
-            ICollection<string> errors;
-            if (_errors.TryGetValue(propertyName, out errors))
+            if (_errors.TryGetValue(propertyName, out var errors))
                 return errors;
             return Array.Empty<string>();
         }

@@ -59,7 +59,7 @@ namespace Caliburn.Light
             }
         }
 
-        private static bool DeliverEvent(IEnumerable<WeakEventListener> listeners, object sender, EventArgs e)
+        private static bool DeliverEvent(List<WeakEventListener> listeners, object sender, EventArgs e)
         {
             var foundStaleEntries = false;
 
@@ -140,7 +140,7 @@ namespace Caliburn.Light
             }
         }
 
-        private static bool DeliverEvent(IEnumerable<WeakEventListener> listeners, object sender, TEventArgs e)
+        private static bool DeliverEvent(List<WeakEventListener> listeners, object sender, TEventArgs e)
         {
             var foundStaleEntries = false;
 

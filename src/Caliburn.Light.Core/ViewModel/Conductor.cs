@@ -108,7 +108,7 @@ namespace Caliburn.Light
         /// Gets the children.
         /// </summary>
         /// <returns>The collection of children.</returns>
-        public override IEnumerable<T> GetChildren()
+        public override IReadOnlyList<T> GetChildren()
         {
             return ActiveItem is null ? Array.Empty<T>() : new[] {ActiveItem};
         }

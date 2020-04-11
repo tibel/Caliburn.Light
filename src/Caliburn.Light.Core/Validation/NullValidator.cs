@@ -9,19 +9,19 @@ namespace Caliburn.Light
 
         private static readonly ReadOnlyCollection<string> _emtpyList = new ReadOnlyCollection<string>(new List<string>());
 
-        private static readonly ReadOnlyDictionary<string, ICollection<string>> _emptyDictionary =
-            new ReadOnlyDictionary<string, ICollection<string>>(new Dictionary<string, ICollection<string>>());
+        private static readonly ReadOnlyDictionary<string, IReadOnlyCollection<string>> _emptyDictionary =
+            new ReadOnlyDictionary<string, IReadOnlyCollection<string>>(new Dictionary<string, IReadOnlyCollection<string>>());
 
         private NullValidator()
         {
         }
 
-        public ICollection<string> ValidateProperty(object obj, string propertyName)
+        public IReadOnlyCollection<string> ValidateProperty(object obj, string propertyName)
         {
             return _emtpyList;
         }
 
-        public IDictionary<string, ICollection<string>> Validate(object obj)
+        public IReadOnlyDictionary<string, IReadOnlyCollection<string>> Validate(object obj)
         {
             return _emptyDictionary;
         }
