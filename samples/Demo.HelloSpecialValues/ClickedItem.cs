@@ -3,12 +3,13 @@ using Windows.UI.Xaml.Controls;
 
 namespace Demo.HelloSpecialValues
 {
-    public class ClickedItem : ISpecialValue
+    public sealed class ClickedItem : ISpecialValue
     {
         public object Resolve(CommandExecutionContext context)
         {
-            var args = context.EventArgs as ItemClickEventArgs;
-            return (args is object) ? args.ClickedItem : null;
+            return context.EventArgs is ItemClickEventArgs args
+                ? args.ClickedItem
+                : null;
         }
     }
 }

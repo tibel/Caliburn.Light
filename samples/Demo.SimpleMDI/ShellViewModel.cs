@@ -18,7 +18,7 @@ namespace Demo.SimpleMDI
             _createTabViewModel = createTabViewModel;
 
             OpenTabCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => OpenTabAsync())
+                .OnExecute(OpenTabAsync)
                 .Build();
         }
 

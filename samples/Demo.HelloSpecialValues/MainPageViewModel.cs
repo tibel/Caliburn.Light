@@ -23,7 +23,7 @@ namespace Demo.HelloSpecialValues
             };
 
             CharacterSelectedCommand = DelegateCommandBuilder.WithParameter<CharacterViewModel>()
-                .OnExecute(p => CharacterSelected(p))
+                .OnExecute(CharacterSelected)
                 .Build();
         }
 

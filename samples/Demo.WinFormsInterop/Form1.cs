@@ -13,7 +13,7 @@ namespace Demo.WinFormsInterop
         protected override void OnLoad(EventArgs e)
         {
             var bootstrapper = new InteropBootstrapper(elementHost1);
-            bootstrapper.Initialize();
+            bootstrapper.ShowView<MainViewModel>();
 
             base.OnLoad(e);
         }

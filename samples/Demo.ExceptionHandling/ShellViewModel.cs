@@ -12,7 +12,6 @@ namespace Demo.ExceptionHandling
 
         public ShellViewModel()
         {
-
             ExecuteCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(OnExecute)
                 .Build();

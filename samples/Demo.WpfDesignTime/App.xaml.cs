@@ -13,11 +13,6 @@ namespace Demo.WpfDesignTime
 
         public App()
         {
-            Configure();
-        }
-
-        private void Configure()
-        {
             ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
@@ -38,10 +33,10 @@ namespace Demo.WpfDesignTime
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
+
             _container.GetInstance<IWindowManager>()
                 .ShowWindow(_container.GetInstance<ShellViewModel>());
-
-            base.OnStartup(e);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Demo.WinFormsInterop
             _windowManager = windowManager;
 
             SayHelloCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => SayHello())
+                .OnExecute(SayHello)
                 .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
                 .Observe(this, nameof(Name))
                 .Build();
@@ -37,7 +37,9 @@ namespace Demo.WinFormsInterop
         {
             var settings = new MessageBoxSettings
             {
-                Text = string.Format("Hello {0}!", Name)
+                Text = string.Format("Hello {0}!", Name),
+                Caption = "Message",
+                Image = System.Windows.MessageBoxImage.Information
             };
 
             return _windowManager.ShowMessageBox(settings, this);

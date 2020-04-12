@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Caliburn.Light;
 
 namespace Demo.ExceptionHandling
 {
@@ -17,9 +16,6 @@ namespace Demo.ExceptionHandling
 
                 var app = new App();
                 //app.InitializeComponent();
-
-                var bootstrapper = new AppBootstrapper();
-                bootstrapper.Initialize();
 
                 app.Run();
             }

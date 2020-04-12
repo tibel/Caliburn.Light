@@ -12,7 +12,7 @@ namespace Demo.SimpleMDI
         public TabViewModel()
         {
             CloseCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(() => TryCloseAsync())
+                .OnExecute(TryCloseAsync)
                 .Build();
         }
 
