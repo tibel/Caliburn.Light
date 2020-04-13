@@ -23,3 +23,12 @@ jobs:
 
     - name: Build
       run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
+
+    - name: Pack
+      run: msbuild src/Caliburn.Light/Caliburn.Light.csproj /t:Pack /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: NuGet packages
+        path: src/Caliburn.Light/bin/Release
