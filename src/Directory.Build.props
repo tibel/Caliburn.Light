@@ -1,7 +1,6 @@
 <Project>
   <PropertyGroup>
     <VersionPrefix>4.1.0</VersionPrefix>
-	<VersionSuffix>alpha.1</VersionSuffix>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
