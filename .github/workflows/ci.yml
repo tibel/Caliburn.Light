@@ -22,4 +22,4 @@ jobs:
       run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Debug
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Debug;VersionSuffix=alpha
+      run: msbuild Caliburn.Light.sln /p:Configuration=Debug
