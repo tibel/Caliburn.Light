@@ -22,7 +22,7 @@ jobs:
       run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Release;VersionSuffix=ci.$GITHUB_RUN_NUMBER
+      run: msbuild Caliburn.Light.sln /p:Configuration=Release;VersionSuffix=ci.${{ github.run_number }}
 
     - name: Pack
-      run: msbuild src/Caliburn.Light/Caliburn.Light.csproj /t:Pack /p:Configuration=Release;VersionSuffix=ci.$GITHUB_RUN_NUMBER
+      run: msbuild src/Caliburn.Light/Caliburn.Light.csproj /t:Pack /p:Configuration=Release;VersionSuffix=ci.${{ github.run_number }}
