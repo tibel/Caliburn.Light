@@ -19,7 +19,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.0
 
     - name: Restore dependencies
-      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Debug
+      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Debug
+      run: msbuild Caliburn.Light.sln /p:Configuration=Release;VersionSuffix=ci.$GITHUB_RUN_NUMBER
+
+    - name: Pack
+      run: msbuild src/Caliburn.Light/Caliburn.Light.csproj /t:Pack /p:Configuration=Release;VersionSuffix=ci.$GITHUB_RUN_NUMBER
