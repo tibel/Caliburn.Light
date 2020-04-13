@@ -2,15 +2,9 @@
   <PropertyGroup>
     <TargetFrameworks>net461;netcoreapp3.1</TargetFrameworks>
     <OutputType>WinExe</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
-  </PropertyGroup>
-  <PropertyGroup>
     <StartupObject>Demo.ExceptionHandling.EntryPoint</StartupObject>
   </PropertyGroup>
-  <ItemGroup>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
     <ProjectReference Include="..\..\src\Caliburn.Light.WPF\Caliburn.Light.WPF.csproj" />
