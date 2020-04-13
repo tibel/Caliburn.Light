@@ -1,28 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <RootNamespace>Caliburn.Light</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Caliburn.Light.snk</AssemblyOriginatorKeyFile>
+    <Title>Caliburn.Light.Core</Title>
+    <Description>The portable core of Caliburn.Light</Description>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-    <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\Caliburn.Light.snk" Link="Properties\Caliburn.Light.snk" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

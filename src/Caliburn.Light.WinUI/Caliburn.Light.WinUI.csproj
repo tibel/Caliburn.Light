@@ -2,10 +2,8 @@
   <PropertyGroup>
     <TargetFramework>uap10.0.16299</TargetFramework>
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Caliburn.Light.snk</AssemblyOriginatorKeyFile>
+    <Title>Caliburn.Light.WinUI</Title>
+    <Description>The WinUI aware parts of Caliburn.Light</Description>
 
     <!-- WORKAROUND to get UAP compiling without errors and warnings -->
     <ExtrasUwpMetaPackageVersion>6.2.10</ExtrasUwpMetaPackageVersion>
@@ -14,26 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Properties\Caliburn.Light.WinUI.rd.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Caliburn.Light.WinUI.rd.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\Caliburn.Light.snk" Link="Properties\Caliburn.Light.snk" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <EmbeddedResource Include="Caliburn.Light.WinUI.rd.xml" />
   </ItemGroup>
 
   <ItemGroup>

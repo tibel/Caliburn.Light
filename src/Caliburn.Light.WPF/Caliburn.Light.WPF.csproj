@@ -2,28 +2,10 @@
   <PropertyGroup>
     <TargetFrameworks>net461;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>Caliburn.Light.WPF</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Caliburn.Light.snk</AssemblyOriginatorKeyFile>
     <UseWPF>true</UseWPF>
+    <Title>Caliburn.Light.WPF</Title>
+    <Description>The WPF aware parts of Caliburn.Light</Description>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-    <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\Caliburn.Light.snk" Link="Properties\Caliburn.Light.snk" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />

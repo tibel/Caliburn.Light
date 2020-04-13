@@ -1,0 +1,39 @@
+<Project>
+  <PropertyGroup>
+    <Version>4.0.0</Version>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Caliburn.Light.snk</AssemblyOriginatorKeyFile>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Product>Caliburn.Light</Product>
+    <Authors>Thomas Ibel</Authors>
+    <Copyright>Copyright © Thomas Ibel 2014-2020</Copyright>
+    <PackageProjectUrl>https://github.com/tibel/Caliburn.Light</PackageProjectUrl>
+    <Company>https://github.com/tibel</Company>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>logo.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/tibel/Caliburn.Light.git</RepositoryUrl>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Visible>False</Visible>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)..\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Visible>False</Visible>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caliburn.Light.WPF", "src\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caliburn.Light.WinUI", "src\Caliburn.Light.WinUI\Caliburn.Light.WinUI.csproj", "{83CB8852-880D-4334-845A-6CFCBCE86071}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4B95C303-BF52-4280-9F23-DDBA29E43D07}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{4B95C303-BF52-4280-9F23-DDBA29E43D07}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.ExceptionHandling", "samples\Demo.ExceptionHandling\Demo.ExceptionHandling.csproj", "{353E559E-E35C-415B-ADFE-935FCDAAA06C}"
 EndProject
@@ -26,11 +26,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A577E6F9-1FE4-476A-A755-8A79694ECE14}"
 	ProjectSection(SolutionItems) = preProject
 		nuget\Caliburn.Light.nuspec = nuget\Caliburn.Light.nuspec
-		src\GlobalAssemblyInfo.cs = src\GlobalAssemblyInfo.cs
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.HelloEventAggregator", "samples\Demo.HelloEventAggregator\Demo.HelloEventAggregator.csproj", "{1622C133-84F4-4711-B6B0-97491AA15BF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B485A3EA-7A6F-44FE-8874-5F033481DEE4}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -215,6 +219,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{53D2D831-73B0-4879-B07C-ABD8BB41EF08} = {B485A3EA-7A6F-44FE-8874-5F033481DEE4}
+		{0CB6950C-F65A-49DF-AD49-D83591B9FD75} = {B485A3EA-7A6F-44FE-8874-5F033481DEE4}
+		{83CB8852-880D-4334-845A-6CFCBCE86071} = {B485A3EA-7A6F-44FE-8874-5F033481DEE4}
 		{353E559E-E35C-415B-ADFE-935FCDAAA06C} = {4B95C303-BF52-4280-9F23-DDBA29E43D07}
 		{3C72AAF5-9E31-409E-BCE7-C8EB45240B50} = {4B95C303-BF52-4280-9F23-DDBA29E43D07}
 		{0BDD9439-142E-4287-9BDD-E1812D157E39} = {4B95C303-BF52-4280-9F23-DDBA29E43D07}
