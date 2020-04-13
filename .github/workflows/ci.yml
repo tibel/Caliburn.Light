@@ -22,7 +22,13 @@ jobs:
       run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Release;VersionSuffix=ci.${{ github.run_number }}
+      run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
 
     - name: Pack
-      run: msbuild src/Caliburn.Light/Caliburn.Light.csproj /t:Pack /p:Configuration=Release;VersionSuffix=ci.${{ github.run_number }}
+      run: msbuild src/Caliburn.Light/Caliburn.Light.csproj /t:Pack /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: NuGet packages
+        path: src/Caliburn.Light/bin/Release
