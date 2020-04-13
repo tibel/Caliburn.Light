@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.Build.NoTargets/1.0.94">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoBuild>true</NoBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>Caliburn.Light.nuspec</NuspecFile>
+    <NuspecProperties>Version=$(Version)</NuspecProperties>
+  </PropertyGroup>
+</Project>
