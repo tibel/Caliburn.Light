@@ -7,6 +7,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Caliburn.Light.snk</AssemblyOriginatorKeyFile>
 
+    <!-- WORKAROUND to get UAP compiling without errors and warnings -->
     <ExtrasUwpMetaPackageVersion>6.2.10</ExtrasUwpMetaPackageVersion>
     <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
