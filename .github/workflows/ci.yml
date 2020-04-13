@@ -1,0 +1,25 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.0
+
+    - name: Restore dependencies
+      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Debug
+
+    - name: Build
+      run: msbuild Caliburn.Light.sln /p:Configuration=Debug
