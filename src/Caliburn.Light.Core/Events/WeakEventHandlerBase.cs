@@ -42,8 +42,7 @@ namespace Caliburn.Light
         /// <remarks>Register this method on the source event.</remarks>
         protected void OnEvent(object sender, TEventArgs args)
         {
-            TSubscriber subscriber;
-            if (_subscriber.TryGetTarget(out subscriber))
+            if (_subscriber.TryGetTarget(out var subscriber))
             {
                 _weakHandler(subscriber, sender, args);
             }
@@ -98,8 +97,7 @@ namespace Caliburn.Light
 
         private void RemoveEventHandler()
         {
-            TSource source;
-            if (_source.TryGetTarget(out source))
+            if (_source.TryGetTarget(out var source))
             {
                 RemoveEventHandler(source);
             }
@@ -119,8 +117,7 @@ namespace Caliburn.Light
         /// <remarks>Register this method on the source event.</remarks>
         protected void OnEvent(object sender, TEventArgs args)
         {
-            TSubscriber subscriber;
-            if (_subscriber.TryGetTarget(out subscriber))
+            if (_subscriber.TryGetTarget(out var subscriber))
             {
                 _weakHandler(subscriber, sender, args);
             }

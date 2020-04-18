@@ -11,6 +11,21 @@ namespace Caliburn.Light
     public static class WeakEventHandler
     {
         /// <summary>
+        /// Registers a weak handler to <see cref="INotifyPropertyChanging.PropertyChanging"/>.
+        /// </summary>
+        /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+        /// <param name="source">The event source.</param>
+        /// <param name="subscriber">The event subscriber.</param>
+        /// <param name="weakHandler">The weak handler.</param>
+        /// <returns>A registration object that can be used to deregister from the event.</returns>
+        public static IDisposable RegisterPropertyChangingWeak<TSubscriber>(this INotifyPropertyChanging source,
+            TSubscriber subscriber, Action<TSubscriber, object, PropertyChangingEventArgs> weakHandler)
+            where TSubscriber : class
+        {
+            return new WeakNotifyPropertyChangingHandler<TSubscriber>(source, subscriber, weakHandler);
+        }
+
+        /// <summary>
         /// Registers a weak handler to <see cref="INotifyPropertyChanged.PropertyChanged"/>.
         /// </summary>
         /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
