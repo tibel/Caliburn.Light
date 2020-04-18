@@ -9,18 +9,13 @@ namespace Caliburn.Light
     /// </summary>
     public abstract class BindableCommand : ICommand, INotifyPropertyChanged
     {
-        private readonly WeakEventSource _canExecuteChangedSource = new WeakEventSource();
         private bool _isExecutableNeedsInvalidation = true;
         private bool _isExecutable;
 
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
-        public event EventHandler CanExecuteChanged
-        {
-            add { _canExecuteChangedSource.Add(value); }
-            remove { _canExecuteChangedSource.Remove(value); }
-        }
+        public event EventHandler CanExecuteChanged;
 
         /// <summary>
         /// Occurs when a property value changes.
@@ -33,7 +28,7 @@ namespace Caliburn.Light
         protected void OnCanExecuteChanged()
         {
             _isExecutableNeedsInvalidation = true;
-            _canExecuteChangedSource.Raise(this, EventArgs.Empty);
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             OnPropertyChanged(nameof(IsExecutable));
         }
 
