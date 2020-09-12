@@ -30,8 +30,14 @@ jobs:
       with:
         languages: ${{ matrix.language }}
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.0
+
+    - name: Restore dependencies
+      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
+
+    - name: Build
+      run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
