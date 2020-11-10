@@ -104,11 +104,11 @@ namespace Demo.Validation
 
         private static IValidator SetupValidator()
         {
-            var ruleValidator = new RuleValidator<MainViewModel>();
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Name), m => m.Name, 1, 100, "Name is required."));
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Address), m => m.Address, 1, 100, "Address is required."));
-            ruleValidator.AddRule(new StringLengthValidationRule<MainViewModel>(nameof(Website), m => m.Website, 1, 100, "Website is required."));
-            ruleValidator.AddRule(new RegexValidationRule<MainViewModel>(nameof(Website), m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid."));
+            var ruleValidator = new RuleValidator();
+            ruleValidator.AddStringLengthRule<MainViewModel>(nameof(Name), m => m.Name, 1, 100, "Name is required.");
+            ruleValidator.AddStringLengthRule<MainViewModel>(nameof(Address), m => m.Address, 1, 100, "Address is required.");
+            ruleValidator.AddStringLengthRule<MainViewModel>(nameof(Website), m => m.Website, 1, 100, "Website is required.");
+            ruleValidator.AddRegexRule<MainViewModel>(nameof(Website), m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid.");
             return ruleValidator;
         }
 

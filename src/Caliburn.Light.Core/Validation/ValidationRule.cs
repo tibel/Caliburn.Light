@@ -5,11 +5,10 @@ namespace Caliburn.Light
     /// <summary>
     /// Provides a way to create a custom rule in order to check the validity of an object.
     /// </summary>
-    /// <typeparam name="T">The type of the object the rule applies to.</typeparam>
-    public abstract class ValidationRule<T>
+    public abstract class ValidationRule
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationRule&lt;T&gt;"/> class.
+        /// Initializes a new instance of the <see cref="ValidationRule"/> class.
         /// </summary>
         /// <param name="propertyName">The name of the property this instance applies to.</param>
         /// <param name="errorMessage">The error message if the rules fails.</param>
@@ -41,6 +40,6 @@ namespace Caliburn.Light
         /// <returns>
         /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
         /// </returns>
-        public abstract bool Apply(T obj);
+        public abstract bool Apply(object obj);
     }
 }

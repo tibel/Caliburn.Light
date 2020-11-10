@@ -41,7 +41,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="Name:" Grid.Row="0" VerticalAlignment="Center" Margin="3" />
-        <TextBox Text="{Binding CName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="0" Grid.Column="1"  />
+        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="0" Grid.Column="1"  />
 
         <TextBlock Text="Address:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="3" />
         <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Grid.Row="1" Grid.Column="1" />

@@ -2,40 +2,19 @@
 
 namespace Caliburn.Light
 {
-    /// <summary>
-    /// Determines whether or not an object of type <typeparamref name="T"/> satisfies a rule and
-    /// provides an error if it does not.
-    /// </summary>
-    /// <typeparam name="T">The type of the object the rule applies to.</typeparam>
-    public sealed class DelegateValidationRule<T> : ValidationRule<T>
+    internal sealed class DelegateValidationRule : ValidationRule
     {
-        private readonly Func<T, bool> _rule;
+        private readonly Func<object, bool> _validateProperty;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateValidationRule&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="propertyName">The name of the property this instance applies to.</param>
-        /// <param name="rule">The rule to execute.</param>
-        /// <param name="errorMessage">The error message if the rules fails.</param>
-        public DelegateValidationRule(string propertyName, Func<T, bool> rule, string errorMessage)
+        public DelegateValidationRule(string propertyName, Func<object, bool> validateProperty, string errorMessage)
             : base(propertyName, errorMessage)
         {
-            if (rule is null)
-                throw new ArgumentNullException(nameof(rule));
-
-            _rule = rule;
+            _validateProperty = validateProperty;
         }
 
-        /// <summary>
-        /// Applies the rule to the specified object.
-        /// </summary>
-        /// <param name="obj">The object to apply the rule to.</param>
-        /// <returns>
-        /// <c>true</c> if the object satisfies the rule, otherwise <c>false</c>.
-        /// </returns>
-        public override bool Apply(T obj)
+        public override bool Apply(object obj)
         {
-            return _rule(obj);
+            return _validateProperty(obj);
         }
     }
 }
