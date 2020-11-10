@@ -20,6 +20,7 @@
 - change IClose to be async
 - remove coroutines
 - add ownerViewModel to IWindowManager functions
+- reduce generic types for rule validation
     </releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2020</copyright>
     <tags>Caliburn MVVM WPF Win10 UAP Screen EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
