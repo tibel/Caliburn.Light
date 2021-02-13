@@ -2,6 +2,7 @@
   <PropertyGroup>
     <VersionPrefix>4.1.0</VersionPrefix>
 
+    <LangVersion>9.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Caliburn.Light.snk</AssemblyOriginatorKeyFile>

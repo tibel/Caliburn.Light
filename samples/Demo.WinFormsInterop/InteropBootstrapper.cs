@@ -14,7 +14,6 @@ namespace Demo.WinFormsInterop
         {
             _elementHost = elementHost;
 
-            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
             _container = new SimpleContainer();

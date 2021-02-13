@@ -26,7 +26,6 @@ namespace Demo.HelloSpecialValues
 
         private void Configure()
         {
-            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
             _container = new SimpleContainer();

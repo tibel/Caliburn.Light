@@ -13,7 +13,6 @@ namespace Demo.ExceptionHandling
 
         public App()
         {
-            ViewHelper.Initialize(ViewAdapter.Instance);
             LogManager.Initialize(new DebugLoggerFactory());
 
             _container = new SimpleContainer();
