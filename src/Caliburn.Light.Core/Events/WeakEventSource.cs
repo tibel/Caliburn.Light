@@ -65,7 +65,7 @@ namespace Caliburn.Light
 
             foreach (var listener in listeners)
             {
-                if (listener.Target is object)
+                if (listener.Target is not null)
                 {
                     if (listener.Handler is EventHandler handler)
                     {
@@ -146,7 +146,7 @@ namespace Caliburn.Light
 
             foreach (var listener in listeners)
             {
-                if (listener.Target is object)
+                if (listener.Target is not null)
                 {
                     if (listener.Handler is EventHandler<TEventArgs> handler)
                     {

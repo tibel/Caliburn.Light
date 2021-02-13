@@ -75,7 +75,7 @@ namespace Caliburn.Light.WPF
                 return;
 
             var parent = (ContentControl)sender;
-            if (!(parent.Content is Page page))
+            if (parent.Content is not Page page)
                 return;
 
             if (page.DataContext is ICloseGuard guard)
@@ -96,7 +96,7 @@ namespace Caliburn.Light.WPF
         {
             var parent = (ContentControl)sender;
 
-            if (_previousPage is object)
+            if (_previousPage is not null)
             {
                 var previousPage = _previousPage;
                 _previousPage = null;
@@ -107,7 +107,7 @@ namespace Caliburn.Light.WPF
                 OnNavigatedTo(page);
         }
 
-        private void OnNavigatedFrom(Page page)
+        private static void OnNavigatedFrom(Page page)
         {
             if (page.DataContext is IActivatable activatable)
                 activatable.DeactivateAsync(!page.KeepAlive).Observe();
@@ -116,7 +116,7 @@ namespace Caliburn.Light.WPF
                 viewAware.DetachView(page, View.GetContext(page));
         }
 
-        private void OnNavigatedTo(Page page)
+        private static void OnNavigatedTo(Page page)
         {
             if (page.DataContext is IViewAware viewAware)
                 viewAware.AttachView(page, View.GetContext(page));

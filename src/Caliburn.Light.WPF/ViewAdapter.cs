@@ -36,7 +36,7 @@ namespace Caliburn.Light.WPF
 
         public object GetFirstNonGeneratedView(object view)
         {
-            if (!(view is DependencyObject dependencyObject))
+            if (view is not DependencyObject dependencyObject)
                 return view;
 
             if (!View.GetIsGenerated(dependencyObject))
@@ -85,11 +85,11 @@ namespace Caliburn.Light.WPF
 
         public object GetCommandParameter(object view)
         {
-            if (!(view is DependencyObject element))
+            if (view is not DependencyObject element)
                 return null;
 
             var commandParameter = View.GetCommandParameter(element);
-            if (commandParameter is object)
+            if (commandParameter is not null)
                 return commandParameter;
 
             if (element is System.Windows.Input.ICommandSource commandSource)
@@ -100,7 +100,7 @@ namespace Caliburn.Light.WPF
 
         public IDispatcher GetDispatcher(object view)
         {
-            if (!(view is DependencyObject element))
+            if (view is not DependencyObject element)
                 return null;
 
             return View.GetDispatcherFrom(element.Dispatcher);

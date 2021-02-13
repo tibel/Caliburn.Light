@@ -56,8 +56,8 @@ namespace Caliburn.Light.WPF
         private static void SetNativeEnabled(this Window window, bool enabled)
         {
             var handle = new WindowInteropHelper(window).Handle;
-            SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) &
-                ~WS_DISABLED | (enabled ? 0 : WS_DISABLED));
+            _ = SetWindowLong(handle, GWL_STYLE,
+                (GetWindowLong(handle, GWL_STYLE) & ~WS_DISABLED) | (enabled ? 0 : WS_DISABLED));
         }
     }
 }

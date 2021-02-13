@@ -8,7 +8,7 @@ namespace Caliburn.Light
     public interface IDispatcher
     {
         /// <summary>
-        /// Determines whether the calling thread is the thread associated with the UI context. 
+        /// Determines whether the calling thread is the thread associated with the UI context.
         /// </summary>
         bool CheckAccess();
 

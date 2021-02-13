@@ -8,14 +8,14 @@ namespace Caliburn.Light
     /// </summary>
     public class ViewAware : BindableObject, IViewAware
     {
-        private static readonly string DefaultContext = "__default__";
+        private const string DefaultContext = "__default__";
 
         private List<KeyValuePair<string, WeakReference>> _views;
         private ILogger _logger;
 
-        internal ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
+        internal ILogger Log => _logger ??= LogManager.GetLogger(GetType());
 
-        private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ?? (_views = new List<KeyValuePair<string, WeakReference>>(1));
+        private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ??= new List<KeyValuePair<string, WeakReference>>(1);
 
         /// <summary>
         /// The view cache for this instance.

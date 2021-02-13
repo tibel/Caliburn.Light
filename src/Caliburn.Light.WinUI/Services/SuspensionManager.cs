@@ -20,7 +20,7 @@ namespace Caliburn.Light.WinUI
     {
         private const string SessionStateFilename = "_sessionState.xml";
 
-        private static DependencyProperty FrameSessionStateKeyProperty =
+        private static readonly DependencyProperty FrameSessionStateKeyProperty =
             DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(string), typeof(SuspensionManager), null);
 
         private readonly IFrameAdapter _frameAdapter;
@@ -76,8 +76,7 @@ namespace Caliburn.Light.WinUI
                 // Save the navigation state for all registered frames
                 foreach (var weakFrameReference in _registeredFrames)
                 {
-                    Frame frame;
-                    if (weakFrameReference.TryGetTarget(out frame))
+                    if (weakFrameReference.TryGetTarget(out Frame frame))
                     {
                         SaveFrameState(frame);
                     }
@@ -90,11 +89,9 @@ namespace Caliburn.Light.WinUI
 
                 // Get an output stream for the SessionState file and write the state asynchronously
                 var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(SessionStateFilename, CreationCollisionOption.ReplaceExisting).AsTask().ConfigureAwait(false);
-                using (var fileStream = await file.OpenStreamForWriteAsync().ConfigureAwait(false))
-                {
-                    sessionData.Seek(0, SeekOrigin.Begin);
-                    await sessionData.CopyToAsync(fileStream).ConfigureAwait(false);
-                }
+                using var fileStream = await file.OpenStreamForWriteAsync().ConfigureAwait(false);
+                sessionData.Seek(0, SeekOrigin.Begin);
+                await sessionData.CopyToAsync(fileStream).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -122,8 +119,7 @@ namespace Caliburn.Light.WinUI
                 // Restore any registered frames to their saved state
                 foreach (var weakFrameReference in _registeredFrames)
                 {
-                    Frame frame;
-                    if (weakFrameReference.TryGetTarget(out frame))
+                    if (weakFrameReference.TryGetTarget(out Frame frame))
                     {
                         RestoreFrameState(frame);
                     }
@@ -139,12 +135,11 @@ namespace Caliburn.Light.WinUI
         {
             // Get the input stream for the SessionState file
             var file = await ApplicationData.Current.LocalFolder.GetFileAsync(SessionStateFilename).AsTask().ConfigureAwait(false);
-            using (var inStream = await file.OpenSequentialReadAsync().AsTask().ConfigureAwait(false))
-            {
-                // Deserialize the Session State
-                var serializer = new DataContractSerializer(typeof(Dictionary<string, object>), knownTypes);
-                return (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
-            }
+            using var inStream = await file.OpenSequentialReadAsync().AsTask().ConfigureAwait(false);
+
+            // Deserialize the Session State
+            var serializer = new DataContractSerializer(typeof(Dictionary<string, object>), knownTypes);
+            return (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
         }
 
         /// <summary>
@@ -168,7 +163,7 @@ namespace Caliburn.Light.WinUI
             if (string.IsNullOrEmpty(sessionStateKey))
                 throw new ArgumentNullException(nameof(sessionStateKey));
 
-            if (frame.GetValue(FrameSessionStateKeyProperty) is object)
+            if (frame.GetValue(FrameSessionStateKeyProperty) is not null)
             {
                 throw new InvalidOperationException("Frames can only be registered to one session state key.");
             }
@@ -209,18 +204,14 @@ namespace Caliburn.Light.WinUI
             // state will be saved (along with any weak references that are no longer reachable)
             frame.ClearValue(FrameSessionStateKeyProperty);
             _sessionState.Remove(frameSessionKey);
-            _registeredFrames.RemoveAll((weakFrameReference) =>
-            {
-                Frame testFrame;
-                return !weakFrameReference.TryGetTarget(out testFrame) || testFrame == frame;
-            });
+            _registeredFrames.RemoveAll((weakFrameReference) => !weakFrameReference.TryGetTarget(out Frame testFrame) || testFrame == frame);
         }
 
         private void SaveFrameState(Frame frame)
         {
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
             var frameState = _frameAdapter.SaveState(frame);
-            if (frameState is object)
+            if (frameState is not null)
             {
                 _sessionState[frameSessionKey] = frameState;
             }
@@ -230,8 +221,7 @@ namespace Caliburn.Light.WinUI
         {
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
 
-            object result;
-            if (_sessionState.TryGetValue(frameSessionKey, out result))
+            if (_sessionState.TryGetValue(frameSessionKey, out object result))
             {
                 var frameState = (IDictionary<string, object>)result;
                 _frameAdapter.RestoreState(frame, frameState);

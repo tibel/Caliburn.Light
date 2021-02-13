@@ -8,9 +8,6 @@ namespace Caliburn.Light.WPF
     /// </summary>
     public sealed class PopupLifecycle
     {
-        private readonly Popup _view;
-        private readonly string _context;
-
         /// <summary>
         /// Initializes a new instance of <see cref="PopupLifecycle"/>
         /// </summary>
@@ -18,8 +15,8 @@ namespace Caliburn.Light.WPF
         /// <param name="context">The context in which the view appears.</param>
         public PopupLifecycle(Popup view, string context)
         {
-            _view = view;
-            _context = context;
+            View = view;
+            Context = context;
 
             var viewModel = view.DataContext;
 
@@ -33,29 +30,29 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Gets the view.
         /// </summary>
-        public Popup View => _view;
+        public Popup View { get; }
 
         /// <summary>
         /// Gets the context in which the view appears.
         /// </summary>
-        public string Context => _context;
+        public string Context { get; }
 
         private void OnViewOpened(object sender, EventArgs e)
         {
-            if (_view.DataContext is IViewAware viewAware)
-                viewAware.AttachView(_view, _context);
+            if (View.DataContext is IViewAware viewAware)
+                viewAware.AttachView(View, Context);
 
-            if (_view.DataContext is IActivatable activatable)
+            if (View.DataContext is IActivatable activatable)
                 activatable.ActivateAsync().Observe();
         }
 
         private void OnViewClosed(object sender, EventArgs e)
         {
-            if (_view.DataContext is IActivatable activatable)
+            if (View.DataContext is IActivatable activatable)
                 activatable.DeactivateAsync(true).Observe();
 
-            if (_view.DataContext is IViewAware viewAware)
-                viewAware.DetachView(_view, _context);
+            if (View.DataContext is IViewAware viewAware)
+                viewAware.DetachView(View, Context);
         }
     }
 }

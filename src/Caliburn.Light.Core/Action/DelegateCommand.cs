@@ -11,6 +11,8 @@ namespace Caliburn.Light
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
         private readonly string[] _propertyNames;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Holds the weak event registration alive")]
         private readonly IDisposable _propertyChangedRegistration;
 
         /// <summary>
@@ -48,7 +50,7 @@ namespace Caliburn.Light
             _execute = execute;
             _canExecute = canExecute;
             _propertyNames = propertyNames;
-            _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
+            _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, _, e) => t.OnPropertyChanged(e));
         }
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -88,6 +90,8 @@ namespace Caliburn.Light
         private readonly Action<TParameter> _execute;
         private readonly Func<TParameter, bool> _canExecute;
         private readonly string[] _propertyNames;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Holds the weak event registration alive")]
         private readonly IDisposable _propertyChangedRegistration;
 
         /// <summary>
@@ -134,7 +138,7 @@ namespace Caliburn.Light
             _execute = execute;
             _canExecute = canExecute;
             _propertyNames = propertyNames;
-            _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, s, e) => t.OnPropertyChanged(e));
+            _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, _, e) => t.OnPropertyChanged(e));
         }
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)

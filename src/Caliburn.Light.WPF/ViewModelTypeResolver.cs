@@ -24,8 +24,7 @@ namespace Caliburn.Light.WPF
             if (viewType is null)
                 throw new ArgumentNullException(nameof(viewType));
 
-            Type modelType;
-            _modelTypeLookup.TryGetValue(viewType, out modelType);
+            _modelTypeLookup.TryGetValue(viewType, out Type modelType);
             return modelType;
         }
 
@@ -40,8 +39,7 @@ namespace Caliburn.Light.WPF
             if (modelType is null)
                 throw new ArgumentNullException(nameof(modelType));
 
-            Type viewType;
-            _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out viewType);
+            _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out Type viewType);
             return viewType;
         }
 

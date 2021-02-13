@@ -16,14 +16,13 @@ namespace Caliburn.Light
         public static TParameter Default(object parameter)
         {
             if (parameter is null)
-                return default(TParameter);
+                return default;
 
-            var specialValue = parameter as ISpecialValue;
-            if (specialValue is object)
+            if (parameter is ISpecialValue specialValue)
                 parameter = specialValue.Resolve(new CommandExecutionContext());
 
-            if (parameter is TParameter)
-                return (TParameter)parameter;
+            if (parameter is TParameter typedParameter)
+                return typedParameter;
 
             return (TParameter)Convert.ChangeType(parameter, typeof(TParameter));
         }

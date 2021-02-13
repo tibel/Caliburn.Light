@@ -69,7 +69,7 @@ namespace Caliburn.Light
                 {
                     var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
 
-                    if (!result.CanClose && result.Closeables.Any())
+                    if (!result.CanClose && result.Closeables.Count > 0)
                     {
                         await Task.WhenAll(result.Closeables.OfType<IActivatable>()
                             .Select(x => x.DeactivateAsync(true)));

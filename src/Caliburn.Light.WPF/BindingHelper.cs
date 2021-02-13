@@ -31,10 +31,10 @@ namespace Caliburn.Light.WPF
         }
 
         /// <summary>
-        /// Remove data Binding (if any) from a property. 
+        /// Remove data Binding (if any) from a property.
         /// </summary>
         /// <param name="target">Object from which to remove Binding</param>
-        /// <param name="property">Property from which to remove Binding</param> 
+        /// <param name="property">Property from which to remove Binding</param>
         public static void ClearBinding(DependencyObject target, DependencyProperty property)
         {
             if (IsDataBound(target, property))

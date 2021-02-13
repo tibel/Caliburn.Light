@@ -135,15 +135,17 @@ namespace Caliburn.Light.WPF
 
             var owner = GetWindow(ownerViewModel);
 
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.CheckFileExists = true;
-            openFileDialog.CheckPathExists = true;
+            var openFileDialog = new OpenFileDialog
+            {
+                RestoreDirectory = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
 
-            openFileDialog.Multiselect = settings.Multiselect;
-            openFileDialog.Filter = settings.FileTypeFilter;
-            openFileDialog.Title = settings.Title;
-            openFileDialog.InitialDirectory = settings.InitialDirectory;
+                Multiselect = settings.Multiselect,
+                Filter = settings.FileTypeFilter,
+                Title = settings.Title,
+                InitialDirectory = settings.InitialDirectory
+            };
 
             bool? result;
             try
@@ -152,9 +154,8 @@ namespace Caliburn.Light.WPF
                     ? openFileDialog.ShowDialog()
                     : openFileDialog.ShowDialog(owner);
             }
-            catch
+            catch when (!string.IsNullOrEmpty(openFileDialog.InitialDirectory))
             {
-                if (string.IsNullOrEmpty(openFileDialog.InitialDirectory)) throw;
                 openFileDialog.InitialDirectory = null;
 
                 result = owner is null
@@ -181,19 +182,21 @@ namespace Caliburn.Light.WPF
 
             var owner = GetWindow(ownerViewModel);
 
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.AddExtension = true;
-            saveFileDialog.CheckPathExists = true;
+            var saveFileDialog = new SaveFileDialog
+            {
+                RestoreDirectory = true,
+                AddExtension = true,
+                CheckPathExists = true,
 
-            saveFileDialog.Filter = settings.FileTypeFilter;
-            saveFileDialog.DefaultExt = settings.DefaultFileExtension;
+                Filter = settings.FileTypeFilter,
+                DefaultExt = settings.DefaultFileExtension,
 
-            saveFileDialog.Title = settings.Title;
-            saveFileDialog.FileName = settings.InitialFileName;
-            saveFileDialog.CreatePrompt = settings.PromptForCreate;
-            saveFileDialog.OverwritePrompt = settings.PromptForOverwrite;
-            saveFileDialog.InitialDirectory = settings.InitialDirectory;
+                Title = settings.Title,
+                FileName = settings.InitialFileName,
+                CreatePrompt = settings.PromptForCreate,
+                OverwritePrompt = settings.PromptForOverwrite,
+                InitialDirectory = settings.InitialDirectory
+            };
 
             bool? result;
             try
@@ -202,9 +205,8 @@ namespace Caliburn.Light.WPF
                     ? saveFileDialog.ShowDialog()
                     : saveFileDialog.ShowDialog(owner);
             }
-            catch
+            catch when (!string.IsNullOrEmpty(saveFileDialog.InitialDirectory))
             {
-                if (string.IsNullOrEmpty(saveFileDialog.InitialDirectory)) throw;
                 saveFileDialog.InitialDirectory = null;
 
                 result = owner is null
@@ -240,7 +242,7 @@ namespace Caliburn.Light.WPF
         /// <returns>The popup.</returns>
         protected virtual Popup EnsurePopup(object viewModel, UIElement view)
         {
-            if (!(view is Popup popup))
+            if (view is not Popup popup)
             {
                 popup = new Popup
                 {
@@ -285,7 +287,7 @@ namespace Caliburn.Light.WPF
         /// <returns>The window.</returns>
         protected virtual Window EnsureWindow(object viewModel, UIElement view)
         {
-            if (!(view is Window window))
+            if (view is not Window window)
             {
                 window = new Window
                 {
@@ -308,12 +310,12 @@ namespace Caliburn.Light.WPF
         {
             object view = null;
 
-            while(viewModel is object)
+            while(viewModel is not null)
             {
                 if (viewModel is IViewAware viewAware)
                     view = viewAware.GetView();
 
-                if (view is object)
+                if (view is not null)
                     break;
 
                 viewModel = viewModel is IChild child

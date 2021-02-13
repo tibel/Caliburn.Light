@@ -29,11 +29,11 @@ namespace Caliburn.Light
             if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
-            Func<TTarget, TMessage, Task> wrapper = (t, m) =>
+            Task wrapper(TTarget t, TMessage m)
             {
                 handler(t, m);
                 return Task.CompletedTask;
-            };
+            }
 
             var item = new EventAggregatorHandler<TTarget, TMessage>(target, wrapper, dispatcher ?? CurrentThreadDispatcher.Instance);
             SubscribeCore(item);
@@ -92,7 +92,7 @@ namespace Caliburn.Light
             lock (_lockObject)
             {
                 var targetContext = _contexts.Find(x => x.Key.Equals(handler.Dispatcher));
-                if (targetContext.Key is object)
+                if (targetContext.Key is not null)
                     targetContext.Value.RemoveAll(h => ReferenceEquals(h, handler));
 
                 CleanupCore(_contexts);

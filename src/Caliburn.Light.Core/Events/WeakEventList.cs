@@ -24,8 +24,7 @@ namespace Caliburn.Light
             // add the handler to the CWT - this keeps the handler alive throughout
             // the lifetime of the target, without prolonging the lifetime of
             // the target
-            object value;
-            if (!_cwt.TryGetValue(target, out value))
+            if (!_cwt.TryGetValue(target, out object value))
             {
                 // 99% case - the target only listens once
                 _cwt.Add(target, handler);
@@ -34,13 +33,14 @@ namespace Caliburn.Light
             {
                 // 1% case - the target listens multiple times
                 // we store the delegates in a list
-                var list = value as List<Delegate>;
-                if (list is null)
+                if (value is not List<Delegate> list)
                 {
                     // lazily allocate the list, and add the old handler
                     var oldHandler = value as Delegate;
-                    list = new List<Delegate>();
-                    list.Add(oldHandler);
+                    list = new List<Delegate>
+                    {
+                        oldHandler
+                    };
 
                     // install the list as the CWT value
                     _cwt.Remove(target);
@@ -71,11 +71,9 @@ namespace Caliburn.Light
             }
 
             // remove the handler from the CWT
-            object value;
-            if (_cwt.TryGetValue(target, out value))
+            if (_cwt.TryGetValue(target, out object value))
             {
-                var list = value as List<Delegate>;
-                if (list is null)
+                if (value is not List<Delegate> list)
                 {
                     // 99% case - the target is removing its single handler
                     _cwt.Remove(target);

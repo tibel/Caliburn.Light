@@ -30,7 +30,7 @@ namespace Caliburn.Light.WPF
             _serviceProvider = serviceProvider;
         }
 
-        private ILogger Log => _logger ?? (_logger = LogManager.GetLogger(GetType()));
+        private ILogger Log => _logger ??= LogManager.GetLogger(GetType());
 
         /// <summary>
         /// Locates the view for the specified model instance.
@@ -44,7 +44,7 @@ namespace Caliburn.Light.WPF
                 throw new ArgumentNullException(nameof(model));
 
             var view = TryGetViewFromViewAware(model, context);
-            if (view is object)
+            if (view is not null)
             {
                 Log.Info("Using cached view for {0}.", model);
                 return view;
@@ -62,7 +62,7 @@ namespace Caliburn.Light.WPF
                 ?? (UIElement)Activator.CreateInstance(viewType);
         }
 
-        private UIElement TryGetViewFromViewAware(object model, string context)
+        private static UIElement TryGetViewFromViewAware(object model, string context)
         {
             if (model is IViewAware viewAware)
             {
@@ -92,8 +92,7 @@ namespace Caliburn.Light.WPF
             if (view is null)
                 throw new ArgumentNullException(nameof(view));
 
-            var frameworkElement = view as FrameworkElement;
-            if (frameworkElement is object && frameworkElement.DataContext is object)
+            if (view is FrameworkElement frameworkElement && frameworkElement.DataContext is not null)
             {
                 Log.Info("Using current data context for {0}.", view);
                 return frameworkElement.DataContext;

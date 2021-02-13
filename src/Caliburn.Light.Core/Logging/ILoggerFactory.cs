@@ -3,7 +3,7 @@
 namespace Caliburn.Light
 {
     /// <summary>
-    /// Represents a type used to create instances of <see cref="ILogger"/>. 
+    /// Represents a type used to create instances of <see cref="ILogger"/>.
     /// </summary>
     public interface ILoggerFactory
     {

@@ -6,7 +6,7 @@ namespace Caliburn.Light
     internal sealed class EventAggregatorHandler<TTarget, TMessage> : IEventAggregatorHandler
         where TTarget : class
     {
-        private readonly WeakReference<TTarget> _weakTarget; 
+        private readonly WeakReference<TTarget> _weakTarget;
         private readonly Func<TTarget, TMessage, Task> _handler;
 
         public EventAggregatorHandler(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher dispatcher)

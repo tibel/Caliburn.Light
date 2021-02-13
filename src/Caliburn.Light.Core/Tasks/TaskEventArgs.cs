@@ -8,8 +8,6 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class TaskEventArgs : EventArgs
     {
-        private readonly Task _task;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskEventArgs"/> class.
         /// </summary>
@@ -19,15 +17,12 @@ namespace Caliburn.Light
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
 
-            _task = task;
+            Task = task;
         }
 
         /// <summary>
         /// The supplied task.
         /// </summary>
-        public Task Task
-        {
-            get { return _task; }
-        }
+        public Task Task { get; }
     }
 }

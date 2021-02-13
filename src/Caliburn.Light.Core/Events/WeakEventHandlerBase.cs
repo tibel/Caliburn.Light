@@ -71,7 +71,7 @@ namespace Caliburn.Light
         where TSource : class
         where TSubscriber : class
     {
-        private readonly WeakReference<TSource> _source; 
+        private readonly WeakReference<TSource> _source;
         private readonly WeakReference<TSubscriber> _subscriber;
         private readonly Action<TSubscriber, object, TEventArgs> _weakHandler;
 

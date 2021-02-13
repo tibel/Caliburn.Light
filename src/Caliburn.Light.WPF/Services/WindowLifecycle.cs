@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 
 namespace Caliburn.Light.WPF
 {
@@ -11,9 +10,6 @@ namespace Caliburn.Light.WPF
     /// </summary>
     public sealed class WindowLifecycle
     {
-        private readonly Window _view;
-        private readonly string _context;
-
         private bool _deactivatingFromView;
         private bool _deactivateFromViewModel;
         private bool _actuallyClosing;
@@ -26,8 +22,8 @@ namespace Caliburn.Light.WPF
         /// <param name="activateWithWindow">Whether the view model shall be activated when the window gets activated and deactivated when the window gets deactivated.</param>
         public WindowLifecycle(Window view, string context, bool activateWithWindow)
         {
-            _view = view;
-            _context = context;
+            View = view;
+            Context = context;
 
             view.Closed += OnViewClosed;
 
@@ -58,12 +54,12 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Gets the view.
         /// </summary>
-        public Window View => _view;
+        public Window View { get; }
 
         /// <summary>
         /// Gets the context in which the view appears.
         /// </summary>
-        public string Context => _context;
+        public string Context { get; }
 
         private void OnViewClosing(object sender, CancelEventArgs e)
         {
@@ -76,15 +72,15 @@ namespace Caliburn.Light.WPF
                 return;
             }
 
-            e.Cancel = !EvaluateCanClose((ICloseGuard)_view.DataContext);
+            e.Cancel = !EvaluateCanClose((ICloseGuard)View.DataContext);
         }
 
         private async void OnViewClosed(object sender, EventArgs e)
         {
-            _view.Closed -= OnViewClosed;
-            _view.Closing -= OnViewClosing;
+            View.Closed -= OnViewClosed;
+            View.Closing -= OnViewClosing;
 
-            if (_view.DataContext is IActivatable activatable)
+            if (View.DataContext is IActivatable activatable)
             {
                 activatable.Deactivated -= OnModelDeactivated;
 
@@ -96,8 +92,8 @@ namespace Caliburn.Light.WPF
                 _deactivatingFromView = false;
             }
 
-            if (_view.DataContext is IViewAware viewAware)
-                viewAware.DetachView(_view, _context);
+            if (View.DataContext is IViewAware viewAware)
+                viewAware.DetachView(View, Context);
         }
 
         private void OnModelDeactivated(object sender, DeactivationEventArgs e)
@@ -112,7 +108,7 @@ namespace Caliburn.Light.WPF
 
             _deactivateFromViewModel = true;
             _actuallyClosing = true;
-            _view.Close();
+            View.Close();
             _actuallyClosing = false;
             _deactivateFromViewModel = false;
         }
@@ -134,7 +130,7 @@ namespace Caliburn.Light.WPF
                 return;
 
             _actuallyClosing = true;
-            _view.Close();
+            View.Close();
             _actuallyClosing = false;
         }
     }

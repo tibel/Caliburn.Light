@@ -31,7 +31,7 @@ namespace Caliburn.Light
             if (ActiveItem is IActivatable deactivator)
                 await deactivator.DeactivateAsync(closePrevious);
 
-            if (newItem is object)
+            if (newItem is not null)
                 newItem = EnsureItem(newItem);
 
             if (IsActive && newItem is IActivatable activator)
@@ -39,7 +39,7 @@ namespace Caliburn.Light
 
             SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
 
-            if (newItem is object)
+            if (newItem is not null)
                 OnActivationProcessed(newItem, true);
         }
     }

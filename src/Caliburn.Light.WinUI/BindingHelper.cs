@@ -31,10 +31,10 @@ namespace Caliburn.Light.WinUI
         }
 
         /// <summary>
-        /// Remove data Binding (if any) from a property. 
+        /// Remove data Binding (if any) from a property.
         /// </summary>
         /// <param name="target">Object from which to remove Binding</param>
-        /// <param name="property">Property from which to remove Binding</param> 
+        /// <param name="property">Property from which to remove Binding</param>
         public static void ClearBinding(DependencyObject target, DependencyProperty property)
         {
             if (IsDataBound(target, property))
@@ -48,8 +48,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="property">The dependency property to refresh.</param>
         public static void RefreshBinding(DependencyObject target, DependencyProperty property)
         {
-            var bindingExpression = target.ReadLocalValue(property) as BindingExpression;
-            if (bindingExpression is null || bindingExpression.ParentBinding is null) return;
+            if (target.ReadLocalValue(property) is not BindingExpression bindingExpression || bindingExpression.ParentBinding is null) return;
             BindingOperations.SetBinding(target, property, bindingExpression.ParentBinding);
         }
     }

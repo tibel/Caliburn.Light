@@ -138,13 +138,13 @@ namespace Caliburn.Light.WinUI
 
         private static void OnBindChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue || !(d is FrameworkElement fe)) return;
+            if (e.OldValue == e.NewValue || d is not FrameworkElement fe) return;
             HandleDataContext(fe, (bool)e.NewValue, GetCreate(fe));
         }
 
         private static void OnCreateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue || !(d is FrameworkElement fe)) return;
+            if (e.OldValue == e.NewValue || d is not FrameworkElement fe) return;
             HandleDataContext(fe, GetBind(fe), (bool)e.NewValue);
         }
 
@@ -194,7 +194,7 @@ namespace Caliburn.Light.WinUI
 
         private static void OnContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == e.NewValue || !(d is FrameworkElement fe)) return;
+            if (e.OldValue == e.NewValue || d is not FrameworkElement fe) return;
 
             if (GetBind(fe))
                 BindViewModel(fe, fe.DataContext, fe.DataContext, (string)e.OldValue, (string)e.NewValue);
@@ -347,13 +347,14 @@ namespace Caliburn.Light.WinUI
                 return true;
             }
 
-            RoutedEventHandler loaded = null;
-            loaded = delegate
+            void onLoaded(object sender, RoutedEventArgs _)
             {
-                element.Loaded -= loaded;
-                handler(element);
-            };
-            element.Loaded += loaded;
+                var s = (FrameworkElement)sender;
+                s.Loaded -= onLoaded;
+                handler(s);
+            }
+
+            element.Loaded += onLoaded;
             return false;
         }
 
@@ -364,13 +365,14 @@ namespace Caliburn.Light.WinUI
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnUnload(FrameworkElement element, Action<FrameworkElement> handler)
         {
-            RoutedEventHandler unloaded = null;
-            unloaded = delegate
+            void onUnloaded(object sender, RoutedEventArgs _)
             {
-                element.Unloaded -= unloaded;
-                handler(element);
-            };
-            element.Unloaded += unloaded;
+                var s = (FrameworkElement)sender;
+                s.Unloaded -= onUnloaded;
+                handler(s);
+            }
+
+            element.Unloaded += onUnloaded;
         }
 
         /// <summary>
@@ -380,12 +382,13 @@ namespace Caliburn.Light.WinUI
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnLayoutUpdated(FrameworkElement element, Action<FrameworkElement> handler)
         {
-            EventHandler<object> onLayoutUpdate = null;
-            onLayoutUpdate = delegate
+            void onLayoutUpdate(object sender, object _)
             {
-                element.LayoutUpdated -= onLayoutUpdate;
-                handler(element);
-            };
+                var s = (FrameworkElement)sender;
+                s.LayoutUpdated -= onLayoutUpdate;
+                handler(s);
+            }
+
             element.LayoutUpdated += onLayoutUpdate;
         }
 
@@ -397,14 +400,14 @@ namespace Caliburn.Light.WinUI
         /// </returns>
         public static bool IsElementLoaded(FrameworkElement element)
         {
-            if (element.Parent is object || VisualTreeHelper.GetParent(element) is object)
+            if (element.Parent is not null || VisualTreeHelper.GetParent(element) is not null)
             {
                 return true;
             }
             else
             {
                 var rootVisual = Window.Current.Content;
-                return rootVisual is object && ReferenceEquals(element, rootVisual);
+                return rootVisual is not null && ReferenceEquals(element, rootVisual);
             }
         }
 

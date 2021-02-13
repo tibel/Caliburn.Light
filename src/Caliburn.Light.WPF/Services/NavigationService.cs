@@ -35,7 +35,7 @@ namespace Caliburn.Light.WPF
 
             view.DataContext = viewModel;
 
-            if (viewModel is IHaveDisplayName haveDisplayName && !BindingOperations.IsDataBound(view, Page.TitleProperty))
+            if (viewModel is IHaveDisplayName && !BindingOperations.IsDataBound(view, Page.TitleProperty))
             {
                 var binding = new Binding(nameof(IHaveDisplayName.DisplayName)) { Mode = BindingMode.OneWay };
                 view.SetBinding(Page.TitleProperty, binding);
@@ -52,7 +52,7 @@ namespace Caliburn.Light.WPF
         /// <returns>The page.</returns>
         protected virtual Page EnsurePage(object viewModel, UIElement view)
         {
-            if (!(view is Page page))
+            if (view is not Page page)
             {
                 page = new Page
                 {

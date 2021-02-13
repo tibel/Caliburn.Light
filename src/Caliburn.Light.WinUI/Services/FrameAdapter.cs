@@ -41,10 +41,12 @@ namespace Caliburn.Light.WinUI
                 throw new ArgumentNullException(nameof(frame));
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
-            if (adapter is object) return;
+            if (adapter is not null) return;
 
-            adapter = new AdapterImpl(this, frame);
-            adapter.FrameState = new Dictionary<string, object>();
+            adapter = new AdapterImpl(this, frame)
+            {
+                FrameState = new Dictionary<string, object>()
+            };
 
             frame.SetValue(FrameAdapterProperty, adapter);
             View.SetViewModelLocator(frame, _viewModelLocator);
@@ -88,8 +90,7 @@ namespace Caliburn.Light.WinUI
 
             private void OnNavigating(object sender, NavigatingCancelEventArgs e)
             {
-                var page = _frame.Content as Page;
-                if (page is null) return;
+                if (_frame.Content is not Page page) return;
 
                 _parent.OnNavigatingFrom(page, e);
 
@@ -99,14 +100,14 @@ namespace Caliburn.Light.WinUI
 
             private void OnNavigated(object sender, NavigationEventArgs e)
             {
-                if (_previousPage is object)
+                if (_previousPage is not null)
                 {
                     var previousPage = _previousPage;
                     _previousPage = null;
-                    _parent.OnNavigatedFrom(previousPage, e, FrameState);
+                    _parent.OnNavigatedFrom(previousPage, FrameState);
                 }
 
-                if (!(_frame.Content is Page page)) return;
+                if (_frame.Content is not Page page) return;
 
                 _parent.OnNavigatedTo(page, e, FrameState);
             }
@@ -141,7 +142,7 @@ namespace Caliburn.Light.WinUI
             }
         }
 
-        private void OnNavigatedFrom(Page page, NavigationEventArgs e, IDictionary<string, object> frameState)
+        private void OnNavigatedFrom(Page page, IDictionary<string, object> frameState)
         {
             if (page.DataContext is INavigationAware navigationAware)
             {
@@ -230,7 +231,7 @@ namespace Caliburn.Light.WinUI
 
         private void SavePageState(Page page, IDictionary<string, object> frameState)
         {
-            if (!(page.DataContext is IPreserveState preserveState)) return;
+            if (page.DataContext is not IPreserveState preserveState) return;
 
             var pageKey = (string)page.GetValue(PageKeyProperty);
             var pageState = new Dictionary<string, object>();

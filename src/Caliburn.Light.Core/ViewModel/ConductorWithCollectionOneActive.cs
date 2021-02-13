@@ -134,7 +134,7 @@ namespace Caliburn.Light
                     var canClose = result.CanClose;
                     var closables = result.Closeables;
 
-                    if (!canClose && closables.Any())
+                    if (!canClose && closables.Count > 0)
                     {
                         if (closables.Contains(ActiveItem))
                         {
@@ -205,7 +205,7 @@ namespace Caliburn.Light
                 {
                     if (newItem is null)
                     {
-                        newItem = DetermineNextItemToActivate(_items, ActiveItem is object ? _items.IndexOf(ActiveItem) : 0);
+                        newItem = DetermineNextItemToActivate(_items, ActiveItem is not null ? _items.IndexOf(ActiveItem) : 0);
                     }
                     else
                     {

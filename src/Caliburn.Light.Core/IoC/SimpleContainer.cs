@@ -80,7 +80,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(implementation));
 
             object singleton = null;
-            GetOrCreateEntry(service, key).Add(c => singleton ?? (singleton = c.BuildInstance(implementation)));
+            GetOrCreateEntry(service, key).Add(c => (singleton ??= c.BuildInstance(implementation)));
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(handler));
 
             object singleton = null;
-            GetOrCreateEntry(typeof(TService), key).Add(c => singleton ?? (singleton = handler(c)));
+            GetOrCreateEntry(typeof(TService), key).Add(c => (singleton ??= handler(c)));
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace Caliburn.Light
                 throw new ArgumentNullException(nameof(service));
 
             var entry = _entries.Find(x => x.Service == service && x.Key == key) ?? _entries.Find(x => x.Service == service);
-            if (entry is object)
+            if (entry is not null)
             {
                 if (entry.Count != 1)
                     throw new InvalidOperationException(string.Format("Found multiple registrations for type '{0}' and key {1}.", service, key));
@@ -289,7 +289,7 @@ namespace Caliburn.Light
 
             if (serviceType.IsGenericType && EnumerableType.IsAssignableFrom(serviceType))
             {
-                if (key is object)
+                if (key is not null)
                     throw new InvalidOperationException(string.Format("Requesting type '{0}' with key {1} is not supported.", service, key));
 
                 var listType = service.GenericTypeArguments[0];

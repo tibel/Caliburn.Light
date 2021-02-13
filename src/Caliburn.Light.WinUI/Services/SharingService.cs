@@ -36,8 +36,7 @@ namespace Caliburn.Light.WinUI
             var view = GetCurrentView();
             if (view is null) return;
 
-            var supportSharing = view.DataContext as ISupportSharing;
-            if (supportSharing is null) return;
+            if (view.DataContext is not ISupportSharing supportSharing) return;
 
             supportSharing.OnShareRequested(args.Request);
         }
@@ -50,8 +49,7 @@ namespace Caliburn.Light.WinUI
         {
             var content = Window.Current.Content;
 
-            var frame = content as Frame;
-            if (frame is object)
+            if (content is Frame frame)
                 return frame.Content as FrameworkElement;
 
             return content as FrameworkElement;

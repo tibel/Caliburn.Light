@@ -6,7 +6,7 @@
     public interface INavigationAware
     {
         /// <summary>
-        /// Called when a page becomes the active page in a frame. 
+        /// Called when a page becomes the active page in a frame.
         /// </summary>
         /// <param name="parameter">An object passed to the target page for the navigation.</param>
         void OnNavigatedTo(object parameter);

@@ -39,7 +39,7 @@ namespace Caliburn.Light.WPF
         public object Resolve(CommandExecutionContext context)
         {
             var sourceOverride = SourceOverride;
-            if (sourceOverride is object)
+            if (sourceOverride is not null)
                 context.Source = sourceOverride;
 
             return context;
