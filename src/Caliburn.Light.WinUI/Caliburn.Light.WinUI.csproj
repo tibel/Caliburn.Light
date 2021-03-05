@@ -1,18 +1,15 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>uap10.0.16299</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.18362.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
     <Title>Caliburn.Light.WinUI</Title>
     <Description>The WinUI aware parts of Caliburn.Light</Description>
-
-    <!-- WORKAROUND to get UAP compiling without errors and warnings -->
-    <ExtrasUwpMetaPackageVersion>6.2.12</ExtrasUwpMetaPackageVersion>
-    <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Caliburn.Light.WinUI.rd.xml" />
+    <PackageReference Include="Microsoft.WinUI" Version="3.0.0-preview4.210210.4" />
   </ItemGroup>
 
   <ItemGroup>

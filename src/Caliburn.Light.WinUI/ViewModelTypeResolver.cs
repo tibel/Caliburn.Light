@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Caliburn.Light.WinUI
 {
