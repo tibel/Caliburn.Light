@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caliburn.Light.WinUI", "src\Caliburn.Light.WinUI\Caliburn.Light.WinUI.csproj", "{83CB8852-880D-4334-845A-6CFCBCE86071}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{4B95C303-BF52-4280-9F23-DDBA29E43D07}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Directory.Build.props = samples\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.ExceptionHandling", "samples\Demo.ExceptionHandling\Demo.ExceptionHandling.csproj", "{353E559E-E35C-415B-ADFE-935FCDAAA06C}"
 EndProject
@@ -36,7 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B485A3EA-7A6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caliburn.Light", "src\Caliburn.Light\Caliburn.Light.csproj", "{1000247D-5951-4E06-83C3-54E3BDFA473E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.HelloSpecialValues", "samples\Demo.HelloSpecialValues\Demo.HelloSpecialValues.csproj", "{7864219B-0B4B-4E9C-BC36-D749EE82E214}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.HelloSpecialValues", "samples\Demo.HelloSpecialValues\Demo.HelloSpecialValues.csproj", "{7864219B-0B4B-4E9C-BC36-D749EE82E214}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
