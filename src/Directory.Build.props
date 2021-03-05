@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>4.1.0</VersionPrefix>
+    <VersionPrefix>5.0.0</VersionPrefix>
+    <VersionSuffix>alpha.1</VersionSuffix>
 
     <LangVersion>9.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -9,13 +10,23 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Product>Caliburn.Light</Product>
     <Authors>Thomas Ibel</Authors>
-    <Copyright>Copyright © Thomas Ibel 2014-2020</Copyright>
+    <Copyright>Copyright © Thomas Ibel 2014-2021</Copyright>
     <PackageProjectUrl>https://github.com/tibel/Caliburn.Light</PackageProjectUrl>
     <Company>https://github.com/tibel</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/tibel/Caliburn.Light.git</RepositoryUrl>
+    <PackageTags>Caliburn MVVM WPF Win10 UAP Screen EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
+    <PackageReleaseNotes>- replace IUIContext with IDispatcher
+- replace ThreadOption in IEventAggregator with IDispatcher
+- remove IParent, IConductActiveItem and IScreen
+- remove dialogResult from TryClose()
+- change IClose to be async
+- remove coroutines
+- add ownerViewModel to IWindowManager functions
+- reduce generic types for rule validation
+- WinUI 3.0</PackageReleaseNotes>
   </PropertyGroup>
   
   <ItemGroup>
