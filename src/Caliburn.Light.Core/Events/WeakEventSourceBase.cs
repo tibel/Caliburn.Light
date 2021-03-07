@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Caliburn.Light
 {
     /// <summary>
-    /// A weak event source that does not hold any strong reference to the event listeners.
+    /// A weak event source that does not hold any strong reference to the event handlers.
     /// </summary>
-    /// <typeparam name="TEventHandler">Event delegate type.</typeparam>
+    /// <typeparam name="TEventHandler">The event handler type.</typeparam>
     public abstract class WeakEventSourceBase<TEventHandler>
         where TEventHandler : Delegate
     {
@@ -48,7 +48,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets the handlers to raise the event.
         /// </summary>
-        /// <returns>The a</returns>
+        /// <returns>The list of active event handlers.</returns>
         protected IReadOnlyList<TEventHandler> GetHandlers()
         {
             lock (_lockObject)
