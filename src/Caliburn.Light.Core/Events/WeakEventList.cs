@@ -92,7 +92,7 @@ namespace Caliburn.Light
 
         public bool Purge()
         {
-            return _list.RemoveAll(l => l.Target is null) > 0;
+            return _list.RemoveAll(l => l.IsDead) > 0;
         }
 
         public IReadOnlyList<TDelegate> GetHandlers<TDelegate>()
@@ -108,16 +108,13 @@ namespace Caliburn.Light
             {
                 var entry = _list[i];
 
-                if (entry.Target is null)
-                    continue;
-
-                if (entry.Handler is TDelegate handler)
+                if (!entry.IsDead && entry.Handler is TDelegate handler)
                     handlers.Add(handler);
             }
 
             if (_list.Count != handlers.Count)
             {
-                _list.RemoveAll(l => l.Target is null);
+                _list.RemoveAll(l => l.IsDead);
             }
 
             return handlers;
@@ -136,17 +133,17 @@ namespace Caliburn.Light
 
             public bool Matches(object target, Delegate handler)
             {
-                return ReferenceEquals(target, Target) && Equals(handler, Handler);
+                return ReferenceEquals(target, _target.Target) && Equals(handler, _handler.Target);
             }
 
-            public object Target
+            public bool IsDead
             {
-                get { return _target.Target; }
+                get { return !_target.IsAlive; }
             }
 
-            public Delegate Handler
+            public object Handler
             {
-                get { return (Delegate)_handler.Target; }
+                get { return _handler.Target; }
             }
         }
     }
