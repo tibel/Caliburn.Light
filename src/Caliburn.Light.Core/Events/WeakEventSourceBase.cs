@@ -10,7 +10,9 @@ namespace Caliburn.Light
     public abstract class WeakEventSourceBase<TEventHandler>
         where TEventHandler : Delegate
     {
-        private readonly WeakEventList _list = new WeakEventList();
+        private readonly object _lockObject = new object();
+
+        private WeakEventList _list;
 
         /// <summary>
         /// Adds the specified event handler.
@@ -19,8 +21,12 @@ namespace Caliburn.Light
         public void Add(TEventHandler eventHandler)
         {
             if (eventHandler is null) return;
-            lock (_list)
+
+            lock (_lockObject)
             {
+                if (_list is null)
+                    _list = new WeakEventList();
+
                 _list.AddHandler(eventHandler);
             }
         }
@@ -32,9 +38,10 @@ namespace Caliburn.Light
         public void Remove(TEventHandler eventHandler)
         {
             if (eventHandler is null) return;
-            lock (_list)
+
+            lock (_lockObject)
             {
-                _list.RemoveHandler(eventHandler);
+                _list?.RemoveHandler(eventHandler);
             }
         }
 
@@ -44,9 +51,11 @@ namespace Caliburn.Light
         /// <returns>The a</returns>
         protected IReadOnlyList<TEventHandler> GetHandlers()
         {
-            lock (_list)
+            lock (_lockObject)
             {
-                return _list.GetHandlers<TEventHandler>();
+                return _list is null
+                    ? Array.Empty<TEventHandler>()
+                    : _list.GetHandlers<TEventHandler>();
             }
         }
     }

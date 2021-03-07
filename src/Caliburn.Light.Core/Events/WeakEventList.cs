@@ -7,7 +7,7 @@ namespace Caliburn.Light
     internal sealed class WeakEventList
     {
         private readonly object _staticTarget = new object();
-        private readonly List<WeakEventListener> _list = new List<WeakEventListener>();
+        private readonly List<WeakEventListEntry> _list = new List<WeakEventListEntry>();
         private readonly ConditionalWeakTable<object, object> _cwt = new ConditionalWeakTable<object, object>();
 
         public void AddHandler(Delegate handler)
@@ -19,7 +19,7 @@ namespace Caliburn.Light
                 target = _staticTarget;
 
             // add a record to the main list
-            _list.Add(new WeakEventListener(target, handler));
+            _list.Add(new WeakEventListEntry(target, handler));
 
             // add the handler to the CWT - this keeps the handler alive throughout
             // the lifetime of the target, without prolonging the lifetime of
@@ -121,6 +121,33 @@ namespace Caliburn.Light
             }
 
             return handlers;
+        }
+
+        private readonly struct WeakEventListEntry
+        {
+            private readonly WeakReference _target;
+            private readonly WeakReference _handler;
+
+            public WeakEventListEntry(object target, Delegate handler)
+            {
+                _target = new WeakReference(target);
+                _handler = new WeakReference(handler);
+            }
+
+            public bool Matches(object target, Delegate handler)
+            {
+                return ReferenceEquals(target, Target) && Equals(handler, Handler);
+            }
+
+            public object Target
+            {
+                get { return _target.Target; }
+            }
+
+            public Delegate Handler
+            {
+                get { return (Delegate)_handler.Target; }
+            }
         }
     }
 }
