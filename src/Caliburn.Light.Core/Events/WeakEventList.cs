@@ -95,9 +95,32 @@ namespace Caliburn.Light
             return _list.RemoveAll(l => l.Target is null) > 0;
         }
 
-        public List<WeakEventListener> GetCopy()
+        public IReadOnlyList<TDelegate> GetHandlers<TDelegate>()
+            where TDelegate : Delegate
         {
-            return new List<WeakEventListener>(_list);
+            // optimize for no handlers case
+            if (_list.Count == 0)
+                return Array.Empty<TDelegate>();
+
+            var handlers = new List<TDelegate>(_list.Count);
+
+            for (var i = 0; i < _list.Count; i++)
+            {
+                var entry = _list[i];
+
+                if (entry.Target is null)
+                    continue;
+
+                if (entry.Handler is TDelegate handler)
+                    handlers.Add(handler);
+            }
+
+            if (_list.Count != handlers.Count)
+            {
+                _list.RemoveAll(l => l.Target is null);
+            }
+
+            return handlers;
         }
     }
 }
