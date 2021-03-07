@@ -7,7 +7,7 @@ namespace Caliburn.Light
     internal sealed class WeakEventList
     {
         private readonly object _staticTarget = new object();
-        private readonly List<WeakEventListener> _list = new List<WeakEventListener>();
+        private readonly List<WeakEventListEntry> _list = new List<WeakEventListEntry>();
         private readonly ConditionalWeakTable<object, object> _cwt = new ConditionalWeakTable<object, object>();
 
         public void AddHandler(Delegate handler)
@@ -19,7 +19,7 @@ namespace Caliburn.Light
                 target = _staticTarget;
 
             // add a record to the main list
-            _list.Add(new WeakEventListener(target, handler));
+            _list.Add(new WeakEventListEntry(target, handler));
 
             // add the handler to the CWT - this keeps the handler alive throughout
             // the lifetime of the target, without prolonging the lifetime of
@@ -92,12 +92,59 @@ namespace Caliburn.Light
 
         public bool Purge()
         {
-            return _list.RemoveAll(l => l.Target is null) > 0;
+            return _list.RemoveAll(l => l.IsDead) > 0;
         }
 
-        public List<WeakEventListener> GetCopy()
+        public IReadOnlyList<TDelegate> GetHandlers<TDelegate>()
+            where TDelegate : Delegate
         {
-            return new List<WeakEventListener>(_list);
+            // optimize for no handlers case
+            if (_list.Count == 0)
+                return Array.Empty<TDelegate>();
+
+            var handlers = new List<TDelegate>(_list.Count);
+
+            for (var i = 0; i < _list.Count; i++)
+            {
+                var entry = _list[i];
+
+                if (!entry.IsDead && entry.Handler is TDelegate handler)
+                    handlers.Add(handler);
+            }
+
+            if (_list.Count != handlers.Count)
+            {
+                _list.RemoveAll(l => l.IsDead);
+            }
+
+            return handlers;
+        }
+
+        private readonly struct WeakEventListEntry
+        {
+            private readonly WeakReference _target;
+            private readonly WeakReference _handler;
+
+            public WeakEventListEntry(object target, Delegate handler)
+            {
+                _target = new WeakReference(target);
+                _handler = new WeakReference(handler);
+            }
+
+            public bool Matches(object target, Delegate handler)
+            {
+                return ReferenceEquals(target, _target.Target) && Equals(handler, _handler.Target);
+            }
+
+            public bool IsDead
+            {
+                get { return !_target.IsAlive; }
+            }
+
+            public object Handler
+            {
+                get { return _handler.Target; }
+            }
         }
     }
 }
