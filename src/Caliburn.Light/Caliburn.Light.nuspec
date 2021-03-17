@@ -14,7 +14,7 @@
     <repository type="git" url="https://github.com/tibel/Caliburn.Light.git" />
     <releaseNotes>Caliburn.Light meta package</releaseNotes>
     <copyright>Copyright Thomas Ibel 2014-2021</copyright>
-    <tags>Caliburn MVVM WPF Win10 UAP Screen EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
+    <tags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</tags>
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="Caliburn.Light.Core" version="$version$" />
