@@ -17,7 +17,7 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/tibel/Caliburn.Light.git</RepositoryUrl>
-    <PackageTags>Caliburn MVVM WPF Win10 UAP Screen EventAggregator Behavior Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
+    <PackageTags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
     <PackageReleaseNotes>- replace IUIContext with IDispatcher
 - replace ThreadOption in IEventAggregator with IDispatcher
 - remove IParent, IConductActiveItem and IScreen
@@ -26,7 +26,7 @@
 - remove coroutines
 - add ownerViewModel to IWindowManager functions
 - reduce generic types for rule validation
-- WinUI 3.0</PackageReleaseNotes>
+- WinUI 3.0 (prerelease)</PackageReleaseNotes>
   </PropertyGroup>
   
   <ItemGroup>
