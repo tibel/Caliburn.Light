@@ -15,8 +15,6 @@
     <Company>https://github.com/tibel</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/tibel/Caliburn.Light.git</RepositoryUrl>
     <PackageTags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
     <PackageReleaseNotes>- replace IUIContext with IDispatcher
 - replace ThreadOption in IEventAggregator with IDispatcher
@@ -26,9 +24,15 @@
 - remove coroutines
 - add ownerViewModel to IWindowManager functions
 - reduce generic types for rule validation
-- WinUI 3.0 (prerelease)</PackageReleaseNotes>
+- WinUI 3.0</PackageReleaseNotes>
   </PropertyGroup>
-  
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LICENSE">
       <Pack>True</Pack>
@@ -43,9 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
   </ItemGroup>
 </Project>
