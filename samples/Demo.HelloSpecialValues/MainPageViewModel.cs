@@ -30,7 +30,7 @@ namespace Demo.HelloSpecialValues
         private async Task CharacterSelected(CharacterViewModel character)
         {
             var dialog = new MessageDialog(string.Format("{0} selected.", character.Name), "Character Selected");
-            await dialog.ShowAsync();
+            await dialog.ShowAsyncEx();
         }
 
         public IReadOnlyBindableCollection<CharacterViewModel> Characters { get; }
