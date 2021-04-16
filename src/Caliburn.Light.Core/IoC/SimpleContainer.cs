@@ -11,8 +11,8 @@ namespace Caliburn.Light
     /// </summary>
     public class SimpleContainer : IServiceProvider
     {
-        private static readonly TypeInfo DelegateType = typeof(Delegate).GetTypeInfo();
-        private static readonly TypeInfo EnumerableType = typeof(IEnumerable).GetTypeInfo();
+        private static readonly Type DelegateType = typeof(Delegate);
+        private static readonly Type EnumerableType = typeof(IEnumerable);
 
         private readonly List<ContainerEntry> _entries;
 
@@ -276,9 +276,7 @@ namespace Caliburn.Light
                 return entry[0](this);
             }
 
-            var serviceType = service.GetTypeInfo();
-
-            if (serviceType.IsGenericType && DelegateType.IsAssignableFrom(serviceType))
+            if (service.IsGenericType && DelegateType.IsAssignableFrom(service))
             {
                 var typeToCreate = service.GenericTypeArguments[0];
                 var factoryFactoryType = typeof(FactoryFactory<>).MakeGenericType(typeToCreate);
@@ -287,7 +285,7 @@ namespace Caliburn.Light
                 return factoryFactoryMethod.Invoke(factoryFactoryHost, new object[] { this, key });
             }
 
-            if (serviceType.IsGenericType && EnumerableType.IsAssignableFrom(serviceType))
+            if (service.IsGenericType && EnumerableType.IsAssignableFrom(service))
             {
                 if (key is not null)
                     throw new InvalidOperationException(string.Format("Requesting type '{0}' with key {1} is not supported.", service, key));
@@ -304,7 +302,7 @@ namespace Caliburn.Light
                 return array;
             }
 
-            return (serviceType.IsValueType) ? Activator.CreateInstance(service) : null;
+            return (service.IsValueType) ? Activator.CreateInstance(service) : null;
         }
 
         /// <summary>
@@ -361,7 +359,7 @@ namespace Caliburn.Light
         /// <returns>The build instance.</returns>
         protected object BuildInstance(Type type)
         {
-            var constructor = type.GetTypeInfo().DeclaredConstructors
+            var constructor = type.GetConstructors()
                 .OrderByDescending(c => c.GetParameters().Length)
                 .FirstOrDefault(c => c.IsPublic);
 
