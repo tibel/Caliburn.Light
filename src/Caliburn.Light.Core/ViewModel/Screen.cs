@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light
@@ -71,7 +72,7 @@ namespace Caliburn.Light
             }
 
             IsActive = true;
-            Log.Info("Activating {0}.", this);
+            Trace.TraceInformation("Activating {0}.", this);
             await OnActivateAsync();
 
             OnActivated(initialized);
@@ -100,7 +101,7 @@ namespace Caliburn.Light
                 OnDeactivating(close);
 
                 IsActive = false;
-                Log.Info("Deactivating {0} (close={1}).", this, close);
+                Trace.TraceInformation("Deactivating {0} (close={1}).", this, close);
                 await OnDeactivateAsync(close);
 
                 OnDeactivated(close);
@@ -142,7 +143,7 @@ namespace Caliburn.Light
                     return;
             }
 
-            Log.Info("TryClose requires an IChild.Parent of IConductor or a top-level view.");
+            Trace.TraceInformation("TryClose {0} requires an IChild.Parent of IConductor or a top-level view.", this);
         }
     }
 }

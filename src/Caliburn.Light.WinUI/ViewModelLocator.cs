@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -11,7 +12,6 @@ namespace Caliburn.Light.WinUI
     {
         private readonly IViewModelTypeResolver _typeResolver;
         private readonly IServiceProvider _serviceProvider;
-        private ILogger _logger;
 
         /// <summary>
         /// Creates an instance of <see cref="ViewModelLocator"/>.
@@ -29,8 +29,6 @@ namespace Caliburn.Light.WinUI
             _serviceProvider = serviceProvider;
         }
 
-        private ILogger Log => _logger ??= LogManager.GetLogger(GetType());
-
         /// <summary>
         /// Locates the view for the specified model instance.
         /// </summary>
@@ -45,7 +43,7 @@ namespace Caliburn.Light.WinUI
             var view = TryGetViewFromViewAware(model, context);
             if (view is not null)
             {
-                Log.Info("Using cached view for {0}.", model);
+                Trace.TraceInformation("Using cached view for {0}.", model);
                 return view;
             }
 
@@ -53,7 +51,7 @@ namespace Caliburn.Light.WinUI
             var viewType = _typeResolver.GetViewType(modelType, context);
             if (viewType is null)
             {
-                Log.Error("Cannot find view for {0}.", modelType);
+                Trace.TraceError("Cannot find view for {0}.", modelType);
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
@@ -90,7 +88,7 @@ namespace Caliburn.Light.WinUI
 
             if (view is FrameworkElement frameworkElement && frameworkElement.DataContext is not null)
             {
-                Log.Info("Using current data context for {0}.", view);
+                Trace.TraceInformation("Using current data context for {0}.", view);
                 return frameworkElement.DataContext;
             }
 
@@ -98,14 +96,14 @@ namespace Caliburn.Light.WinUI
             var modelType = _typeResolver.GetModelType(viewType);
             if (modelType is null)
             {
-                Log.Error("Cannot find model for {0}.", viewType);
+                Trace.TraceError("Cannot find model for {0}.", viewType);
                 return null;
             }
 
             var model = _serviceProvider.GetService(modelType);
             if (model is null)
             {
-                Log.Error("Cannot locate {0}.", modelType);
+                Trace.TraceError("Cannot locate {0}.", modelType);
                 return null;
             }
 

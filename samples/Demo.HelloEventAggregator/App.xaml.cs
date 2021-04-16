@@ -13,8 +13,6 @@ namespace Demo.HelloEventAggregator
 
         public App()
         {
-            LogManager.Initialize(new DebugLoggerFactory());
-
             _container = new SimpleContainer();
 
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Caliburn.Light
 {
@@ -11,9 +12,6 @@ namespace Caliburn.Light
         private const string DefaultContext = "__default__";
 
         private List<KeyValuePair<string, WeakReference>> _views;
-        private ILogger _logger;
-
-        internal ILogger Log => _logger ??= LogManager.GetLogger(GetType());
 
         private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ??= new List<KeyValuePair<string, WeakReference>>(1);
 
@@ -30,7 +28,7 @@ namespace Caliburn.Light
             if (context is null)
                 context = DefaultContext;
 
-            Log.Info("Attaching view {0} to {1}.", view, this);
+            Trace.TraceInformation("Attaching view {0} to {1}.", view, this);
 
             var views = EnsureViews();
             var index = views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
@@ -53,7 +51,7 @@ namespace Caliburn.Light
             if (context is null)
                 context = DefaultContext;
 
-            Log.Info("Detaching view {0} from {1}.", view, this);
+            Trace.TraceInformation("Detaching view {0} from {1}.", view, this);
             return _views?.RemoveAll(p => string.Equals(p.Key, context, StringComparison.Ordinal)) > 0;
         }
 

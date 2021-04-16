@@ -14,8 +14,6 @@ namespace Demo.WinFormsInterop
         {
             _elementHost = elementHost;
 
-            LogManager.Initialize(new DebugLoggerFactory());
-
             _container = new SimpleContainer();
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();

@@ -29,8 +29,6 @@ namespace Demo.HelloSpecialValues
 
         private void Configure()
         {
-            LogManager.Initialize(new DebugLoggerFactory());
-
             _container = new SimpleContainer();
 
             _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();

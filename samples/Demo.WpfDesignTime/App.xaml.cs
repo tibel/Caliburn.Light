@@ -13,8 +13,6 @@ namespace Demo.WpfDesignTime
 
         public App()
         {
-            LogManager.Initialize(new DebugLoggerFactory());
-
             _container = new SimpleContainer();
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
