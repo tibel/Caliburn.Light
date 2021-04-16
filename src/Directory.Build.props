@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <VersionPrefix>5.0.0</VersionPrefix>
-    <VersionSuffix>alpha.1</VersionSuffix>
+    <VersionSuffix>alpha.2</VersionSuffix>
 
     <LangVersion>9.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -24,7 +24,8 @@
 - remove coroutines
 - add ownerViewModel to IWindowManager functions
 - reduce generic types for rule validation
-- WinUI 3.0</PackageReleaseNotes>
+- WinUI 3.0
+- remove logging</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
