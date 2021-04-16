@@ -1,6 +1,9 @@
 ![Logo](logo.png)
 
 [![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light/)
+[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light.Core?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light.Core/)
+[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light.WPF?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light.WPF/)
+[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light.WinUI?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light.WinUI/)
 
 # Caliburn.Light
 
