@@ -3,15 +3,14 @@
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
     <Title>Caliburn.Light.WinUI</Title>
     <Description>The WinUI aware parts of Caliburn.Light</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ProjectReunion" Version="0.5.7" />
-    <PackageReference Include="Microsoft.ProjectReunion.Foundation" Version="0.5.7" />
-    <PackageReference Include="Microsoft.ProjectReunion.WinUI" Version="0.5.7" />
+    <PackageReference Include="Microsoft.ProjectReunion" Version="0.8.0" />
   </ItemGroup>
 
   <ItemGroup>
