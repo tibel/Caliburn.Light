@@ -29,6 +29,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <BaseOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/platform/$(MSBuildProjectName)'))</BaseOutputPath>
+    <PackageOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/platform'))</PackageOutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
