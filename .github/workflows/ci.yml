@@ -22,10 +22,10 @@ jobs:
       run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
+      run: msbuild Caliburn.Light.sln /p:Configuration=Release
 
     - name: Pack
-      run: msbuild Caliburn.Light.sln /t:Pack /p:Configuration=Release /p:VersionSuffix=ci.${{ github.run_number }}
+      run: msbuild Caliburn.Light.sln /t:Pack /p:Configuration=Release
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
