@@ -31,4 +31,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: NuGet packages
-        path: src/**/bin/**/*.nupkg
+        path: bin/platform/**/*.nupkg
