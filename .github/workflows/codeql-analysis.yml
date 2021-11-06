@@ -26,14 +26,13 @@ jobs:
       with:
         languages: csharp
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
-
-    - name: Restore dependencies
-      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:UseSharedCompilation=false
+      run: dotnet build Caliburn.Light.sln --configuration Release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
