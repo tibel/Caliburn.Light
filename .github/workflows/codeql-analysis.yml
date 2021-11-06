@@ -1,0 +1,39 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '36 9 * * 4'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: csharp
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Restore dependencies
+      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
+
+    - name: Build
+      run: msbuild Caliburn.Light.sln /p:Configuration=Release
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
