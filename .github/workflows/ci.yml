@@ -9,22 +9,17 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0.x'
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
     - name: Build
-      run: dotnet build Caliburn.Light.sln --configuration Release
-
-    - name: Pack
-      run: dotnet pack Caliburn.Light.sln --configuration Release --no-restore --no-build
+      run: msbuild Caliburn.Light.sln /restore /t:Pack /p:Configuration=Release
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2

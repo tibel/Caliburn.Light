@@ -11,7 +11,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: windows-latest
+    runs-on: windows-2022
     permissions:
       actions: read
       contents: read
@@ -26,13 +26,11 @@ jobs:
       with:
         languages: csharp
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0.x'
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
     - name: Build
-      run: dotnet build Caliburn.Light.sln --configuration Release
+      run: msbuild Caliburn.Light.sln /restore /p:Configuration=Release /p:UseSharedCompilation=false
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
