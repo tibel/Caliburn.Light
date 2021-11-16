@@ -30,7 +30,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Restore dependencies
-      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release
+      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release /p:UseSharedCompilation=false
 
     - name: Build
       run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:UseSharedCompilation=false
