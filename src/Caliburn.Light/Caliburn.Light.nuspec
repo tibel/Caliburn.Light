@@ -25,7 +25,7 @@
       <group targetFramework="netcoreapp3.1">
         <dependency id="Caliburn.Light.WPF" version="$version$" />
       </group>
-      <group targetFramework="net5.0-windows7.0">
+      <group targetFramework="net6.0-windows7.0">
         <dependency id="Caliburn.Light.WPF" version="$version$" />
       </group>
     </dependencies>

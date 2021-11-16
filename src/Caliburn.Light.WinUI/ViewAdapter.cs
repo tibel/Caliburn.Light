@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if !NET5_0
+#if !NET6_0
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]

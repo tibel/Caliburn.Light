@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-#if !NET5_0
+#if !NET6_0
     namespace System.Runtime.CompilerServices
     {
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
