@@ -29,11 +29,8 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
-    - name: Restore dependencies
-      run: msbuild Caliburn.Light.sln /t:Restore /p:Configuration=Release /p:UseSharedCompilation=false
-
     - name: Build
-      run: msbuild Caliburn.Light.sln /p:Configuration=Release /p:UseSharedCompilation=false
+      run: $CODEQL_RUNNER msbuild Caliburn.Light.sln /restore /p:Configuration=Release /p:UseSharedCompilation=false
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
