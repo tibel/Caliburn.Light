@@ -9,14 +9,8 @@
     <Description>The WinUI aware parts of Caliburn.Light</Description>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <NoWarn>$(NoWarn);NU5104</NoWarn>
-    <!-- Workaround for https://github.com/microsoft/WindowsAppSDK/issues/1217 -->
-    <_WindowsAppSDKFoundationPlatform>x86</_WindowsAppSDKFoundationPlatform>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0-preview3" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
