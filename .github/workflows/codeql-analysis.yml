@@ -30,7 +30,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Build
-      run: $CODEQL_RUNNER msbuild Caliburn.Light.sln /restore /p:Configuration=Release /p:UseSharedCompilation=false
+      run: msbuild Caliburn.Light.sln /restore /p:Configuration=Release /p:UseSharedCompilation=false
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
