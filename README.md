@@ -1,6 +1,6 @@
 ![Logo](logo.png)
 
-[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light.Core?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light.Core/)
+[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light/)
 
 # Caliburn.Light
 
