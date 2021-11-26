@@ -6,7 +6,7 @@
     <UseWinUI>true</UseWinUI>
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
     <Title>Caliburn.Light.WinUI</Title>
-    <Description>The WinUI aware parts of Caliburn.Light</Description>
+    <Description>The magic-free Caliburn.Light, a powerful framework designed for building WinUI applications.</Description>
     <NoWarn>CA2255;$(NoWarn)</NoWarn>
   </PropertyGroup>
 

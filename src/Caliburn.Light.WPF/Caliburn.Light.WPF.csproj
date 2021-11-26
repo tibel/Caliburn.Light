@@ -4,7 +4,7 @@
     <RootNamespace>Caliburn.Light.WPF</RootNamespace>
     <UseWPF>true</UseWPF>
     <Title>Caliburn.Light.WPF</Title>
-    <Description>The WPF aware parts of Caliburn.Light</Description>
+    <Description>The magic-free Caliburn.Light, a powerful framework designed for building WPF applications.</Description>
     <NoWarn>CA2255;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
