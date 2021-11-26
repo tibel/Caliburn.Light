@@ -1,6 +1,6 @@
 ![Logo](logo.png)
 
-[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light/)
+[![NuGet Badge](https://buildstats.info/nuget/Caliburn.Light.Core?includePreReleases=true)](https://www.nuget.org/packages/Caliburn.Light.Core/)
 
 # Caliburn.Light
 
@@ -16,7 +16,9 @@ Caliburn.Light is a fork of [Caliburn.Micro](https://caliburnmicro.com/) that
 ## Install
 Caliburn.Light is available through NuGet:
 
-PM> **Install-Package** [Caliburn.Light](https://www.nuget.org/packages/Caliburn.Light/)
+PM> **Install-Package** [Caliburn.Light.WPF](https://www.nuget.org/packages/Caliburn.Light.WPF/)
+
+PM> **Install-Package** [Caliburn.Light.WinUI](https://www.nuget.org/packages/Caliburn.Light.WinUI/)
 
 
 
