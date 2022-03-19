@@ -109,9 +109,9 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Raises <see cref="E:CanExecuteChanged"/> so every command invoker can re-query to check if the command can execute.
+        /// Raises <see cref="CanExecuteChanged"/> so every command invoker can re-query to check if the command can execute.
         /// </summary>
-        /// <remarks>Note that this will trigger the execution of <see cref="M:CanExecute"/> once for each invoker.</remarks>
+        /// <remarks>Note that this will trigger the execution of <see cref="CanExecute"/> once for each invoker.</remarks>
         public void RaiseCanExecuteChanged()
         {
             OnCanExecuteChanged();

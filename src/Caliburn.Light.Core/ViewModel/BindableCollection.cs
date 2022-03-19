@@ -54,7 +54,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Raises the <see cref="E:PropertyChanged" /> event.
+        /// Raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event.
         /// </summary>
         /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -64,7 +64,7 @@ namespace Caliburn.Light
         }
 
         /// <summary>
-        /// Raises the <see cref="E:CollectionChanged" /> event.
+        /// Raises the <see cref="INotifyCollectionChanged.CollectionChanged" /> event.
         /// </summary>
         /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
@@ -96,28 +96,28 @@ namespace Caliburn.Light
         /// <summary>
         /// Adds the elements of the specified collection to the end of the BindableCollection.
         /// </summary>
-        /// <param name="collection">The collection whose elements should be added to the end of the BindableCollection.</param>
-        public void AddRange(IEnumerable<T> collection)
+        /// <param name="items">The collection whose elements should be added to the end of the BindableCollection.</param>
+        public void AddRange(IEnumerable<T> items)
         {
-            if (collection is null)
-                throw new ArgumentNullException(nameof(collection));
+            if (items is null)
+                throw new ArgumentNullException(nameof(items));
 
             CheckReentrancy();
-            foreach (var item in collection) { Items.Add(item); }
+            foreach (var item in items) { Items.Add(item); }
             OnCollectionRefreshed();
         }
 
         /// <summary>
         /// Removes a range of elements from the BindableCollection.
         /// </summary>
-        /// <param name="collection">The collection whose elements should be removed from the BindableCollection.</param>
-        public void RemoveRange(IEnumerable<T> collection)
+        /// <param name="items">The collection whose elements should be removed from the BindableCollection.</param>
+        public void RemoveRange(IEnumerable<T> items)
         {
-            if (collection is null)
-                throw new ArgumentNullException(nameof(collection));
+            if (items is null)
+                throw new ArgumentNullException(nameof(items));
 
             CheckReentrancy();
-            foreach (var item in collection) { Items.Remove(item); }
+            foreach (var item in items) { Items.Remove(item); }
             OnCollectionRefreshed();
         }
     }

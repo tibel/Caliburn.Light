@@ -6,14 +6,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if !NET6_0
-namespace System.Runtime.CompilerServices
-{
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    internal sealed class ModuleInitializerAttribute : Attribute { }
-}
-#endif
-
 namespace Caliburn.Light.WinUI
 {
     internal sealed class ViewAdapter : IViewAdapter
