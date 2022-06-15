@@ -72,5 +72,7 @@ namespace Demo.HelloSpecialValues
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
+
+        public Window MainWindow => _window;
     }
 }

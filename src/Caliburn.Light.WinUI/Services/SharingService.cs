@@ -47,7 +47,7 @@ namespace Caliburn.Light.WinUI
         /// <returns>The current view</returns>
         protected virtual FrameworkElement GetCurrentView()
         {
-            var content = Window.Current.Content;
+            var content = Window.Current.Content; //TODO is null for unpackaged applications
 
             if (content is Frame frame)
                 return frame.Content as FrameworkElement;

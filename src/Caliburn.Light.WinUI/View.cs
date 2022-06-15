@@ -406,7 +406,7 @@ namespace Caliburn.Light.WinUI
             }
             else
             {
-                var rootVisual = Window.Current.Content;
+                var rootVisual = Window.Current.Content; //TODO is null for unpackaged applications
                 return rootVisual is not null && ReferenceEquals(element, rootVisual);
             }
         }
