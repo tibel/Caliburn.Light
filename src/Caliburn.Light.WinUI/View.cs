@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.ApplicationModel;
-using Windows.UI.Core;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -341,7 +341,7 @@ namespace Caliburn.Light.WinUI
         /// <returns>true if the handler was executed immediately; false otherwise</returns>
         public static bool ExecuteOnLoad(FrameworkElement element, Action<FrameworkElement> handler)
         {
-            if (IsElementLoaded(element))
+            if (element.IsLoaded)
             {
                 handler(element);
                 return true;
@@ -393,43 +393,24 @@ namespace Caliburn.Light.WinUI
         }
 
         /// <summary>
-        /// Determines whether the specified <paramref name="element"/> is loaded.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <returns>true if the element is loaded; otherwise, false.
-        /// </returns>
-        public static bool IsElementLoaded(FrameworkElement element)
-        {
-            if (element.Parent is not null || VisualTreeHelper.GetParent(element) is not null)
-            {
-                return true;
-            }
-            else
-            {
-                var rootVisual = Window.Current.Content; //TODO is null for unpackaged applications
-                return rootVisual is not null && ReferenceEquals(element, rootVisual);
-            }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="IDispatcher"/> from a <see cref="CoreDispatcher"/>.
+        /// Gets the <see cref="IDispatcher"/> from a <see cref="DispatcherQueue"/>.
         /// </summary>
         /// <param name="dispatcher">The UI dispatcher.</param>
         /// <returns>The dispatcher.</returns>
-        public static IDispatcher GetDispatcherFrom(CoreDispatcher dispatcher)
+        public static IDispatcher GetDispatcherFrom(DispatcherQueue dispatcher)
         {
             return new ViewDispatcher(dispatcher);
         }
 
         private sealed class ViewDispatcher : IDispatcher
         {
-            private readonly CoreDispatcher _dispatcher;
+            private readonly DispatcherQueue _dispatcher;
 
-            public ViewDispatcher(CoreDispatcher dispatcher) => _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+            public ViewDispatcher(DispatcherQueue dispatcher) => _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
             public bool CheckAccess() => _dispatcher.HasThreadAccess;
 
-            public void BeginInvoke(Action action) => _dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(action)).AsTask().Observe();
+            public void BeginInvoke(Action action) => _dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, new DispatcherQueueHandler(action));
 
             public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
 

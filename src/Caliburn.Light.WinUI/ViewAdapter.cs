@@ -96,7 +96,7 @@ namespace Caliburn.Light.WinUI
             if (view is not DependencyObject element)
                 return null;
 
-            return View.GetDispatcherFrom(element.Dispatcher);
+            return View.GetDispatcherFrom(element.DispatcherQueue);
         }
     }
 }
