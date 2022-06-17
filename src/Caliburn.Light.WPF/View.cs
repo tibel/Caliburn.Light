@@ -327,7 +327,7 @@ namespace Caliburn.Light.WPF
         /// <returns>true if the handler was executed immediately; false otherwise</returns>
         public static bool ExecuteOnLoad(FrameworkElement element, Action<FrameworkElement> handler)
         {
-            if (IsElementLoaded(element))
+            if (element.IsLoaded)
             {
                 handler(element);
                 return true;
@@ -376,17 +376,6 @@ namespace Caliburn.Light.WPF
             }
 
             element.LayoutUpdated += onLayoutUpdate;
-        }
-
-        /// <summary>
-        /// Determines whether the specified <paramref name="element"/> is loaded.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <returns>true if the element is loaded; otherwise, false.
-        /// </returns>
-        public static bool IsElementLoaded(FrameworkElement element)
-        {
-            return element.IsLoaded;
         }
 
         /// <summary>
