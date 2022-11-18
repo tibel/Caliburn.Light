@@ -16,16 +16,10 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
     <PackageTags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
-    <PackageReleaseNotes>- replace IUIContext with IDispatcher
-- replace ThreadOption in IEventAggregator with IDispatcher
-- remove IParent, IConductActiveItem and IScreen
-- remove dialogResult from TryClose()
-- change IClose to be async
-- remove coroutines
-- add ownerViewModel to IWindowManager functions
-- reduce generic types for rule validation
-- WinUI 3.0
-- remove logging</PackageReleaseNotes>
+    <PackageReleaseNotes>- remove .NET Core 3.1
+- [WinUI] update AppSDK 1.1.0
+- [WinUI] use DispachterQueue
+- [WinUI] remove sharing service</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
