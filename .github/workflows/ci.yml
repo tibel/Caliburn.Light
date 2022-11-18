@@ -9,11 +9,11 @@ on:
 jobs:
   build:
 
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -22,7 +22,7 @@ jobs:
       run: msbuild Caliburn.Light.sln /restore /t:Pack /p:Configuration=Release
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: NuGet packages
         path: bin/platform/**/*.nupkg
