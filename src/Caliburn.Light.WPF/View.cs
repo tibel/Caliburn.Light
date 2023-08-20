@@ -213,15 +213,15 @@ namespace Caliburn.Light.WPF
                 return;
             }
 
-            if (!parentElement.IsLoaded)
+            var viewModelLocator = GetCurrentViewModelLocator(parentElement);
+            if (viewModelLocator is null)
             {
+                if (parentElement.IsLoaded)
+                    throw new InvalidOperationException("Could not find 'IViewModelLocator' in control hierarchy.");
+
                 ExecuteOnLoad(parentElement, x => CreateView(x, x.DataContext, GetContext(x)));
                 return;
             }
-
-            var viewModelLocator = GetCurrentViewModelLocator(parentElement);
-            if (viewModelLocator is null)
-                throw new InvalidOperationException("Could not find 'IViewModelLocator' in control hierarchy.");
 
             var view = viewModelLocator.LocateForModel(model, context);
 
