@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>5.2.0</VersionPrefix>
+    <VersionPrefix>5.2.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <LangVersion>9.0</LangVersion>
@@ -10,16 +10,13 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Product>Caliburn.Light</Product>
     <Authors>Thomas Ibel</Authors>
-    <Copyright>Copyright © Thomas Ibel 2014-2021</Copyright>
+    <Copyright>Copyright © Thomas Ibel 2014-2023</Copyright>
     <PackageProjectUrl>https://github.com/tibel/Caliburn.Light</PackageProjectUrl>
     <Company>https://github.com/tibel</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
     <PackageTags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
-    <PackageReleaseNotes>- remove .NET Core 3.1
-- [WinUI] update AppSDK 1.2.1
-- [WinUI] use DispachterQueue
-- [WinUI] remove sharing service</PackageReleaseNotes>
+    <PackageReleaseNotes>- fix IViewModelLocator not found</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
