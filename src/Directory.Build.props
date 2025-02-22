@@ -3,7 +3,7 @@
     <VersionPrefix>5.2.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Caliburn.Light.snk</AssemblyOriginatorKeyFile>
