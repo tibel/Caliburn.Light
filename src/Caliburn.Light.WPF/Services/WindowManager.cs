@@ -310,7 +310,7 @@ namespace Caliburn.Light.WPF
         {
             object view = null;
 
-            while(viewModel is not null)
+            while (viewModel is not null)
             {
                 if (viewModel is IViewAware viewAware)
                     view = viewAware.GetView();

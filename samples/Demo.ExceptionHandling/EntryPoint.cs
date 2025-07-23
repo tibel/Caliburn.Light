@@ -12,7 +12,7 @@ namespace Demo.ExceptionHandling
             try
             {
                 AppDomain.CurrentDomain.UnhandledException += (sender, e) => Debug.WriteLine(">>> AppDomain - {0}", e.ExceptionObject);
-                TaskScheduler.UnobservedTaskException      += (sender, e) => Debug.WriteLine(">>> TaskScheduler - {0}", e.Exception);
+                TaskScheduler.UnobservedTaskException += (sender, e) => Debug.WriteLine(">>> TaskScheduler - {0}", e.Exception);
 
                 var app = new App();
                 //app.InitializeComponent();

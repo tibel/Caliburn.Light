@@ -17,7 +17,7 @@ namespace Demo.HelloSpecialValues
 
         public static IAsyncOperation<IUICommand> ShowAsyncEx(this MessageDialog dialog)
         {
-            var application = (App) Application.Current;
+            var application = (App)Application.Current;
             return ShowAsyncEx(dialog, application.MainWindow);
         }
     }

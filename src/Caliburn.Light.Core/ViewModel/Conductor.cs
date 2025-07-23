@@ -110,7 +110,7 @@ namespace Caliburn.Light
         /// <returns>The collection of children.</returns>
         public override IReadOnlyList<T> GetChildren()
         {
-            return ActiveItem is null ? Array.Empty<T>() : new[] {ActiveItem};
+            return ActiveItem is null ? Array.Empty<T>() : new[] { ActiveItem };
         }
     }
 }

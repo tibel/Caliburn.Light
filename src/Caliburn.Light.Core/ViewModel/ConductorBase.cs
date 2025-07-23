@@ -26,12 +26,12 @@ namespace Caliburn.Light
 
         Task IConductor.ActivateItemAsync(object item)
         {
-            return ActivateItemAsync((T) item);
+            return ActivateItemAsync((T)item);
         }
 
         Task IConductor.DeactivateItemAsync(object item, bool close)
         {
-            return DeactivateItemAsync((T) item, close);
+            return DeactivateItemAsync((T)item, close);
         }
 
         IEnumerable IConductor.GetChildren()

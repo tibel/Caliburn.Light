@@ -316,7 +316,7 @@ namespace Caliburn.Light
 
             var instances = _entries
                 .Where(x => x.Service == service)
-                .SelectMany(e => e.Select(x => (TService) x(this)))
+                .SelectMany(e => e.Select(x => (TService)x(this)))
                 .ToArray();
 
             return instances;

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Caliburn.Light {
+namespace Caliburn.Light
+{
     /// <summary>
     /// Extends <see cref="INotifyPropertyChanged"/> such that the change event can be suspended.
     /// </summary>

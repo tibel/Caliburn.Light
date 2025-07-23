@@ -11,7 +11,7 @@ namespace Caliburn.Light.WinUI
         /// Identifies the <seealso cref="ExecutionContextResolver.SourceOverride"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty SourceOverrideProperty = DependencyProperty.Register(
-            "SourceOverride", typeof (object), typeof (ExecutionContextResolver), new PropertyMetadata(null));
+            "SourceOverride", typeof(object), typeof(ExecutionContextResolver), new PropertyMetadata(null));
 
         /// <summary>
         /// Gets or sets the override for <see cref="CommandExecutionContext.Source"/>.
