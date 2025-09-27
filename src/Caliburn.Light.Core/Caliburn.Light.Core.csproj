@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Caliburn.Light</RootNamespace>
     <Title>Caliburn.Light.Core</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</Description>

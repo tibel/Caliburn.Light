@@ -3,7 +3,7 @@
     <VersionPrefix>5.3.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
-    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Caliburn.Light.snk</AssemblyOriginatorKeyFile>
@@ -22,11 +22,6 @@
   <PropertyGroup>
     <BaseOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/platform/$(MSBuildProjectName)'))</BaseOutputPath>
     <PackageOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/platform'))</PackageOutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Nullable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">enable</Nullable>
-    <Nullable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) != True">annotations</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
