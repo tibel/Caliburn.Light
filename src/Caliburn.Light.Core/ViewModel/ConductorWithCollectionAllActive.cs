@@ -126,11 +126,8 @@ namespace Caliburn.Light
                 protected override T EnsureItem(T newItem)
                 {
                     var index = _items.IndexOf(newItem);
-
                     if (index < 0)
                         _items.Add(newItem);
-                    else
-                        newItem = _items[index];
 
                     return base.EnsureItem(newItem);
                 }

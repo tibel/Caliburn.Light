@@ -16,7 +16,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        protected override bool CanExecuteCore(object parameter)
+        protected override bool CanExecuteCore(object? parameter)
         {
             return !IsExecuting;
         }
@@ -25,7 +25,7 @@ namespace Caliburn.Light
         /// Called when the command is invoked.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        public sealed override async void Execute(object parameter)
+        public sealed override async void Execute(object? parameter)
         {
             SetIsExecuting(true);
             try
@@ -44,7 +44,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Occurs when <see cref="ExecuteAsync(object)"/> is invoked and the operation has not completed synchronously.
         /// </summary>
-        public static event EventHandler<TaskEventArgs> Executing;
+        public static event EventHandler<TaskEventArgs>? Executing;
 
         private void SetIsExecuting(bool value)
         {
@@ -58,7 +58,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        protected abstract Task ExecuteAsync(object parameter);
+        protected abstract Task ExecuteAsync(object? parameter);
 
         /// <summary>
         /// Determines whether the command is currently executing.

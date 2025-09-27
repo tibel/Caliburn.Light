@@ -23,7 +23,12 @@
     <BaseOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/platform/$(MSBuildProjectName)'))</BaseOutputPath>
     <PackageOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/platform'))</PackageOutputPath>
   </PropertyGroup>
-  
+
+  <PropertyGroup>
+    <Nullable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">enable</Nullable>
+    <Nullable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) != True">annotations</Nullable>
+  </PropertyGroup>
+
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

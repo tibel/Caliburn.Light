@@ -12,25 +12,25 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view.</param>
         /// <param name="context">The context in which the view appears.</param>
-        void AttachView(object view, string context = null);
+        void AttachView(object view, string? context = null);
 
         /// <summary>
         /// Detaches a view from this instance.
         /// </summary>
         /// <param name="view">The view.</param>
         /// <param name="context">The context in which the view appears.</param>
-        bool DetachView(object view, string context = null);
+        bool DetachView(object view, string? context = null);
 
         /// <summary>
         /// Gets a view previously attached to this instance.
         /// </summary>
         /// <param name="context">The context denoting which view to retrieve.</param>
         /// <returns>The view.</returns>
-        object GetView(string context = null);
+        object? GetView(string? context = null);
 
         /// <summary>
         /// Raised when a view is attached.
         /// </summary>
-        event EventHandler<ViewAttachedEventArgs> ViewAttached;
+        event EventHandler<ViewAttachedEventArgs>? ViewAttached;
     }
 }

@@ -19,7 +19,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The weak handler.</param>
         /// <returns>A registration object that can be used to deregister from the event.</returns>
         public static IDisposable RegisterPropertyChangingWeak<TSubscriber>(this INotifyPropertyChanging source,
-            TSubscriber subscriber, Action<TSubscriber, object, PropertyChangingEventArgs> weakHandler)
+            TSubscriber subscriber, Action<TSubscriber, object?, PropertyChangingEventArgs> weakHandler)
             where TSubscriber : class
         {
             return new WeakNotifyPropertyChangingHandler<TSubscriber>(source, subscriber, weakHandler);
@@ -34,7 +34,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The weak handler.</param>
         /// <returns>A registration object that can be used to deregister from the event.</returns>
         public static IDisposable RegisterPropertyChangedWeak<TSubscriber>(this INotifyPropertyChanged source,
-            TSubscriber subscriber, Action<TSubscriber, object, PropertyChangedEventArgs> weakHandler)
+            TSubscriber subscriber, Action<TSubscriber, object?, PropertyChangedEventArgs> weakHandler)
             where TSubscriber : class
         {
             return new WeakNotifyPropertyChangedHandler<TSubscriber>(source, subscriber, weakHandler);
@@ -49,7 +49,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The weak handler.</param>
         /// <returns>A registration object that can be used to deregister from the event.</returns>
         public static IDisposable RegisterCollectionChangedWeak<TSubscriber>(this INotifyCollectionChanged source,
-            TSubscriber subscriber, Action<TSubscriber, object, NotifyCollectionChangedEventArgs> weakHandler)
+            TSubscriber subscriber, Action<TSubscriber, object?, NotifyCollectionChangedEventArgs> weakHandler)
             where TSubscriber : class
         {
             return new WeakNotifyCollectionChangedHandler<TSubscriber>(source, subscriber, weakHandler);
@@ -64,7 +64,7 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The weak handler.</param>
         /// <returns>A registration object that can be used to deregister from the event.</returns>
         public static IDisposable RegisterCanExecuteChangedWeak<TSubscriber>(this ICommand source,
-            TSubscriber subscriber, Action<TSubscriber, object, EventArgs> weakHandler)
+            TSubscriber subscriber, Action<TSubscriber, object?, EventArgs> weakHandler)
             where TSubscriber : class
         {
             return new WeakCanExecuteChangedHandler<TSubscriber>(source, subscriber, weakHandler);

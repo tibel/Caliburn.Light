@@ -73,7 +73,7 @@ namespace Caliburn.Light
     {
         private readonly WeakReference<TSource> _source;
         private readonly WeakReference<TSubscriber> _subscriber;
-        private readonly Action<TSubscriber, object, TEventArgs> _weakHandler;
+        private readonly Action<TSubscriber, object?, TEventArgs> _weakHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WeakEventHandlerBase&lt;TSubscriber, TEventArgs&gt;"/> class.
@@ -81,7 +81,7 @@ namespace Caliburn.Light
         /// <param name="source">The event source.</param>
         /// <param name="subscriber">The event subscriber.</param>
         /// <param name="weakHandler">The weak handler.</param>
-        protected WeakEventHandlerBase(TSource source, TSubscriber subscriber, Action<TSubscriber, object, TEventArgs> weakHandler)
+        protected WeakEventHandlerBase(TSource source, TSubscriber subscriber, Action<TSubscriber, object?, TEventArgs> weakHandler)
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
@@ -115,7 +115,7 @@ namespace Caliburn.Light
         /// <param name="sender">The sender.</param>
         /// <param name="args">The <typeparamref name="TEventArgs"/> instance containing the event data.</param>
         /// <remarks>Register this method on the source event.</remarks>
-        protected void OnEvent(object sender, TEventArgs args)
+        protected void OnEvent(object? sender, TEventArgs args)
         {
             if (_subscriber.TryGetTarget(out var subscriber))
             {

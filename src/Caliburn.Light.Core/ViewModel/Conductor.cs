@@ -15,16 +15,9 @@ namespace Caliburn.Light
         /// <param name="item">The item to activate.</param>
         public override async Task ActivateItemAsync(T item)
         {
-            if (item is null)
+            if (ReferenceEquals(ActiveItem, item))
             {
-                await DeactivateItemAsync(ActiveItem, true);
-                return;
-            }
-
-            var isActiveItem = ReferenceEquals(item, ActiveItem);
-            if (isActiveItem)
-            {
-                if (IsActive)
+                if (IsActive && item is not null)
                 {
                     if (item is IActivatable activeItem)
                         await activeItem.ActivateAsync();
@@ -32,6 +25,12 @@ namespace Caliburn.Light
                     OnActivationProcessed(item, true);
                 }
 
+                return;
+            }
+
+            if (ActiveItem is null)
+            {
+                await ChangeActiveItemAsync(item, true);
                 return;
             }
 
@@ -45,7 +44,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Deactivates the specified item.
         /// </summary>
-        /// <param name="item">The item to close.</param>
+        /// <param name="item">The item to deactivate.</param>
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
         public override async Task DeactivateItemAsync(T item, bool close)
         {
@@ -75,6 +74,10 @@ namespace Caliburn.Light
                 return true;
 
             var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
+
+            if (!result.CanClose && result.Closeables.Count > 0)
+                await ChangeActiveItemAsync(null, true);
+
             return result.CanClose;
         }
 

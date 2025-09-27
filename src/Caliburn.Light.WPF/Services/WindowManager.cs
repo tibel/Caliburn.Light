@@ -32,7 +32,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        public void ShowWindow(object viewModel, string context)
+        public void ShowWindow(object viewModel, string? context)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
@@ -88,7 +88,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
-        public void ShowPopup(object viewModel, string context)
+        public void ShowPopup(object viewModel, string? context)
         {
             if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
@@ -224,7 +224,7 @@ namespace Caliburn.Light.WPF
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
         /// <returns>The popup.</returns>
-        protected Popup CreatePopup(object viewModel, string context)
+        protected Popup CreatePopup(object viewModel, string? context)
         {
             var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
@@ -263,7 +263,7 @@ namespace Caliburn.Light.WPF
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
         /// <returns>The window.</returns>
-        protected Window CreateWindow(object viewModel, string context)
+        protected Window CreateWindow(object viewModel, string? context)
         {
             var view = EnsureWindow(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
             View.SetViewModelLocator(view, _viewModelLocator);
@@ -306,9 +306,9 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <returns>The window or null.</returns>
-        protected static Window GetWindow(object viewModel)
+        protected static Window? GetWindow(object? viewModel)
         {
-            object view = null;
+            object? view = null;
 
             while (viewModel is not null)
             {

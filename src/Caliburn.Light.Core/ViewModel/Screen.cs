@@ -33,17 +33,17 @@ namespace Caliburn.Light
         /// <summary>
         /// Raised after activation occurs.
         /// </summary>
-        public event EventHandler<ActivationEventArgs> Activated;
+        public event EventHandler<ActivationEventArgs>? Activated;
 
         /// <summary>
         /// Raised before deactivation.
         /// </summary>
-        public event EventHandler<DeactivationEventArgs> Deactivating;
+        public event EventHandler<DeactivationEventArgs>? Deactivating;
 
         /// <summary>
         /// Raised after deactivation.
         /// </summary>
-        public event EventHandler<DeactivationEventArgs> Deactivated;
+        public event EventHandler<DeactivationEventArgs>? Deactivated;
 
         private void OnActivated(bool wasInitialized)
         {
@@ -139,7 +139,8 @@ namespace Caliburn.Light
 
             foreach (var entry in Views)
             {
-                if (await ViewHelper.TryCloseAsync(entry.Value.Target))
+                var view = entry.Value.Target;
+                if (view is not null && await ViewHelper.TryCloseAsync(view))
                     return;
             }
 

@@ -9,7 +9,7 @@ namespace Demo.WinFormsInterop
     public sealed class MainViewModel : ViewAware
     {
         private readonly IWindowManager _windowManager;
-        private string _name;
+        private string? _name;
 
         public MainViewModel(IWindowManager windowManager)
         {
@@ -25,7 +25,7 @@ namespace Demo.WinFormsInterop
                 .Build();
         }
 
-        public string Name
+        public string? Name
         {
             get { return _name; }
             set { SetProperty(ref _name, value); }

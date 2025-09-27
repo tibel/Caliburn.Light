@@ -9,14 +9,14 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class ValidationAdapter
     {
-        private readonly Action<string> _onErrorsChanged;
+        private readonly Action<string>? _onErrorsChanged;
         private readonly Dictionary<string, IReadOnlyCollection<string>> _errors = new Dictionary<string, IReadOnlyCollection<string>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationAdapter"/> class.
         /// </summary>
         /// <param name="onErrorsChanged">Called when a property was validated.</param>
-        public ValidationAdapter(Action<string> onErrorsChanged = null)
+        public ValidationAdapter(Action<string>? onErrorsChanged = null)
         {
             _onErrorsChanged = onErrorsChanged;
         }
@@ -24,7 +24,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets or sets the used validator.
         /// </summary>
-        public IValidator Validator { get; set; }
+        public IValidator? Validator { get; set; }
 
         /// <summary>
         /// Validates property <paramref name="propertyName"/> of the specified instance.
@@ -76,6 +76,22 @@ namespace Caliburn.Light
             if (_errors.TryGetValue(propertyName, out var errors))
                 return errors;
             return Array.Empty<string>();
+        }
+
+        /// <summary>
+        /// Gets all validation errors.
+        /// </summary>
+        /// <returns>List of validation errors.</returns>
+        public IReadOnlyCollection<string> GetErrors()
+        {
+            if (_errors.Count == 0)
+                Array.Empty<string>();
+
+            var errors = new List<string>();
+            foreach (var entry in _errors)
+                errors.AddRange(entry.Value);
+
+            return errors;
         }
 
         /// <summary>

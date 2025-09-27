@@ -21,7 +21,7 @@ namespace Caliburn.Light
         /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
         /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <returns>The command builder.</returns>
-        public static DCB_wP<TParameter> WithParameter<TParameter>(Func<object, TParameter> coerceParameter = null) => new DCB_wP<TParameter>(coerceParameter);
+        public static DCB_wP<TParameter> WithParameter<TParameter>(Func<object?, TParameter?>? coerceParameter = null) => new DCB_wP<TParameter>(coerceParameter);
     }
 
     /// <summary>
@@ -50,9 +50,9 @@ namespace Caliburn.Light
     public sealed class DCB_nPs
     {
         private readonly Action _execute;
-        private Func<bool> _canExecute;
-        private INotifyPropertyChanged _target;
-        private string[] _propertyNames;
+        private Func<bool>? _canExecute;
+        private INotifyPropertyChanged? _target;
+        private string[]? _propertyNames;
 
         internal DCB_nPs(Action execute)
         {
@@ -102,7 +102,7 @@ namespace Caliburn.Light
         {
             return (_target is null) ?
                 new DelegateCommand(_execute, _canExecute) :
-                new DelegateCommand(_execute, _canExecute, _target, _propertyNames);
+                new DelegateCommand(_execute, _canExecute!, _target, _propertyNames!);
         }
     }
 
@@ -112,9 +112,9 @@ namespace Caliburn.Light
     public sealed class DCB_nPa
     {
         private readonly Func<Task> _execute;
-        private Func<bool> _canExecute;
-        private INotifyPropertyChanged _target;
-        private string[] _propertyNames;
+        private Func<bool>? _canExecute;
+        private INotifyPropertyChanged? _target;
+        private string[]? _propertyNames;
 
         internal DCB_nPa(Func<Task> execute)
         {
@@ -164,7 +164,7 @@ namespace Caliburn.Light
         {
             return (_target is null) ?
                 new AsyncDelegateCommand(_execute, _canExecute) :
-                new AsyncDelegateCommand(_execute, _canExecute, _target, _propertyNames);
+                new AsyncDelegateCommand(_execute, _canExecute!, _target, _propertyNames!);
         }
     }
 
@@ -174,9 +174,9 @@ namespace Caliburn.Light
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class DCB_wP<TParameter>
     {
-        private readonly Func<object, TParameter> _coerceParameter;
+        private readonly Func<object?, TParameter?> _coerceParameter;
 
-        internal DCB_wP(Func<object, TParameter> coerceParameter)
+        internal DCB_wP(Func<object?, TParameter?>? coerceParameter)
         {
             _coerceParameter = coerceParameter ?? CoerceParameter<TParameter>.Default;
         }
@@ -186,14 +186,14 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>The command builder.</returns>
-        public DCB_wPs<TParameter> OnExecute(Action<TParameter> execute) => new DCB_wPs<TParameter>(_coerceParameter, execute);
+        public DCB_wPs<TParameter> OnExecute(Action<TParameter?> execute) => new DCB_wPs<TParameter>(_coerceParameter, execute);
 
         /// <summary>
         /// Sets the command execute function.
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <returns>The command builder.</returns>
-        public DCB_wPa<TParameter> OnExecute(Func<TParameter, Task> execute) => new DCB_wPa<TParameter>(_coerceParameter, execute);
+        public DCB_wPa<TParameter> OnExecute(Func<TParameter?, Task> execute) => new DCB_wPa<TParameter>(_coerceParameter, execute);
     }
 
     /// <summary>
@@ -202,13 +202,13 @@ namespace Caliburn.Light
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class DCB_wPs<TParameter>
     {
-        private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Action<TParameter> _execute;
-        private Func<TParameter, bool> _canExecute;
-        private INotifyPropertyChanged _target;
-        private string[] _propertyNames;
+        private readonly Func<object?, TParameter?> _coerceParameter;
+        private readonly Action<TParameter?> _execute;
+        private Func<TParameter?, bool>? _canExecute;
+        private INotifyPropertyChanged? _target;
+        private string[]? _propertyNames;
 
-        internal DCB_wPs(Func<object, TParameter> coerceParameter, Action<TParameter> execute)
+        internal DCB_wPs(Func<object?, TParameter?> coerceParameter, Action<TParameter?> execute)
         {
             if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
@@ -222,7 +222,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>The command builder.</returns>
-        public DCB_wPs<TParameter> OnCanExecute(Func<TParameter, bool> canExecute)
+        public DCB_wPs<TParameter> OnCanExecute(Func<TParameter?, bool> canExecute)
         {
             if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
@@ -257,7 +257,7 @@ namespace Caliburn.Light
         {
             return (_target is null) ?
                 new DelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute) :
-                new DelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
+                new DelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute!, _target, _propertyNames!);
         }
     }
 
@@ -267,13 +267,13 @@ namespace Caliburn.Light
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class DCB_wPa<TParameter>
     {
-        private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Func<TParameter, Task> _execute;
-        private Func<TParameter, bool> _canExecute;
-        private INotifyPropertyChanged _target;
-        private string[] _propertyNames;
+        private readonly Func<object?, TParameter?> _coerceParameter;
+        private readonly Func<TParameter?, Task> _execute;
+        private Func<TParameter?, bool>? _canExecute;
+        private INotifyPropertyChanged? _target;
+        private string[]? _propertyNames;
 
-        internal DCB_wPa(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute)
+        internal DCB_wPa(Func<object?, TParameter?> coerceParameter, Func<TParameter?, Task> execute)
         {
             if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
@@ -287,7 +287,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="canExecute">The canExecute function.</param>
         /// <returns>The command builder.</returns>
-        public DCB_wPa<TParameter> OnCanExecute(Func<TParameter, bool> canExecute)
+        public DCB_wPa<TParameter> OnCanExecute(Func<TParameter?, bool> canExecute)
         {
             if (canExecute is null)
                 throw new ArgumentNullException(nameof(canExecute));
@@ -322,7 +322,7 @@ namespace Caliburn.Light
         {
             return (_target is null) ?
                 new AsyncDelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute) :
-                new AsyncDelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute, _target, _propertyNames);
+                new AsyncDelegateCommand<TParameter>(_coerceParameter, _execute, _canExecute!, _target, _propertyNames!);
         }
     }
 }

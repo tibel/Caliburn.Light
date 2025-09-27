@@ -63,7 +63,7 @@ namespace Caliburn.Light.WPF
             return lifecycle;
         }
 
-        private Page _previousPage;
+        private Page? _previousPage;
 
         private PageLifecycle()
         {

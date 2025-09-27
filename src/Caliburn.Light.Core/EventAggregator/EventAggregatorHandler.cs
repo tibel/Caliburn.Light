@@ -24,7 +24,7 @@ namespace Caliburn.Light
 
         public Task HandleAsync(object message)
         {
-            if (!_weakTarget.TryGetTarget(out TTarget target))
+            if (!_weakTarget.TryGetTarget(out var target))
                 return Task.CompletedTask;
 
             return _handler(target, (TMessage)message);

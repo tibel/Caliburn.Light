@@ -29,9 +29,10 @@ namespace Demo.Validation
             _validation = new ValidationAdapter(OnErrorsChanged);
             _validation.Validator = SetupValidator();
 
-            Name = "The Company";
-            Address = "Some Road";
-            Website = "http://thecompany.com";
+            _name = "The Company";
+            _address = "Some Road";
+            _contact = string.Empty;
+            _website = "http://thecompany.com";
 
             SaveCommand = DelegateCommandBuilder.NoParameter()
                 .OnExecute(() => Save())
@@ -82,17 +83,17 @@ namespace Demo.Validation
 
         private readonly ValidationAdapter _validation;
 
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
-        protected override bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        protected override bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)
         {
             var result = base.SetProperty(ref field, newValue, propertyName);
             if (result)
-                _validation.ValidateProperty(this, propertyName);
+                _validation.ValidateProperty(this, propertyName!);
             return result;
         }
 
-        public IEnumerable GetErrors(string propertyName) => _validation.GetPropertyErrors(propertyName);
+        public IEnumerable GetErrors(string? propertyName) => string.IsNullOrEmpty(propertyName) ? _validation.GetErrors() : _validation.GetPropertyErrors(propertyName);
 
         public bool HasErrors => _validation.HasErrors;
 

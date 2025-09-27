@@ -12,7 +12,7 @@ namespace Caliburn.Light
     {
         private readonly object _lockObject = new object();
 
-        private WeakEventList _list;
+        private WeakEventList? _list;
 
         /// <summary>
         /// Adds the specified event handler.

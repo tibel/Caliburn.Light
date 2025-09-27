@@ -13,12 +13,12 @@ namespace Caliburn.Light.WinUI
         /// <summary>
         /// The typed data context.
         /// </summary>
-        public T Entity { get; private set; }
+        public T? Entity { get; private set; }
 
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Initializes a new instance of <see cref="DataContextWrapper&lt;T&gt;"/>.
@@ -30,7 +30,7 @@ namespace Caliburn.Light.WinUI
             element.DataContextChanged += OnDataContextChanged;
         }
 
-        private static T CoerceValue(object value)
+        private static T? CoerceValue(object value)
         {
             return value is T typed ? typed : default;
         }

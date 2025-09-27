@@ -13,7 +13,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="view">The view.</param>
         /// <param name="context">The context in which the view appears.</param>
-        public PopupLifecycle(Popup view, string context)
+        public PopupLifecycle(Popup view, string? context)
         {
             View = view;
             Context = context;
@@ -35,9 +35,9 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Gets the context in which the view appears.
         /// </summary>
-        public string Context { get; }
+        public string? Context { get; }
 
-        private void OnViewOpened(object sender, EventArgs e)
+        private void OnViewOpened(object? sender, EventArgs e)
         {
             if (View.DataContext is IViewAware viewAware)
                 viewAware.AttachView(View, Context);
@@ -46,7 +46,7 @@ namespace Caliburn.Light.WPF
                 activatable.ActivateAsync().Observe();
         }
 
-        private void OnViewClosed(object sender, EventArgs e)
+        private void OnViewClosed(object? sender, EventArgs e)
         {
             if (View.DataContext is IActivatable activatable)
                 activatable.DeactivateAsync(true).Observe();

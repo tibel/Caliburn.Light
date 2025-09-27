@@ -29,9 +29,7 @@ namespace Caliburn.Light.WinUI
 
         public object GetFirstNonGeneratedView(object view)
         {
-            if (view is not DependencyObject dependencyObject)
-                return view;
-
+            var dependencyObject = (DependencyObject)view;
             if (!View.GetIsGenerated(dependencyObject))
                 return view;
 
@@ -76,16 +74,14 @@ namespace Caliburn.Light.WinUI
             return TaskHelper.FalseTask;
         }
 
-        public object GetCommandParameter(object view)
+        public object? GetCommandParameter(object view)
         {
-            if (view is not DependencyObject element)
-                return null;
-
-            var commandParameter = View.GetCommandParameter(element);
+            var dependencyObject = (DependencyObject)view;
+            var commandParameter = View.GetCommandParameter(dependencyObject);
             if (commandParameter is not null)
                 return commandParameter;
 
-            if (element is ButtonBase buttonBase)
+            if (view is ButtonBase buttonBase)
                 return buttonBase.CommandParameter;
 
             return null;
@@ -93,10 +89,8 @@ namespace Caliburn.Light.WinUI
 
         public IDispatcher GetDispatcher(object view)
         {
-            if (view is not DependencyObject element)
-                return null;
-
-            return View.GetDispatcherFrom(element.DispatcherQueue);
+            var dependencyObject = (DependencyObject)view;
+            return View.GetDispatcherFrom(dependencyObject.DispatcherQueue);
         }
     }
 }

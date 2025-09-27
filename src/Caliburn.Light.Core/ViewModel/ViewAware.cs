@@ -11,7 +11,7 @@ namespace Caliburn.Light
     {
         private const string DefaultContext = "__default__";
 
-        private List<KeyValuePair<string, WeakReference>> _views;
+        private List<KeyValuePair<string, WeakReference>>? _views;
 
         private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ??= new List<KeyValuePair<string, WeakReference>>(1);
 
@@ -20,7 +20,7 @@ namespace Caliburn.Light
         /// </summary>
         protected IReadOnlyList<KeyValuePair<string, WeakReference>> Views => EnsureViews();
 
-        void IViewAware.AttachView(object view, string context)
+        void IViewAware.AttachView(object view, string? context)
         {
             if (view is null)
                 throw new ArgumentNullException(nameof(view));
@@ -43,7 +43,7 @@ namespace Caliburn.Light
             OnViewAttached(nonGeneratedView, context);
         }
 
-        bool IViewAware.DetachView(object view, string context)
+        bool IViewAware.DetachView(object view, string? context)
         {
             if (view is null)
                 throw new ArgumentNullException(nameof(view));
@@ -58,7 +58,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Raised when a view is attached.
         /// </summary>
-        public event EventHandler<ViewAttachedEventArgs> ViewAttached;
+        public event EventHandler<ViewAttachedEventArgs>? ViewAttached;
 
         /// <summary>
         /// Called when a view is attached.
@@ -70,7 +70,7 @@ namespace Caliburn.Light
             ViewAttached?.Invoke(this, new ViewAttachedEventArgs(view, context));
         }
 
-        object IViewAware.GetView(string context)
+        object? IViewAware.GetView(string? context)
         {
             if (context is null)
                 context = DefaultContext;

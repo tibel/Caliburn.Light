@@ -38,7 +38,7 @@ namespace Caliburn.Light.WPF
             d.SetValue(ViewModelLocatorProperty, value);
         }
 
-        private static IViewModelLocator GetCurrentViewModelLocator(DependencyObject d)
+        private static IViewModelLocator? GetCurrentViewModelLocator(DependencyObject d)
         {
             var viewModelLocator = GetViewModelLocator(d);
 
@@ -247,7 +247,7 @@ namespace Caliburn.Light.WPF
             throw new NotSupportedException("Only ContentControl is supported.");
         }
 
-        private static void SetContent(DependencyObject targetLocation, object view)
+        private static void SetContent(DependencyObject targetLocation, object? view)
         {
             if (targetLocation is ContentControl contentControl)
                 contentControl.Content = view;
@@ -374,9 +374,9 @@ namespace Caliburn.Light.WPF
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnLayoutUpdated(FrameworkElement element, Action<FrameworkElement> handler)
         {
-            void onLayoutUpdate(object sender, EventArgs _)
+            void onLayoutUpdate(object? sender, EventArgs _)
             {
-                var s = (FrameworkElement)sender;
+                var s = (FrameworkElement)sender!;
                 s.LayoutUpdated -= onLayoutUpdate;
                 handler(s);
             }
@@ -404,7 +404,7 @@ namespace Caliburn.Light.WPF
 
             public void BeginInvoke(Action action) => _dispatcher.InvokeAsync(action);
 
-            public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
+            public override bool Equals(object? obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
 
             public override int GetHashCode() => _dispatcher.Thread.ManagedThreadId;
         }

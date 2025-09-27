@@ -12,23 +12,23 @@ namespace Caliburn.Light
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        SetParent(e.NewItems, parentViewModel);
+                        SetParent(e.NewItems!, parentViewModel);
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        SetParent(e.OldItems, null);
+                        SetParent(e.OldItems!, null);
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        SetParent(e.OldItems, null);
-                        SetParent(e.NewItems, parentViewModel);
+                        SetParent(e.OldItems!, null);
+                        SetParent(e.NewItems!, parentViewModel);
                         break;
                     case NotifyCollectionChangedAction.Reset:
-                        SetParent((IList)s, parentViewModel);
+                        SetParent((IList)s!, parentViewModel);
                         break;
                 }
             };
         }
 
-        private static void SetParent(IList items, object parent)
+        private static void SetParent(IList items, object? parent)
         {
             foreach (var x in items)
             {

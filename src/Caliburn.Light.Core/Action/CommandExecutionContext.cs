@@ -11,18 +11,18 @@ namespace Caliburn.Light
         private const string TargetKey = "target";
         private const string EventArgsKey = "eventargs";
 
-        private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
+        private readonly Dictionary<string, object?> _values = new Dictionary<string, object?>();
 
         /// <summary>
         /// Gets or sets additional data needed to invoke the command.
         /// </summary>
         /// <param name="key">The data key.</param>
         /// <returns>Custom data associated with the context.</returns>
-        public object this[string key]
+        public object? this[string key]
         {
             get
             {
-                _values.TryGetValue(key, out object result);
+                _values.TryGetValue(key, out var result);
                 return result;
             }
             set { _values[key] = value; }
@@ -31,7 +31,7 @@ namespace Caliburn.Light
         /// <summary>
         /// The source from which the command originates.
         /// </summary>
-        public object Source
+        public object? Source
         {
             get { return this[SourceKey]; }
             set { this[SourceKey] = value; }
@@ -40,7 +40,7 @@ namespace Caliburn.Light
         /// <summary>
         /// The instance on which the command is invoked.
         /// </summary>
-        public object Target
+        public object? Target
         {
             get { return this[TargetKey]; }
             set { this[TargetKey] = value; }
@@ -49,7 +49,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Any event arguments associated with the command invocation.
         /// </summary>
-        public object EventArgs
+        public object? EventArgs
         {
             get { return this[EventArgsKey]; }
             set { this[EventArgsKey] = value; }

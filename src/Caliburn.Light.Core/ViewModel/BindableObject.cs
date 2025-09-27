@@ -15,12 +15,12 @@ namespace Caliburn.Light
         /// <summary>
         /// Occurs when a property value is changing.
         /// </summary>
-        public event PropertyChangingEventHandler PropertyChanging;
+        public event PropertyChangingEventHandler? PropertyChanging;
 
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Suspends the notifications.
@@ -59,7 +59,7 @@ namespace Caliburn.Light
         /// Raises the PropertyChanging event if needed.
         /// </summary>
         /// <param name="propertyName">The name of the property that is changing.</param>
-        protected void RaisePropertyChanging([CallerMemberName] string propertyName = null)
+        protected void RaisePropertyChanging([CallerMemberName] string? propertyName = null)
         {
             if (AreNotificationsSuspended()) return;
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
@@ -69,7 +69,7 @@ namespace Caliburn.Light
         /// Raises the PropertyChanged event if needed.
         /// </summary>
         /// <param name="propertyName">The name of the property that changed.</param>
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             if (AreNotificationsSuspended()) return;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -84,7 +84,7 @@ namespace Caliburn.Light
         /// <param name="propertyName">The name of the property that changed.</param>
         /// <returns>True if the PropertyChanged event has been raised, false otherwise.
         /// The event is not raised if the old value is equal to the new value.</returns>
-        protected virtual bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        protected virtual bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, newValue))
                 return false;

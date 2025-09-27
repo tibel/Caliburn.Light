@@ -93,7 +93,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view.</param>
         /// <returns>The command parameter.</returns>
-        public static object GetCommandParameter(object view)
+        public static object? GetCommandParameter(object view)
         {
             return ResolveViewAdapter(view).GetCommandParameter(view);
         }

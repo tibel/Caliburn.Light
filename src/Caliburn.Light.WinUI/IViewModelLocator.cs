@@ -13,13 +13,13 @@ namespace Caliburn.Light.WinUI
         /// <param name="model">The model instance.</param>
         /// <param name="context">The context (or null).</param>
         /// <returns>The view.</returns>
-        UIElement LocateForModel(object model, string context);
+        UIElement LocateForModel(object model, string? context);
 
         /// <summary>
         /// Locates the view model for the specified view instance.
         /// </summary>
         /// <param name="view">The view instance.</param>
         /// <returns>The view model.</returns>
-        object LocateForView(UIElement view);
+        object? LocateForView(UIElement view);
     }
 }

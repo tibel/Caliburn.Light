@@ -8,6 +8,6 @@
         /// <summary>
         /// Gets the Display Name
         /// </summary>
-        string DisplayName { get; }
+        string? DisplayName { get; }
     }
 }

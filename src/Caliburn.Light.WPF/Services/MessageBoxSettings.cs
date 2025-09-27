@@ -10,12 +10,12 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Gets or sets the text.
         /// </summary>
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the caption text.
         /// </summary>
-        public string Caption { get; set; }
+        public string Caption { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the buttons.

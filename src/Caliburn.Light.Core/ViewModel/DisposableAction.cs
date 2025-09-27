@@ -7,7 +7,7 @@ namespace Caliburn.Light
     /// </summary>
     public sealed class DisposableAction : IDisposable
     {
-        private Action _action;
+        private Action? _action;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DisposableAction"/> class.

@@ -27,16 +27,16 @@ namespace Caliburn.Light
         /// <summary>
         /// Raised after activation occurs.
         /// </summary>
-        event EventHandler<ActivationEventArgs> Activated;
+        event EventHandler<ActivationEventArgs>? Activated;
 
         /// <summary>
         /// Raised before deactivation.
         /// </summary>
-        event EventHandler<DeactivationEventArgs> Deactivating;
+        event EventHandler<DeactivationEventArgs>? Deactivating;
 
         /// <summary>
         /// Raised after deactivation.
         /// </summary>
-        event EventHandler<DeactivationEventArgs> Deactivated;
+        event EventHandler<DeactivationEventArgs>? Deactivated;
     }
 }

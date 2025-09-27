@@ -6,7 +6,7 @@ namespace Demo.HelloEventAggregator
     public class PublisherViewModel : BindableObject
     {
         private readonly IEventAggregator _eventAggregator;
-        private string _message;
+        private string? _message;
 
         public PublisherViewModel(IEventAggregator eventAggregator)
         {
@@ -19,7 +19,7 @@ namespace Demo.HelloEventAggregator
                 .Build();
         }
 
-        public string Message
+        public string? Message
         {
             get { return _message; }
             set { SetProperty(ref _message, value); }
@@ -29,6 +29,9 @@ namespace Demo.HelloEventAggregator
 
         private void Publish()
         {
+            if (Message is null)
+                return;
+
             _eventAggregator.Publish(Message);
             Message = null;
         }

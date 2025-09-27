@@ -9,18 +9,18 @@ namespace Caliburn.Light
     public sealed class DelegateCommand : BindableCommand
     {
         private readonly Action _execute;
-        private readonly Func<bool> _canExecute;
-        private readonly string[] _propertyNames;
+        private readonly Func<bool>? _canExecute;
+        private readonly string[]? _propertyNames;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Holds the weak event registration alive")]
-        private readonly IDisposable _propertyChangedRegistration;
+        private readonly IDisposable? _propertyChangedRegistration;
 
         /// <summary>
         /// Initializes a new instance of <see cref="DelegateCommand"/>.
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        public DelegateCommand(Action execute, Func<bool> canExecute = null)
+        public DelegateCommand(Action execute, Func<bool>? canExecute = null)
         {
             if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
@@ -55,7 +55,7 @@ namespace Caliburn.Light
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
+            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames!, e.PropertyName) >= 0)
                 OnCanExecuteChanged();
         }
 
@@ -64,7 +64,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        protected override bool CanExecuteCore(object parameter)
+        protected override bool CanExecuteCore(object? parameter)
         {
             if (_canExecute is null) return true;
             return _canExecute();
@@ -74,7 +74,7 @@ namespace Caliburn.Light
         /// Called when the command is invoked.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             _execute();
         }
@@ -86,13 +86,13 @@ namespace Caliburn.Light
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class DelegateCommand<TParameter> : BindableCommand
     {
-        private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Action<TParameter> _execute;
-        private readonly Func<TParameter, bool> _canExecute;
-        private readonly string[] _propertyNames;
+        private readonly Func<object?, TParameter?> _coerceParameter;
+        private readonly Action<TParameter?> _execute;
+        private readonly Func<TParameter?, bool>? _canExecute;
+        private readonly string[]? _propertyNames;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Holds the weak event registration alive")]
-        private readonly IDisposable _propertyChangedRegistration;
+        private readonly IDisposable? _propertyChangedRegistration;
 
         /// <summary>
         /// Initializes a new instance of <see cref="DelegateCommand&lt;TParameter&gt;"/>.
@@ -100,7 +100,7 @@ namespace Caliburn.Light
         /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute = null)
+        public DelegateCommand(Func<object?, TParameter?> coerceParameter, Action<TParameter?> execute, Func<TParameter?, bool>? canExecute = null)
         {
             if (coerceParameter is null)
                 throw new ArgumentNullException(nameof(coerceParameter));
@@ -120,7 +120,7 @@ namespace Caliburn.Light
         /// <param name="canExecute">The canExecute function.</param>
         /// <param name="target">The object to observe for change notifications.</param>
         /// <param name="propertyNames">The property names.</param>
-        public DelegateCommand(Func<object, TParameter> coerceParameter, Action<TParameter> execute, Func<TParameter, bool> canExecute,
+        public DelegateCommand(Func<object?, TParameter?> coerceParameter, Action<TParameter?> execute, Func<TParameter?, bool> canExecute,
             INotifyPropertyChanged target, params string[] propertyNames)
         {
             if (coerceParameter is null)
@@ -143,7 +143,7 @@ namespace Caliburn.Light
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
+            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames!, e.PropertyName) >= 0)
                 OnCanExecuteChanged();
         }
 
@@ -152,7 +152,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        protected override bool CanExecuteCore(object parameter)
+        protected override bool CanExecuteCore(object? parameter)
         {
             if (_canExecute is null) return true;
             var value = _coerceParameter(parameter);
@@ -163,7 +163,7 @@ namespace Caliburn.Light
         /// Called when the command is invoked.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             var value = _coerceParameter(parameter);
             _execute(value);

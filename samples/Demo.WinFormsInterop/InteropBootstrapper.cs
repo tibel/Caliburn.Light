@@ -27,12 +27,12 @@ namespace Demo.WinFormsInterop
             _container.RegisterPerRequest<MainViewModel>();
         }
 
-        public void ShowView<TViewModel>(string context = null)
+        public void ShowView<TViewModel>(string? context = null)
             where TViewModel : class
         {
-            var viewModel = _container.GetInstance<TViewModel>();
+            var viewModel = _container.GetRequiredInstance<TViewModel>();
 
-            var view = _container.GetInstance<IViewModelLocator>()
+            var view = _container.GetRequiredInstance<IViewModelLocator>()
                 .LocateForModel(viewModel, context);
 
             View.SetBind(view, true);

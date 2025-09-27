@@ -8,6 +8,6 @@
         /// <summary>
         /// The currently active item.
         /// </summary>
-        object ActiveItem { get; }
+        object? ActiveItem { get; }
     }
 }

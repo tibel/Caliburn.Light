@@ -14,7 +14,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
-        void ShowWindow(object viewModel, string context = null);
+        void ShowWindow(object viewModel, string? context = null);
 
         /// <summary>
         /// Shows a modal window for the specified model.
@@ -36,7 +36,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The view context.</param>
-        void ShowPopup(object viewModel, string context = null);
+        void ShowPopup(object viewModel, string? context = null);
 
         /// <summary>
         /// Shows a message box.

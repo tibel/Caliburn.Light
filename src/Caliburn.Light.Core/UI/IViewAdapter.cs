@@ -54,7 +54,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view.</param>
         /// <returns>The command parameter.</returns>
-        object GetCommandParameter(object view);
+        object? GetCommandParameter(object view);
 
         /// <summary>
         /// Gets the Dispatcher this view is associated with.

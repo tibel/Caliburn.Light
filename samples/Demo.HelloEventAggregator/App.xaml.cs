@@ -34,8 +34,8 @@ namespace Demo.HelloEventAggregator
         {
             base.OnStartup(e);
 
-            _container.GetInstance<IWindowManager>()
-                .ShowWindow(_container.GetInstance<ShellViewModel>());
+            _container.GetRequiredInstance<IWindowManager>()
+                .ShowWindow(_container.GetRequiredInstance<ShellViewModel>());
         }
     }
 }

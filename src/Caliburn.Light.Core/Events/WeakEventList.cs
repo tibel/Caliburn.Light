@@ -24,7 +24,7 @@ namespace Caliburn.Light
             // add the handler to the CWT - this keeps the handler alive throughout
             // the lifetime of the target, without prolonging the lifetime of
             // the target
-            if (!_cwt.TryGetValue(target, out object value))
+            if (!_cwt.TryGetValue(target, out var value))
             {
                 // 99% case - the target only listens once
                 _cwt.Add(target, handler);
@@ -36,10 +36,9 @@ namespace Caliburn.Light
                 if (value is not List<Delegate> list)
                 {
                     // lazily allocate the list, and add the old handler
-                    var oldHandler = value as Delegate;
                     list = new List<Delegate>
                     {
-                        oldHandler
+                        (Delegate)value
                     };
 
                     // install the list as the CWT value
@@ -71,7 +70,7 @@ namespace Caliburn.Light
             }
 
             // remove the handler from the CWT
-            if (_cwt.TryGetValue(target, out object value))
+            if (_cwt.TryGetValue(target, out var value))
             {
                 if (value is not List<Delegate> list)
                 {
@@ -141,7 +140,7 @@ namespace Caliburn.Light
                 get { return !_target.IsAlive; }
             }
 
-            public object Handler
+            public object? Handler
             {
                 get { return _handler.Target; }
             }

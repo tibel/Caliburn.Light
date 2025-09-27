@@ -39,7 +39,7 @@ namespace Caliburn.Light.WinUI
             d.SetValue(ViewModelLocatorProperty, value);
         }
 
-        private static IViewModelLocator GetCurrentViewModelLocator(DependencyObject d)
+        private static IViewModelLocator? GetCurrentViewModelLocator(DependencyObject d)
         {
             var viewModelLocator = GetViewModelLocator(d);
 
@@ -178,7 +178,7 @@ namespace Caliburn.Light.WinUI
             OnDataContextChanged(sender, oldValue, e.NewValue);
         }
 
-        private static void OnDataContextChanged(FrameworkElement fe, object oldValue, object newValue)
+        private static void OnDataContextChanged(FrameworkElement fe, object? oldValue, object? newValue)
         {
             if (oldValue == newValue) return;
 
@@ -203,7 +203,7 @@ namespace Caliburn.Light.WinUI
                 CreateView(fe, fe.DataContext, (string)e.NewValue);
         }
 
-        private static void BindViewModel(FrameworkElement view, object oldModel, object newModel, string oldContext, string newContext)
+        private static void BindViewModel(FrameworkElement view, object? oldModel, object? newModel, string? oldContext, string? newContext)
         {
             if (oldModel is IViewAware oldViewAware)
                 oldViewAware.DetachView(view, oldContext);
@@ -212,7 +212,7 @@ namespace Caliburn.Light.WinUI
                 newViewAware.AttachView(view, newContext);
         }
 
-        private static void CreateView(FrameworkElement parentElement, object model, string context)
+        private static void CreateView(FrameworkElement parentElement, object? model, string? context)
         {
             if (model is null)
             {
@@ -261,7 +261,7 @@ namespace Caliburn.Light.WinUI
             throw new NotSupportedException("Only ContentControl is supported.");
         }
 
-        private static void SetContent(DependencyObject targetLocation, object view)
+        private static void SetContent(DependencyObject targetLocation, object? view)
         {
             if (targetLocation is ContentControl contentControl)
                 contentControl.Content = view;
@@ -388,9 +388,9 @@ namespace Caliburn.Light.WinUI
         /// <param name="handler">The handler.</param>
         public static void ExecuteOnLayoutUpdated(FrameworkElement element, Action<FrameworkElement> handler)
         {
-            void onLayoutUpdate(object sender, object _)
+            void onLayoutUpdate(object? sender, object _)
             {
-                var s = (FrameworkElement)sender;
+                var s = (FrameworkElement)sender!;
                 s.LayoutUpdated -= onLayoutUpdate;
                 handler(s);
             }
@@ -418,7 +418,7 @@ namespace Caliburn.Light.WinUI
 
             public void BeginInvoke(Action action) => _dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, new DispatcherQueueHandler(action));
 
-            public override bool Equals(object obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
+            public override bool Equals(object? obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
 
             public override int GetHashCode() => _dispatcher.GetHashCode();
         }

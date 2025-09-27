@@ -21,7 +21,7 @@ namespace Caliburn.Light
         /// <param name="handler">The message handler to register.</param>
         /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher dispatcher = default)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher? dispatcher = default)
             where TTarget : class
         {
             if (target is null)
@@ -49,7 +49,7 @@ namespace Caliburn.Light
         /// <param name="handler">The message handler to register.</param>
         /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher dispatcher = default)
+        public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher? dispatcher = default)
             where TTarget : class
         {
             if (target is null)
@@ -163,19 +163,6 @@ namespace Caliburn.Light
         /// <summary>
         /// Occurs when <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
         /// </summary>
-        public static event EventHandler<TaskEventArgs> Executing;
-
-        private sealed class CurrentThreadDispatcher : IDispatcher
-        {
-            public static CurrentThreadDispatcher Instance = new CurrentThreadDispatcher();
-
-            private CurrentThreadDispatcher()
-            {
-            }
-
-            public void BeginInvoke(Action action) => action.Invoke();
-
-            public bool CheckAccess() => true;
-        }
+        public static event EventHandler<TaskEventArgs>? Executing;
     }
 }

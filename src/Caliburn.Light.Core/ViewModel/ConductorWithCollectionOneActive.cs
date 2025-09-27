@@ -45,14 +45,13 @@ namespace Caliburn.Light
                 {
                     if (item is null)
                     {
-                        await DeactivateItemAsync(ActiveItem, false);
-                        return;
+                        var lastIndex = ActiveItem is not null ? _items.IndexOf(ActiveItem) : 0;
+                        item = DetermineNextItemToActivate(_items, lastIndex)!;
                     }
 
-                    var isActiveItem = ReferenceEquals(item, ActiveItem);
-                    if (isActiveItem)
+                    if (ReferenceEquals(ActiveItem, item))
                     {
-                        if (IsActive)
+                        if (IsActive && item is not null)
                         {
                             if (item is IActivatable activeItem)
                                 await activeItem.ActivateAsync();
@@ -69,38 +68,34 @@ namespace Caliburn.Light
                 /// <summary>
                 /// Deactivates the specified item.
                 /// </summary>
-                /// <param name="item">The item to close.</param>
+                /// <param name="item">The item to deactivate.</param>
                 /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
                 public override async Task DeactivateItemAsync(T item, bool close)
                 {
                     if (item is null)
                         return;
 
-                    if (!close)
+                    if (close)
+                    {
+                        var result = await CloseStrategy.ExecuteAsync(new[] { item });
+                        if (!result.CanClose)
+                            return;
+                    }
+
+                    if (ReferenceEquals(item, ActiveItem))
+                    {
+                        var lastIndex = _items.IndexOf(item);
+                        var next = DetermineNextItemToActivate(_items, lastIndex);
+                        await ChangeActiveItemAsync(next, close);
+                    }
+                    else
                     {
                         if (item is IActivatable deactivator)
-                            await deactivator.DeactivateAsync(false);
-
-                        return;
+                            await deactivator.DeactivateAsync(close);
                     }
 
-                    var result = await CloseStrategy.ExecuteAsync(new[] { item });
-                    if (result.CanClose)
-                    {
-                        if (!ReferenceEquals(item, ActiveItem))
-                        {
-                            if (item is IActivatable deactivator)
-                                await deactivator.DeactivateAsync(true);
-                        }
-                        else
-                        {
-                            var index = _items.IndexOf(item);
-                            var next = DetermineNextItemToActivate(_items, index);
-                            await ChangeActiveItemAsync(next, true);
-                        }
-
+                    if (close)
                         _items.Remove(item);
-                    }
                 }
 
                 /// <summary>
@@ -110,15 +105,15 @@ namespace Caliburn.Light
                 /// <param name="lastIndex">The index of the last active item.</param>
                 /// <returns>The next item to activate.</returns>
                 /// <remarks>Called after an active item is closed.</remarks>
-                protected virtual T DetermineNextItemToActivate(IList<T> list, int lastIndex)
+                protected virtual T? DetermineNextItemToActivate(IList<T> list, int lastIndex)
                 {
-                    var toRemoveAt = lastIndex - 1;
+                    var nextIndex = lastIndex - 1;
 
-                    if (toRemoveAt == -1 && list.Count > 1)
+                    if (nextIndex == -1 && list.Count > 1)
                         return list[1];
 
-                    if (toRemoveAt > -1 && toRemoveAt < list.Count - 1)
-                        return list[toRemoveAt];
+                    if (nextIndex > -1 && nextIndex < list.Count - 1)
+                        return list[nextIndex];
 
                     return default;
                 }
@@ -131,23 +126,23 @@ namespace Caliburn.Light
                 {
                     var result = await CloseStrategy.ExecuteAsync(_items.ToArray());
 
-                    var canClose = result.CanClose;
-                    var closables = result.Closeables;
-
-                    if (!canClose && closables.Count > 0)
+                    if (!result.CanClose && result.Closeables.Count > 0)
                     {
+                        var closables = result.Closeables;
+
                         if (closables.Contains(ActiveItem))
                         {
-                            var list = _items.ToList();
+                            var items = _items.ToList();
                             var next = ActiveItem;
+
                             do
                             {
-                                var previous = next;
-                                next = DetermineNextItemToActivate(list, list.IndexOf(previous));
-                                list.Remove(previous);
+                                var lastIndex = items.IndexOf(next!);
+                                next = DetermineNextItemToActivate(items, lastIndex);
+                                items.RemoveAt(lastIndex);
                             } while (closables.Contains(next));
 
-                            var previousActive = ActiveItem;
+                            var previousActive = ActiveItem!;
                             await ChangeActiveItemAsync(next, true);
                             _items.Remove(previousActive);
 
@@ -163,7 +158,7 @@ namespace Caliburn.Light
                         _items.RemoveRange(closables);
                     }
 
-                    return canClose;
+                    return result.CanClose;
                 }
 
                 /// <summary>
@@ -203,19 +198,9 @@ namespace Caliburn.Light
                 /// <returns>The item to be activated.</returns>
                 protected override T EnsureItem(T newItem)
                 {
-                    if (newItem is null)
-                    {
-                        newItem = DetermineNextItemToActivate(_items, ActiveItem is not null ? _items.IndexOf(ActiveItem) : 0);
-                    }
-                    else
-                    {
-                        var index = _items.IndexOf(newItem);
-
-                        if (index < 0)
-                            _items.Add(newItem);
-                        else
-                            newItem = _items[index];
-                    }
+                    var index = _items.IndexOf(newItem);
+                    if (index < 0)
+                        _items.Add(newItem);
 
                     return base.EnsureItem(newItem);
                 }

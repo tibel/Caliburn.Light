@@ -13,7 +13,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <typeparam name="TView">The page type to navigate to.</typeparam>
         /// <returns>Whether or not navigation succeeded.</returns>
-        public static bool Navigate<TView>(this INavigationService navigationService, object parameter = null)
+        public static bool Navigate<TView>(this INavigationService navigationService, object? parameter = null)
         {
             return navigationService.Navigate(typeof(TView), parameter);
         }
@@ -25,7 +25,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <typeparam name="TViewModel">The model type to navigate to.</typeparam>
         /// <returns>Whether or not navigation succeeded.</returns>
-        public static bool NavigateToViewModel<TViewModel>(this INavigationService navigationService, object parameter = null)
+        public static bool NavigateToViewModel<TViewModel>(this INavigationService navigationService, object? parameter = null)
         {
             return navigationService.NavigateToViewModel(typeof(TViewModel), parameter);
         }

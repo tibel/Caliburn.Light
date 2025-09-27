@@ -47,7 +47,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="key">The key.</param>
         /// <returns>True if a handler is registered; false otherwise.</returns>
-        public bool IsRegistered(Type service, string key = null)
+        public bool IsRegistered(Type service, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -61,7 +61,7 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="key">The key.</param>
         /// <returns>True if a handler is registered; false otherwise.</returns>
-        public bool IsRegistered<TService>(string key = null)
+        public bool IsRegistered<TService>(string? key = null)
         {
             return IsRegistered(typeof(TService), key);
         }
@@ -72,14 +72,14 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="implementation">The implementation.</param>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton(Type service, Type implementation, string key = null)
+        public void RegisterSingleton(Type service, Type implementation, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
             if (implementation is null)
                 throw new ArgumentNullException(nameof(implementation));
 
-            object singleton = null;
+            object? singleton = null;
             GetOrCreateEntry(service, key).Add(c => (singleton ??= c.BuildInstance(implementation)));
         }
 
@@ -88,7 +88,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton<TImplementation>(string key = null)
+        public void RegisterSingleton<TImplementation>(string? key = null)
         {
             RegisterSingleton(typeof(TImplementation), typeof(TImplementation), key);
         }
@@ -99,7 +99,7 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton<TService, TImplementation>(string key = null)
+        public void RegisterSingleton<TService, TImplementation>(string? key = null)
             where TImplementation : TService
         {
             RegisterSingleton(typeof(TService), typeof(TImplementation), key);
@@ -111,13 +111,13 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="handler">The handler.</param>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton<TService>(Func<SimpleContainer, TService> handler, string key = null)
+        public void RegisterSingleton<TService>(Func<SimpleContainer, TService> handler, string? key = null)
         {
             if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
-            object singleton = null;
-            GetOrCreateEntry(typeof(TService), key).Add(c => (singleton ??= handler(c)));
+            object? singleton = null;
+            GetOrCreateEntry(typeof(TService), key).Add(c => (singleton ??= handler(c)!));
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="instance">The instance.</param>
         /// <param name="key">The key.</param>
-        public void RegisterInstance(Type service, object instance, string key = null)
+        public void RegisterInstance(Type service, object instance, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -140,9 +140,9 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="instance">The instance.</param>
         /// <param name="key">The key.</param>
-        public void RegisterInstance<TService>(TService instance, string key = null)
+        public void RegisterInstance<TService>(TService instance, string? key = null)
         {
-            RegisterInstance(typeof(TService), instance, key);
+            RegisterInstance(typeof(TService), instance!, key);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="implementation">The implementation.</param>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest(Type service, Type implementation, string key = null)
+        public void RegisterPerRequest(Type service, Type implementation, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -166,7 +166,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest<TService>(string key = null)
+        public void RegisterPerRequest<TService>(string? key = null)
         {
             RegisterPerRequest<TService, TService>(key);
         }
@@ -177,7 +177,7 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest<TService, TImplementation>(string key = null)
+        public void RegisterPerRequest<TService, TImplementation>(string? key = null)
             where TImplementation : TService
         {
             RegisterPerRequest(typeof(TService), typeof(TImplementation), key);
@@ -189,7 +189,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="handler">The handler.</param>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest(Type service, Func<SimpleContainer, object> handler, string key = null)
+        public void RegisterPerRequest(Type service, Func<SimpleContainer, object> handler, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -205,12 +205,12 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="handler">The handler.</param>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest<TService>(Func<SimpleContainer, TService> handler, string key = null)
+        public void RegisterPerRequest<TService>(Func<SimpleContainer, TService> handler, string? key = null)
         {
             if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
-            GetOrCreateEntry(typeof(TService), key).Add(c => handler(c));
+            GetOrCreateEntry(typeof(TService), key).Add(c => handler(c)!);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="key">The key.</param>
         /// <returns>true if handler is successfully removed; otherwise, false.</returns>
-        public bool UnregisterHandler(Type service, string key = null)
+        public bool UnregisterHandler(Type service, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -235,12 +235,40 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The of the service.</typeparam>
         /// <param name="key">The key.</param>
         /// <returns>true if handler is successfully removed; otherwise, false.</returns>
-        public bool UnregisterHandler<TService>(string key = null)
+        public bool UnregisterHandler<TService>(string? key = null)
         {
             return UnregisterHandler(typeof(TService), key);
         }
 
-        object IServiceProvider.GetService(Type serviceType)
+        /// <summary>
+        /// Requests an required instance.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>The instance.</returns>
+        /// <exception cref="InvalidOperationException">When service was not registered.</exception>"
+        public object GetRequiredInstance(Type service, string? key = null)
+        {
+            var instance = GetInstance(service, key);
+            if (instance is null)
+                throw new InvalidOperationException(string.Format("Type '{0}' with key {1} is not registered.", service, key));
+
+            return instance;
+        }
+
+        /// <summary>
+        /// Requests an required instance.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns>The instance.</returns>
+        /// <exception cref="InvalidOperationException">When service was not registered.</exception>"
+        public TService GetRequiredInstance<TService>(string? key = null)
+        {
+            return (TService)GetRequiredInstance(typeof(TService), key);
+        }
+
+        object? IServiceProvider.GetService(Type serviceType)
         {
             return GetInstance(serviceType, null);
         }
@@ -251,9 +279,9 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="key">The key.</param>
         /// <returns>The instance.</returns>
-        public TService GetInstance<TService>(string key = null)
+        public TService? GetInstance<TService>(string? key = null)
         {
-            return (TService)GetInstance(typeof(TService), key);
+            return (TService?)GetInstance(typeof(TService), key);
         }
 
         /// <summary>
@@ -262,7 +290,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="key">The key.</param>
         /// <returns>The instance.</returns>
-        public object GetInstance(Type service, string key = null)
+        public object? GetInstance(Type service, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -282,7 +310,7 @@ namespace Caliburn.Light
                 var factoryFactoryType = typeof(FactoryFactory<>).MakeGenericType(typeToCreate);
                 var factoryFactoryHost = Activator.CreateInstance(factoryFactoryType);
                 var factoryFactoryMethod = factoryFactoryType.GetRuntimeMethod("Create", new[] { typeof(SimpleContainer), typeof(string) });
-                return factoryFactoryMethod.Invoke(factoryFactoryHost, new object[] { this, key });
+                return factoryFactoryMethod!.Invoke(factoryFactoryHost, new object?[] { this, key });
             }
 
             if (service.IsGenericType && EnumerableType.IsAssignableFrom(service))
@@ -340,7 +368,7 @@ namespace Caliburn.Light
             return instances;
         }
 
-        private ContainerEntry GetOrCreateEntry(Type service, string key)
+        private ContainerEntry GetOrCreateEntry(Type service, string? key)
         {
             var entry = _entries.Find(x => x.Service == service && x.Key == key);
             if (entry is null)
@@ -379,22 +407,22 @@ namespace Caliburn.Light
         /// <param name="type">The type.</param>
         /// <param name="args">The constructor arguments.</param>
         /// <returns>The created instance.</returns>
-        protected virtual object ActivateInstance(Type type, object[] args)
+        protected virtual object ActivateInstance(Type type, object?[] args)
         {
-            return (args.Length > 0) ? Activator.CreateInstance(type, args) : Activator.CreateInstance(type);
+            return (args.Length > 0) ? Activator.CreateInstance(type, args)! : Activator.CreateInstance(type)!;
         }
 
         private sealed class ContainerEntry : List<Func<SimpleContainer, object>>
         {
-            public string Key;
-            public Type Service;
+            public string? Key;
+            public Type Service = default!;
         }
 
         private sealed class FactoryFactory<T>
         {
-            public Func<T> Create(SimpleContainer container, string key)
+            public Func<T?> Create(SimpleContainer container, string? key)
             {
-                return () => (T)container.GetInstance(typeof(T), key);
+                return () => (T?)container.GetInstance(typeof(T), key);
             }
         }
     }

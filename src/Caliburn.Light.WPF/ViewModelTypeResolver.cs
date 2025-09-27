@@ -19,12 +19,12 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="viewType">The view type.</param>
         /// <returns>The view model type or null, if not found.</returns>
-        public Type GetModelType(Type viewType)
+        public Type? GetModelType(Type viewType)
         {
             if (viewType is null)
                 throw new ArgumentNullException(nameof(viewType));
 
-            _modelTypeLookup.TryGetValue(viewType, out Type modelType);
+            _modelTypeLookup.TryGetValue(viewType, out var modelType);
             return modelType;
         }
 
@@ -34,12 +34,12 @@ namespace Caliburn.Light.WPF
         /// <param name="modelType">The model type.</param>
         /// <param name="context">The context instance (or null).</param>
         /// <returns>The view type or null, if not found.</returns>
-        public Type GetViewType(Type modelType, string context)
+        public Type? GetViewType(Type modelType, string? context)
         {
             if (modelType is null)
                 throw new ArgumentNullException(nameof(modelType));
 
-            _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out Type viewType);
+            _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out var viewType);
             return viewType;
         }
 
@@ -50,7 +50,7 @@ namespace Caliburn.Light.WPF
         /// <typeparam name="TViewModel">The view-model type.</typeparam>
         /// <param name="context">The context instance (or null).</param>
         /// <remarks>Return self for method chaining.</remarks>
-        public ViewModelTypeResolver AddMapping<TView, TViewModel>(string context = null)
+        public ViewModelTypeResolver AddMapping<TView, TViewModel>(string? context = null)
             where TView : UIElement
             where TViewModel : INotifyPropertyChanged
         {

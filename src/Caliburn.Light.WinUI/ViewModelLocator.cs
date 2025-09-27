@@ -35,7 +35,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="model">the model instance.</param>
         /// <param name="context">The context (or null).</param>
         /// <returns>The view.</returns>
-        public UIElement LocateForModel(object model, string context)
+        public UIElement LocateForModel(object model, string? context)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -56,10 +56,10 @@ namespace Caliburn.Light.WinUI
             }
 
             return _serviceProvider.GetService(viewType) as UIElement
-                ?? (UIElement)Activator.CreateInstance(viewType);
+                ?? (UIElement)Activator.CreateInstance(viewType)!;
         }
 
-        private static UIElement TryGetViewFromViewAware(object model, string context)
+        private static UIElement? TryGetViewFromViewAware(object model, string? context)
         {
             if (model is IViewAware viewAware)
             {
@@ -81,7 +81,7 @@ namespace Caliburn.Light.WinUI
         /// </summary>
         /// <param name="view">The view instance.</param>
         /// <returns>The view model.</returns>
-        public object LocateForView(UIElement view)
+        public object? LocateForView(UIElement view)
         {
             if (view is null)
                 throw new ArgumentNullException(nameof(view));

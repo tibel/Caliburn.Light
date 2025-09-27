@@ -8,7 +8,7 @@ namespace Demo.WpfDesignTime
 
         public NestedViewModel()
         {
-            Name = "Nested";
+            _name = "Nested";
         }
 
         public string Name

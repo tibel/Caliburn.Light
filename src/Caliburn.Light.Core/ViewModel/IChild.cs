@@ -8,6 +8,6 @@ namespace Caliburn.Light
         /// <summary>
         /// Gets or sets the parent.
         /// </summary>
-        object Parent { get; set; }
+        object? Parent { get; set; }
     }
 }

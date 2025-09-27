@@ -12,7 +12,7 @@ namespace Caliburn.Light
     public abstract class ConductorBase<T> : Screen, IConductor where T : class
     {
         private static readonly DefaultCloseStrategy<T> _defaultCloseStrategy = new DefaultCloseStrategy<T>();
-        private ICloseStrategy<T> _closeStrategy;
+        private ICloseStrategy<T>? _closeStrategy;
 
         /// <summary>
         /// Gets or sets the close strategy.
@@ -42,7 +42,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Occurs when an activation request is processed.
         /// </summary>
-        public event EventHandler<ActivationProcessedEventArgs> ActivationProcessed;
+        public event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
 
         /// <summary>
         /// Gets the children.
@@ -59,7 +59,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Deactivates the specified item.
         /// </summary>
-        /// <param name="item">The item to close.</param>
+        /// <param name="item">The item to deactivate.</param>
         /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
         public abstract Task DeactivateItemAsync(T item, bool close);
 

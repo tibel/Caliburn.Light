@@ -43,10 +43,7 @@ namespace Caliburn.Light.WinUI
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
             if (adapter is not null) return;
 
-            adapter = new AdapterImpl(this, frame)
-            {
-                FrameState = new Dictionary<string, object>()
-            };
+            adapter = new AdapterImpl(this, frame);
 
             frame.SetValue(FrameAdapterProperty, adapter);
             View.SetViewModelLocator(frame, _viewModelLocator);
@@ -74,12 +71,14 @@ namespace Caliburn.Light.WinUI
         {
             private readonly FrameAdapter _parent;
             private readonly Frame _frame;
-            private Page _previousPage;
+            private Page? _previousPage;
 
             public AdapterImpl(FrameAdapter parent, Frame frame)
             {
                 _parent = parent;
                 _frame = frame;
+
+                FrameState = new Dictionary<string, object>();
 
                 frame.Navigating += OnNavigating;
                 frame.Navigated += OnNavigated;

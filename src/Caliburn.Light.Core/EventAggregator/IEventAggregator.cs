@@ -17,7 +17,7 @@ namespace Caliburn.Light
         /// <param name="handler">The message handler to register.</param>
         /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher dispatcher = default)
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher? dispatcher = default)
             where TTarget : class;
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Caliburn.Light
         /// <param name="handler">The message handler to register.</param>
         /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
         /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher dispatcher = default)
+        IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher? dispatcher = default)
             where TTarget : class;
 
         /// <summary>

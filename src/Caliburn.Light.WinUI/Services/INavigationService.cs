@@ -33,7 +33,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="viewType"> The view type to navigate to.</param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns> Whether or not navigation succeeded. </returns>
-        bool Navigate(Type viewType, object parameter = null);
+        bool Navigate(Type viewType, object? parameter = null);
 
         /// <summary>
         /// Navigate to the specified model type.
@@ -41,6 +41,6 @@ namespace Caliburn.Light.WinUI
         /// <param name="viewModelType">The model type to navigate to.</param>
         /// <param name="parameter">The object parameter to pass to the target.</param>
         /// <returns>Whether or not navigation succeeded.</returns>
-        bool NavigateToViewModel(Type viewModelType, object parameter = null);
+        bool NavigateToViewModel(Type viewModelType, object? parameter = null);
     }
 }

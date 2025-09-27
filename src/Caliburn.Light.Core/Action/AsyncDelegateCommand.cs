@@ -11,18 +11,18 @@ namespace Caliburn.Light
     public sealed class AsyncDelegateCommand : AsyncCommand
     {
         private readonly Func<Task> _execute;
-        private readonly Func<bool> _canExecute;
-        private readonly string[] _propertyNames;
+        private readonly Func<bool>? _canExecute;
+        private readonly string[]? _propertyNames;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Holds the weak event registration alive")]
-        private readonly IDisposable _propertyChangedRegistration;
+        private readonly IDisposable? _propertyChangedRegistration;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AsyncDelegateCommand"/>.
         /// </summary>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        public AsyncDelegateCommand(Func<Task> execute, Func<bool> canExecute = null)
+        public AsyncDelegateCommand(Func<Task> execute, Func<bool>? canExecute = null)
         {
             if (execute is null)
                 throw new ArgumentNullException(nameof(execute));
@@ -57,7 +57,7 @@ namespace Caliburn.Light
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
+            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames!, e.PropertyName) >= 0)
                 OnCanExecuteChanged();
         }
 
@@ -66,7 +66,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        protected override bool CanExecuteCore(object parameter)
+        protected override bool CanExecuteCore(object? parameter)
         {
             if (IsExecuting) return false;
             if (_canExecute is null) return true;
@@ -78,7 +78,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        protected override Task ExecuteAsync(object parameter)
+        protected override Task ExecuteAsync(object? parameter)
         {
             return _execute();
         }
@@ -90,13 +90,13 @@ namespace Caliburn.Light
     /// <typeparam name="TParameter">The type of the command parameter.</typeparam>
     public sealed class AsyncDelegateCommand<TParameter> : AsyncCommand
     {
-        private readonly Func<object, TParameter> _coerceParameter;
-        private readonly Func<TParameter, Task> _execute;
-        private readonly Func<TParameter, bool> _canExecute;
-        private readonly string[] _propertyNames;
+        private readonly Func<object?, TParameter?> _coerceParameter;
+        private readonly Func<TParameter?, Task> _execute;
+        private readonly Func<TParameter?, bool>? _canExecute;
+        private readonly string[]? _propertyNames;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Holds the weak event registration alive")]
-        private readonly IDisposable _propertyChangedRegistration;
+        private readonly IDisposable? _propertyChangedRegistration;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AsyncDelegateCommand&lt;TParameter&gt;"/>.
@@ -104,7 +104,7 @@ namespace Caliburn.Light
         /// <param name="coerceParameter">The function to coerce the provided value to <typeparamref name="TParameter"/>.</param>
         /// <param name="execute">The execute function.</param>
         /// <param name="canExecute">The canExecute function.</param>
-        public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute = null)
+        public AsyncDelegateCommand(Func<object?, TParameter?> coerceParameter, Func<TParameter?, Task> execute, Func<TParameter?, bool>? canExecute = null)
         {
             if (coerceParameter is null)
                 throw new ArgumentNullException(nameof(coerceParameter));
@@ -124,7 +124,7 @@ namespace Caliburn.Light
         /// <param name="canExecute">The canExecute function.</param>
         /// <param name="target">The object to observe for change notifications.</param>
         /// <param name="propertyNames">The property names.</param>
-        public AsyncDelegateCommand(Func<object, TParameter> coerceParameter, Func<TParameter, Task> execute, Func<TParameter, bool> canExecute,
+        public AsyncDelegateCommand(Func<object?, TParameter?> coerceParameter, Func<TParameter?, Task> execute, Func<TParameter?, bool> canExecute,
             INotifyPropertyChanged target, params string[] propertyNames)
         {
             if (coerceParameter is null)
@@ -147,7 +147,7 @@ namespace Caliburn.Light
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames, e.PropertyName) >= 0)
+            if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames!, e.PropertyName) >= 0)
                 OnCanExecuteChanged();
         }
 
@@ -156,7 +156,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        protected override bool CanExecuteCore(object parameter)
+        protected override bool CanExecuteCore(object? parameter)
         {
             if (IsExecuting) return false;
             if (_canExecute is null) return true;
@@ -169,7 +169,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        protected override Task ExecuteAsync(object parameter)
+        protected override Task ExecuteAsync(object? parameter)
         {
             var value = _coerceParameter(parameter);
             return _execute(value);

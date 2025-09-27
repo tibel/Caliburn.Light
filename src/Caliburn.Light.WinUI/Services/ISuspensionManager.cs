@@ -34,7 +34,7 @@ namespace Caliburn.Light.WinUI
         /// store navigation-related information.</param>
         /// <param name="sessionBaseKey">An optional key that identifies the type of session.
         /// This can be used to distinguish between multiple application launch scenarios.</param>
-        void RegisterFrame(Frame frame, string sessionStateKey, string sessionBaseKey = null);
+        void RegisterFrame(Frame frame, string sessionStateKey, string? sessionBaseKey = null);
 
         /// <summary>
         /// Restores previously saved <see cref="SessionState"/>.  Any <see cref="Frame"/> instances

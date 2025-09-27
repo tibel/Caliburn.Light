@@ -8,7 +8,7 @@ namespace Caliburn.Light
         where TSubscriber : class
     {
         public WeakNotifyPropertyChangingHandler(INotifyPropertyChanging source, TSubscriber subscriber,
-            Action<TSubscriber, object, PropertyChangingEventArgs> weakHandler)
+            Action<TSubscriber, object?, PropertyChangingEventArgs> weakHandler)
             : base(source, subscriber, weakHandler)
         {
             source.PropertyChanging += OnEvent;

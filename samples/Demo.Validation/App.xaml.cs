@@ -29,8 +29,8 @@ namespace Demo.Validation
         {
             base.OnStartup(e);
 
-            _container.GetInstance<IWindowManager>()
-                .ShowWindow(_container.GetInstance<MainViewModel>());
+            _container.GetRequiredInstance<IWindowManager>()
+                .ShowWindow(_container.GetRequiredInstance<MainViewModel>());
         }
     }
 }

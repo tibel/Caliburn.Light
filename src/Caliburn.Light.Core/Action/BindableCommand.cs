@@ -15,12 +15,12 @@ namespace Caliburn.Light
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Raises the CanExecuteChanged event.
@@ -46,7 +46,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        protected virtual bool CanExecuteCore(object parameter)
+        protected virtual bool CanExecuteCore(object? parameter)
         {
             return true;
         }
@@ -56,7 +56,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             var result = CanExecuteCore(parameter);
 
@@ -78,7 +78,7 @@ namespace Caliburn.Light
         /// Called when the command is invoked.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        public abstract void Execute(object parameter);
+        public abstract void Execute(object? parameter);
 
         /// <summary>
         /// Defines the method to be called when using x:Bind event binding.
@@ -91,7 +91,7 @@ namespace Caliburn.Light
             Execute(parameter);
         }
 
-        private static object DetermineParameter(object sender, object eventArgs)
+        private static object? DetermineParameter(object sender, object eventArgs)
         {
             var resolvedParameter = ViewHelper.GetCommandParameter(sender);
 

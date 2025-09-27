@@ -76,7 +76,7 @@ namespace Caliburn.Light.WinUI
                 // Save the navigation state for all registered frames
                 foreach (var weakFrameReference in _registeredFrames)
                 {
-                    if (weakFrameReference.TryGetTarget(out Frame frame))
+                    if (weakFrameReference.TryGetTarget(out var frame))
                     {
                         SaveFrameState(frame);
                     }
@@ -119,7 +119,7 @@ namespace Caliburn.Light.WinUI
                 // Restore any registered frames to their saved state
                 foreach (var weakFrameReference in _registeredFrames)
                 {
-                    if (weakFrameReference.TryGetTarget(out Frame frame))
+                    if (weakFrameReference.TryGetTarget(out var frame))
                     {
                         RestoreFrameState(frame);
                     }
@@ -139,7 +139,7 @@ namespace Caliburn.Light.WinUI
 
             // Deserialize the Session State
             var serializer = new DataContractSerializer(typeof(Dictionary<string, object>), knownTypes);
-            return (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
+            return (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead())!;
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Caliburn.Light.WinUI
         /// store navigation-related information.</param>
         /// <param name="sessionBaseKey">An optional key that identifies the type of session.
         /// This can be used to distinguish between multiple application launch scenarios.</param>
-        public void RegisterFrame(Frame frame, string sessionStateKey, string sessionBaseKey = null)
+        public void RegisterFrame(Frame frame, string sessionStateKey, string? sessionBaseKey = null)
         {
             if (frame is null)
                 throw new ArgumentNullException(nameof(frame));
@@ -204,7 +204,7 @@ namespace Caliburn.Light.WinUI
             // state will be saved (along with any weak references that are no longer reachable)
             frame.ClearValue(FrameSessionStateKeyProperty);
             _sessionState.Remove(frameSessionKey);
-            _registeredFrames.RemoveAll((weakFrameReference) => !weakFrameReference.TryGetTarget(out Frame testFrame) || testFrame == frame);
+            _registeredFrames.RemoveAll((weakFrameReference) => !weakFrameReference.TryGetTarget(out var testFrame) || testFrame == frame);
         }
 
         private void SaveFrameState(Frame frame)
@@ -221,7 +221,7 @@ namespace Caliburn.Light.WinUI
         {
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
 
-            if (_sessionState.TryGetValue(frameSessionKey, out object result))
+            if (_sessionState.TryGetValue(frameSessionKey, out var result))
             {
                 var frameState = (IDictionary<string, object>)result;
                 _frameAdapter.RestoreState(frame, frameState);

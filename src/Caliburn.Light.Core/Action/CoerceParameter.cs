@@ -13,7 +13,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="parameter">The supplied parameter value.</param>
         /// <returns>The converted parameter value.</returns>
-        public static TParameter Default(object parameter)
+        public static TParameter? Default(object? parameter)
         {
             if (parameter is null)
                 return default;

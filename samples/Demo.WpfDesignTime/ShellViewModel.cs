@@ -9,8 +9,8 @@ namespace Demo.WpfDesignTime
 
         public ShellViewModel()
         {
-            NestedViewModel = new NestedViewModel();
-            Name = "Shell";
+            _nestedViewModel = new NestedViewModel();
+            _name = "Shell";
         }
 
         public string Name

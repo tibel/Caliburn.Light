@@ -29,7 +29,7 @@ namespace Caliburn.Light
         /// <summary>
         /// Occurs when an activation request is processed.
         /// </summary>
-        event EventHandler<ActivationProcessedEventArgs> ActivationProcessed;
+        event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
 
         /// <summary>
         /// Gets the children.
