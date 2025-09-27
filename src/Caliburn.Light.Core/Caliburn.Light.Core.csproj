@@ -4,5 +4,6 @@
     <RootNamespace>Caliburn.Light</RootNamespace>
     <Title>Caliburn.Light.Core</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building applications across current XAML platforms.</Description>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 </Project>

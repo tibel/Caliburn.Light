@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -9,6 +10,8 @@ namespace Caliburn.Light
     /// <summary>
     /// A simple IoC container.
     /// </summary>
+    [RequiresDynamicCode("This type uses reflection to create types at runtime which may not be supported in all deployment scenarios.")]
+    [RequiresUnreferencedCode("This type uses reflection to create types at runtime which may not be supported in all deployment scenarios.")]
     public class SimpleContainer : IServiceProvider
     {
         private static readonly Type DelegateType = typeof(Delegate);
@@ -72,7 +75,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="implementation">The implementation.</param>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton(Type service, Type implementation, string? key = null)
+        public void RegisterSingleton(Type service, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementation, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -88,7 +91,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton<TImplementation>(string? key = null)
+        public void RegisterSingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementation>(string? key = null)
         {
             RegisterSingleton(typeof(TImplementation), typeof(TImplementation), key);
         }
@@ -99,7 +102,7 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterSingleton<TService, TImplementation>(string? key = null)
+        public void RegisterSingleton<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementation>(string? key = null)
             where TImplementation : TService
         {
             RegisterSingleton(typeof(TService), typeof(TImplementation), key);
@@ -151,7 +154,7 @@ namespace Caliburn.Light
         /// <param name="service">The service.</param>
         /// <param name="implementation">The implementation.</param>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest(Type service, Type implementation, string? key = null)
+        public void RegisterPerRequest(Type service, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementation, string? key = null)
         {
             if (service is null)
                 throw new ArgumentNullException(nameof(service));
@@ -166,7 +169,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest<TService>(string? key = null)
+        public void RegisterPerRequest<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>(string? key = null)
         {
             RegisterPerRequest<TService, TService>(key);
         }
@@ -177,7 +180,7 @@ namespace Caliburn.Light
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="key">The key.</param>
-        public void RegisterPerRequest<TService, TImplementation>(string? key = null)
+        public void RegisterPerRequest<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementation>(string? key = null)
             where TImplementation : TService
         {
             RegisterPerRequest(typeof(TService), typeof(TImplementation), key);
@@ -385,7 +388,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>The build instance.</returns>
-        protected object BuildInstance(Type type)
+        protected object BuildInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             var constructor = type.GetConstructors()
                 .OrderByDescending(c => c.GetParameters().Length)
@@ -407,7 +410,7 @@ namespace Caliburn.Light
         /// <param name="type">The type.</param>
         /// <param name="args">The constructor arguments.</param>
         /// <returns>The created instance.</returns>
-        protected virtual object ActivateInstance(Type type, object?[] args)
+        protected virtual object ActivateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type, object?[] args)
         {
             return (args.Length > 0) ? Activator.CreateInstance(type, args)! : Activator.CreateInstance(type)!;
         }
