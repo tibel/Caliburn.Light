@@ -65,7 +65,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view.</param>
         /// <param name="context">The context in which the view appears.</param>
-        protected virtual void OnViewAttached(object view, object context)
+        protected virtual void OnViewAttached(object view, string context)
         {
             ViewAttached?.Invoke(this, new ViewAttachedEventArgs(view, context));
         }

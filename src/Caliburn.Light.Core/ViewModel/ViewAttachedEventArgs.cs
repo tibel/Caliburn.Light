@@ -12,7 +12,7 @@ namespace Caliburn.Light
         /// </summary>
         /// <param name="view">The view.</param>
         /// <param name="context">The context.</param>
-        public ViewAttachedEventArgs(object view, object context)
+        public ViewAttachedEventArgs(object view, string context)
         {
             View = view;
             Context = context;
@@ -26,6 +26,6 @@ namespace Caliburn.Light
         /// <summary>
         /// The context.
         /// </summary>
-        public object Context { get; }
+        public string Context { get; }
     }
 }

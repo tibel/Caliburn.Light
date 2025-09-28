@@ -36,7 +36,7 @@ namespace Demo.ExceptionHandling
         public ICommand TaskRunCommand { get; }
         public ICommand AsyncCommand { get; }
 
-        protected override void OnViewAttached(object view, object context)
+        protected override void OnViewAttached(object view, string context)
         {
             _dispatcher = ViewHelper.GetDispatcher(view);
             base.OnViewAttached(view, context);
