@@ -21,8 +21,7 @@ namespace Caliburn.Light.WPF
         /// <param name="viewModelLocator">The view-model locator.</param>
         public WindowManager(IViewModelLocator viewModelLocator)
         {
-            if (viewModelLocator is null)
-                throw new ArgumentNullException(nameof(viewModelLocator));
+            ArgumentNullException.ThrowIfNull(viewModelLocator);
 
             _viewModelLocator = viewModelLocator;
         }
@@ -34,8 +33,7 @@ namespace Caliburn.Light.WPF
         /// <param name="context">The context.</param>
         public void ShowWindow(object viewModel, string? context)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            ArgumentNullException.ThrowIfNull(viewModel);
 
             CreateWindow(viewModel, context).Show();
         }
@@ -48,10 +46,8 @@ namespace Caliburn.Light.WPF
         /// <param name="ownerViewModel">The owner view model.</param>
         public Task ShowDialog(object viewModel, string context, object ownerViewModel)
         {
-            if (ownerViewModel is null)
-                throw new ArgumentNullException(nameof(ownerViewModel));
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            ArgumentNullException.ThrowIfNull(ownerViewModel);
+            ArgumentNullException.ThrowIfNull(viewModel);
 
             var owner = GetWindow(ownerViewModel);
             var window = CreateWindow(viewModel, context);
@@ -76,8 +72,7 @@ namespace Caliburn.Light.WPF
         /// <returns>true if the window was successfully activated; otherwise, false.</returns>
         public bool Activate(object viewModel)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            ArgumentNullException.ThrowIfNull(viewModel);
 
             var window = GetWindow(viewModel);
             return window?.Activate() ?? false;
@@ -90,8 +85,7 @@ namespace Caliburn.Light.WPF
         /// <param name="context">The view context.</param>
         public void ShowPopup(object viewModel, string? context)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            ArgumentNullException.ThrowIfNull(viewModel);
 
             var popup = CreatePopup(viewModel, context);
             popup.IsOpen = true;
@@ -106,10 +100,8 @@ namespace Caliburn.Light.WPF
         /// <returns>The message box result.</returns>
         public Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings settings, object ownerViewModel)
         {
-            if (ownerViewModel is null)
-                throw new ArgumentNullException(nameof(ownerViewModel));
-            if (settings is null)
-                throw new ArgumentNullException(nameof(settings));
+            ArgumentNullException.ThrowIfNull(ownerViewModel);
+            ArgumentNullException.ThrowIfNull(settings);
 
             var owner = GetWindow(ownerViewModel);
 
@@ -128,10 +120,8 @@ namespace Caliburn.Light.WPF
         /// <returns>A list of selected files.</returns>
         public Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings settings, object ownerViewModel)
         {
-            if (ownerViewModel is null)
-                throw new ArgumentNullException(nameof(ownerViewModel));
-            if (settings is null)
-                throw new ArgumentNullException(nameof(settings));
+            ArgumentNullException.ThrowIfNull(ownerViewModel);
+            ArgumentNullException.ThrowIfNull(settings);
 
             var owner = GetWindow(ownerViewModel);
 
@@ -175,10 +165,8 @@ namespace Caliburn.Light.WPF
         /// <returns>The selected file.</returns>
         public Task<string> ShowSaveFileDialog(SaveFileDialogSettings settings, object ownerViewModel)
         {
-            if (ownerViewModel is null)
-                throw new ArgumentNullException(nameof(ownerViewModel));
-            if (settings is null)
-                throw new ArgumentNullException(nameof(settings));
+            ArgumentNullException.ThrowIfNull(ownerViewModel);
+            ArgumentNullException.ThrowIfNull(settings);
 
             var owner = GetWindow(ownerViewModel);
 

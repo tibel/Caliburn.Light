@@ -16,8 +16,7 @@ namespace Caliburn.Light
         /// <param name="rule">The rule to add.</param>
         public void AddRule(ValidationRule rule)
         {
-            if (rule is null)
-                throw new ArgumentNullException(nameof(rule));
+            ArgumentNullException.ThrowIfNull(rule);
 
             if (!_rules.TryGetValue(rule.PropertyName, out var current))
             {
@@ -35,9 +34,7 @@ namespace Caliburn.Light
         /// <returns>true if rules where removed; otherwise, false.</returns>
         public bool RemoveRules(string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
-                throw new ArgumentNullException(nameof(propertyName));
-
+            ArgumentException.ThrowIfNullOrEmpty(propertyName);
             return _rules.Remove(propertyName);
         }
 

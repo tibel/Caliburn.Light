@@ -18,10 +18,8 @@ namespace Caliburn.Light
         /// <param name="errorMessage">The error message if the rules fails.</param>
         public static void AddDelegateRule<T>(this RuleValidator ruleValidator, string propertyName, Func<T, bool> validateProperty, string errorMessage)
         {
-            if (ruleValidator is null)
-                throw new ArgumentNullException(nameof(ruleValidator));
-            if (validateProperty is null)
-                throw new ArgumentNullException(nameof(validateProperty));
+            ArgumentNullException.ThrowIfNull(ruleValidator);
+            ArgumentNullException.ThrowIfNull(validateProperty);
 
             var rule = new DelegateValidationRule(propertyName, obj => validateProperty((T)obj), errorMessage);
             ruleValidator.AddRule(rule);
@@ -41,12 +39,9 @@ namespace Caliburn.Light
         public static void AddRangeRule<T, TProperty>(this RuleValidator ruleValidator, string propertyName, Func<T, TProperty> getPropertyValue, TProperty minimum, TProperty maximum, string errorMessage)
             where TProperty : IComparable<TProperty>
         {
-            if (ruleValidator is null)
-                throw new ArgumentNullException(nameof(ruleValidator));
-            if (getPropertyValue is null)
-                throw new ArgumentNullException(nameof(getPropertyValue));
-            if (minimum.CompareTo(maximum) > 0)
-                throw new ArgumentOutOfRangeException(nameof(maximum));
+            ArgumentNullException.ThrowIfNull(ruleValidator);
+            ArgumentNullException.ThrowIfNull(getPropertyValue);
+            ArgumentOutOfRangeException.ThrowIfLessThan(maximum, minimum);
 
             bool validateProperty(object obj)
             {
@@ -69,12 +64,9 @@ namespace Caliburn.Light
         /// <param name="errorMessage">The error message.</param>
         public static void AddRegexRule<T>(this RuleValidator ruleValidator, string propertyName, Func<T, string> getPropertyValue, string pattern, string errorMessage)
         {
-            if (ruleValidator is null)
-                throw new ArgumentNullException(nameof(ruleValidator));
-            if (getPropertyValue is null)
-                throw new ArgumentNullException(nameof(getPropertyValue));
-            if (string.IsNullOrEmpty(pattern))
-                throw new ArgumentNullException(nameof(pattern));
+            ArgumentNullException.ThrowIfNull(ruleValidator);
+            ArgumentNullException.ThrowIfNull(getPropertyValue);
+            ArgumentException.ThrowIfNullOrEmpty(pattern);
 
             var regex = new Regex(pattern);
             var rule = new DelegateValidationRule(propertyName, obj => regex.IsMatch(getPropertyValue((T)obj)), errorMessage);
@@ -93,14 +85,10 @@ namespace Caliburn.Light
         /// <param name="errorMessage">The error message.</param>
         public static void AddStringLengthRule<T>(this RuleValidator ruleValidator, string propertyName, Func<T, string> getPropertyValue, int minimumLength, int maximumLength, string errorMessage)
         {
-            if (ruleValidator is null)
-                throw new ArgumentNullException(nameof(ruleValidator));
-            if (getPropertyValue is null)
-                throw new ArgumentNullException(nameof(getPropertyValue));
-            if (minimumLength < 0)
-                throw new ArgumentOutOfRangeException(nameof(minimumLength));
-            if (maximumLength < 0 || minimumLength > maximumLength)
-                throw new ArgumentOutOfRangeException(nameof(maximumLength));
+            ArgumentNullException.ThrowIfNull(ruleValidator);
+            ArgumentNullException.ThrowIfNull(getPropertyValue);
+            ArgumentOutOfRangeException.ThrowIfLessThan(minimumLength, 0);
+            ArgumentOutOfRangeException.ThrowIfLessThan(maximumLength, minimumLength);
 
             bool validateProperty(object obj)
             {

@@ -20,8 +20,7 @@ namespace Caliburn.Light.WPF
         /// <returns>The attached life-cycle instance.</returns>
         public static PageLifecycle AttachTo(Frame frame)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
+            ArgumentNullException.ThrowIfNull(frame);
 
             var lifecycle = (PageLifecycle)frame.GetValue(LifecycleProperty);
             if (lifecycle is null)
@@ -45,8 +44,7 @@ namespace Caliburn.Light.WPF
         /// <returns>The attached life-cycle instance.</returns>
         public static PageLifecycle AttachTo(NavigationWindow navigationWindow)
         {
-            if (navigationWindow is null)
-                throw new ArgumentNullException(nameof(navigationWindow));
+            ArgumentNullException.ThrowIfNull(navigationWindow);
 
             var lifecycle = (PageLifecycle)navigationWindow.GetValue(LifecycleProperty);
             if (lifecycle is null)

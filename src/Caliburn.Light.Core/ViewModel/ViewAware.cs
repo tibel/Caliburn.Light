@@ -22,8 +22,7 @@ namespace Caliburn.Light
 
         void IViewAware.AttachView(object view, string? context)
         {
-            if (view is null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
 
             if (context is null)
                 context = DefaultContext;
@@ -45,8 +44,7 @@ namespace Caliburn.Light
 
         bool IViewAware.DetachView(object view, string? context)
         {
-            if (view is null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
 
             if (context is null)
                 context = DefaultContext;

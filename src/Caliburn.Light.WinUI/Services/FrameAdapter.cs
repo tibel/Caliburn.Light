@@ -25,8 +25,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="viewModelLocator">The view-model locator.</param>
         public FrameAdapter(IViewModelLocator viewModelLocator)
         {
-            if (viewModelLocator is null)
-                throw new ArgumentNullException(nameof(viewModelLocator));
+            ArgumentNullException.ThrowIfNull(viewModelLocator);
 
             _viewModelLocator = viewModelLocator;
         }
@@ -37,8 +36,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="frame">The frame to attach to.</param>
         public void AttachTo(Frame frame)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
+            ArgumentNullException.ThrowIfNull(frame);
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
             if (adapter is not null) return;
@@ -55,8 +53,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="frame">The frame to detach from.</param>
         public void DetatchFrom(Frame frame)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
+            ArgumentNullException.ThrowIfNull(frame);
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
             if (adapter is null) return;
@@ -185,8 +182,7 @@ namespace Caliburn.Light.WinUI
         /// <returns>The internal frame state dictionary.</returns>
         public IDictionary<string, object> SaveState(Frame frame)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
+            ArgumentNullException.ThrowIfNull(frame);
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
             if (adapter is null)
@@ -211,10 +207,8 @@ namespace Caliburn.Light.WinUI
         /// <param name="frameState">The state dictionary that will be used.</param>
         public void RestoreState(Frame frame, IDictionary<string, object> frameState)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
-            if (frameState is null)
-                throw new ArgumentNullException(nameof(frameState));
+            ArgumentNullException.ThrowIfNull(frame);
+            ArgumentNullException.ThrowIfNull(frameState);
 
             var adapter = (AdapterImpl)frame.GetValue(FrameAdapterProperty);
             if (adapter is null)

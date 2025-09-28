@@ -18,10 +18,8 @@ namespace Caliburn.Light.WinUI
         /// <param name="viewModelTypeResolver">The view-model type resolver.</param>
         public NavigationService(Frame frame, IViewModelTypeResolver viewModelTypeResolver)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
-            if (viewModelTypeResolver is null)
-                throw new ArgumentNullException(nameof(viewModelTypeResolver));
+            ArgumentNullException.ThrowIfNull(frame);
+            ArgumentNullException.ThrowIfNull(viewModelTypeResolver);
 
             _frame = frame;
             _viewModelTypeResolver = viewModelTypeResolver;

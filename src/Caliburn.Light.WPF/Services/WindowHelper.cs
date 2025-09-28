@@ -10,8 +10,7 @@ namespace Caliburn.Light.WPF
     {
         public static Task ShowModal(this Window window)
         {
-            if (window is null)
-                throw new ArgumentNullException(nameof(window));
+            ArgumentNullException.ThrowIfNull(window);
             if (window.Owner is null)
                 throw new ArgumentException("Window has no Owner set.", nameof(window));
 

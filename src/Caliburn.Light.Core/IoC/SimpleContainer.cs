@@ -52,8 +52,7 @@ namespace Caliburn.Light
         /// <returns>True if a handler is registered; false otherwise.</returns>
         public bool IsRegistered(Type service, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
+            ArgumentNullException.ThrowIfNull(service);
 
             return _entries.Any(x => x.Service == service && x.Key == key);
         }
@@ -77,10 +76,8 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterSingleton(Type service, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementation, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
-            if (implementation is null)
-                throw new ArgumentNullException(nameof(implementation));
+            ArgumentNullException.ThrowIfNull(service);
+            ArgumentNullException.ThrowIfNull(implementation);
 
             object? singleton = null;
             GetOrCreateEntry(service, key).Add(c => (singleton ??= c.BuildInstance(implementation)));
@@ -116,8 +113,7 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterSingleton<TService>(Func<SimpleContainer, TService> handler, string? key = null)
         {
-            if (handler is null)
-                throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(handler);
 
             object? singleton = null;
             GetOrCreateEntry(typeof(TService), key).Add(c => (singleton ??= handler(c)!));
@@ -131,8 +127,7 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterInstance(Type service, object instance, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
+            ArgumentNullException.ThrowIfNull(service);
 
             GetOrCreateEntry(service, key).Add(_ => instance);
         }
@@ -156,10 +151,8 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterPerRequest(Type service, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementation, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
-            if (implementation is null)
-                throw new ArgumentNullException(nameof(implementation));
+            ArgumentNullException.ThrowIfNull(service);
+            ArgumentNullException.ThrowIfNull(implementation);
 
             GetOrCreateEntry(service, key).Add(c => c.BuildInstance(implementation));
         }
@@ -194,10 +187,8 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterPerRequest(Type service, Func<SimpleContainer, object> handler, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
-            if (handler is null)
-                throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(service);
+            ArgumentNullException.ThrowIfNull(handler);
 
             GetOrCreateEntry(service, key).Add(handler);
         }
@@ -210,8 +201,7 @@ namespace Caliburn.Light
         /// <param name="key">The key.</param>
         public void RegisterPerRequest<TService>(Func<SimpleContainer, TService> handler, string? key = null)
         {
-            if (handler is null)
-                throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(handler);
 
             GetOrCreateEntry(typeof(TService), key).Add(c => handler(c)!);
         }
@@ -224,8 +214,7 @@ namespace Caliburn.Light
         /// <returns>true if handler is successfully removed; otherwise, false.</returns>
         public bool UnregisterHandler(Type service, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
+            ArgumentNullException.ThrowIfNull(service);
 
             var entry = _entries.Find(x => x.Service == service && x.Key == key);
             if (entry is null) return false;
@@ -295,8 +284,7 @@ namespace Caliburn.Light
         /// <returns>The instance.</returns>
         public object? GetInstance(Type service, string? key = null)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
+            ArgumentNullException.ThrowIfNull(service);
 
             var entry = _entries.Find(x => x.Service == service && x.Key == key) ?? _entries.Find(x => x.Service == service);
             if (entry is not null)
@@ -360,8 +348,7 @@ namespace Caliburn.Light
         /// <returns>All the instances or an empty enumerable if none are found.</returns>
         public object[] GetAllInstances(Type service)
         {
-            if (service is null)
-                throw new ArgumentNullException(nameof(service));
+            ArgumentNullException.ThrowIfNull(service);
 
             var instances = _entries
                 .Where(x => x.Service == service)

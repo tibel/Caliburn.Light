@@ -56,8 +56,7 @@ namespace Caliburn.Light
 
         internal DCB_nPs(Action execute)
         {
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
+            ArgumentNullException.ThrowIfNull(execute);
 
             _execute = execute;
         }
@@ -69,8 +68,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPs OnCanExecute(Func<bool> canExecute)
         {
-            if (canExecute is null)
-                throw new ArgumentNullException(nameof(canExecute));
+            ArgumentNullException.ThrowIfNull(canExecute);
 
             _canExecute = canExecute;
             return this;
@@ -84,8 +82,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPs Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
             if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
@@ -118,8 +115,7 @@ namespace Caliburn.Light
 
         internal DCB_nPa(Func<Task> execute)
         {
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
+            ArgumentNullException.ThrowIfNull(execute);
 
             _execute = execute;
         }
@@ -131,8 +127,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPa OnCanExecute(Func<bool> canExecute)
         {
-            if (canExecute is null)
-                throw new ArgumentNullException(nameof(canExecute));
+            ArgumentNullException.ThrowIfNull(canExecute);
 
             _canExecute = canExecute;
             return this;
@@ -146,8 +141,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_nPa Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
             if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
@@ -210,8 +204,7 @@ namespace Caliburn.Light
 
         internal DCB_wPs(Func<object?, TParameter?> coerceParameter, Action<TParameter?> execute)
         {
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
+            ArgumentNullException.ThrowIfNull(execute);
 
             _coerceParameter = coerceParameter;
             _execute = execute;
@@ -224,8 +217,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPs<TParameter> OnCanExecute(Func<TParameter?, bool> canExecute)
         {
-            if (canExecute is null)
-                throw new ArgumentNullException(nameof(canExecute));
+            ArgumentNullException.ThrowIfNull(canExecute);
 
             _canExecute = canExecute;
             return this;
@@ -239,8 +231,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPs<TParameter> Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
             if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
@@ -275,8 +266,7 @@ namespace Caliburn.Light
 
         internal DCB_wPa(Func<object?, TParameter?> coerceParameter, Func<TParameter?, Task> execute)
         {
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
+            ArgumentNullException.ThrowIfNull(execute);
 
             _coerceParameter = coerceParameter;
             _execute = execute;
@@ -289,8 +279,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPa<TParameter> OnCanExecute(Func<TParameter?, bool> canExecute)
         {
-            if (canExecute is null)
-                throw new ArgumentNullException(nameof(canExecute));
+            ArgumentNullException.ThrowIfNull(canExecute);
 
             _canExecute = canExecute;
             return this;
@@ -304,8 +293,7 @@ namespace Caliburn.Light
         /// <returns>The command builder.</returns>
         public DCB_wPa<TParameter> Observe(INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
             if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 

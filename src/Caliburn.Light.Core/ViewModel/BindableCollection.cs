@@ -99,8 +99,7 @@ namespace Caliburn.Light
         /// <param name="items">The collection whose elements should be added to the end of the BindableCollection.</param>
         public void AddRange(IEnumerable<T> items)
         {
-            if (items is null)
-                throw new ArgumentNullException(nameof(items));
+            ArgumentNullException.ThrowIfNull(items);
 
             CheckReentrancy();
             foreach (var item in items) { Items.Add(item); }
@@ -113,8 +112,7 @@ namespace Caliburn.Light
         /// <param name="items">The collection whose elements should be removed from the BindableCollection.</param>
         public void RemoveRange(IEnumerable<T> items)
         {
-            if (items is null)
-                throw new ArgumentNullException(nameof(items));
+            ArgumentNullException.ThrowIfNull(items);
 
             CheckReentrancy();
             foreach (var item in items) { Items.Remove(item); }

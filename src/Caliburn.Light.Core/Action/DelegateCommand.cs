@@ -22,8 +22,7 @@ namespace Caliburn.Light
         /// <param name="canExecute">The canExecute function.</param>
         public DelegateCommand(Action execute, Func<bool>? canExecute = null)
         {
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
+            ArgumentNullException.ThrowIfNull(execute);
 
             _execute = execute;
             _canExecute = canExecute;
@@ -38,12 +37,9 @@ namespace Caliburn.Light
         /// <param name="propertyNames">The property names.</param>
         public DelegateCommand(Action execute, Func<bool> canExecute, INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
-            if (canExecute is null)
-                throw new ArgumentNullException(nameof(canExecute));
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(execute);
+            ArgumentNullException.ThrowIfNull(canExecute);
+            ArgumentNullException.ThrowIfNull(target);
             if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 
@@ -102,10 +98,8 @@ namespace Caliburn.Light
         /// <param name="canExecute">The canExecute function.</param>
         public DelegateCommand(Func<object?, TParameter?> coerceParameter, Action<TParameter?> execute, Func<TParameter?, bool>? canExecute = null)
         {
-            if (coerceParameter is null)
-                throw new ArgumentNullException(nameof(coerceParameter));
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
+            ArgumentNullException.ThrowIfNull(coerceParameter);
+            ArgumentNullException.ThrowIfNull(execute);
 
             _coerceParameter = coerceParameter;
             _execute = execute;
@@ -123,14 +117,10 @@ namespace Caliburn.Light
         public DelegateCommand(Func<object?, TParameter?> coerceParameter, Action<TParameter?> execute, Func<TParameter?, bool> canExecute,
             INotifyPropertyChanged target, params string[] propertyNames)
         {
-            if (coerceParameter is null)
-                throw new ArgumentNullException(nameof(coerceParameter));
-            if (execute is null)
-                throw new ArgumentNullException(nameof(execute));
-            if (canExecute is null)
-                throw new ArgumentNullException(nameof(canExecute));
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(coerceParameter);
+            ArgumentNullException.ThrowIfNull(execute);
+            ArgumentNullException.ThrowIfNull(canExecute);
+            ArgumentNullException.ThrowIfNull(target);
             if (propertyNames is null || propertyNames.Length == 0)
                 throw new ArgumentNullException(nameof(propertyNames));
 

@@ -14,10 +14,8 @@ namespace Caliburn.Light
         /// <param name="errorMessage">The error message if the rules fails.</param>
         protected ValidationRule(string propertyName, string errorMessage)
         {
-            if (string.IsNullOrEmpty(propertyName))
-                throw new ArgumentNullException(nameof(propertyName));
-            if (string.IsNullOrEmpty(errorMessage))
-                throw new ArgumentNullException(nameof(errorMessage));
+            ArgumentException.ThrowIfNullOrEmpty(propertyName);
+            ArgumentException.ThrowIfNullOrEmpty(errorMessage);
 
             PropertyName = propertyName;
             ErrorMessage = errorMessage;

@@ -34,8 +34,7 @@ namespace Caliburn.Light.WinUI
         /// <param name="frameAdapter">The view-model locator.</param>
         public SuspensionManager(IFrameAdapter frameAdapter)
         {
-            if (frameAdapter is null)
-                throw new ArgumentNullException(nameof(frameAdapter));
+            ArgumentNullException.ThrowIfNull(frameAdapter);
 
             _frameAdapter = frameAdapter;
         }
@@ -158,10 +157,8 @@ namespace Caliburn.Light.WinUI
         /// This can be used to distinguish between multiple application launch scenarios.</param>
         public void RegisterFrame(Frame frame, string sessionStateKey, string? sessionBaseKey = null)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
-            if (string.IsNullOrEmpty(sessionStateKey))
-                throw new ArgumentNullException(nameof(sessionStateKey));
+            ArgumentNullException.ThrowIfNull(frame);
+            ArgumentException.ThrowIfNullOrEmpty(sessionStateKey);
 
             if (frame.GetValue(FrameSessionStateKeyProperty) is not null)
             {
@@ -191,8 +188,7 @@ namespace Caliburn.Light.WinUI
         /// managed.</param>
         public void UnregisterFrame(Frame frame)
         {
-            if (frame is null)
-                throw new ArgumentNullException(nameof(frame));
+            ArgumentNullException.ThrowIfNull(frame);
 
             var frameSessionKey = (string)frame.GetValue(FrameSessionStateKeyProperty);
             if (frameSessionKey is null)

@@ -14,8 +14,7 @@ namespace Caliburn.Light
         /// <param name="task">The supplied Task.</param>
         public TaskEventArgs(Task task)
         {
-            if (task is null)
-                throw new ArgumentNullException(nameof(task));
+            ArgumentNullException.ThrowIfNull(task);
 
             Task = task;
         }

@@ -20,10 +20,8 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The weak handler.</param>
         protected WeakEventHandlerBase(TSubscriber subscriber, Action<TSubscriber, object, TEventArgs> weakHandler)
         {
-            if (subscriber is null)
-                throw new ArgumentNullException(nameof(subscriber));
-            if (weakHandler is null)
-                throw new ArgumentNullException(nameof(weakHandler));
+            ArgumentNullException.ThrowIfNull(subscriber);
+            ArgumentNullException.ThrowIfNull(weakHandler);
 
             _subscriber = new WeakReference<TSubscriber>(subscriber);
             _weakHandler = weakHandler;
@@ -83,12 +81,9 @@ namespace Caliburn.Light
         /// <param name="weakHandler">The weak handler.</param>
         protected WeakEventHandlerBase(TSource source, TSubscriber subscriber, Action<TSubscriber, object?, TEventArgs> weakHandler)
         {
-            if (source is null)
-                throw new ArgumentNullException(nameof(source));
-            if (subscriber is null)
-                throw new ArgumentNullException(nameof(subscriber));
-            if (weakHandler is null)
-                throw new ArgumentNullException(nameof(weakHandler));
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(subscriber);
+            ArgumentNullException.ThrowIfNull(weakHandler);
 
             _source = new WeakReference<TSource>(source);
             _subscriber = new WeakReference<TSubscriber>(subscriber);

@@ -24,10 +24,8 @@ namespace Caliburn.Light
         public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher? dispatcher = default)
             where TTarget : class
         {
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
-            if (handler is null)
-                throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(target);
+            ArgumentNullException.ThrowIfNull(handler);
 
             Task wrapper(TTarget t, TMessage m)
             {
@@ -52,10 +50,8 @@ namespace Caliburn.Light
         public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher? dispatcher = default)
             where TTarget : class
         {
-            if (target is null)
-                throw new ArgumentNullException(nameof(target));
-            if (handler is null)
-                throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(target);
+            ArgumentNullException.ThrowIfNull(handler);
 
             var item = new EventAggregatorHandler<TTarget, TMessage>(target, handler, dispatcher ?? CurrentThreadDispatcher.Instance);
             SubscribeCore(item);
@@ -86,8 +82,7 @@ namespace Caliburn.Light
         /// <param name="handler">The handler to unsubscribe.</param>
         public void Unsubscribe(IEventAggregatorHandler handler)
         {
-            if (handler is null)
-                throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(handler);
 
             lock (_lockObject)
             {
@@ -105,8 +100,7 @@ namespace Caliburn.Light
         /// <param name="message">The message instance.</param>
         public void Publish(object message)
         {
-            if (message is null)
-                throw new ArgumentNullException(nameof(message));
+            ArgumentNullException.ThrowIfNull(message);
 
             lock (_lockObject)
             {

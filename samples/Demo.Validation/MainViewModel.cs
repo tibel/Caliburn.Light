@@ -21,8 +21,7 @@ namespace Demo.Validation
 
         public MainViewModel(IWindowManager windowManager)
         {
-            if (windowManager is null)
-                throw new ArgumentNullException(nameof(windowManager));
+            ArgumentNullException.ThrowIfNull(windowManager);
 
             _windowManager = windowManager;
 

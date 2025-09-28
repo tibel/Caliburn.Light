@@ -20,10 +20,8 @@ namespace Caliburn.Light.WinUI
         /// <param name="serviceProvider">The service provider.</param>
         public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceProvider serviceProvider)
         {
-            if (typeResolver is null)
-                throw new ArgumentNullException(nameof(typeResolver));
-            if (serviceProvider is null)
-                throw new ArgumentNullException(nameof(serviceProvider));
+            ArgumentNullException.ThrowIfNull(typeResolver);
+            ArgumentNullException.ThrowIfNull(serviceProvider);
 
             _typeResolver = typeResolver;
             _serviceProvider = serviceProvider;
@@ -37,8 +35,7 @@ namespace Caliburn.Light.WinUI
         /// <returns>The view.</returns>
         public UIElement LocateForModel(object model, string? context)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var view = TryGetViewFromViewAware(model, context);
             if (view is not null)
@@ -83,8 +80,7 @@ namespace Caliburn.Light.WinUI
         /// <returns>The view model.</returns>
         public object? LocateForView(UIElement view)
         {
-            if (view is null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
 
             if (view is FrameworkElement frameworkElement && frameworkElement.DataContext is not null)
             {
