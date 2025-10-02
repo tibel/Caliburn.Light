@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 
 namespace Caliburn.Light.WinUI
@@ -48,7 +49,7 @@ namespace Caliburn.Light.WinUI
         /// <typeparam name="TViewModel">The view-model type.</typeparam>
         /// <param name="context">The context instance (or null).</param>
         /// <remarks>Return self for method chaining.</remarks>
-        public ViewModelTypeResolver AddMapping<TView, TViewModel>(string? context = null)
+        public ViewModelTypeResolver AddMapping<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
             where TView : UIElement
             where TViewModel : INotifyPropertyChanged
         {

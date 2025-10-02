@@ -7,7 +7,7 @@ namespace Caliburn.Light.WinUI
     /// <summary>
     /// An <see cref="IValueConverter"/> which converts <see cref="bool"/> to <see cref="Visibility"/>.
     /// </summary>
-    public sealed class BooleanToVisibilityConverter : IValueConverter
+    public sealed partial class BooleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
         /// Converts a boolean value to a <see cref="Visibility"/> value.

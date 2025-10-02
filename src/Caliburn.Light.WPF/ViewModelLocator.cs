@@ -53,8 +53,10 @@ namespace Caliburn.Light.WPF
                 return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
             }
 
+#pragma warning disable IL2072 // ViewModelTypeResolver.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
             return _serviceProvider.GetService(viewType) as UIElement
                 ?? (UIElement)Activator.CreateInstance(viewType)!;
+#pragma warning restore IL2072 // ViewModelTypeResolver.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
         }
 
         private static UIElement? TryGetViewFromViewAware(object model, string? context)
