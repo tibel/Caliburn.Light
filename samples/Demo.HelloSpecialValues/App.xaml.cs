@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -15,8 +16,8 @@ namespace Demo.HelloSpecialValues
     /// </summary>
     public partial class App : Application
     {
-        private SimpleContainer _container;
-        private Window _window;
+        private SimpleContainer? _container;
+        private Window? _window;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -27,6 +28,7 @@ namespace Demo.HelloSpecialValues
             InitializeComponent();
         }
 
+        [MemberNotNull(nameof(_container))]
         private void Configure()
         {
             _container = new SimpleContainer();
@@ -60,7 +62,7 @@ namespace Demo.HelloSpecialValues
             rootFrame.NavigationFailed += OnNavigationFailed;
 
             // Attach the framework
-            _container.GetInstance<IFrameAdapter>().AttachTo(rootFrame);
+            _container.GetRequiredInstance<IFrameAdapter>().AttachTo(rootFrame);
 
             // Navigate to the first page
             rootFrame.Navigate(typeof(MainPage), args.Arguments);
@@ -73,6 +75,6 @@ namespace Demo.HelloSpecialValues
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
-        public Window MainWindow => _window;
+        public Window? MainWindow => _window;
     }
 }

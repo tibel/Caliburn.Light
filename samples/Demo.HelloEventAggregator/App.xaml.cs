@@ -9,7 +9,7 @@ namespace Demo.HelloEventAggregator
     /// </summary>
     public partial class App : Application
     {
-        private SimpleContainer _container;
+        private readonly SimpleContainer _container;
 
         public App()
         {
