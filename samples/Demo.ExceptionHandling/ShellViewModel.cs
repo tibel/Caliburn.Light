@@ -42,6 +42,12 @@ namespace Demo.ExceptionHandling
             base.OnViewAttached(view, context);
         }
 
+        protected override void OnViewDetached(object view, string context)
+        {
+            _dispatcher = CurrentThreadDispatcher.Instance;
+            base.OnViewDetached(view, context);
+        }
+
         private void OnExecute()
         {
             Debug.Assert(_dispatcher.CheckAccess());
