@@ -38,8 +38,7 @@ namespace Caliburn.Light
             else
                 views[index] = entry;
 
-            var nonGeneratedView = ViewHelper.GetFirstNonGeneratedView(view);
-            OnViewAttached(nonGeneratedView, context);
+            OnViewAttached(view, context);
         }
 
         bool IViewAware.DetachView(object view, string? context)
@@ -50,13 +49,12 @@ namespace Caliburn.Light
                 context = DefaultContext;
 
             Trace.TraceInformation("Detaching view {0} from {1}.", view, this);
-            return _views?.RemoveAll(p => string.Equals(p.Key, context, StringComparison.Ordinal)) > 0;
-        }
+            var detached = _views?.RemoveAll(p => string.Equals(p.Key, context, StringComparison.Ordinal)) > 0;
 
-        /// <summary>
-        /// Raised when a view is attached.
-        /// </summary>
-        public event EventHandler<ViewAttachedEventArgs>? ViewAttached;
+            OnViewDetached(view, context);
+
+            return detached;
+        }
 
         /// <summary>
         /// Called when a view is attached.
@@ -65,7 +63,15 @@ namespace Caliburn.Light
         /// <param name="context">The context in which the view appears.</param>
         protected virtual void OnViewAttached(object view, string context)
         {
-            ViewAttached?.Invoke(this, new ViewAttachedEventArgs(view, context));
+        }
+
+        /// <summary>
+        /// Called when a view is detached.
+        /// </summary>
+        /// <param name="view">The view.</param>
+        /// <param name="context">The context in which the view appears.</param>
+        protected virtual void OnViewDetached(object view, string context)
+        {
         }
 
         object? IViewAware.GetView(string? context)

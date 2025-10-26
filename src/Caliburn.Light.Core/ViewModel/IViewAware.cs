@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Caliburn.Light
+﻿namespace Caliburn.Light
 {
     /// <summary>
     /// Denotes a class which is aware of its view(s).
@@ -27,10 +25,5 @@ namespace Caliburn.Light
         /// <param name="context">The context denoting which view to retrieve.</param>
         /// <returns>The view.</returns>
         object? GetView(string? context = null);
-
-        /// <summary>
-        /// Raised when a view is attached.
-        /// </summary>
-        event EventHandler<ViewAttachedEventArgs>? ViewAttached;
     }
 }
