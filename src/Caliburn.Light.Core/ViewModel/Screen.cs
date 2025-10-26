@@ -137,10 +137,9 @@ namespace Caliburn.Light
                 return;
             }
 
-            foreach (var entry in Views)
+            foreach (var entry in ((IViewAware)this).GetViews())
             {
-                var view = entry.Value.Target;
-                if (view is not null && await ViewHelper.TryCloseAsync(view))
+                if (await ViewHelper.TryCloseAsync(entry.Value))
                     return;
             }
 

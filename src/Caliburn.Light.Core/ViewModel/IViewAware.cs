@@ -1,4 +1,6 @@
-﻿namespace Caliburn.Light
+﻿using System.Collections.Generic;
+
+namespace Caliburn.Light
 {
     /// <summary>
     /// Denotes a class which is aware of its view(s).
@@ -25,5 +27,11 @@
         /// <param name="context">The context denoting which view to retrieve.</param>
         /// <returns>The view.</returns>
         object? GetView(string? context = null);
+
+        /// <summary>
+        /// Gets all views previously attached to this instance.
+        /// </summary>
+        /// <returns>The views.</returns>
+        IEnumerable<KeyValuePair<string, object>> GetViews();
     }
 }

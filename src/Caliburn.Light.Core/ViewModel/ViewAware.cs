@@ -13,13 +13,6 @@ namespace Caliburn.Light
 
         private List<KeyValuePair<string, WeakReference>>? _views;
 
-        private List<KeyValuePair<string, WeakReference>> EnsureViews() => _views ??= new List<KeyValuePair<string, WeakReference>>(1);
-
-        /// <summary>
-        /// The view cache for this instance.
-        /// </summary>
-        protected IReadOnlyList<KeyValuePair<string, WeakReference>> Views => EnsureViews();
-
         void IViewAware.AttachView(object view, string? context)
         {
             ArgumentNullException.ThrowIfNull(view);
@@ -27,16 +20,16 @@ namespace Caliburn.Light
             if (context is null)
                 context = DefaultContext;
 
+            if (_views is null)
+                _views = new List<KeyValuePair<string, WeakReference>>(1);
+
             Trace.TraceInformation("Attaching view {0} to {1}.", view, this);
-
-            var views = EnsureViews();
-            var index = views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
-
+            var index = _views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
             var entry = new KeyValuePair<string, WeakReference>(context, new WeakReference(view));
             if (index < 0)
-                views.Add(entry);
+                _views.Add(entry);
             else
-                views[index] = entry;
+                _views[index] = entry;
 
             OnViewAttached(view, context);
         }
@@ -81,6 +74,19 @@ namespace Caliburn.Light
 
             var entry = _views?.Find(p => string.Equals(p.Key, context, StringComparison.Ordinal)) ?? default;
             return entry.Value?.Target;
+        }
+
+        IEnumerable<KeyValuePair<string, object>> IViewAware.GetViews()
+        {
+            if (_views is null)
+                yield break;
+
+            foreach (var entry in _views)
+            {
+                var view = entry.Value.Target;
+                if (view is not null)
+                    yield return new KeyValuePair<string, object>(entry.Key, view);
+            }
         }
     }
 }
