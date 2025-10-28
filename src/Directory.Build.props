@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>5.3.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionPrefix>6.0.0</VersionPrefix>
+    <VersionSuffix>beta.1</VersionSuffix>
 
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -10,13 +10,20 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Product>Caliburn.Light</Product>
     <Authors>Thomas Ibel</Authors>
-    <Copyright>Copyright © Thomas Ibel 2014-2023</Copyright>
+    <Copyright>Copyright © Thomas Ibel 2014-2025</Copyright>
     <PackageProjectUrl>https://github.com/tibel/Caliburn.Light</PackageProjectUrl>
     <Company>https://github.com/tibel</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
     <PackageTags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
-    <PackageReleaseNotes>- fix IViewModelLocator not found</PackageReleaseNotes>
+    <PackageReleaseNotes>
+			- .NET 8.0 only
+			- enabled nullable
+			- WinUI: removed SuspensionManager
+			- added ViewAware.OnViewDetached(view, context) and removed IViewAware.ViewAttached
+			- added  IViewAware.GetViews() and removed ViewAware.Views
+			- fixed context parameter to be of type string everywhere
+		</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
