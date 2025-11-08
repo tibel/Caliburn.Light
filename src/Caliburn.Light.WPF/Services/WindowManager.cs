@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -301,7 +302,7 @@ namespace Caliburn.Light.WPF
             while (viewModel is not null)
             {
                 if (viewModel is IViewAware viewAware)
-                    view = viewAware.GetView();
+                    view = viewAware.GetViews().FirstOrDefault().Value;
 
                 if (view is not null)
                     break;
