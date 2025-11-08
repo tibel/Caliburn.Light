@@ -298,6 +298,9 @@ namespace Caliburn.Light
             if (service.IsGenericType && DelegateType.IsAssignableFrom(service))
             {
                 var typeToCreate = service.GenericTypeArguments[0];
+                if (!IsRegistered(typeToCreate, key))
+                    throw new NotSupportedException(string.Format("Requesting type Func of '{0}' with key {1} is not supported.", service, key));
+
                 var factoryFactoryType = typeof(FactoryFactory<>).MakeGenericType(typeToCreate);
                 var factoryFactoryHost = Activator.CreateInstance(factoryFactoryType);
                 var factoryFactoryMethod = factoryFactoryType.GetRuntimeMethod("Create", new[] { typeof(SimpleContainer), typeof(string) });
@@ -307,7 +310,7 @@ namespace Caliburn.Light
             if (service.IsGenericType && EnumerableType.IsAssignableFrom(service))
             {
                 if (key is not null)
-                    throw new InvalidOperationException(string.Format("Requesting type '{0}' with key {1} is not supported.", service, key));
+                    throw new NotSupportedException(string.Format("Requesting type '{0}' with key {1} is not supported.", service, key));
 
                 var listType = service.GenericTypeArguments[0];
                 var instances = GetAllInstances(listType);
@@ -385,7 +388,7 @@ namespace Caliburn.Light
                 throw new InvalidOperationException(string.Format("Type '{0}' has no public constructor.", type));
 
             var args = constructor.GetParameters()
-                .Select(info => GetInstance(info.ParameterType, null))
+                .Select(info => GetRequiredInstance(info.ParameterType, null))
                 .ToArray();
 
             return ActivateInstance(type, args);
@@ -410,10 +413,7 @@ namespace Caliburn.Light
 
         private sealed class FactoryFactory<T>
         {
-            public Func<T?> Create(SimpleContainer container, string? key)
-            {
-                return () => (T?)container.GetInstance(typeof(T), key);
-            }
+            public Func<T> Create(SimpleContainer container, string? key) => () => container.GetRequiredInstance<T>(key);
         }
     }
 }

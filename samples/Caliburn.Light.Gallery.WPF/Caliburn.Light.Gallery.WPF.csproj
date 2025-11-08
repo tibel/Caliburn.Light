@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
+    <ProjectReference Include="..\..\src\Caliburn.Light.WPF\Caliburn.Light.WPF.csproj" />
+  </ItemGroup>
+</Project>

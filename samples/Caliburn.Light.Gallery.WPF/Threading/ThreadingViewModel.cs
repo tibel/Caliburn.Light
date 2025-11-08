@@ -1,0 +1,83 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Caliburn.Light;
+
+namespace Caliburn.Light.Gallery.WPF.Threading
+{
+    public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
+    {
+        private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
+
+        public string? DisplayName => "Threading";
+
+        public ThreadingViewModel()
+        {
+            ExecuteCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnExecute)
+                .Build();
+
+            UIContextRunCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnUIContextRun)
+                .Build();
+
+            TaskRunCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnTaskRun)
+                .Build();
+
+            AsyncCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnAsync)
+                .Build();
+        }
+
+        public ICommand ExecuteCommand { get; }
+        public ICommand UIContextRunCommand { get; }
+        public ICommand TaskRunCommand { get; }
+        public ICommand AsyncCommand { get; }
+
+        protected override void OnViewAttached(object view, string context)
+        {
+            base.OnViewAttached(view, context);
+            _dispatcher = ViewHelper.GetDispatcher(view);
+        }
+
+        protected override void OnViewDetached(object view, string context)
+        {
+            _dispatcher = CurrentThreadDispatcher.Instance;
+            base.OnViewDetached(view, context);
+        }
+
+        private void OnExecute()
+        {
+            Debug.Assert(_dispatcher.CheckAccess());
+            throw new InvalidOperationException("Error on execute.");
+        }
+
+        private async Task OnUIContextRun()
+        {
+            await Task.Delay(10).ConfigureAwait(false);
+            Debug.Assert(!_dispatcher.CheckAccess());
+
+            await _dispatcher.SwitchTo();
+            Debug.Assert(_dispatcher.CheckAccess());
+
+            throw new InvalidOperationException("Error on a UI task.");
+        }
+
+        private async Task OnTaskRun()
+        {
+            await Task.Delay(10).ConfigureAwait(false);
+            Debug.Assert(!_dispatcher.CheckAccess());
+            throw new InvalidOperationException("Error on a background task.");
+        }
+
+        private async Task OnAsync()
+        {
+            Debug.Assert(_dispatcher.CheckAccess());
+            await Task.Delay(10).ConfigureAwait(true);
+            Debug.Assert(_dispatcher.CheckAccess());
+            throw new InvalidOperationException("Error on UI task.");
+        }
+    }
+}
