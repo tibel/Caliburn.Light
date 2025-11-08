@@ -8,64 +8,34 @@ namespace Caliburn.Light.WPF
     /// <summary>
     /// Integrate framework life-cycle handling with <see cref="Page"/> navigation.
     /// </summary>
-    internal sealed class PageLifecycle
+    public sealed class PageLifecycle
     {
-        private static readonly DependencyProperty LifecycleProperty =
-            DependencyProperty.RegisterAttached("_Lifecycle", typeof(PageLifecycle), typeof(PageLifecycle), null);
-
-        /// <summary>
-        /// Attaches the framework life-cycle handling to <see cref="Frame"/>.
-        /// </summary>
-        /// <param name="frame">The navigation control.</param>
-        /// <returns>The attached life-cycle instance.</returns>
-        public static PageLifecycle AttachTo(Frame frame)
-        {
-            ArgumentNullException.ThrowIfNull(frame);
-
-            var lifecycle = (PageLifecycle)frame.GetValue(LifecycleProperty);
-            if (lifecycle is null)
-            {
-                lifecycle = new PageLifecycle();
-
-                frame.Navigating += lifecycle.OnNavigating;
-                frame.Navigated += lifecycle.OnNavigated;
-                frame.NavigationFailed += lifecycle.OnNavigationFailed;
-
-                frame.SetValue(LifecycleProperty, lifecycle);
-            }
-
-            return lifecycle;
-        }
-
-        /// <summary>
-        /// Attaches the framework life-cycle handling to <see cref="NavigationWindow"/>.
-        /// </summary>
-        /// <param name="navigationWindow">The navigation control.</param>
-        /// <returns>The attached life-cycle instance.</returns>
-        public static PageLifecycle AttachTo(NavigationWindow navigationWindow)
-        {
-            ArgumentNullException.ThrowIfNull(navigationWindow);
-
-            var lifecycle = (PageLifecycle)navigationWindow.GetValue(LifecycleProperty);
-            if (lifecycle is null)
-            {
-                lifecycle = new PageLifecycle();
-
-                navigationWindow.Navigating += lifecycle.OnNavigating;
-                navigationWindow.Navigated += lifecycle.OnNavigated;
-                navigationWindow.NavigationFailed += lifecycle.OnNavigationFailed;
-
-                navigationWindow.SetValue(LifecycleProperty, lifecycle);
-            }
-
-            return lifecycle;
-        }
-
         private Page? _previousPage;
 
-        private PageLifecycle()
+        /// <summary>
+        /// Initializes a new instance of <see cref="PageLifecycle"/>
+        /// </summary>
+        /// <param name="navigationService">The navigation service</param>
+        /// <param name="context">The context in which the view appears.</param>
+        public PageLifecycle(NavigationService navigationService, string? context)
         {
+            NavigationService = navigationService;
+            Context = context;
+
+            navigationService.Navigating += OnNavigating;
+            navigationService.Navigated += OnNavigated;
+            navigationService.NavigationFailed += OnNavigationFailed;
         }
+
+        /// <summary>
+        /// Gets the navigation service.
+        /// </summary>
+        public NavigationService NavigationService { get; }
+
+        /// <summary>
+        /// Gets the context in which the view appears.
+        /// </summary>
+        public string? Context { get; }
 
         private void OnNavigating(object sender, NavigatingCancelEventArgs e)
         {
