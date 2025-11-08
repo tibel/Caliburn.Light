@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
@@ -10,6 +9,7 @@ namespace Caliburn.Light.WPF
     /// </summary>
     public sealed class PageLifecycle
     {
+        private bool _actuallyNavigating;
         private Page? _previousPage;
 
         /// <summary>
@@ -46,18 +46,20 @@ namespace Caliburn.Light.WPF
             if (parent.Content is not Page page)
                 return;
 
-            if (page.DataContext is ICloseGuard guard)
+            if (_actuallyNavigating)
             {
-                var task = guard.CanCloseAsync();
-                if (!task.IsCompleted)
-                    throw new NotSupportedException("Asynchronous task is not supported yet.");
-
-                if (!task.Result)
-                    e.Cancel = true;
+                _actuallyNavigating = false;
+                _previousPage = page;
+                return;
             }
 
-            if (!e.Cancel)
-                _previousPage = page;
+            if (!EvaluateCanClose(page, e))
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            _previousPage = page;
         }
 
         private void OnNavigated(object sender, NavigationEventArgs e)
@@ -75,19 +77,19 @@ namespace Caliburn.Light.WPF
                 OnNavigatedTo(page);
         }
 
-        private static void OnNavigatedFrom(Page page)
+        private void OnNavigatedFrom(Page page)
         {
             if (page.DataContext is IActivatable activatable)
                 activatable.DeactivateAsync(!page.KeepAlive).Observe();
 
             if (page.DataContext is IViewAware viewAware)
-                viewAware.DetachView(page, View.GetContext(page));
+                viewAware.DetachView(page, Context);
         }
 
-        private static void OnNavigatedTo(Page page)
+        private void OnNavigatedTo(Page page)
         {
             if (page.DataContext is IViewAware viewAware)
-                viewAware.AttachView(page, View.GetContext(page));
+                viewAware.AttachView(page, Context);
 
             if (page.DataContext is IActivatable activatable)
                 activatable.ActivateAsync().Observe();
@@ -96,6 +98,49 @@ namespace Caliburn.Light.WPF
         private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             _previousPage = null;
+        }
+
+        private bool EvaluateCanClose(Page page, NavigatingCancelEventArgs e)
+        {
+            if (page.DataContext is not ICloseGuard guard)
+                return true;
+
+            var task = guard.CanCloseAsync();
+            if (task.IsCompleted)
+                return task.Result;
+
+            CloseViewAsync(task, e);
+            return false;
+        }
+
+        private async void CloseViewAsync(Task<bool> task, NavigatingCancelEventArgs e)
+        {
+            var canClose = await task.ConfigureAwait(true);
+            if (!canClose)
+                return;
+
+            _actuallyNavigating = true;
+
+            switch (e.NavigationMode)
+            {
+                case NavigationMode.New:
+                    if (e.Content is not null)
+                        NavigationService.Navigate(e.Content, e.ExtraData);
+                    else
+                        NavigationService.Navigate(e.Uri, e.ExtraData);
+                    break;
+                case NavigationMode.Back:
+                    NavigationService.GoBack();
+                    break;
+                case NavigationMode.Forward:
+                    NavigationService.GoForward();
+                    break;
+                case NavigationMode.Refresh:
+                    NavigationService.Refresh();
+                    break;
+            }
+
+            _actuallyNavigating = false;
         }
     }
 }
