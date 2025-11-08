@@ -5,7 +5,7 @@ using Windows.UI.Popups;
 
 namespace Demo.HelloSpecialValues
 {
-    public class MainPageViewModel : Screen
+    public sealed class MainPageViewModel : Screen
     {
         public MainPageViewModel()
         {
@@ -27,8 +27,11 @@ namespace Demo.HelloSpecialValues
                 .Build();
         }
 
-        private async Task CharacterSelected(CharacterViewModel character)
+        private async Task CharacterSelected(CharacterViewModel? character)
         {
+            if (character is null)
+                return;
+
             var dialog = new MessageDialog(string.Format("{0} selected.", character.Name), "Character Selected");
             await dialog.ShowAsyncEx();
         }

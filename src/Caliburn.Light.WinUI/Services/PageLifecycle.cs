@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
-namespace Caliburn.Light.WPF
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Integrate framework life-cycle handling with <see cref="Page"/> navigation.
@@ -15,22 +16,22 @@ namespace Caliburn.Light.WPF
         /// <summary>
         /// Initializes a new instance of <see cref="PageLifecycle"/>
         /// </summary>
-        /// <param name="navigationService">The navigation service.</param>
+        /// <param name="view">The navigation service.</param>
         /// <param name="context">The context in which the view appears.</param>
-        public PageLifecycle(NavigationService navigationService, string? context)
+        public PageLifecycle(Frame view, string? context)
         {
-            NavigationService = navigationService;
+            View = view;
             Context = context;
 
-            navigationService.Navigating += OnNavigating;
-            navigationService.Navigated += OnNavigated;
-            navigationService.NavigationFailed += OnNavigationFailed;
+            view.Navigating += OnNavigating;
+            view.Navigated += OnNavigated;
+            view.NavigationFailed += OnNavigationFailed;
         }
 
         /// <summary>
         /// Gets the navigation service.
         /// </summary>
-        public NavigationService NavigationService { get; }
+        public Frame View { get; }
 
         /// <summary>
         /// Gets the context in which the view appears.
@@ -80,7 +81,7 @@ namespace Caliburn.Light.WPF
         private void OnNavigatedFrom(Page page)
         {
             if (page.DataContext is IActivatable activatable)
-                activatable.DeactivateAsync(!page.KeepAlive).Observe();
+                activatable.DeactivateAsync(page.NavigationCacheMode == NavigationCacheMode.Disabled).Observe();
 
             if (page.DataContext is IViewAware viewAware)
                 viewAware.DetachView(page, Context);
@@ -124,19 +125,16 @@ namespace Caliburn.Light.WPF
             switch (e.NavigationMode)
             {
                 case NavigationMode.New:
-                    if (e.Content is not null)
-                        NavigationService.Navigate(e.Content, e.ExtraData);
-                    else
-                        NavigationService.Navigate(e.Uri, e.ExtraData);
+                    View.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
                     break;
                 case NavigationMode.Back:
-                    NavigationService.GoBack();
+                    View.GoBack();
                     break;
                 case NavigationMode.Forward:
-                    NavigationService.GoForward();
+                    View.GoForward();
                     break;
                 case NavigationMode.Refresh:
-                    NavigationService.Refresh();
+                    View.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
                     break;
             }
 

@@ -5,7 +5,7 @@ namespace Demo.HelloSpecialValues
 {
     public sealed class ClickedItem : ISpecialValue
     {
-        public object Resolve(CommandExecutionContext context)
+        public object? Resolve(CommandExecutionContext context)
         {
             return context.EventArgs is ItemClickEventArgs args
                 ? args.ClickedItem

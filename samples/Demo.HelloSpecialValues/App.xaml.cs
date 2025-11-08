@@ -1,9 +1,6 @@
 ﻿using Caliburn.Light;
 using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -33,7 +30,6 @@ namespace Demo.HelloSpecialValues
         {
             _container = new SimpleContainer();
 
-            _container.RegisterSingleton<IFrameAdapter, FrameAdapter>();
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
 
@@ -53,26 +49,18 @@ namespace Demo.HelloSpecialValues
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             _window = new MainWindow();
+            _window.Title = "Demo.HelloSpecialValues";
 
             // Start the framework
             Configure();
 
-            // Get the root frame
-            var rootFrame = (Frame)_window.Content;
-            rootFrame.NavigationFailed += OnNavigationFailed;
+            var content = new MainPage();
+            content.DataContext = new MainPageViewModel();
+            View.SetBind(content, true);
 
-            // Attach the framework
-            _container.GetRequiredInstance<IFrameAdapter>().AttachTo(rootFrame);
-
-            // Navigate to the first page
-            rootFrame.Navigate(typeof(MainPage), args.Arguments);
+            _window.Content = content;
 
             _window.Activate();
-        }
-
-        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
         public Window? MainWindow => _window;

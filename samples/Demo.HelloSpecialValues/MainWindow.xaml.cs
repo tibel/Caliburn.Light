@@ -13,7 +13,6 @@ namespace Demo.HelloSpecialValues
         public MainWindow()
         {
             InitializeComponent();
-            Title = "Demo.HelloSpecialValues";
         }
     }
 }
