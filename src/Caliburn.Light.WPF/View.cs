@@ -23,9 +23,9 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="d">The element the <see cref="IViewModelLocator"/> is attached to.</param>
         /// <returns>The <see cref="IViewModelLocator"/>.</returns>
-        public static IViewModelLocator GetViewModelLocator(DependencyObject d)
+        public static IViewModelLocator? GetViewModelLocator(DependencyObject d)
         {
-            return (IViewModelLocator)d.GetValue(ViewModelLocatorProperty);
+            return (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="d">The element to attach the <see cref="IViewModelLocator"/> to.</param>
         /// <param name="value">The <see cref="IViewModelLocator"/>.</param>
-        public static void SetViewModelLocator(DependencyObject d, IViewModelLocator value)
+        public static void SetViewModelLocator(DependencyObject d, IViewModelLocator? value)
         {
             d.SetValue(ViewModelLocatorProperty, value);
         }
@@ -120,9 +120,9 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="d">The element the context is attached to.</param>
         /// <returns>The context.</returns>
-        public static string GetContext(DependencyObject d)
+        public static string? GetContext(DependencyObject d)
         {
-            return (string)d.GetValue(ContextProperty);
+            return (string?)d.GetValue(ContextProperty);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="d">The element to attach the context to.</param>
         /// <param name="value">The context.</param>
-        public static void SetContext(DependencyObject d, string value)
+        public static void SetContext(DependencyObject d, string? value)
         {
             d.SetValue(ContextProperty, value);
         }
@@ -189,7 +189,7 @@ namespace Caliburn.Light.WPF
                 CreateView(fe, fe.DataContext, (string)e.NewValue);
         }
 
-        private static void BindViewModel(FrameworkElement view, object oldModel, object newModel, string oldContext, string newContext)
+        private static void BindViewModel(FrameworkElement view, object oldModel, object newModel, string? oldContext, string? newContext)
         {
             if (oldModel is IViewAware oldViewAware)
                 oldViewAware.DetachView(view, oldContext);
@@ -198,7 +198,7 @@ namespace Caliburn.Light.WPF
                 newViewAware.AttachView(view, newContext);
         }
 
-        private static void CreateView(FrameworkElement parentElement, object model, string context)
+        private static void CreateView(FrameworkElement parentElement, object model, string? context)
         {
             if (model is null)
             {
@@ -267,7 +267,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="dependencyObject">The dependency object to bind to.</param>
         /// <returns>The command parameter.</returns>
-        public static object GetCommandParameter(DependencyObject dependencyObject)
+        public static object? GetCommandParameter(DependencyObject dependencyObject)
         {
             return dependencyObject.GetValue(CommandParameterProperty);
         }
@@ -277,7 +277,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="dependencyObject">The dependency object to bind to.</param>
         /// <param name="value">The command parameter.</param>
-        public static void SetCommandParameter(DependencyObject dependencyObject, object value)
+        public static void SetCommandParameter(DependencyObject dependencyObject, object? value)
         {
             dependencyObject.SetValue(CommandParameterProperty, value);
         }
