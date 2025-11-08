@@ -24,7 +24,7 @@ namespace Caliburn.Light
             if (parameter is TParameter typedParameter)
                 return typedParameter;
 
-            return (TParameter)Convert.ChangeType(parameter, typeof(TParameter));
+            return (TParameter?)Convert.ChangeType(parameter, typeof(TParameter));
         }
     }
 }

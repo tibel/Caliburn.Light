@@ -36,7 +36,7 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The resolved value.</returns>
-        public object Resolve(CommandExecutionContext context)
+        public object? Resolve(CommandExecutionContext context)
         {
             var sourceOverride = SourceOverride;
             if (sourceOverride is not null)
