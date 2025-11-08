@@ -1,6 +1,7 @@
 ﻿using Caliburn.Light;
 using Caliburn.Light.Gallery.WPF.Hierarchies;
 using Caliburn.Light.Gallery.WPF.Home;
+using Caliburn.Light.Gallery.WPF.PageNavigation;
 using Caliburn.Light.Gallery.WPF.PubSub;
 using Caliburn.Light.Gallery.WPF.SimpleMDI;
 using Caliburn.Light.Gallery.WPF.Threading;
@@ -16,7 +17,7 @@ namespace Caliburn.Light.Gallery.WPF
     /// </summary>
     public sealed partial class App : Application
     {
-        private SimpleContainer _container;
+        private readonly SimpleContainer _container;
 
         public App()
         {
@@ -39,6 +40,7 @@ namespace Caliburn.Light.Gallery.WPF
             AddDemo<SimpleMDIView, SimpleMDIViewModel>("Simple MDI");
             AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies");
             AddDemo<ThreadingView, ThreadingViewModel>("Threading");
+            AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation");
         }
 
         protected override void OnStartup(StartupEventArgs e)

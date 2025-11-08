@@ -1,0 +1,18 @@
+﻿<Page x:Class="Caliburn.Light.Gallery.WPF.PageNavigation.Child1View"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:cal="https://github.com/tibel/Caliburn.Light/"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Caliburn.Light.Gallery.WPF.PageNavigation"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Background="LightGreen">
+    <Page.DataContext>
+        <local:Child1ViewModel />
+    </Page.DataContext>
+    <StackPanel VerticalAlignment="Bottom">
+        <Button Content="Navigate Child 2"
+                Command="{Binding NavigateCommand, Mode=OneTime}" />
+    </StackPanel>
+</Page>
