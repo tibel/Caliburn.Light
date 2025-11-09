@@ -16,6 +16,23 @@ namespace Caliburn.Light.WinUI
         private readonly Dictionary<ViewTypeLookupKey, Type> _viewTypeLookup = new Dictionary<ViewTypeLookupKey, Type>(new ViewTypeLookupKeyComparer());
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ViewModelTypeResolver"/> class.
+        /// </summary>
+        /// <param name="mappings">The view-model type mappings.</param>
+        public ViewModelTypeResolver(IEnumerable<ViewModelTypeMapping> mappings)
+        {
+            ArgumentNullException.ThrowIfNull(mappings);
+
+            foreach (var mapping in mappings)
+            {
+                if (mapping.Context is null)
+                    _modelTypeLookup.Add(mapping.ViewType, mapping.ModelType);
+
+                _viewTypeLookup.Add(new ViewTypeLookupKey(mapping.ModelType, mapping.Context ?? string.Empty), mapping.ViewType);
+            }
+        }
+
+        /// <summary>
         /// Determines the view model type based on the specified view type.
         /// </summary>
         /// <param name="viewType">The view type.</param>
@@ -40,27 +57,6 @@ namespace Caliburn.Light.WinUI
 
             _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out var viewType);
             return viewType;
-        }
-
-        /// <summary>
-        /// Adds a view view-model mapping.
-        /// </summary>
-        /// <typeparam name="TView">The view type.</typeparam>
-        /// <typeparam name="TViewModel">The view-model type.</typeparam>
-        /// <param name="context">The context instance (or null).</param>
-        /// <remarks>Return self for method chaining.</remarks>
-        public ViewModelTypeResolver AddMapping<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
-            where TView : UIElement
-            where TViewModel : INotifyPropertyChanged
-        {
-            var viewType = typeof(TView);
-            var modelType = typeof(TViewModel);
-
-            if (context is null)
-                _modelTypeLookup.Add(viewType, modelType);
-
-            _viewTypeLookup.Add(new ViewTypeLookupKey(modelType, context ?? string.Empty), viewType);
-            return this;
         }
 
         [DebuggerDisplay("ModelType = {ModelType.Name} Context = {Context}")]

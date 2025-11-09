@@ -32,11 +32,10 @@ namespace Demo.HelloSpecialValues
 
             _container.RegisterSingleton<IEventAggregator, EventAggregator>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
 
-            var typeResolver = new ViewModelTypeResolver()
-                .AddMapping<CharacterView, CharacterViewModel>()
-                .AddMapping<MainPage, MainPageViewModel>();
-            _container.RegisterInstance<IViewModelTypeResolver>(typeResolver);
+            _container.RegisterInstance(ViewModelTypeMapping.Create<MainPage, MainPageViewModel>());
+            _container.RegisterInstance(ViewModelTypeMapping.Create<CharacterView, CharacterViewModel>());
 
             _container.RegisterSingleton<MainPageViewModel>();
         }

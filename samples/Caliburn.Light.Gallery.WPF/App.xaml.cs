@@ -1,5 +1,4 @@
-﻿using Caliburn.Light;
-using Caliburn.Light.Gallery.WPF.Hierarchies;
+﻿using Caliburn.Light.Gallery.WPF.Hierarchies;
 using Caliburn.Light.Gallery.WPF.Home;
 using Caliburn.Light.Gallery.WPF.PageNavigation;
 using Caliburn.Light.Gallery.WPF.PubSub;
@@ -55,11 +54,9 @@ namespace Caliburn.Light.Gallery.WPF
             where TView : UIElement
             where TViewModel : INotifyPropertyChanged
         {
+            _container.RegisterInstance(ViewModelTypeMapping.Create<TView, TViewModel>());
             _container.RegisterPerRequest<TView>();
             _container.RegisterPerRequest<TViewModel>();
-
-            if (_container.GetRequiredInstance<IViewModelTypeResolver>() is ViewModelTypeResolver viewModelTypeResolver)
-               viewModelTypeResolver.AddMapping<TView, TViewModel>();
         }
 
         private void AddDemo<TView, TViewModel>(string displayName)

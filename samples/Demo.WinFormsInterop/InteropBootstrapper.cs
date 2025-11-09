@@ -18,11 +18,9 @@ namespace Demo.WinFormsInterop
 
             _container.RegisterSingleton<IWindowManager, WindowManager>();
             _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
+            _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
 
-            var viewModelTypeResolver = new ViewModelTypeResolver()
-                .AddMapping<MainView, MainViewModel>();
-
-            _container.RegisterInstance<IViewModelTypeResolver>(viewModelTypeResolver);
+            _container.RegisterInstance(ViewModelTypeMapping.Create<MainView, MainViewModel>());
 
             _container.RegisterPerRequest<MainViewModel>();
         }
