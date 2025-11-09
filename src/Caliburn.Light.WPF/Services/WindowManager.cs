@@ -212,6 +212,45 @@ namespace Caliburn.Light.WPF
         }
 
         /// <summary>
+        /// Shows an open folder dialog.
+        /// </summary>
+        /// <param name="settings">The open folder dialog settings.</param>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <returns>The selected folder.</returns>
+        public Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings settings, object ownerViewModel)
+        {
+            ArgumentNullException.ThrowIfNull(ownerViewModel);
+            ArgumentNullException.ThrowIfNull(settings);
+
+            var owner = GetWindow(ownerViewModel);
+
+            var openFolderDialog = new OpenFolderDialog
+            {
+                Title = settings.Title,
+                InitialDirectory = settings.InitialDirectory,
+            };
+
+            bool? result;
+            try
+            {
+                result = owner is null
+                    ? openFolderDialog.ShowDialog()
+                    : openFolderDialog.ShowDialog(owner);
+            }
+            catch when (!string.IsNullOrEmpty(openFolderDialog.InitialDirectory))
+            {
+                openFolderDialog.InitialDirectory = null;
+
+                result = owner is null
+                    ? openFolderDialog.ShowDialog()
+                    : openFolderDialog.ShowDialog(owner);
+            }
+
+            var selectedFolders = result.GetValueOrDefault() ? openFolderDialog.FolderNames : Array.Empty<string>();
+            return Task.FromResult<IReadOnlyList<string>>(selectedFolders);
+        }
+
+        /// <summary>
         /// Creates a popup.
         /// </summary>
         /// <param name="viewModel">The view model.</param>

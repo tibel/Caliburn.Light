@@ -61,5 +61,13 @@ namespace Caliburn.Light.WPF
         /// <param name="ownerViewModel">The owner view model.</param>
         /// <returns>The selected file.</returns>
         Task<string> ShowSaveFileDialog(SaveFileDialogSettings settings, object ownerViewModel);
+
+        /// <summary>
+        /// Shows an open folder dialog.
+        /// </summary>
+        /// <param name="settings">The open folder dialog settings.</param>
+        /// <param name="ownerViewModel">The owner view model.</param>
+        /// <returns>The selected folder.</returns>
+        Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings settings, object ownerViewModel);
     }
 }
