@@ -24,9 +24,9 @@ namespace Caliburn.Light
             set { _closeStrategy = value; }
         }
 
-        Task IConductor.ActivateItemAsync(object item)
+        Task IConductor.ActivateItemAsync(object? item)
         {
-            return ActivateItemAsync((T)item);
+            return ActivateItemAsync((T?)item);
         }
 
         Task IConductor.DeactivateItemAsync(object item, bool close)
@@ -54,7 +54,7 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        public abstract Task ActivateItemAsync(T item);
+        public abstract Task ActivateItemAsync(T? item);
 
         /// <summary>
         /// Deactivates the specified item.

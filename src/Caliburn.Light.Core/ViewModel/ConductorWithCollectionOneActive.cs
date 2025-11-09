@@ -41,7 +41,7 @@ namespace Caliburn.Light
                 /// Activates the specified item.
                 /// </summary>
                 /// <param name="item">The item to activate.</param>
-                public override async Task ActivateItemAsync(T item)
+                public override async Task ActivateItemAsync(T? item)
                 {
                     if (item is null)
                     {

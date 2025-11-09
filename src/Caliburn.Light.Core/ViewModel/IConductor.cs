@@ -17,7 +17,7 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        Task ActivateItemAsync(object item);
+        Task ActivateItemAsync(object? item);
 
         /// <summary>
         /// Deactivates the specified item.

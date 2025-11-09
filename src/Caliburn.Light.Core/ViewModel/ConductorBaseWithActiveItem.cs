@@ -16,7 +16,7 @@ namespace Caliburn.Light
         public T? ActiveItem
         {
             get { return _activeItem; }
-            set { ActivateItemAsync(value!).Observe(); }
+            set { ActivateItemAsync(value).Observe(); }
         }
 
         object? IHaveActiveItem.ActiveItem => ActiveItem;

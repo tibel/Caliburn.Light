@@ -13,7 +13,7 @@ namespace Caliburn.Light
         /// Activates the specified item.
         /// </summary>
         /// <param name="item">The item to activate.</param>
-        public override async Task ActivateItemAsync(T item)
+        public override async Task ActivateItemAsync(T? item)
         {
             if (ReferenceEquals(ActiveItem, item))
             {
@@ -37,7 +37,7 @@ namespace Caliburn.Light
             var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
             if (result.CanClose)
                 await ChangeActiveItemAsync(item, true);
-            else
+            else if (item is not null)
                 OnActivationProcessed(item, false);
         }
 
