@@ -10,28 +10,32 @@ namespace Caliburn.Light.WinUI
     /// </summary>
     public sealed class PageLifecycle
     {
+        private readonly IViewModelLocator _viewModelLocator;
         private bool _actuallyNavigating;
         private Page? _previousPage;
 
         /// <summary>
         /// Initializes a new instance of <see cref="PageLifecycle"/>
         /// </summary>
-        /// <param name="view">The navigation service.</param>
+        /// <param name="navigationService">The navigation service.</param>
         /// <param name="context">The context in which the view appears.</param>
-        public PageLifecycle(Frame view, string? context)
+        /// <param name="viewModelLocator">The view model locator.</param>
+        public PageLifecycle(Frame navigationService, string? context, IViewModelLocator viewModelLocator)
         {
-            View = view;
-            Context = context;
+            _viewModelLocator = viewModelLocator;
 
-            view.Navigating += OnNavigating;
-            view.Navigated += OnNavigated;
-            view.NavigationFailed += OnNavigationFailed;
+            NavigationService = navigationService;
+            Context = context;
+            
+            navigationService.Navigating += OnNavigating;
+            navigationService.Navigated += OnNavigated;
+            navigationService.NavigationFailed += OnNavigationFailed;
         }
 
         /// <summary>
         /// Gets the navigation service.
         /// </summary>
-        public Frame View { get; }
+        public Frame NavigationService { get; }
 
         /// <summary>
         /// Gets the context in which the view appears.
@@ -89,6 +93,9 @@ namespace Caliburn.Light.WinUI
 
         private void OnNavigatedTo(Page page)
         {
+            if (page.DataContext is null)
+                page.DataContext = _viewModelLocator.LocateForView(page);
+
             if (page.DataContext is IViewAware viewAware)
                 viewAware.AttachView(page, Context);
 
@@ -125,16 +132,16 @@ namespace Caliburn.Light.WinUI
             switch (e.NavigationMode)
             {
                 case NavigationMode.New:
-                    View.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
+                    NavigationService.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
                     break;
                 case NavigationMode.Back:
-                    View.GoBack();
+                    NavigationService.GoBack();
                     break;
                 case NavigationMode.Forward:
-                    View.GoForward();
+                    NavigationService.GoForward();
                     break;
                 case NavigationMode.Refresh:
-                    View.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
+                    NavigationService.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
                     break;
             }
 

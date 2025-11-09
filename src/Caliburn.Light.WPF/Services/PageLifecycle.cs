@@ -9,6 +9,7 @@ namespace Caliburn.Light.WPF
     /// </summary>
     public sealed class PageLifecycle
     {
+        private readonly IViewModelLocator _viewModelLocator;
         private bool _actuallyNavigating;
         private Page? _previousPage;
 
@@ -17,8 +18,11 @@ namespace Caliburn.Light.WPF
         /// </summary>
         /// <param name="navigationService">The navigation service.</param>
         /// <param name="context">The context in which the view appears.</param>
-        public PageLifecycle(NavigationService navigationService, string? context)
+        /// <param name="viewModelLocator">The view model locator.</param>
+        public PageLifecycle(NavigationService navigationService, string? context, IViewModelLocator viewModelLocator)
         {
+            _viewModelLocator = viewModelLocator;
+
             NavigationService = navigationService;
             Context = context;
 
@@ -88,6 +92,9 @@ namespace Caliburn.Light.WPF
 
         private void OnNavigatedTo(Page page)
         {
+            if (page.DataContext is null)
+                page.DataContext = _viewModelLocator.LocateForView(page);
+
             if (page.DataContext is IViewAware viewAware)
                 viewAware.AttachView(page, Context);
 

@@ -1,6 +1,9 @@
 ﻿using Caliburn.Light;
 using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -11,7 +14,7 @@ namespace Demo.HelloSpecialValues
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    public partial class App : Application
+    public sealed partial class App : Application
     {
         private SimpleContainer? _container;
         private Window? _window;
@@ -37,7 +40,7 @@ namespace Demo.HelloSpecialValues
             _container.RegisterInstance(ViewModelTypeMapping.Create<MainPage, MainPageViewModel>());
             _container.RegisterInstance(ViewModelTypeMapping.Create<CharacterView, CharacterViewModel>());
 
-            _container.RegisterSingleton<MainPageViewModel>();
+            _container.RegisterPerRequest<MainPageViewModel>();
         }
 
         /// <summary>
@@ -53,13 +56,22 @@ namespace Demo.HelloSpecialValues
             // Start the framework
             Configure();
 
-            var content = new MainPage();
-            content.DataContext = new MainPageViewModel();
-            View.SetBind(content, true);
+            // Get the root frame
+            var rootFrame = (Frame)_window.Content;
+            rootFrame.NavigationFailed += OnNavigationFailed;
 
-            _window.Content = content;
+            // Attach the framework
+            _ = new PageLifecycle(rootFrame, null, _container.GetRequiredInstance<IViewModelLocator>());
+
+            // Navigate to the first page
+            rootFrame.Navigate(typeof(MainPage), args.Arguments);
 
             _window.Activate();
+        }
+
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
         public Window? MainWindow => _window;

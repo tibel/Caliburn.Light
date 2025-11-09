@@ -2,7 +2,7 @@
 
 namespace Demo.HelloSpecialValues
 {
-    public class CharacterViewModel : BindableObject
+    public sealed class CharacterViewModel : BindableObject
     {
         public CharacterViewModel(string name, string image)
         {

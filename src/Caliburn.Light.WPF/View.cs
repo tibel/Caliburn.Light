@@ -219,7 +219,7 @@ namespace Caliburn.Light.WPF
                 if (parentElement.IsLoaded)
                     throw new InvalidOperationException("Could not find 'IViewModelLocator' in control hierarchy.");
 
-                ExecuteOnLoad(parentElement, x => CreateView(x, x.DataContext, GetContext(x)));
+                ExecuteOnLoad(parentElement, static x => CreateView(x, x.DataContext, GetContext(x)));
                 return;
             }
 

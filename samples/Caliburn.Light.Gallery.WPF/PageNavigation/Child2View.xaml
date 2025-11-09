@@ -7,10 +7,8 @@
       xmlns:local="clr-namespace:Caliburn.Light.Gallery.WPF.PageNavigation"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
+      d:DataContext="{d:DesignInstance Type=local:Child2ViewModel, IsDesignTimeCreatable=True}"
       Background="LightBlue">
-    <Page.DataContext>
-        <local:Child2ViewModel />
-    </Page.DataContext>
     <StackPanel VerticalAlignment="Bottom">
         <Button Content="Navigate Child 1"
                 Command="{Binding NavigateCommand, Mode=OneTime}" />

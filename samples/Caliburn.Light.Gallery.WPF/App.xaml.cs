@@ -30,16 +30,18 @@ namespace Caliburn.Light.Gallery.WPF
             AddViewModelMapping<ShellView, ShellViewModel>();
             AddViewModelMapping<HomeView, HomeViewModel>();
 
-            // for hierarchies demo
-            AddViewModelMapping<ChildLevel1View, ChildLevel1ViewModel>();
-            AddViewModelMapping<ChildLevel2View, ChildLevel2ViewModel>();
-
             AddDemo<PubSubView, PubSubViewModel>("Pub/Sub");
             AddDemo<ValidationView, ValidationViewModel>("Validation");
             AddDemo<SimpleMDIView, SimpleMDIViewModel>("Simple MDI");
-            AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies");
             AddDemo<ThreadingView, ThreadingViewModel>("Threading");
+
+            AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies");
+            AddViewModelMapping<ChildLevel1View, ChildLevel1ViewModel>();
+            AddViewModelMapping<ChildLevel2View, ChildLevel2ViewModel>();
+
             AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation");
+            AddViewModelMapping<Child1View, Child1ViewModel>();
+            AddViewModelMapping<Child2View, Child2ViewModel>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
