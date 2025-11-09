@@ -14,7 +14,7 @@ namespace Caliburn.Light.WPF
             if (window.Owner is null)
                 throw new ArgumentException("Window has no Owner set.", nameof(window));
 
-            var tcs = new TaskCompletionSource<object?>();
+            var tcs = new TaskCompletionSource<bool?>();
 
             void closeHandler(object? sender, EventArgs args)
             {
@@ -22,7 +22,7 @@ namespace Caliburn.Light.WPF
                 w.Closed -= closeHandler;
 
                 w.Owner.SetNativeEnabled(true);
-                tcs.SetResult(null);
+                tcs.TrySetResult(null);
             }
 
             try

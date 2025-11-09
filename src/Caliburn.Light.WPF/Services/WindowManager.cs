@@ -55,8 +55,12 @@ namespace Caliburn.Light.WPF
 
             if (owner is null)
             {
-                window.ShowDialog();
-                return Task.CompletedTask;
+                var tcs = new TaskCompletionSource<bool?>();
+
+                window.Closed += (s, e) => tcs.TrySetResult(null);
+                window.Show();
+
+                return tcs.Task;
             }
             else
             {
