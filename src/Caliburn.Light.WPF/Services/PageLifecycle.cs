@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
@@ -7,7 +8,7 @@ namespace Caliburn.Light.WPF
     /// <summary>
     /// Integrate framework life-cycle handling with <see cref="Page"/> navigation.
     /// </summary>
-    public sealed class PageLifecycle
+    public sealed class PageLifecycle : IDisposable
     {
         private readonly IViewModelLocator _viewModelLocator;
         private bool _actuallyNavigating;
@@ -28,7 +29,17 @@ namespace Caliburn.Light.WPF
 
             navigationService.Navigating += OnNavigating;
             navigationService.Navigated += OnNavigated;
+            navigationService.NavigationStopped += OnNavigationStopped;
             navigationService.NavigationFailed += OnNavigationFailed;
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            NavigationService.Navigating -= OnNavigating;
+            NavigationService.Navigated -= OnNavigated;
+            NavigationService.NavigationStopped -= OnNavigationStopped;
+            NavigationService.NavigationFailed -= OnNavigationFailed;
         }
 
         /// <summary>
@@ -68,8 +79,6 @@ namespace Caliburn.Light.WPF
 
         private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            var parent = (ContentControl)sender;
-
             if (_previousPage is not null)
             {
                 var previousPage = _previousPage;
@@ -77,8 +86,17 @@ namespace Caliburn.Light.WPF
                 OnNavigatedFrom(previousPage);
             }
 
-            if (parent.Content is Page page)
+            if (e.Content is Page page)
                 OnNavigatedTo(page);
+        }
+
+        private void OnNavigationStopped(object sender, NavigationEventArgs e)
+        {
+        }
+
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            _previousPage = null;
         }
 
         private void OnNavigatedFrom(Page page)
@@ -92,6 +110,8 @@ namespace Caliburn.Light.WPF
 
         private void OnNavigatedTo(Page page)
         {
+            View.SetViewModelLocator(page, _viewModelLocator);
+
             if (page.DataContext is null)
                 page.DataContext = _viewModelLocator.LocateForView(page);
 
@@ -100,11 +120,6 @@ namespace Caliburn.Light.WPF
 
             if (page.DataContext is IActivatable activatable)
                 activatable.ActivateAsync().Observe();
-        }
-
-        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            _previousPage = null;
         }
 
         private bool EvaluateCanClose(Page page, NavigatingCancelEventArgs e)
