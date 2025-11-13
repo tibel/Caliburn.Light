@@ -5,9 +5,9 @@ using Windows.UI.Popups;
 
 namespace Demo.HelloSpecialValues
 {
-    public sealed class MainPageViewModel : Screen
+    public sealed class OverviewViewModel : Screen
     {
-        public MainPageViewModel()
+        public OverviewViewModel()
         {
             Characters = new BindableCollection<CharacterViewModel>
             {
