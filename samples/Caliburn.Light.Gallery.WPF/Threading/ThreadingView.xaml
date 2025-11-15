@@ -7,23 +7,18 @@
         d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-        <Button Content="Execute"
-                Command="{Binding ExecuteCommand, Mode=OneTime}"
+        <Button Content="SwitchTo()"
+                Command="{Binding SwitchToCommand, Mode=OneTime}"
                 Padding="10"
                 Margin="10" />
 
-        <Button Content="SwitchTo"
-                Command="{Binding UIContextRunCommand, Mode=OneTime}"
-                Padding="10"
-                Margin="10" />
-        
         <Button Content="ConfigureAwait(false)"
-                Command="{Binding TaskRunCommand, Mode=OneTime}"
+                Command="{Binding ConfigureAwaitFalseCommand, Mode=OneTime}"
                 Padding="10"
                 Margin="10" />
-        
+
         <Button Content="ConfigureAwait(true)"
-                Command="{Binding AsyncCommand, Mode=OneTime}"
+                Command="{Binding ConfigureAwaitTrueCommand, Mode=OneTime}"
                 Padding="10"
                 Margin="10" />
     </StackPanel>

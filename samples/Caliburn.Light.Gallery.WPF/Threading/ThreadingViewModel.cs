@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Light;
@@ -14,27 +13,22 @@ namespace Caliburn.Light.Gallery.WPF.Threading
 
         public ThreadingViewModel()
         {
-            ExecuteCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnExecute)
+            SwitchToCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnSwitchTo)
                 .Build();
 
-            UIContextRunCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnUIContextRun)
+            ConfigureAwaitFalseCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnConfigureAwaitFalse)
                 .Build();
 
-            TaskRunCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnTaskRun)
-                .Build();
-
-            AsyncCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnAsync)
+            ConfigureAwaitTrueCommand = DelegateCommandBuilder.NoParameter()
+                .OnExecute(OnConfigureAwaitTrue)
                 .Build();
         }
 
-        public ICommand ExecuteCommand { get; }
-        public ICommand UIContextRunCommand { get; }
-        public ICommand TaskRunCommand { get; }
-        public ICommand AsyncCommand { get; }
+        public ICommand SwitchToCommand { get; }
+        public ICommand ConfigureAwaitFalseCommand { get; }
+        public ICommand ConfigureAwaitTrueCommand { get; }
 
         protected override void OnViewAttached(object view, string context)
         {
@@ -48,36 +42,31 @@ namespace Caliburn.Light.Gallery.WPF.Threading
             base.OnViewDetached(view, context);
         }
 
-        private void OnExecute()
-        {
-            Debug.Assert(_dispatcher.CheckAccess());
-            throw new InvalidOperationException("Error on execute.");
-        }
-
-        private async Task OnUIContextRun()
+        private async Task OnSwitchTo()
         {
             await Task.Delay(10).ConfigureAwait(false);
-            Debug.Assert(!_dispatcher.CheckAccess());
+            Trace.Assert(!_dispatcher.CheckAccess());
 
             await _dispatcher.SwitchTo();
-            Debug.Assert(_dispatcher.CheckAccess());
+            Trace.Assert(_dispatcher.CheckAccess());
 
-            throw new InvalidOperationException("Error on a UI task.");
+            Trace.WriteLine("On UI thread after SwitchTo().");
         }
 
-        private async Task OnTaskRun()
+        private async Task OnConfigureAwaitFalse()
         {
             await Task.Delay(10).ConfigureAwait(false);
-            Debug.Assert(!_dispatcher.CheckAccess());
-            throw new InvalidOperationException("Error on a background task.");
+            Trace.Assert(!_dispatcher.CheckAccess());
+
+            Trace.WriteLine("On ThreadPool thread after ConfigureAwait(false).");
         }
 
-        private async Task OnAsync()
+        private async Task OnConfigureAwaitTrue()
         {
-            Debug.Assert(_dispatcher.CheckAccess());
             await Task.Delay(10).ConfigureAwait(true);
-            Debug.Assert(_dispatcher.CheckAccess());
-            throw new InvalidOperationException("Error on UI task.");
+
+            Trace.Assert(_dispatcher.CheckAccess());
+            Trace.WriteLine("On UI thread after ConfigureAwait(true).");
         }
     }
 }
