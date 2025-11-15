@@ -50,7 +50,7 @@ public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
         await _dispatcher.SwitchTo();
         Trace.Assert(_dispatcher.CheckAccess());
 
-        Trace.WriteLine("On UI thread after SwitchTo().");
+        Trace.TraceInformation("On UI thread after SwitchTo().");
     }
 
     private async Task OnConfigureAwaitFalse()
@@ -58,7 +58,7 @@ public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
         await Task.Delay(10).ConfigureAwait(false);
         Trace.Assert(!_dispatcher.CheckAccess());
 
-        Trace.WriteLine("On ThreadPool thread after ConfigureAwait(false).");
+        Trace.TraceInformation("On ThreadPool thread after ConfigureAwait(false).");
     }
 
     private async Task OnConfigureAwaitTrue()
@@ -66,6 +66,6 @@ public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
         await Task.Delay(10).ConfigureAwait(true);
 
         Trace.Assert(_dispatcher.CheckAccess());
-        Trace.WriteLine("On UI thread after ConfigureAwait(true).");
+        Trace.TraceInformation("On UI thread after ConfigureAwait(true).");
     }
 }
