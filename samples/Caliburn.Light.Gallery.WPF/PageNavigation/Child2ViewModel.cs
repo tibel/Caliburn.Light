@@ -19,7 +19,7 @@ namespace Caliburn.Light.Gallery.WPF.PageNavigation
 
         private void Navigate()
         {
-            if (((IViewAware)this).GetView() is Page page)
+            if (((IViewAware)this).GetView(null) is Page page)
                 page.NavigationService?.Navigate(new Uri("PageNavigation/Child1View.xaml", UriKind.Relative));
         }
 

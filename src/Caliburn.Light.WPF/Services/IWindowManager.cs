@@ -20,9 +20,9 @@ namespace Caliburn.Light.WPF
         /// Shows a modal window for the specified model.
         /// </summary>
         /// <param name="viewModel">The view model.</param>
-        /// <param name="context">The context.</param>
         /// <param name="ownerViewModel">The owner view model.</param>
-        Task ShowDialog(object viewModel, string? context, object ownerViewModel);
+        /// <param name="context">The context.</param>
+        Task ShowDialog(object viewModel, object ownerViewModel, string? context = null);
 
         /// <summary>
         /// Attempts to bring the window to the foreground and activates it.
