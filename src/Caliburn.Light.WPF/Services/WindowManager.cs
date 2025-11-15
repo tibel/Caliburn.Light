@@ -45,7 +45,7 @@ namespace Caliburn.Light.WPF
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
         /// <param name="ownerViewModel">The owner view model.</param>
-        public Task ShowDialog(object viewModel, string context, object ownerViewModel)
+        public Task ShowDialog(object viewModel, string? context, object ownerViewModel)
         {
             ArgumentNullException.ThrowIfNull(ownerViewModel);
             ArgumentNullException.ThrowIfNull(viewModel);

@@ -22,7 +22,7 @@ namespace Caliburn.Light.WPF
         /// <param name="viewModel">The view model.</param>
         /// <param name="context">The context.</param>
         /// <param name="ownerViewModel">The owner view model.</param>
-        Task ShowDialog(object viewModel, string context, object ownerViewModel);
+        Task ShowDialog(object viewModel, string? context, object ownerViewModel);
 
         /// <summary>
         /// Attempts to bring the window to the foreground and activates it.
