@@ -19,10 +19,14 @@
     <PackageReleaseNotes>
 			- .NET 8.0 only
 			- enabled nullable
-			- WinUI: removed SuspensionManager
 			- added ViewAware.OnViewDetached(view, context) and removed IViewAware.ViewAttached
 			- added  IViewAware.GetViews() and removed ViewAware.Views
+			- added ViewModelTypeMapping and removed ViewModelTypeResolver.AddMapping&lt;TView, TViewModel&gt;(context)
 			- fixed context parameter to be of type string everywhere
+			- WPF: added PageLifecycle
+			- WPF: added IWindowManager.ShowOpenFolderDialog(settings, ownerViewModel)
+			- WinUI: removed SuspensionManager, NavigationService and FrameAdapter
+			- WinUI: added WindowLifecycle, PopupLifecycle and PageLifecycle
 		</PackageReleaseNotes>
   </PropertyGroup>
 
