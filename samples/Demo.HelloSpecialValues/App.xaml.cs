@@ -1,7 +1,6 @@
 ﻿using Caliburn.Light;
 using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Demo.HelloSpecialValues
@@ -31,19 +30,17 @@ namespace Demo.HelloSpecialValues
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            _window = new Window();
-            _window.Title = "Demo.HelloSpecialValues";
-            _window.Content = new ContentControl();
-
-            // Start the framework
             Configure();
 
-            var contentControl = (ContentControl)_window.Content;
-            View.SetCreate(contentControl, true);
-            View.SetViewModelLocator(contentControl, _container.GetRequiredInstance<IViewModelLocator>());
+            _window = new Window();
+            _window.Title = "Demo.HelloSpecialValues";
 
-            // Set the initial ViewModel
-            contentControl.DataContext = new OverviewViewModel();
+            var viewModel = new OverviewViewModel();
+            var view = _container.GetRequiredInstance<IViewModelLocator>().LocateForModel(viewModel, null);
+
+            ((FrameworkElement)view).DataContext = viewModel;
+            _window.Content = view;
+            _ = new WindowLifecycle(_window, null, false);
 
             _window.Activate();
         }

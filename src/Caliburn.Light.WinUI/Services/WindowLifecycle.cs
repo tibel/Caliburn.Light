@@ -1,9 +1,8 @@
+using Microsoft.UI.Xaml;
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows;
 
-namespace Caliburn.Light.WPF
+namespace Caliburn.Light.WinUI
 {
     /// <summary>
     /// Integrate framework life-cycle handling with <see cref="Window"/> events.
@@ -27,28 +26,20 @@ namespace Caliburn.Light.WPF
 
             view.Closed += OnViewClosed;
 
-            var viewModel = view.DataContext;
+            var viewModel = GetViewModel(view);
 
             if (viewModel is IViewAware viewAware)
-                viewAware.AttachView(view, context);
+                viewAware.AttachView(view.Content, context);
 
             if (viewModel is IActivatable activatable)
             {
                 if (activateWithWindow)
-                {
-                    view.Activated += (s, _) => ((IActivatable)((FrameworkElement)s!).DataContext).ActivateAsync().Observe();
-                    view.Deactivated += (s, _) => ((IActivatable)((FrameworkElement)s!).DataContext).DeactivateAsync(false).Observe();
-                }
+                    view.Activated += OnViewActivated;
                 else
-                {
                     activatable.ActivateAsync().Observe();
-                }
 
                 activatable.Deactivated += OnModelDeactivated;
             }
-
-            if (viewModel is ICloseGuard guard)
-                view.Closing += OnViewClosing;
         }
 
         /// <summary>
@@ -61,26 +52,34 @@ namespace Caliburn.Light.WPF
         /// </summary>
         public string? Context { get; }
 
-        private void OnViewClosing(object? sender, CancelEventArgs e)
+        private static object? GetViewModel(Window view) => view.Content is FrameworkElement fe ? fe.DataContext : null;
+
+        private void OnViewActivated(object sender, WindowActivatedEventArgs args)
         {
-            if (e.Cancel)
+            var viewModel = GetViewModel(View);
+            if (viewModel is not IActivatable activatable)
                 return;
 
-            if (_actuallyClosing)
+            if (args.WindowActivationState == WindowActivationState.CodeActivated || args.WindowActivationState == WindowActivationState.PointerActivated)
+                activatable.ActivateAsync().Observe();
+            else if (args.WindowActivationState == WindowActivationState.Deactivated)
+                activatable.DeactivateAsync(false).Observe();
+        }
+
+        private async void OnViewClosed(object sender, WindowEventArgs e)
+        {
+            if (e.Handled)
+                return;
+
+            var viewModel = GetViewModel(View);
+
+            if (!_actuallyClosing && viewModel is ICloseGuard closeGuard && !EvaluateCanClose(closeGuard))
             {
-                _actuallyClosing = false;
+                e.Handled = true;
                 return;
             }
 
-            e.Cancel = !EvaluateCanClose((ICloseGuard)View.DataContext);
-        }
-
-        private async void OnViewClosed(object? sender, EventArgs e)
-        {
-            View.Closed -= OnViewClosed;
-            View.Closing -= OnViewClosing;
-
-            if (View.DataContext is IActivatable activatable)
+            if (viewModel is IActivatable activatable)
             {
                 activatable.Deactivated -= OnModelDeactivated;
 
@@ -92,8 +91,8 @@ namespace Caliburn.Light.WPF
                 }
             }
 
-            if (View.DataContext is IViewAware viewAware)
-                viewAware.DetachView(View, Context);
+            if (viewModel is IViewAware viewAware)
+                viewAware.DetachView(View.Content, Context);
         }
 
         private void OnModelDeactivated(object? sender, DeactivationEventArgs e)
