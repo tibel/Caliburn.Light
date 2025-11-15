@@ -1,25 +1,24 @@
-﻿using System;
+using System;
 
-namespace Caliburn.Light
+namespace Caliburn.Light;
+
+/// <summary>
+/// Dispatches actions on the current thread.
+/// </summary>
+public sealed class CurrentThreadDispatcher : IDispatcher
 {
     /// <summary>
-    /// Dispatches actions on the current thread.
+    /// Gets an instance of the <see cref="CurrentThreadDispatcher"/>.
     /// </summary>
-    public sealed class CurrentThreadDispatcher : IDispatcher
+    public static readonly CurrentThreadDispatcher Instance = new CurrentThreadDispatcher();
+
+    private CurrentThreadDispatcher()
     {
-        /// <summary>
-        /// Gets an instance of the <see cref="CurrentThreadDispatcher"/>.
-        /// </summary>
-        public static readonly CurrentThreadDispatcher Instance = new CurrentThreadDispatcher();
-
-        private CurrentThreadDispatcher()
-        {
-        }
-
-        /// <inheritdoc />
-        public void BeginInvoke(Action action) => action.Invoke();
-
-        /// <inheritdoc />
-        public bool CheckAccess() => true;
     }
+
+    /// <inheritdoc />
+    public void BeginInvoke(Action action) => action.Invoke();
+
+    /// <inheritdoc />
+    public bool CheckAccess() => true;
 }

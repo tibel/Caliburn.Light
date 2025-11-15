@@ -1,15 +1,14 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Demo.HelloSpecialValues
+namespace Demo.HelloSpecialValues;
+
+public sealed class ClickedItem : ISpecialValue
 {
-    public sealed class ClickedItem : ISpecialValue
+    public object? Resolve(CommandExecutionContext context)
     {
-        public object? Resolve(CommandExecutionContext context)
-        {
-            return context.EventArgs is ItemClickEventArgs args
-                ? args.ClickedItem
-                : null;
-        }
+        return context.EventArgs is ItemClickEventArgs args
+            ? args.ClickedItem
+            : null;
     }
 }

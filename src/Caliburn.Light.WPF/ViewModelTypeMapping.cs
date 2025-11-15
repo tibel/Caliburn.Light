@@ -1,48 +1,47 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
-namespace Caliburn.Light.WPF
+namespace Caliburn.Light.WPF;
+
+/// <summary>
+/// Describes a view view-model mapping.
+/// </summary>
+public readonly struct ViewModelTypeMapping
 {
     /// <summary>
-    /// Describes a view view-model mapping.
+    /// The view type.
     /// </summary>
-    public readonly struct ViewModelTypeMapping
+    public Type ViewType { get; }
+
+    /// <summary>
+    /// The view-model type.
+    /// </summary>
+    public Type ModelType { get; }
+
+    /// <summary>
+    /// The context instance (or null).
+    /// </summary>
+    public string? Context { get; }
+
+    private ViewModelTypeMapping(Type viewType, Type modelType, string? context)
     {
-        /// <summary>
-        /// The view type.
-        /// </summary>
-        public Type ViewType { get; }
+        ViewType = viewType;
+        ModelType = modelType;
+        Context = context;
+    }
 
-        /// <summary>
-        /// The view-model type.
-        /// </summary>
-        public Type ModelType { get; }
-
-        /// <summary>
-        /// The context instance (or null).
-        /// </summary>
-        public string? Context { get; }
-
-        private ViewModelTypeMapping(Type viewType, Type modelType, string? context)
-        {
-            ViewType = viewType;
-            ModelType = modelType;
-            Context = context;
-        }
-
-        /// <summary>
-        /// Creates a view view-model mapping.
-        /// </summary>
-        /// <typeparam name="TView">The view type.</typeparam>
-        /// <typeparam name="TViewModel">The view-model type.</typeparam>
-        /// <param name="context">The context instance (or null).</param>
-        public static ViewModelTypeMapping Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
-           where TView : UIElement
-           where TViewModel : INotifyPropertyChanged
-        {
-            return new ViewModelTypeMapping(typeof(TView), typeof(TViewModel), context);
-        }
+    /// <summary>
+    /// Creates a view view-model mapping.
+    /// </summary>
+    /// <typeparam name="TView">The view type.</typeparam>
+    /// <typeparam name="TViewModel">The view-model type.</typeparam>
+    /// <param name="context">The context instance (or null).</param>
+    public static ViewModelTypeMapping Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
+       where TView : UIElement
+       where TViewModel : INotifyPropertyChanged
+    {
+        return new ViewModelTypeMapping(typeof(TView), typeof(TViewModel), context);
     }
 }

@@ -1,58 +1,57 @@
-﻿using System;
+using System;
 using System.Windows.Controls.Primitives;
 
-namespace Caliburn.Light.WPF
+namespace Caliburn.Light.WPF;
+
+/// <summary>
+/// Integrate framework life-cycle handling with <see cref="Popup"/> events.
+/// </summary>
+public sealed class PopupLifecycle
 {
     /// <summary>
-    /// Integrate framework life-cycle handling with <see cref="Popup"/> events.
+    /// Initializes a new instance of <see cref="PopupLifecycle"/>
     /// </summary>
-    public sealed class PopupLifecycle
+    /// <param name="view">The view.</param>
+    /// <param name="context">The context in which the view appears.</param>
+    public PopupLifecycle(Popup view, string? context)
     {
-        /// <summary>
-        /// Initializes a new instance of <see cref="PopupLifecycle"/>
-        /// </summary>
-        /// <param name="view">The view.</param>
-        /// <param name="context">The context in which the view appears.</param>
-        public PopupLifecycle(Popup view, string? context)
+        View = view;
+        Context = context;
+
+        var viewModel = view.DataContext;
+
+        if (viewModel is IViewAware || viewModel is IActivatable)
         {
-            View = view;
-            Context = context;
-
-            var viewModel = view.DataContext;
-
-            if (viewModel is IViewAware || viewModel is IActivatable)
-            {
-                view.Opened += OnViewOpened;
-                view.Closed += OnViewClosed;
-            }
+            view.Opened += OnViewOpened;
+            view.Closed += OnViewClosed;
         }
+    }
 
-        /// <summary>
-        /// Gets the view.
-        /// </summary>
-        public Popup View { get; }
+    /// <summary>
+    /// Gets the view.
+    /// </summary>
+    public Popup View { get; }
 
-        /// <summary>
-        /// Gets the context in which the view appears.
-        /// </summary>
-        public string? Context { get; }
+    /// <summary>
+    /// Gets the context in which the view appears.
+    /// </summary>
+    public string? Context { get; }
 
-        private void OnViewOpened(object? sender, EventArgs e)
-        {
-            if (View.DataContext is IViewAware viewAware)
-                viewAware.AttachView(View, Context);
+    private void OnViewOpened(object? sender, EventArgs e)
+    {
+        if (View.DataContext is IViewAware viewAware)
+            viewAware.AttachView(View, Context);
 
-            if (View.DataContext is IActivatable activatable)
-                activatable.ActivateAsync().Observe();
-        }
+        if (View.DataContext is IActivatable activatable)
+            activatable.ActivateAsync().Observe();
+    }
 
-        private void OnViewClosed(object? sender, EventArgs e)
-        {
-            if (View.DataContext is IActivatable activatable)
-                activatable.DeactivateAsync(true).Observe();
+    private void OnViewClosed(object? sender, EventArgs e)
+    {
+        if (View.DataContext is IActivatable activatable)
+            activatable.DeactivateAsync(true).Observe();
 
-            if (View.DataContext is IViewAware viewAware)
-                viewAware.DetachView(View, Context);
-        }
+        if (View.DataContext is IViewAware viewAware)
+            viewAware.DetachView(View, Context);
     }
 }

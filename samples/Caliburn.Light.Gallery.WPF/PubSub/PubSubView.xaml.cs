@@ -1,15 +1,14 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 
-namespace Caliburn.Light.Gallery.WPF.PubSub
+namespace Caliburn.Light.Gallery.WPF.PubSub;
+
+/// <summary>
+/// Interaction logic for PubSubView.xaml
+/// </summary>
+public sealed partial class PubSubView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for PubSubView.xaml
-    /// </summary>
-    public sealed partial class PubSubView : UserControl
+    public PubSubView()
     {
-        public PubSubView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

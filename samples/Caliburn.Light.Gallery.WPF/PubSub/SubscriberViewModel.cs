@@ -1,21 +1,20 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 
-namespace Caliburn.Light.Gallery.WPF.PubSub
+namespace Caliburn.Light.Gallery.WPF.PubSub;
+
+public sealed class SubscriberViewModel : BindableObject
 {
-    public sealed class SubscriberViewModel : BindableObject
+    private readonly BindableCollection<string> _messages = new BindableCollection<string>();
+
+    public SubscriberViewModel(IEventAggregator eventAggregator)
     {
-        private readonly BindableCollection<string> _messages = new BindableCollection<string>();
-
-        public SubscriberViewModel(IEventAggregator eventAggregator)
-        {
-            eventAggregator.Subscribe<SubscriberViewModel, string>(this, static (t, m) => t.OnMessageReceived(m));
-        }
-
-        private void OnMessageReceived(string message)
-        {
-            _messages.Add(message);
-        }
-
-        public IReadOnlyBindableCollection<string> Messages => _messages;
+        eventAggregator.Subscribe<SubscriberViewModel, string>(this, static (t, m) => t.OnMessageReceived(m));
     }
+
+    private void OnMessageReceived(string message)
+    {
+        _messages.Add(message);
+    }
+
+    public IReadOnlyBindableCollection<string> Messages => _messages;
 }

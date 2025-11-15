@@ -2,135 +2,134 @@ using Microsoft.UI.Xaml;
 using System;
 using System.Threading.Tasks;
 
-namespace Caliburn.Light.WinUI
+namespace Caliburn.Light.WinUI;
+
+/// <summary>
+/// Integrate framework life-cycle handling with <see cref="Window"/> events.
+/// </summary>
+public sealed class WindowLifecycle
 {
+    private bool _deactivatingFromView;
+    private bool _deactivateFromViewModel;
+    private bool _actuallyClosing;
+
     /// <summary>
-    /// Integrate framework life-cycle handling with <see cref="Window"/> events.
+    /// Initializes a new instance of <see cref="WindowLifecycle"/>
     /// </summary>
-    public sealed class WindowLifecycle
+    /// <param name="view">The view.</param>
+    /// <param name="context">The context in which the view appears.</param>
+    /// <param name="activateWithWindow">Whether the view model shall be activated when the window gets activated and deactivated when the window gets deactivated.</param>
+    public WindowLifecycle(Window view, string? context, bool activateWithWindow)
     {
-        private bool _deactivatingFromView;
-        private bool _deactivateFromViewModel;
-        private bool _actuallyClosing;
+        View = view;
+        Context = context;
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="WindowLifecycle"/>
-        /// </summary>
-        /// <param name="view">The view.</param>
-        /// <param name="context">The context in which the view appears.</param>
-        /// <param name="activateWithWindow">Whether the view model shall be activated when the window gets activated and deactivated when the window gets deactivated.</param>
-        public WindowLifecycle(Window view, string? context, bool activateWithWindow)
+        view.Closed += OnViewClosed;
+
+        var viewModel = GetViewModel(view);
+
+        if (viewModel is IViewAware viewAware)
+            viewAware.AttachView(view.Content, context);
+
+        if (viewModel is IActivatable activatable)
         {
-            View = view;
-            Context = context;
-
-            view.Closed += OnViewClosed;
-
-            var viewModel = GetViewModel(view);
-
-            if (viewModel is IViewAware viewAware)
-                viewAware.AttachView(view.Content, context);
-
-            if (viewModel is IActivatable activatable)
-            {
-                if (activateWithWindow)
-                    view.Activated += OnViewActivated;
-                else
-                    activatable.ActivateAsync().Observe();
-
-                activatable.Deactivated += OnModelDeactivated;
-            }
-        }
-
-        /// <summary>
-        /// Gets the view.
-        /// </summary>
-        public Window View { get; }
-
-        /// <summary>
-        /// Gets the context in which the view appears.
-        /// </summary>
-        public string? Context { get; }
-
-        private static object? GetViewModel(Window view) => view.Content is FrameworkElement fe ? fe.DataContext : null;
-
-        private void OnViewActivated(object sender, WindowActivatedEventArgs args)
-        {
-            var viewModel = GetViewModel(View);
-            if (viewModel is not IActivatable activatable)
-                return;
-
-            if (args.WindowActivationState == WindowActivationState.CodeActivated || args.WindowActivationState == WindowActivationState.PointerActivated)
+            if (activateWithWindow)
+                view.Activated += OnViewActivated;
+            else
                 activatable.ActivateAsync().Observe();
-            else if (args.WindowActivationState == WindowActivationState.Deactivated)
-                activatable.DeactivateAsync(false).Observe();
+
+            activatable.Deactivated += OnModelDeactivated;
+        }
+    }
+
+    /// <summary>
+    /// Gets the view.
+    /// </summary>
+    public Window View { get; }
+
+    /// <summary>
+    /// Gets the context in which the view appears.
+    /// </summary>
+    public string? Context { get; }
+
+    private static object? GetViewModel(Window view) => view.Content is FrameworkElement fe ? fe.DataContext : null;
+
+    private void OnViewActivated(object sender, WindowActivatedEventArgs args)
+    {
+        var viewModel = GetViewModel(View);
+        if (viewModel is not IActivatable activatable)
+            return;
+
+        if (args.WindowActivationState == WindowActivationState.CodeActivated || args.WindowActivationState == WindowActivationState.PointerActivated)
+            activatable.ActivateAsync().Observe();
+        else if (args.WindowActivationState == WindowActivationState.Deactivated)
+            activatable.DeactivateAsync(false).Observe();
+    }
+
+    private async void OnViewClosed(object sender, WindowEventArgs e)
+    {
+        if (e.Handled)
+            return;
+
+        var viewModel = GetViewModel(View);
+
+        if (!_actuallyClosing && viewModel is ICloseGuard closeGuard && !EvaluateCanClose(closeGuard))
+        {
+            e.Handled = true;
+            return;
         }
 
-        private async void OnViewClosed(object sender, WindowEventArgs e)
+        if (viewModel is IActivatable activatable)
         {
-            if (e.Handled)
-                return;
+            activatable.Deactivated -= OnModelDeactivated;
 
-            var viewModel = GetViewModel(View);
-
-            if (!_actuallyClosing && viewModel is ICloseGuard closeGuard && !EvaluateCanClose(closeGuard))
+            if (!_deactivateFromViewModel)
             {
-                e.Handled = true;
-                return;
+                _deactivatingFromView = true;
+                await activatable.DeactivateAsync(true).ConfigureAwait(true);
+                _deactivatingFromView = false;
             }
-
-            if (viewModel is IActivatable activatable)
-            {
-                activatable.Deactivated -= OnModelDeactivated;
-
-                if (!_deactivateFromViewModel)
-                {
-                    _deactivatingFromView = true;
-                    await activatable.DeactivateAsync(true).ConfigureAwait(true);
-                    _deactivatingFromView = false;
-                }
-            }
-
-            if (viewModel is IViewAware viewAware)
-                viewAware.DetachView(View.Content, Context);
         }
 
-        private void OnModelDeactivated(object? sender, DeactivationEventArgs e)
-        {
-            if (!e.WasClosed)
-                return;
+        if (viewModel is IViewAware viewAware)
+            viewAware.DetachView(View.Content, Context);
+    }
 
-            ((IActivatable)sender!).Deactivated -= OnModelDeactivated;
+    private void OnModelDeactivated(object? sender, DeactivationEventArgs e)
+    {
+        if (!e.WasClosed)
+            return;
 
-            if (_deactivatingFromView)
-                return;
+        ((IActivatable)sender!).Deactivated -= OnModelDeactivated;
 
-            _deactivateFromViewModel = true;
-            _actuallyClosing = true;
-            View.Close();
-            _actuallyClosing = false;
-            _deactivateFromViewModel = false;
-        }
+        if (_deactivatingFromView)
+            return;
 
-        private bool EvaluateCanClose(ICloseGuard guard)
-        {
-            var task = guard.CanCloseAsync();
-            if (task.IsCompleted)
-                return task.Result;
+        _deactivateFromViewModel = true;
+        _actuallyClosing = true;
+        View.Close();
+        _actuallyClosing = false;
+        _deactivateFromViewModel = false;
+    }
 
-            CloseViewAsync(task);
-            return false;
-        }
+    private bool EvaluateCanClose(ICloseGuard guard)
+    {
+        var task = guard.CanCloseAsync();
+        if (task.IsCompleted)
+            return task.Result;
 
-        private async void CloseViewAsync(Task<bool> task)
-        {
-            var canClose = await task.ConfigureAwait(true);
-            if (!canClose)
-                return;
+        CloseViewAsync(task);
+        return false;
+    }
 
-            _actuallyClosing = true;
-            View.Close();
-            _actuallyClosing = false;
-        }
+    private async void CloseViewAsync(Task<bool> task)
+    {
+        var canClose = await task.ConfigureAwait(true);
+        if (!canClose)
+            return;
+
+        _actuallyClosing = true;
+        View.Close();
+        _actuallyClosing = false;
     }
 }

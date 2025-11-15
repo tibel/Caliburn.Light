@@ -1,15 +1,14 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 
-namespace Caliburn.Light.Gallery.WPF.Threading
+namespace Caliburn.Light.Gallery.WPF.Threading;
+
+/// <summary>
+/// Interaction logic for ThreadingView.xaml
+/// </summary>
+public sealed partial class ThreadingView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ThreadingView.xaml
-    /// </summary>
-    public sealed partial class ThreadingView : UserControl
+    public ThreadingView()
     {
-        public ThreadingView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

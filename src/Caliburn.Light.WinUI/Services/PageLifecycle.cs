@@ -1,165 +1,164 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Threading.Tasks;
 
-namespace Caliburn.Light.WinUI
+namespace Caliburn.Light.WinUI;
+
+/// <summary>
+/// Integrate framework life-cycle handling with <see cref="Page"/> navigation.
+/// </summary>
+public sealed class PageLifecycle : IDisposable
 {
+    private readonly IViewModelLocator _viewModelLocator;
+    private bool _actuallyNavigating;
+    private Page? _previousPage;
+
     /// <summary>
-    /// Integrate framework life-cycle handling with <see cref="Page"/> navigation.
+    /// Initializes a new instance of <see cref="PageLifecycle"/>
     /// </summary>
-    public sealed class PageLifecycle : IDisposable
+    /// <param name="navigationService">The navigation service.</param>
+    /// <param name="context">The context in which the view appears.</param>
+    /// <param name="viewModelLocator">The view model locator.</param>
+    public PageLifecycle(Frame navigationService, string? context, IViewModelLocator viewModelLocator)
     {
-        private readonly IViewModelLocator _viewModelLocator;
-        private bool _actuallyNavigating;
-        private Page? _previousPage;
+        _viewModelLocator = viewModelLocator;
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="PageLifecycle"/>
-        /// </summary>
-        /// <param name="navigationService">The navigation service.</param>
-        /// <param name="context">The context in which the view appears.</param>
-        /// <param name="viewModelLocator">The view model locator.</param>
-        public PageLifecycle(Frame navigationService, string? context, IViewModelLocator viewModelLocator)
+        NavigationService = navigationService;
+        Context = context;
+
+        navigationService.Navigating += OnNavigating;
+        navigationService.Navigated += OnNavigated;
+        navigationService.NavigationStopped += OnNavigationStopped;
+        navigationService.NavigationFailed += OnNavigationFailed;
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        NavigationService.Navigating -= OnNavigating;
+        NavigationService.Navigated -= OnNavigated;
+        NavigationService.NavigationStopped -= OnNavigationStopped;
+        NavigationService.NavigationFailed -= OnNavigationFailed;
+    }
+
+    /// <summary>
+    /// Gets the navigation service.
+    /// </summary>
+    public Frame NavigationService { get; }
+
+    /// <summary>
+    /// Gets the context in which the view appears.
+    /// </summary>
+    public string? Context { get; }
+
+    private void OnNavigating(object sender, NavigatingCancelEventArgs e)
+    {
+        if (e.Cancel)
+            return;
+
+        var parent = (ContentControl)sender;
+        if (parent.Content is not Page page)
+            return;
+
+        if (_actuallyNavigating)
         {
-            _viewModelLocator = viewModelLocator;
-
-            NavigationService = navigationService;
-            Context = context;
-
-            navigationService.Navigating += OnNavigating;
-            navigationService.Navigated += OnNavigated;
-            navigationService.NavigationStopped += OnNavigationStopped;
-            navigationService.NavigationFailed += OnNavigationFailed;
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            NavigationService.Navigating -= OnNavigating;
-            NavigationService.Navigated -= OnNavigated;
-            NavigationService.NavigationStopped -= OnNavigationStopped;
-            NavigationService.NavigationFailed -= OnNavigationFailed;
-        }
-
-        /// <summary>
-        /// Gets the navigation service.
-        /// </summary>
-        public Frame NavigationService { get; }
-
-        /// <summary>
-        /// Gets the context in which the view appears.
-        /// </summary>
-        public string? Context { get; }
-
-        private void OnNavigating(object sender, NavigatingCancelEventArgs e)
-        {
-            if (e.Cancel)
-                return;
-
-            var parent = (ContentControl)sender;
-            if (parent.Content is not Page page)
-                return;
-
-            if (_actuallyNavigating)
-            {
-                _actuallyNavigating = false;
-                _previousPage = page;
-                return;
-            }
-
-            if (!EvaluateCanClose(page, e))
-            {
-                e.Cancel = true;
-                return;
-            }
-
-            _previousPage = page;
-        }
-
-        private void OnNavigated(object sender, NavigationEventArgs e)
-        {
-            if (_previousPage is not null)
-            {
-                var previousPage = _previousPage;
-                _previousPage = null;
-                OnNavigatedFrom(previousPage);
-            }
-
-            if (e.Content is Page page)
-                OnNavigatedTo(page);
-        }
-
-        private void OnNavigationStopped(object sender, NavigationEventArgs e)
-        {
-        }
-
-        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            _previousPage = null;
-        }
-
-        private void OnNavigatedFrom(Page page)
-        {
-            if (page.DataContext is IActivatable activatable)
-                activatable.DeactivateAsync(page.NavigationCacheMode == NavigationCacheMode.Disabled).Observe();
-
-            if (page.DataContext is IViewAware viewAware)
-                viewAware.DetachView(page, Context);
-        }
-
-        private void OnNavigatedTo(Page page)
-        {
-            View.SetViewModelLocator(page, _viewModelLocator);
-
-            if (page.DataContext is null)
-                page.DataContext = _viewModelLocator.LocateForView(page);
-
-            if (page.DataContext is IViewAware viewAware)
-                viewAware.AttachView(page, Context);
-
-            if (page.DataContext is IActivatable activatable)
-                activatable.ActivateAsync().Observe();
-        }
-
-        private bool EvaluateCanClose(Page page, NavigatingCancelEventArgs e)
-        {
-            if (page.DataContext is not ICloseGuard guard)
-                return true;
-
-            var task = guard.CanCloseAsync();
-            if (task.IsCompleted)
-                return task.Result;
-
-            CloseViewAsync(task, e);
-            return false;
-        }
-
-        private async void CloseViewAsync(Task<bool> task, NavigatingCancelEventArgs e)
-        {
-            var canClose = await task.ConfigureAwait(true);
-            if (!canClose)
-                return;
-
-            _actuallyNavigating = true;
-
-            switch (e.NavigationMode)
-            {
-                case NavigationMode.New:
-                    NavigationService.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
-                    break;
-                case NavigationMode.Back:
-                    NavigationService.GoBack();
-                    break;
-                case NavigationMode.Forward:
-                    NavigationService.GoForward();
-                    break;
-                case NavigationMode.Refresh:
-                    NavigationService.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
-                    break;
-            }
-
             _actuallyNavigating = false;
+            _previousPage = page;
+            return;
         }
+
+        if (!EvaluateCanClose(page, e))
+        {
+            e.Cancel = true;
+            return;
+        }
+
+        _previousPage = page;
+    }
+
+    private void OnNavigated(object sender, NavigationEventArgs e)
+    {
+        if (_previousPage is not null)
+        {
+            var previousPage = _previousPage;
+            _previousPage = null;
+            OnNavigatedFrom(previousPage);
+        }
+
+        if (e.Content is Page page)
+            OnNavigatedTo(page);
+    }
+
+    private void OnNavigationStopped(object sender, NavigationEventArgs e)
+    {
+    }
+
+    private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+    {
+        _previousPage = null;
+    }
+
+    private void OnNavigatedFrom(Page page)
+    {
+        if (page.DataContext is IActivatable activatable)
+            activatable.DeactivateAsync(page.NavigationCacheMode == NavigationCacheMode.Disabled).Observe();
+
+        if (page.DataContext is IViewAware viewAware)
+            viewAware.DetachView(page, Context);
+    }
+
+    private void OnNavigatedTo(Page page)
+    {
+        View.SetViewModelLocator(page, _viewModelLocator);
+
+        if (page.DataContext is null)
+            page.DataContext = _viewModelLocator.LocateForView(page);
+
+        if (page.DataContext is IViewAware viewAware)
+            viewAware.AttachView(page, Context);
+
+        if (page.DataContext is IActivatable activatable)
+            activatable.ActivateAsync().Observe();
+    }
+
+    private bool EvaluateCanClose(Page page, NavigatingCancelEventArgs e)
+    {
+        if (page.DataContext is not ICloseGuard guard)
+            return true;
+
+        var task = guard.CanCloseAsync();
+        if (task.IsCompleted)
+            return task.Result;
+
+        CloseViewAsync(task, e);
+        return false;
+    }
+
+    private async void CloseViewAsync(Task<bool> task, NavigatingCancelEventArgs e)
+    {
+        var canClose = await task.ConfigureAwait(true);
+        if (!canClose)
+            return;
+
+        _actuallyNavigating = true;
+
+        switch (e.NavigationMode)
+        {
+            case NavigationMode.New:
+                NavigationService.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
+                break;
+            case NavigationMode.Back:
+                NavigationService.GoBack();
+                break;
+            case NavigationMode.Forward:
+                NavigationService.GoForward();
+                break;
+            case NavigationMode.Refresh:
+                NavigationService.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
+                break;
+        }
+
+        _actuallyNavigating = false;
     }
 }

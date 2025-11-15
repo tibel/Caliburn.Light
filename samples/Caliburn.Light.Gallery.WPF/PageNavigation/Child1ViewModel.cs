@@ -1,42 +1,41 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Caliburn.Light.Gallery.WPF.PageNavigation
+namespace Caliburn.Light.Gallery.WPF.PageNavigation;
+
+public sealed class Child1ViewModel : Screen
 {
-    public sealed class Child1ViewModel : Screen
+    public ICommand NavigateCommand { get; }
+
+    public Child1ViewModel()
     {
-        public ICommand NavigateCommand { get; }
+        NavigateCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(Navigate)
+            .Build();
+    }
 
-        public Child1ViewModel()
-        {
-            NavigateCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(Navigate)
-                .Build();
-        }
+    private void Navigate()
+    {
+        if (((IViewAware)this).GetView(null) is Page page)
+            page.NavigationService?.Navigate(new Uri("PageNavigation/Child2View.xaml", UriKind.Relative));
+    }
 
-        private void Navigate()
-        {
-            if (((IViewAware)this).GetView(null) is Page page)
-                page.NavigationService?.Navigate(new Uri("PageNavigation/Child2View.xaml", UriKind.Relative));
-        }
+    protected override Task OnActivateAsync()
+    {
+        return Task.Delay(100);
+    }
 
-        protected override Task OnActivateAsync()
-        {
-            return Task.Delay(100);
-        }
+    protected override Task OnDeactivateAsync(bool close)
+    {
+        return Task.Delay(100);
+    }
 
-        protected override Task OnDeactivateAsync(bool close)
-        {
-            return Task.Delay(100);
-        }
-
-        public override async Task<bool> CanCloseAsync()
-        {
-            await Task.Delay(100);
-            return true;
-        }
+    public override async Task<bool> CanCloseAsync()
+    {
+        await Task.Delay(100);
+        return true;
     }
 }

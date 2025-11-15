@@ -1,15 +1,14 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 
-namespace Caliburn.Light.Gallery.WPF.PubSub
+namespace Caliburn.Light.Gallery.WPF.PubSub;
+
+/// <summary>
+/// Interaction logic for PublisherView.xaml
+/// </summary>
+public sealed partial class PublisherView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for PublisherView.xaml
-    /// </summary>
-    public sealed partial class PublisherView : UserControl
+    public PublisherView()
     {
-        public PublisherView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

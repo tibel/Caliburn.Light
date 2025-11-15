@@ -1,30 +1,29 @@
-﻿using System.Windows;
+using System.Windows;
 
-namespace Caliburn.Light.WPF
+namespace Caliburn.Light.WPF;
+
+/// <summary>
+/// Settings for a message box
+/// </summary>
+public sealed class MessageBoxSettings
 {
     /// <summary>
-    /// Settings for a message box
+    /// Gets or sets the text.
     /// </summary>
-    public sealed class MessageBoxSettings
-    {
-        /// <summary>
-        /// Gets or sets the text.
-        /// </summary>
-        public string Text { get; set; } = string.Empty;
+    public string Text { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the caption text.
-        /// </summary>
-        public string Caption { get; set; } = string.Empty;
+    /// <summary>
+    /// Gets or sets the caption text.
+    /// </summary>
+    public string Caption { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the buttons.
-        /// </summary>
-        public MessageBoxButton Button { get; set; }
+    /// <summary>
+    /// Gets or sets the buttons.
+    /// </summary>
+    public MessageBoxButton Button { get; set; }
 
-        /// <summary>
-        /// Gets or sets the image.
-        /// </summary>
-        public MessageBoxImage Image { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the image.
+    /// </summary>
+    public MessageBoxImage Image { get; set; }
 }

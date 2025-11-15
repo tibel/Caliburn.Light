@@ -1,40 +1,39 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Caliburn.Light.Gallery.WPF.SimpleMDI
+namespace Caliburn.Light.Gallery.WPF.SimpleMDI;
+
+public sealed class SimpleMDIViewModel : Conductor<TabViewModel>.Collection.OneActive, IHaveDisplayName
 {
-    public sealed class SimpleMDIViewModel : Conductor<TabViewModel>.Collection.OneActive, IHaveDisplayName
+    private readonly Func<TabViewModel> _createTabViewModel;
+    private int _count;
+
+    public string? DisplayName => "Simple MDI";
+
+    public SimpleMDIViewModel()
     {
-        private readonly Func<TabViewModel> _createTabViewModel;
-        private int _count;
+        _createTabViewModel = () => new TabViewModel();
 
-        public string? DisplayName => "Simple MDI";
+        OpenTabCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(OpenTabAsync)
+            .Build();
+    }
 
-        public SimpleMDIViewModel()
-        {
-            _createTabViewModel = () => new TabViewModel();
+    public ICommand OpenTabCommand { get; }
 
-            OpenTabCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OpenTabAsync)
-                .Build();
-        }
+    private Task OpenTabAsync()
+    {
+        var tab = _createTabViewModel();
+        tab.DisplayName = "Tab " + ++_count;
+        return ActivateItemAsync(tab);
+    }
 
-        public ICommand OpenTabCommand { get; }
-
-        private Task OpenTabAsync()
-        {
-            var tab = _createTabViewModel();
-            tab.DisplayName = "Tab " + ++_count;
-            return ActivateItemAsync(tab);
-        }
-
-        public override async Task<bool> CanCloseAsync()
-        {
-            await base.CanCloseAsync();
-            await Task.Delay(500);
-            return true;
-        }
+    public override async Task<bool> CanCloseAsync()
+    {
+        await base.CanCloseAsync();
+        await Task.Delay(500);
+        return true;
     }
 }

@@ -1,47 +1,46 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 using Caliburn.Light.WPF;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Demo.WinFormsInterop
+namespace Demo.WinFormsInterop;
+
+public sealed class MainViewModel : ViewAware
 {
-    public sealed class MainViewModel : ViewAware
+    private readonly IWindowManager _windowManager;
+    private string? _name;
+
+    public MainViewModel(IWindowManager windowManager)
     {
-        private readonly IWindowManager _windowManager;
-        private string? _name;
+        ArgumentNullException.ThrowIfNull(windowManager);
 
-        public MainViewModel(IWindowManager windowManager)
+        _windowManager = windowManager;
+
+        SayHelloCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(SayHello)
+            .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
+            .Observe(this, nameof(Name))
+            .Build();
+    }
+
+    public string? Name
+    {
+        get { return _name; }
+        set { SetProperty(ref _name, value); }
+    }
+
+    public ICommand SayHelloCommand { get; }
+
+    private Task SayHello()
+    {
+        var settings = new MessageBoxSettings
         {
-            ArgumentNullException.ThrowIfNull(windowManager);
+            Text = string.Format("Hello {0}!", Name),
+            Caption = "Message",
+            Image = System.Windows.MessageBoxImage.Information
+        };
 
-            _windowManager = windowManager;
-
-            SayHelloCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(SayHello)
-                .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
-                .Observe(this, nameof(Name))
-                .Build();
-        }
-
-        public string? Name
-        {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
-        }
-
-        public ICommand SayHelloCommand { get; }
-
-        private Task SayHello()
-        {
-            var settings = new MessageBoxSettings
-            {
-                Text = string.Format("Hello {0}!", Name),
-                Caption = "Message",
-                Image = System.Windows.MessageBoxImage.Information
-            };
-
-            return _windowManager.ShowMessageBox(settings, this);
-        }
+        return _windowManager.ShowMessageBox(settings, this);
     }
 }

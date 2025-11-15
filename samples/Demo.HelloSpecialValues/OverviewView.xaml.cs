@@ -1,17 +1,16 @@
-﻿using Caliburn.Light.WinUI;
+using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Demo.HelloSpecialValues
+namespace Demo.HelloSpecialValues;
+
+public sealed partial class OverviewView : UserControl
 {
-    public sealed partial class OverviewView : UserControl
+    public OverviewView()
     {
-        public OverviewView()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            Model = new DataContextWrapper<OverviewViewModel>(this);
-        }
-
-        public DataContextWrapper<OverviewViewModel> Model { get; }
+        Model = new DataContextWrapper<OverviewViewModel>(this);
     }
+
+    public DataContextWrapper<OverviewViewModel> Model { get; }
 }

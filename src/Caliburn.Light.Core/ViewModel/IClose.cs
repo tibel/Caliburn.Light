@@ -1,15 +1,14 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
-namespace Caliburn.Light
+namespace Caliburn.Light;
+
+/// <summary>
+/// Denotes an object that can be closed.
+/// </summary>
+public interface IClose
 {
     /// <summary>
-    /// Denotes an object that can be closed.
+    /// Tries to close this instance.
     /// </summary>
-    public interface IClose
-    {
-        /// <summary>
-        /// Tries to close this instance.
-        /// </summary>
-        Task TryCloseAsync();
-    }
+    Task TryCloseAsync();
 }

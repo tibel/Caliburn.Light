@@ -1,13 +1,12 @@
-﻿namespace Caliburn.Light
+﻿namespace Caliburn.Light;
+
+/// <summary>
+/// Denotes an instance which maintains an active item.
+/// </summary>
+public interface IHaveActiveItem
 {
     /// <summary>
-    /// Denotes an instance which maintains an active item.
+    /// The currently active item.
     /// </summary>
-    public interface IHaveActiveItem
-    {
-        /// <summary>
-        /// The currently active item.
-        /// </summary>
-        object? ActiveItem { get; }
-    }
+    object? ActiveItem { get; }
 }

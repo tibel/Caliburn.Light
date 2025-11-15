@@ -1,13 +1,12 @@
-﻿namespace Caliburn.Light
+namespace Caliburn.Light;
+
+/// <summary>
+/// Denotes an instance which has a display name.
+/// </summary>
+public interface IHaveDisplayName
 {
     /// <summary>
-    /// Denotes an instance which has a display name.
+    /// Gets the Display Name
     /// </summary>
-    public interface IHaveDisplayName
-    {
-        /// <summary>
-        /// Gets the Display Name
-        /// </summary>
-        string? DisplayName { get; }
-    }
+    string? DisplayName { get; }
 }

@@ -1,15 +1,14 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 
-namespace Caliburn.Light.Gallery.WPF.PubSub
+namespace Caliburn.Light.Gallery.WPF.PubSub;
+
+/// <summary>
+/// Interaction logic for SubscriberView.xaml
+/// </summary>
+public sealed partial class SubscriberView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SubscriberView.xaml
-    /// </summary>
-    public sealed partial class SubscriberView : UserControl
+    public SubscriberView()
     {
-        public SubscriberView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

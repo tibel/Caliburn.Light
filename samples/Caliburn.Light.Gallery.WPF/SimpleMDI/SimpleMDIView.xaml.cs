@@ -1,15 +1,14 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 
-namespace Caliburn.Light.Gallery.WPF.SimpleMDI
+namespace Caliburn.Light.Gallery.WPF.SimpleMDI;
+
+/// <summary>
+/// Interaction logic for SimpleMDIView.xaml
+/// </summary>
+public sealed partial class SimpleMDIView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SimpleMDIView.xaml
-    /// </summary>
-    public sealed partial class SimpleMDIView : UserControl
+    public SimpleMDIView()
     {
-        public SimpleMDIView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

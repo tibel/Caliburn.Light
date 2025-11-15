@@ -1,8 +1,7 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 
-namespace Caliburn.Light.Gallery.WPF.Hierarchies
+namespace Caliburn.Light.Gallery.WPF.Hierarchies;
+
+public sealed class ChildLevel2ViewModel : Screen
 {
-    public sealed class ChildLevel2ViewModel : Screen
-    {
-    }
 }

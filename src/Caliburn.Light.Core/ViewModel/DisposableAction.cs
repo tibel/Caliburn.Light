@@ -1,33 +1,32 @@
-﻿using System;
+using System;
 
-namespace Caliburn.Light
+namespace Caliburn.Light;
+
+/// <summary>
+/// Executes an action when disposed.
+/// </summary>
+public sealed class DisposableAction : IDisposable
 {
+    private Action? _action;
+
     /// <summary>
-    /// Executes an action when disposed.
+    /// Initializes a new instance of the <see cref="DisposableAction"/> class.
     /// </summary>
-    public sealed class DisposableAction : IDisposable
+    /// <param name="action">The action to execute on dispose.</param>
+    public DisposableAction(Action action)
     {
-        private Action? _action;
+        ArgumentNullException.ThrowIfNull(action);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DisposableAction"/> class.
-        /// </summary>
-        /// <param name="action">The action to execute on dispose.</param>
-        public DisposableAction(Action action)
-        {
-            ArgumentNullException.ThrowIfNull(action);
+        _action = action;
+    }
 
-            _action = action;
-        }
-
-        /// <summary>
-        /// Executes the supplied action.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_action is null) return;
-            _action();
-            _action = null;
-        }
+    /// <summary>
+    /// Executes the supplied action.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_action is null) return;
+        _action();
+        _action = null;
     }
 }

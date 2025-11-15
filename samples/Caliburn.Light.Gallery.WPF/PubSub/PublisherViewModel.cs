@@ -1,39 +1,38 @@
-﻿using Caliburn.Light;
+using Caliburn.Light;
 using System.Windows.Input;
 
-namespace Caliburn.Light.Gallery.WPF.PubSub
+namespace Caliburn.Light.Gallery.WPF.PubSub;
+
+public sealed class PublisherViewModel : BindableObject
 {
-    public sealed class PublisherViewModel : BindableObject
+    private readonly IEventAggregator _eventAggregator;
+    private string? _message;
+
+    public PublisherViewModel(IEventAggregator eventAggregator)
     {
-        private readonly IEventAggregator _eventAggregator;
-        private string? _message;
+        _eventAggregator = eventAggregator;
 
-        public PublisherViewModel(IEventAggregator eventAggregator)
-        {
-            _eventAggregator = eventAggregator;
+        PublishCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(Publish)
+            .OnCanExecute(() => !string.IsNullOrEmpty(Message))
+            .Observe(this, nameof(Message))
+            .Build();
+    }
 
-            PublishCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(Publish)
-                .OnCanExecute(() => !string.IsNullOrEmpty(Message))
-                .Observe(this, nameof(Message))
-                .Build();
-        }
+    public string? Message
+    {
+        get { return _message; }
+        set { SetProperty(ref _message, value); }
+    }
 
-        public string? Message
-        {
-            get { return _message; }
-            set { SetProperty(ref _message, value); }
-        }
+    public ICommand PublishCommand { get; }
 
-        public ICommand PublishCommand { get; }
+    private void Publish()
+    {
+        if (Message is null)
+            return;
 
-        private void Publish()
-        {
-            if (Message is null)
-                return;
-
-            _eventAggregator.Publish(Message);
-            Message = null;
-        }
+        _eventAggregator.Publish(Message);
+        Message = null;
     }
 }

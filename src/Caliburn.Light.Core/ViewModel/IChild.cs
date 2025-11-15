@@ -1,13 +1,12 @@
-namespace Caliburn.Light
+namespace Caliburn.Light;
+
+/// <summary>
+/// Denotes a node within a parent/child hierarchy.
+/// </summary>
+public interface IChild
 {
     /// <summary>
-    /// Denotes a node within a parent/child hierarchy.
+    /// Gets or sets the parent.
     /// </summary>
-    public interface IChild
-    {
-        /// <summary>
-        /// Gets or sets the parent.
-        /// </summary>
-        object? Parent { get; set; }
-    }
+    object? Parent { get; set; }
 }

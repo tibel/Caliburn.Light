@@ -1,55 +1,54 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace Caliburn.Light.WinUI
+namespace Caliburn.Light.WinUI;
+
+/// <summary>
+/// Some helper methods when dealing with data bindings.
+/// </summary>
+public static class BindingHelper
 {
     /// <summary>
-    /// Some helper methods when dealing with data bindings.
+    /// Returns a value that indicates whether the specified property is currently data-bound.
     /// </summary>
-    public static class BindingHelper
+    /// <param name="target">The object where <paramref name="property"/> is.</param>
+    /// <param name="property">The dependency property to check.</param>
+    /// <returns>True if the specified property is data-bound, otherwise False.</returns>
+    public static bool IsDataBound(DependencyObject target, DependencyProperty property)
     {
-        /// <summary>
-        /// Returns a value that indicates whether the specified property is currently data-bound.
-        /// </summary>
-        /// <param name="target">The object where <paramref name="property"/> is.</param>
-        /// <param name="property">The dependency property to check.</param>
-        /// <returns>True if the specified property is data-bound, otherwise False.</returns>
-        public static bool IsDataBound(DependencyObject target, DependencyProperty property)
-        {
-            return target.ReadLocalValue(property) is BindingExpressionBase;
-        }
+        return target.ReadLocalValue(property) is BindingExpressionBase;
+    }
 
-        /// <summary>
-        /// Creates and associates a new <see cref="T:System.Windows.Data.BindingExpressionBase"/> with the specified binding target property.
-        /// </summary>
-        /// <param name="target">The target to set the binding to.</param>
-        /// <param name="property">The property on the target to bind.</param>
-        /// <param name="binding">The binding to assign to the target property.</param>
-        public static void SetBinding(DependencyObject target, DependencyProperty property, BindingBase binding)
-        {
-            BindingOperations.SetBinding(target, property, binding);
-        }
+    /// <summary>
+    /// Creates and associates a new <see cref="T:System.Windows.Data.BindingExpressionBase"/> with the specified binding target property.
+    /// </summary>
+    /// <param name="target">The target to set the binding to.</param>
+    /// <param name="property">The property on the target to bind.</param>
+    /// <param name="binding">The binding to assign to the target property.</param>
+    public static void SetBinding(DependencyObject target, DependencyProperty property, BindingBase binding)
+    {
+        BindingOperations.SetBinding(target, property, binding);
+    }
 
-        /// <summary>
-        /// Remove data Binding (if any) from a property.
-        /// </summary>
-        /// <param name="target">Object from which to remove Binding</param>
-        /// <param name="property">Property from which to remove Binding</param>
-        public static void ClearBinding(DependencyObject target, DependencyProperty property)
-        {
-            if (IsDataBound(target, property))
-                target.ClearValue(property);
-        }
+    /// <summary>
+    /// Remove data Binding (if any) from a property.
+    /// </summary>
+    /// <param name="target">Object from which to remove Binding</param>
+    /// <param name="property">Property from which to remove Binding</param>
+    public static void ClearBinding(DependencyObject target, DependencyProperty property)
+    {
+        if (IsDataBound(target, property))
+            target.ClearValue(property);
+    }
 
-        /// <summary>
-        /// Force a data transfer from Binding source to target.
-        /// </summary>
-        /// <param name="target">The object where <paramref name="property"/> is.</param>
-        /// <param name="property">The dependency property to refresh.</param>
-        public static void RefreshBinding(DependencyObject target, DependencyProperty property)
-        {
-            if (target.ReadLocalValue(property) is not BindingExpression bindingExpression || bindingExpression.ParentBinding is null) return;
-            BindingOperations.SetBinding(target, property, bindingExpression.ParentBinding);
-        }
+    /// <summary>
+    /// Force a data transfer from Binding source to target.
+    /// </summary>
+    /// <param name="target">The object where <paramref name="property"/> is.</param>
+    /// <param name="property">The dependency property to refresh.</param>
+    public static void RefreshBinding(DependencyObject target, DependencyProperty property)
+    {
+        if (target.ReadLocalValue(property) is not BindingExpression bindingExpression || bindingExpression.ParentBinding is null) return;
+        BindingOperations.SetBinding(target, property, bindingExpression.ParentBinding);
     }
 }

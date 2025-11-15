@@ -1,30 +1,29 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 
-namespace Caliburn.Light.WPF
+namespace Caliburn.Light.WPF;
+
+/// <summary>
+/// Enables you to detect whether your app is in design mode in a visual designer.
+/// </summary>
+public static class DesignMode
 {
+    private static bool? _designModeEnabled;
+
     /// <summary>
-    /// Enables you to detect whether your app is in design mode in a visual designer.
+    /// Gets a value that indicates whether the process is running in design mode.
     /// </summary>
-    public static class DesignMode
+    public static bool DesignModeEnabled
     {
-        private static bool? _designModeEnabled;
-
-        /// <summary>
-        /// Gets a value that indicates whether the process is running in design mode.
-        /// </summary>
-        public static bool DesignModeEnabled
+        get
         {
-            get
+            if (!_designModeEnabled.HasValue)
             {
-                if (!_designModeEnabled.HasValue)
-                {
-                    var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement));
-                    _designModeEnabled = (bool)descriptor.Metadata.DefaultValue;
-                }
-
-                return _designModeEnabled.Value;
+                var descriptor = DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement));
+                _designModeEnabled = (bool)descriptor.Metadata.DefaultValue;
             }
+
+            return _designModeEnabled.Value;
         }
     }
 }

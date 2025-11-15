@@ -1,17 +1,16 @@
-﻿using Caliburn.Light.WinUI;
+using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Demo.HelloSpecialValues
+namespace Demo.HelloSpecialValues;
+
+public sealed partial class CharacterView : UserControl
 {
-    public sealed partial class CharacterView : UserControl
+    public CharacterView()
     {
-        public CharacterView()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            Model = new DataContextWrapper<CharacterViewModel>(this);
-        }
-
-        public DataContextWrapper<CharacterViewModel> Model { get; }
+        Model = new DataContextWrapper<CharacterViewModel>(this);
     }
+
+    public DataContextWrapper<CharacterViewModel> Model { get; }
 }

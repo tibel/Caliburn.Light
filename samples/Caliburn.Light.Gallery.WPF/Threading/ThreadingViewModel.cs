@@ -1,72 +1,71 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Light;
 
-namespace Caliburn.Light.Gallery.WPF.Threading
+namespace Caliburn.Light.Gallery.WPF.Threading;
+
+public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
 {
-    public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
+    private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
+
+    public string? DisplayName => "Threading";
+
+    public ThreadingViewModel()
     {
-        private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
+        SwitchToCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(OnSwitchTo)
+            .Build();
 
-        public string? DisplayName => "Threading";
+        ConfigureAwaitFalseCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(OnConfigureAwaitFalse)
+            .Build();
 
-        public ThreadingViewModel()
-        {
-            SwitchToCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnSwitchTo)
-                .Build();
+        ConfigureAwaitTrueCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(OnConfigureAwaitTrue)
+            .Build();
+    }
 
-            ConfigureAwaitFalseCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnConfigureAwaitFalse)
-                .Build();
+    public ICommand SwitchToCommand { get; }
+    public ICommand ConfigureAwaitFalseCommand { get; }
+    public ICommand ConfigureAwaitTrueCommand { get; }
 
-            ConfigureAwaitTrueCommand = DelegateCommandBuilder.NoParameter()
-                .OnExecute(OnConfigureAwaitTrue)
-                .Build();
-        }
+    protected override void OnViewAttached(object view, string context)
+    {
+        base.OnViewAttached(view, context);
+        _dispatcher = ViewHelper.GetDispatcher(view);
+    }
 
-        public ICommand SwitchToCommand { get; }
-        public ICommand ConfigureAwaitFalseCommand { get; }
-        public ICommand ConfigureAwaitTrueCommand { get; }
+    protected override void OnViewDetached(object view, string context)
+    {
+        _dispatcher = CurrentThreadDispatcher.Instance;
+        base.OnViewDetached(view, context);
+    }
 
-        protected override void OnViewAttached(object view, string context)
-        {
-            base.OnViewAttached(view, context);
-            _dispatcher = ViewHelper.GetDispatcher(view);
-        }
+    private async Task OnSwitchTo()
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        Trace.Assert(!_dispatcher.CheckAccess());
 
-        protected override void OnViewDetached(object view, string context)
-        {
-            _dispatcher = CurrentThreadDispatcher.Instance;
-            base.OnViewDetached(view, context);
-        }
+        await _dispatcher.SwitchTo();
+        Trace.Assert(_dispatcher.CheckAccess());
 
-        private async Task OnSwitchTo()
-        {
-            await Task.Delay(10).ConfigureAwait(false);
-            Trace.Assert(!_dispatcher.CheckAccess());
+        Trace.WriteLine("On UI thread after SwitchTo().");
+    }
 
-            await _dispatcher.SwitchTo();
-            Trace.Assert(_dispatcher.CheckAccess());
+    private async Task OnConfigureAwaitFalse()
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        Trace.Assert(!_dispatcher.CheckAccess());
 
-            Trace.WriteLine("On UI thread after SwitchTo().");
-        }
+        Trace.WriteLine("On ThreadPool thread after ConfigureAwait(false).");
+    }
 
-        private async Task OnConfigureAwaitFalse()
-        {
-            await Task.Delay(10).ConfigureAwait(false);
-            Trace.Assert(!_dispatcher.CheckAccess());
+    private async Task OnConfigureAwaitTrue()
+    {
+        await Task.Delay(10).ConfigureAwait(true);
 
-            Trace.WriteLine("On ThreadPool thread after ConfigureAwait(false).");
-        }
-
-        private async Task OnConfigureAwaitTrue()
-        {
-            await Task.Delay(10).ConfigureAwait(true);
-
-            Trace.Assert(_dispatcher.CheckAccess());
-            Trace.WriteLine("On UI thread after ConfigureAwait(true).");
-        }
+        Trace.Assert(_dispatcher.CheckAccess());
+        Trace.WriteLine("On UI thread after ConfigureAwait(true).");
     }
 }
