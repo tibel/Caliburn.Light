@@ -47,7 +47,5 @@ namespace Demo.HelloSpecialValues
 
             _window.Activate();
         }
-
-        public Window? MainWindow => _window;
     }
 }

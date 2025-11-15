@@ -1,7 +1,8 @@
 ﻿using Caliburn.Light;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
-using Windows.UI.Popups;
 
 namespace Demo.HelloSpecialValues
 {
@@ -32,8 +33,19 @@ namespace Demo.HelloSpecialValues
             if (character is null)
                 return;
 
-            var dialog = new MessageDialog(string.Format("{0} selected.", character.Name), "Character Selected");
-            await dialog.ShowAsyncEx();
+            if (((IViewAware)this).GetView() is not UIElement uiElement)
+                return;
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = uiElement.XamlRoot,
+                Title = "Character Selected",
+                PrimaryButtonText = "OK",
+                DefaultButton = ContentDialogButton.Primary,
+                Content = string.Format("{0} selected.", character.Name)
+            };
+
+            await dialog.ShowAsync();
         }
 
         public IReadOnlyBindableCollection<CharacterViewModel> Characters { get; }
