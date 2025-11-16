@@ -26,7 +26,7 @@ public interface IViewAware
     /// </summary>
     /// <param name="context">The context denoting which view to retrieve.</param>
     /// <returns>The view.</returns>
-    object? GetView(string? context);
+    object? GetView(string? context = null);
 
     /// <summary>
     /// Gets all views previously attached to this instance.

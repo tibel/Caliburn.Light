@@ -19,7 +19,7 @@ public sealed class Child1ViewModel : Screen
 
     private void Navigate()
     {
-        if (((IViewAware)this).GetView(null) is Page page)
+        if (((IViewAware)this).GetView() is Page page)
             page.NavigationService?.Navigate(new Uri("PageNavigation/Child2View.xaml", UriKind.Relative));
     }
 
