@@ -19,7 +19,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Build
-      run: msbuild Caliburn.Light.sln /restore /t:Pack /p:Configuration=Release
+      run: msbuild Caliburn.Light.slnx /restore /t:Pack /p:Configuration=Release
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
