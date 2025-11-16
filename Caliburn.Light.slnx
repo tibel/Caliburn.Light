@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="arm64" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/samples/">
+    <File Path="samples/Directory.Build.props" />
+    <Project Path="samples/Caliburn.Light.Gallery.WPF/Caliburn.Light.Gallery.WPF.csproj" />
+    <Project Path="samples/Demo.HelloSpecialValues/Demo.HelloSpecialValues.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+    <Project Path="samples/Demo.WinFormsInterop/Demo.WinFormsInterop.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <Project Path="src/Caliburn.Light.Core/Caliburn.Light.Core.csproj" />
+    <Project Path="src/Caliburn.Light.WinUI/Caliburn.Light.WinUI.csproj" />
+    <Project Path="src/Caliburn.Light.WPF/Caliburn.Light.WPF.csproj" />
+  </Folder>
+</Solution>
