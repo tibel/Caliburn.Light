@@ -422,4 +422,31 @@ public static class View
 
         public override int GetHashCode() => _dispatcher.GetHashCode();
     }
+
+    /// <summary>
+    /// A dependency property for attaching a <see cref="Window"/> to an element.
+    /// </summary>
+    public static readonly DependencyProperty WindowProperty =
+        DependencyProperty.RegisterAttached("Window",
+            typeof(Window), typeof(View), new PropertyMetadata(null));
+
+    /// <summary>
+    /// Gets the attached <see cref="Window"/>.
+    /// </summary>
+    /// <param name="d">The element the <see cref="Window"/> is attached to.</param>
+    /// <returns>The <see cref="Window"/>.</returns>
+    public static Window? GetWindow(DependencyObject d)
+    {
+        return (Window?)d.GetValue(WindowProperty);
+    }
+
+    /// <summary>
+    /// Sets the <see cref="Window"/>.
+    /// </summary>
+    /// <param name="d">The element to attach the <see cref="Window"/> to.</param>
+    /// <param name="value">The <see cref="Window"/>.</param>
+    public static void SetWindow(DependencyObject d, Window? value)
+    {
+        d.SetValue(WindowProperty, value);
+    }
 }

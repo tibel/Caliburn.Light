@@ -59,7 +59,7 @@ internal sealed class ViewAdapter : IViewAdapter
 
     public Task<bool> TryCloseAsync(object view)
     {
-        if (view is Window window)
+        if (View.GetWindow((DependencyObject)view) is Window window)
         {
             window.Close();
             return TaskHelper.TrueTask;

@@ -35,8 +35,13 @@ public sealed partial class App : Application
         _window = new Window();
         _window.Title = "Demo.HelloSpecialValues";
 
+        var viewModelLocator = _container.GetRequiredInstance<IViewModelLocator>();
+
         var viewModel = new OverviewViewModel();
-        var view = _container.GetRequiredInstance<IViewModelLocator>().LocateForModel(viewModel, null);
+        var view = viewModelLocator.LocateForModel(viewModel, null);
+
+        View.SetWindow(view, _window);
+        View.SetViewModelLocator(view, viewModelLocator);
 
         ((FrameworkElement)view).DataContext = viewModel;
         _window.Content = view;
