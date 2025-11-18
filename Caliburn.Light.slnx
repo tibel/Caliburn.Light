@@ -16,6 +16,7 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path="CHANGELOG.md" />
     <File Path="Directory.Packages.props" />
     <File Path="README.md" />
   </Folder>
