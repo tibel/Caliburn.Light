@@ -9,8 +9,6 @@ namespace Caliburn.Light.WinUI;
 /// </summary>
 public sealed class WindowLifecycle
 {
-    private bool _deactivatingFromView;
-    private bool _deactivateFromViewModel;
     private bool _actuallyClosing;
 
     /// <summary>
@@ -37,8 +35,6 @@ public sealed class WindowLifecycle
                 view.Activated += OnViewActivated;
             else
                 activatable.ActivateAsync().Observe();
-
-            activatable.Deactivated += OnModelDeactivated;
         }
     }
 
@@ -80,36 +76,10 @@ public sealed class WindowLifecycle
         }
 
         if (viewModel is IActivatable activatable)
-        {
-            activatable.Deactivated -= OnModelDeactivated;
-
-            if (!_deactivateFromViewModel)
-            {
-                _deactivatingFromView = true;
-                await activatable.DeactivateAsync(true).ConfigureAwait(true);
-                _deactivatingFromView = false;
-            }
-        }
+            await activatable.DeactivateAsync(true).ConfigureAwait(true);
 
         if (viewModel is IViewAware viewAware)
             viewAware.DetachView(View.Content, Context);
-    }
-
-    private void OnModelDeactivated(object? sender, DeactivationEventArgs e)
-    {
-        if (!e.WasClosed)
-            return;
-
-        ((IActivatable)sender!).Deactivated -= OnModelDeactivated;
-
-        if (_deactivatingFromView)
-            return;
-
-        _deactivateFromViewModel = true;
-        _actuallyClosing = true;
-        View.Close();
-        _actuallyClosing = false;
-        _deactivateFromViewModel = false;
     }
 
     private bool EvaluateCanClose(ICloseGuard guard)

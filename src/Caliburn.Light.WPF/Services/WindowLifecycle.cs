@@ -10,8 +10,6 @@ namespace Caliburn.Light.WPF;
 /// </summary>
 public sealed class WindowLifecycle
 {
-    private bool _deactivatingFromView;
-    private bool _deactivateFromViewModel;
     private bool _actuallyClosing;
 
     /// <summary>
@@ -43,8 +41,6 @@ public sealed class WindowLifecycle
             {
                 activatable.ActivateAsync().Observe();
             }
-
-            activatable.Deactivated += OnModelDeactivated;
         }
 
         if (viewModel is ICloseGuard guard)
@@ -81,36 +77,10 @@ public sealed class WindowLifecycle
         View.Closing -= OnViewClosing;
 
         if (View.DataContext is IActivatable activatable)
-        {
-            activatable.Deactivated -= OnModelDeactivated;
-
-            if (!_deactivateFromViewModel)
-            {
-                _deactivatingFromView = true;
-                await activatable.DeactivateAsync(true).ConfigureAwait(true);
-                _deactivatingFromView = false;
-            }
-        }
+            await activatable.DeactivateAsync(true).ConfigureAwait(true);
 
         if (View.DataContext is IViewAware viewAware)
             viewAware.DetachView(View, Context);
-    }
-
-    private void OnModelDeactivated(object? sender, DeactivationEventArgs e)
-    {
-        if (!e.WasClosed)
-            return;
-
-        ((IActivatable)sender!).Deactivated -= OnModelDeactivated;
-
-        if (_deactivatingFromView)
-            return;
-
-        _deactivateFromViewModel = true;
-        _actuallyClosing = true;
-        View.Close();
-        _actuallyClosing = false;
-        _deactivateFromViewModel = false;
     }
 
     private bool EvaluateCanClose(ICloseGuard guard)
