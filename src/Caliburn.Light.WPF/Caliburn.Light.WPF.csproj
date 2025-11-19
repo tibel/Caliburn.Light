@@ -5,7 +5,6 @@
     <UseWPF>true</UseWPF>
     <Title>Caliburn.Light.WPF</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building WPF applications.</Description>
-    <NoWarn>CA2255;$(NoWarn)</NoWarn>
     <IsAotCompatible>false</IsAotCompatible>
   </PropertyGroup>
 
