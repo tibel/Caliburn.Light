@@ -18,6 +18,7 @@
     <File Path=".editorconfig" />
     <File Path="CHANGELOG.md" />
     <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
