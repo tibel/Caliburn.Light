@@ -8,7 +8,6 @@ namespace Demo.HelloSpecialValues;
 public sealed partial class App : Application
 {
     private SimpleContainer? _container;
-    private Window? _window;
 
     public App()
     {
@@ -20,9 +19,12 @@ public sealed partial class App : Application
     {
         _container = new SimpleContainer();
 
+        _container.RegisterSingleton<IWindowManager, WindowManager>();
         _container.RegisterSingleton<IEventAggregator, EventAggregator>();
         _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
         _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
+
+        _container.RegisterPerRequest<OverviewViewModel>();
 
         _container.RegisterInstance(ViewModelTypeMapping.Create<OverviewView, OverviewViewModel>());
         _container.RegisterInstance(ViewModelTypeMapping.Create<CharacterView, CharacterViewModel>());
@@ -32,21 +34,7 @@ public sealed partial class App : Application
     {
         Configure();
 
-        _window = new Window();
-        _window.Title = "Demo.HelloSpecialValues";
-
-        var viewModelLocator = _container.GetRequiredInstance<IViewModelLocator>();
-
-        var viewModel = new OverviewViewModel();
-        var view = viewModelLocator.LocateForModel(viewModel, null);
-
-        View.SetWindow(view, _window);
-        View.SetViewModelLocator(view, viewModelLocator);
-
-        ((FrameworkElement)view).DataContext = viewModel;
-        _window.Content = view;
-        _ = new WindowLifecycle(_window, null, false);
-
-        _window.Activate();
+        _container.GetRequiredInstance<IWindowManager>()
+            .ShowWindow(_container.GetRequiredInstance<OverviewViewModel>());
     }
 }
