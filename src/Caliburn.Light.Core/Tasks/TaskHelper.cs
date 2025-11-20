@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light;
@@ -25,20 +24,5 @@ public static class TaskHelper
     public static async void Observe(this Task task)
     {
         await task.ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Occurs when <see cref="AsyncCommand.ExecuteAsync(object)"/> or <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
-    /// </summary>
-    public static event EventHandler<TaskEventArgs>? Executing;
-
-    /// <summary>
-    /// Triggers the <see cref="Executing"/> event for the supplied <paramref name="task"/>.
-    /// </summary>
-    /// <param name="sender">The sender of the event.</param>
-    /// <param name="task">The running task.</param>
-    public static void NotifyExecuting(object? sender, Task task)
-    {
-        Executing?.Invoke(sender, new TaskEventArgs(task));
     }
 }

@@ -136,7 +136,7 @@ public sealed class EventAggregator : IEventAggregator
             task.Observe();
 
             if (!task.IsCompleted)
-                TaskHelper.NotifyExecuting(handler, task);
+                Executing?.Invoke(null, new TaskEventArgs(task));
         }
     }
 
@@ -153,4 +153,9 @@ public sealed class EventAggregator : IEventAggregator
                 contexts.RemoveAt(i);
         }
     }
+
+    /// <summary>
+    /// Occurs when <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
+    /// </summary>
+    public static event EventHandler<TaskEventArgs>? Executing;
 }
