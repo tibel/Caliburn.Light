@@ -64,9 +64,8 @@ public class WindowManager : IWindowManager
         }
         else
         {
-            window.Owner = owner;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            return window.ShowModal();
+            return window.ShowModal(owner);
         }
     }
 

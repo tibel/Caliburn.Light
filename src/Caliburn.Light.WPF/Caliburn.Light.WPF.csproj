@@ -6,6 +6,7 @@
     <Title>Caliburn.Light.WPF</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building WPF applications.</Description>
     <IsAotCompatible>false</IsAotCompatible>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
