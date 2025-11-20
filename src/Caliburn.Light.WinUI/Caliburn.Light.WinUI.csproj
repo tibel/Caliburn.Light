@@ -8,6 +8,7 @@
     <Title>Caliburn.Light.WinUI</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building WinUI applications.</Description>
     <IsAotCompatible>true</IsAotCompatible>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

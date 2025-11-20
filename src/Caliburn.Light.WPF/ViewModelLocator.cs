@@ -65,7 +65,7 @@ public sealed class ViewModelLocator : IViewModelLocator
         {
             if (viewAware.GetView(context) is UIElement view)
             {
-                if (view is Window window && (window.IsLoaded || new WindowInteropHelper(window).Handle == IntPtr.Zero))
+                if (view is Window window && (window.IsLoaded || new WindowInteropHelper(window).Handle == nint.Zero))
                     return null;
 
                 // remove from parent
