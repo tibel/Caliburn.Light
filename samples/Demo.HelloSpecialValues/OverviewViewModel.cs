@@ -1,4 +1,5 @@
 using Caliburn.Light;
+using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -6,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Demo.HelloSpecialValues;
 
-public sealed class OverviewViewModel : Screen
+public sealed class OverviewViewModel : Screen, IHaveDisplayName
 {
-    public OverviewViewModel()
+    private readonly IWindowManager _windowManager;
+
+    public OverviewViewModel(IWindowManager windowManager)
     {
+        _windowManager = windowManager;
+
         Characters = new BindableCollection<CharacterViewModel>
         {
             new CharacterViewModel("Arya Stark", "ms-appx:///resources/images/arya.jpg"),
@@ -47,6 +52,8 @@ public sealed class OverviewViewModel : Screen
 
         await dialog.ShowAsync();
     }
+
+    public string? DisplayName => "Demo.HelloSpecialValues";
 
     public IReadOnlyBindableCollection<CharacterViewModel> Characters { get; }
 
