@@ -52,10 +52,10 @@ public sealed class ViewModelLocator : IViewModelLocator
             return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
         }
 
-#pragma warning disable IL2072 // ViewModelTypeMapping.Create<TView, TViewModel> requires that TView has a public parameterless constructor.
+#pragma warning disable IL2072 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
         return _serviceProvider.GetService(viewType) as UIElement
             ?? (UIElement)Activator.CreateInstance(viewType)!;
-#pragma warning restore IL2072 // ViewModelTypeMapping.Create<TView, TViewModel> requires that TView has a public parameterless constructor.
+#pragma warning restore IL2072 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
     }
 
     private static UIElement? TryGetViewFromViewAware(object model, string? context)

@@ -27,7 +27,7 @@ public sealed class ViewModelTypeConfiguration
     /// <param name="context">The context instance (or null).</param>
     public ViewModelTypeConfiguration AddMapping<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
        where TView : UIElement
-       where TViewModel : INotifyPropertyChanged
+       where TViewModel : class, INotifyPropertyChanged
     {
         _mappings.Add((typeof(TView), typeof(TViewModel), context));
         return this;
