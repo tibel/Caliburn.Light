@@ -5,13 +5,16 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
+
   <ItemGroup>
     <Content Include="logo.ico" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Options" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
     <ProjectReference Include="..\..\src\Caliburn.Light.WPF\Caliburn.Light.WPF.csproj" />
