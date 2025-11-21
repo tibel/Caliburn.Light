@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Enabled nullable
 
 ### Removed
+- Removed `SimpleContainer`
 - Removed `IViewAware.ViewAttached` and `ViewAware.Views`
 - Removed `ViewModelTypeResolver.AddMapping<TView, TViewModel>(context)`
 - WinUI: Removed `SuspensionManager`, `NavigationService` and `FrameAdapter`

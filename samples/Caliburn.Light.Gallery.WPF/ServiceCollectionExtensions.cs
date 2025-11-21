@@ -27,7 +27,7 @@ internal static class ServiceCollectionExtensions
         => services.AddTransient<Func<TService>>(c => () => c.GetRequiredService<TService>());
 
     public static IServiceCollection AddHomeItem<TViewModel>(this IServiceCollection services, string displayName)
-        where TViewModel : class, INotifyPropertyChanged 
+        where TViewModel : class, INotifyPropertyChanged
         => services.AddTransient(c => new HomeItemViewModel(displayName, () => c.GetRequiredService<TViewModel>()));
 
     public static IServiceCollection AddView<TView, TViewModel>(this IServiceCollection services)
