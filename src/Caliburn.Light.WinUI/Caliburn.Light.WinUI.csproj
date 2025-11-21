@@ -7,9 +7,18 @@
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
     <Title>Caliburn.Light.WinUI</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building WinUI applications.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsAotCompatible>true</IsAotCompatible>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="README.md" />
+    <Content Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" />

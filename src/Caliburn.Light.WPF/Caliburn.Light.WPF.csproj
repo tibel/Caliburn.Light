@@ -5,9 +5,18 @@
     <UseWPF>true</UseWPF>
     <Title>Caliburn.Light.WPF</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building WPF applications.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsAotCompatible>false</IsAotCompatible>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="README.md" />
+    <Content Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
