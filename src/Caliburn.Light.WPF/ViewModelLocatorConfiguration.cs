@@ -1,16 +1,16 @@
-﻿using Microsoft.UI.Xaml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 
-namespace Caliburn.Light.WinUI;
+namespace Caliburn.Light.WPF;
 
 /// <summary>
 /// Represents a configuration for associating view types with corresponding view model types and optional context
 /// identifiers.
 /// </summary>
-public sealed class ViewModelTypeConfiguration
+public sealed class ViewModelLocatorConfiguration
 {
     private readonly List<(Type ViewType, Type ViewModelType, string? Context)> _mappings = new();
 
@@ -25,7 +25,7 @@ public sealed class ViewModelTypeConfiguration
     /// <typeparam name="TView">The view type.</typeparam>
     /// <typeparam name="TViewModel">The view-model type.</typeparam>
     /// <param name="context">The context instance (or null).</param>
-    public ViewModelTypeConfiguration AddMapping<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
+    public ViewModelLocatorConfiguration AddMapping<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TView, TViewModel>(string? context = null)
        where TView : UIElement
        where TViewModel : class, INotifyPropertyChanged
     {

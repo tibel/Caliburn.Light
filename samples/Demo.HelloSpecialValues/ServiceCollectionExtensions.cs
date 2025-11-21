@@ -13,11 +13,10 @@ internal static class ServiceCollectionExtensions
         => services.AddSingleton<IWindowManager, WindowManager>()
             .AddSingleton<IEventAggregator, EventAggregator>()
             .AddSingleton<IViewModelLocator, ViewModelLocator>()
-            .AddSingleton<IViewModelTypeResolver, ViewModelTypeResolver>()
-            .AddTransient(c => c.GetRequiredService<IOptions<ViewModelTypeConfiguration>>().Value);
+            .AddTransient(c => c.GetRequiredService<IOptions<ViewModelLocatorConfiguration>>().Value);
 
     public static IServiceCollection AddMapping<TView, TViewModel>(this IServiceCollection services, string? context = null)
         where TView : UIElement
         where TViewModel : class, INotifyPropertyChanged
-        => services.Configure<ViewModelTypeConfiguration>(c => c.AddMapping<TView, TViewModel>(context));
+        => services.Configure<ViewModelLocatorConfiguration>(c => c.AddMapping<TView, TViewModel>(context));
 }

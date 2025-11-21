@@ -18,7 +18,7 @@ public sealed class InteropBootstrapper
         _container = new SimpleContainer();
     }
 
-    public ViewModelTypeConfiguration Configuration => _container.Configuration;
+    public ViewModelLocatorConfiguration Configuration => _container.Configuration;
 
     public void Show<TViewModel>(string? context = null)
         where TViewModel : class
@@ -40,19 +40,17 @@ public sealed class InteropBootstrapper
     private sealed class SimpleContainer : IServiceProvider
     {
         private readonly EventAggregator _eventAggregator;
-        private readonly ViewModelTypeResolver _viewModelTypeResolver;
         private readonly WindowManager _windowManager;
 
         public SimpleContainer()
         {
             _eventAggregator = new();
             Configuration = new();
-            _viewModelTypeResolver = new(Configuration);
-            ViewModelLocator = new(_viewModelTypeResolver, this);
+            ViewModelLocator = new(Configuration, this);
             _windowManager = new(ViewModelLocator);
         }
 
-        public ViewModelTypeConfiguration Configuration { get; }
+        public ViewModelLocatorConfiguration Configuration { get; }
 
         public ViewModelLocator ViewModelLocator { get; }
 

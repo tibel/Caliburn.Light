@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -10,20 +11,20 @@ namespace Caliburn.Light.WinUI;
 /// </summary>
 public sealed class ViewModelLocator : IViewModelLocator
 {
-    private readonly IViewModelTypeResolver _typeResolver;
+    private readonly ViewModelLocatorConfiguration _configuration;
     private readonly IServiceProvider _serviceProvider;
 
     /// <summary>
     /// Creates an instance of <see cref="ViewModelLocator"/>.
     /// </summary>
-    /// <param name="typeResolver">The type resolver.</param>
+    /// <param name="configuration">The view-model type configuration.</param>
     /// <param name="serviceProvider">The service provider.</param>
-    public ViewModelLocator(IViewModelTypeResolver typeResolver, IServiceProvider serviceProvider)
+    public ViewModelLocator(ViewModelLocatorConfiguration configuration, IServiceProvider serviceProvider)
     {
-        ArgumentNullException.ThrowIfNull(typeResolver);
+        ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
-        _typeResolver = typeResolver;
+        _configuration = configuration;
         _serviceProvider = serviceProvider;
     }
 
@@ -45,17 +46,17 @@ public sealed class ViewModelLocator : IViewModelLocator
         }
 
         var modelType = model.GetType();
-        var viewType = _typeResolver.GetViewType(modelType, context);
+        var viewType = _configuration.Mappings.FirstOrDefault(x => x.ViewModelType == modelType && string.Equals(x.Context, context, StringComparison.Ordinal)).ViewType;
         if (viewType is null)
         {
             Trace.TraceError("Cannot find view for {0}.", modelType);
             return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
         }
 
-#pragma warning disable IL2072 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
+#pragma warning disable IL2077 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
         return _serviceProvider.GetService(viewType) as UIElement
             ?? (UIElement)Activator.CreateInstance(viewType)!;
-#pragma warning restore IL2072 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
+#pragma warning restore IL2077 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
     }
 
     private static UIElement? TryGetViewFromViewAware(object model, string? context)
@@ -91,7 +92,7 @@ public sealed class ViewModelLocator : IViewModelLocator
         }
 
         var viewType = view.GetType();
-        var modelType = _typeResolver.GetModelType(viewType);
+        var modelType = _configuration.Mappings.FirstOrDefault(x => x.ViewType == viewType && x.Context is null).ViewModelType;
         if (modelType is null)
         {
             Trace.TraceError("Cannot find model for {0}.", viewType);
