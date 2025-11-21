@@ -27,7 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Fixed context parameter to be of type string everywhere
 
-## [5.3.0] - 2024-02-22
+## [5.3.0] - 2025-02-22
 
 ### Added
 - Added .NET 8.0 support
