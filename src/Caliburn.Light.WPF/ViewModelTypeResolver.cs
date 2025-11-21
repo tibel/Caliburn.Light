@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 
 namespace Caliburn.Light.WPF;
 
@@ -9,24 +8,16 @@ namespace Caliburn.Light.WPF;
 /// </summary>
 public sealed class ViewModelTypeResolver : IViewModelTypeResolver
 {
-    private readonly Dictionary<Type, Type> _modelTypeLookup = new Dictionary<Type, Type>();
-    private readonly Dictionary<ViewTypeLookupKey, Type> _viewTypeLookup = new Dictionary<ViewTypeLookupKey, Type>(new ViewTypeLookupKeyComparer());
+    private readonly ViewModelTypeConfiguration _configuration;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewModelTypeResolver"/> class.
     /// </summary>
-    /// <param name="mappings">The view-model type mappings.</param>
-    public ViewModelTypeResolver(IEnumerable<ViewModelTypeMapping> mappings)
+    /// <param name="configuration">The view-model type configuration.</param>
+    public ViewModelTypeResolver(ViewModelTypeConfiguration configuration)
     {
-        ArgumentNullException.ThrowIfNull(mappings);
-
-        foreach (var mapping in mappings)
-        {
-            if (mapping.Context is null)
-                _modelTypeLookup.Add(mapping.ViewType, mapping.ModelType);
-
-            _viewTypeLookup.Add(new ViewTypeLookupKey(mapping.ModelType, mapping.Context ?? string.Empty), mapping.ViewType);
-        }
+        ArgumentNullException.ThrowIfNull(configuration);
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -37,9 +28,7 @@ public sealed class ViewModelTypeResolver : IViewModelTypeResolver
     public Type? GetModelType(Type viewType)
     {
         ArgumentNullException.ThrowIfNull(viewType);
-
-        _modelTypeLookup.TryGetValue(viewType, out var modelType);
-        return modelType;
+        return _configuration.Mappings.FirstOrDefault(x => x.ViewType == viewType && x.Context is null).ViewModelType;
     }
 
     /// <summary>
@@ -51,37 +40,6 @@ public sealed class ViewModelTypeResolver : IViewModelTypeResolver
     public Type? GetViewType(Type modelType, string? context)
     {
         ArgumentNullException.ThrowIfNull(modelType);
-
-        _viewTypeLookup.TryGetValue(new ViewTypeLookupKey(modelType, context ?? string.Empty), out var viewType);
-        return viewType;
-    }
-
-    [DebuggerDisplay("ModelType = {ModelType.Name} Context = {Context}")]
-    private readonly struct ViewTypeLookupKey
-    {
-        public ViewTypeLookupKey(Type modelType, string context)
-        {
-            ModelType = modelType;
-            Context = context;
-        }
-
-        public Type ModelType { get; }
-
-        public string Context { get; }
-    }
-
-    private readonly struct ViewTypeLookupKeyComparer : IEqualityComparer<ViewTypeLookupKey>
-    {
-        public bool Equals(ViewTypeLookupKey x, ViewTypeLookupKey y)
-        {
-            return x.ModelType.Equals(y.ModelType) && x.Context.Equals(y.Context);
-        }
-
-        public int GetHashCode(ViewTypeLookupKey obj)
-        {
-            var h1 = obj.ModelType.GetHashCode();
-            var h2 = obj.Context.GetHashCode();
-            return ((h1 << 5) + h1) ^ h2;
-        }
+        return _configuration.Mappings.FirstOrDefault(x => x.ViewModelType == modelType && string.Equals(x.Context, context, StringComparison.Ordinal)).ViewType;
     }
 }

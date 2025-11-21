@@ -26,6 +26,7 @@ public sealed partial class App : Application
         _container.RegisterSingleton<IEventAggregator, EventAggregator>();
         _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
         _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
+        _container.RegisterInstance(new ViewModelTypeConfiguration());
 
         AddViewModelMapping<ShellView, ShellViewModel>();
         AddViewModelMapping<HomeView, HomeViewModel>();
@@ -56,7 +57,7 @@ public sealed partial class App : Application
         where TView : UIElement
         where TViewModel : INotifyPropertyChanged
     {
-        _container.RegisterInstance(ViewModelTypeMapping.Create<TView, TViewModel>());
+        _container.GetRequiredInstance<ViewModelTypeConfiguration>().AddMapping<TView, TViewModel>();
         _container.RegisterPerRequest<TView>();
         _container.RegisterPerRequest<TViewModel>();
     }

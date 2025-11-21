@@ -26,8 +26,11 @@ public sealed partial class App : Application
 
         _container.RegisterPerRequest<OverviewViewModel>();
 
-        _container.RegisterInstance(ViewModelTypeMapping.Create<OverviewView, OverviewViewModel>());
-        _container.RegisterInstance(ViewModelTypeMapping.Create<CharacterView, CharacterViewModel>());
+        var configuration = new ViewModelTypeConfiguration()
+            .AddMapping<OverviewView, OverviewViewModel>()
+            .AddMapping<CharacterView, CharacterViewModel>();
+
+        _container.RegisterInstance(configuration);
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)

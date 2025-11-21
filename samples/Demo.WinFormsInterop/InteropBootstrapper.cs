@@ -20,7 +20,10 @@ public sealed class InteropBootstrapper
         _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
         _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
 
-        _container.RegisterInstance(ViewModelTypeMapping.Create<MainView, MainViewModel>());
+        var configuration = new ViewModelTypeConfiguration()
+            .AddMapping<MainView, MainViewModel>();
+
+        _container.RegisterInstance(configuration);
 
         _container.RegisterPerRequest<MainViewModel>();
     }

@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Added `ViewAware.OnViewDetached(view, context)` and `IViewAware.GetViews()` 
-- Added `ViewModelTypeMapping` 
+- Added `ViewModelTypeConfiguration` 
 - WPF: Added `PageLifecycle`
 - WPF: Added `IWindowManager.ShowOpenFolderDialog(settings, ownerViewModel)`
 - WinUI: Added `WindowLifecycle`, `PopupLifecycle` and `PageLifecycle`
