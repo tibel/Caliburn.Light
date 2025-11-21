@@ -8,6 +8,7 @@ using Caliburn.Light.Gallery.WPF.Validation;
 using Caliburn.Light.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
 namespace Caliburn.Light.Gallery.WPF;
@@ -17,36 +18,37 @@ namespace Caliburn.Light.Gallery.WPF;
 /// </summary>
 public sealed partial class App : Application
 {
-    private readonly IServiceProvider _serviceProvider;
+    private IServiceProvider? _serviceProvider;
 
-    public App()
+    [MemberNotNull(nameof(_serviceProvider))]
+    private void Configure()
     {
         var services = new ServiceCollection();
 
         services.AddCaliburnLight();
 
-        services.AddView<ShellView, ShellViewModel>();
-        services.AddView<HomeView, HomeViewModel>();
-        services.AddFunc<HomeViewModel>();
+        services.AddView<ShellView, ShellViewModel>()
+            .AddFunc<HomeViewModel>()
+            .AddView<HomeView, HomeViewModel>();
 
         services.AddDemo<PubSubView, PubSubViewModel>("Pub/Sub");
         services.AddDemo<ValidationView, ValidationViewModel>("Validation");
         services.AddDemo<SimpleMDIView, SimpleMDIViewModel>("Simple MDI");
         services.AddDemo<ThreadingView, ThreadingViewModel>("Threading");
-
-        services.AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies");
-        services.AddView<ChildLevel1View, ChildLevel1ViewModel>();
-        services.AddView<ChildLevel2View, ChildLevel2ViewModel>();
-
-        services.AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation");
-        services.AddView<Child1View, Child1ViewModel>();
-        services.AddView<Child2View, Child2ViewModel>();
+        services.AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies")
+            .AddView<ChildLevel1View, ChildLevel1ViewModel>()
+            .AddView<ChildLevel2View, ChildLevel2ViewModel>();
+        services.AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation")
+            .AddView<Child1View, Child1ViewModel>()
+            .AddView<Child2View, Child2ViewModel>();
 
         _serviceProvider = services.BuildServiceProvider();
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        Configure();
+
         base.OnStartup(e);
 
         _serviceProvider.GetRequiredService<IWindowManager>()

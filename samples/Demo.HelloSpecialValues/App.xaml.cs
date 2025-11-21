@@ -34,6 +34,8 @@ public sealed partial class App : Application
     {
         Configure();
 
+        base.OnLaunched(args);
+
         _serviceProvider.GetRequiredService<IWindowManager>()
             .ShowWindow(_serviceProvider.GetRequiredService<OverviewViewModel>());
     }
