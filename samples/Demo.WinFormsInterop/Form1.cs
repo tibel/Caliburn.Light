@@ -13,7 +13,8 @@ public partial class Form1 : Form
     protected override void OnLoad(EventArgs e)
     {
         var bootstrapper = new InteropBootstrapper(elementHost1);
-        bootstrapper.ShowView<MainViewModel>();
+        bootstrapper.Configuration.AddMapping<MainView, MainViewModel>();
+        bootstrapper.Show<MainViewModel>();
 
         base.OnLoad(e);
     }
