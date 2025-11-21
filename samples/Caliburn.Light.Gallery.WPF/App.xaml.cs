@@ -6,7 +6,8 @@ using Caliburn.Light.Gallery.WPF.SimpleMDI;
 using Caliburn.Light.Gallery.WPF.Threading;
 using Caliburn.Light.Gallery.WPF.Validation;
 using Caliburn.Light.WPF;
-using System.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Windows;
 
 namespace Caliburn.Light.Gallery.WPF;
@@ -16,58 +17,39 @@ namespace Caliburn.Light.Gallery.WPF;
 /// </summary>
 public sealed partial class App : Application
 {
-    private readonly SimpleContainer _container;
+    private readonly IServiceProvider _serviceProvider;
 
     public App()
     {
-        _container = new SimpleContainer();
+        var services = new ServiceCollection();
 
-        _container.RegisterSingleton<IWindowManager, WindowManager>();
-        _container.RegisterSingleton<IEventAggregator, EventAggregator>();
-        _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
-        _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
-        _container.RegisterInstance(new ViewModelTypeConfiguration());
+        services.AddCaliburnLight();
 
-        AddViewModelMapping<ShellView, ShellViewModel>();
-        AddViewModelMapping<HomeView, HomeViewModel>();
+        services.AddView<ShellView, ShellViewModel>();
+        services.AddView<HomeView, HomeViewModel>();
+        services.AddFunc<HomeViewModel>();
 
-        AddDemo<PubSubView, PubSubViewModel>("Pub/Sub");
-        AddDemo<ValidationView, ValidationViewModel>("Validation");
-        AddDemo<SimpleMDIView, SimpleMDIViewModel>("Simple MDI");
-        AddDemo<ThreadingView, ThreadingViewModel>("Threading");
+        services.AddDemo<PubSubView, PubSubViewModel>("Pub/Sub");
+        services.AddDemo<ValidationView, ValidationViewModel>("Validation");
+        services.AddDemo<SimpleMDIView, SimpleMDIViewModel>("Simple MDI");
+        services.AddDemo<ThreadingView, ThreadingViewModel>("Threading");
 
-        AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies");
-        AddViewModelMapping<ChildLevel1View, ChildLevel1ViewModel>();
-        AddViewModelMapping<ChildLevel2View, ChildLevel2ViewModel>();
+        services.AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies");
+        services.AddView<ChildLevel1View, ChildLevel1ViewModel>();
+        services.AddView<ChildLevel2View, ChildLevel2ViewModel>();
 
-        AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation");
-        AddViewModelMapping<Child1View, Child1ViewModel>();
-        AddViewModelMapping<Child2View, Child2ViewModel>();
+        services.AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation");
+        services.AddView<Child1View, Child1ViewModel>();
+        services.AddView<Child2View, Child2ViewModel>();
+
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        _container.GetRequiredInstance<IWindowManager>()
-            .ShowWindow(_container.GetRequiredInstance<ShellViewModel>());
-    }
-
-    private void AddViewModelMapping<TView, TViewModel>()
-        where TView : UIElement
-        where TViewModel : INotifyPropertyChanged
-    {
-        _container.GetRequiredInstance<ViewModelTypeConfiguration>().AddMapping<TView, TViewModel>();
-        _container.RegisterPerRequest<TView>();
-        _container.RegisterPerRequest<TViewModel>();
-    }
-
-    private void AddDemo<TView, TViewModel>(string displayName)
-        where TView : UIElement
-        where TViewModel : INotifyPropertyChanged
-    {
-        AddViewModelMapping<TView, TViewModel>();
-
-        _container.RegisterSingleton(c => new HomeItemViewModel(displayName, () => c.GetRequiredInstance<TViewModel>()));
+        _serviceProvider.GetRequiredService<IWindowManager>()
+            .ShowWindow(_serviceProvider.GetRequiredService<ShellViewModel>());
     }
 }
