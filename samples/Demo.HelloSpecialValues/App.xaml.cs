@@ -1,43 +1,40 @@
 using Caliburn.Light;
 using Caliburn.Light.WinUI;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Demo.HelloSpecialValues;
 
 public sealed partial class App : Application
 {
-    private SimpleContainer? _container;
+    private IServiceProvider? _serviceProvider;
 
     public App()
     {
         InitializeComponent();
     }
 
-    [MemberNotNull(nameof(_container))]
+    [MemberNotNull(nameof(_serviceProvider))]
     private void Configure()
     {
-        _container = new SimpleContainer();
+        var services = new ServiceCollection();
 
-        _container.RegisterSingleton<IWindowManager, WindowManager>();
-        _container.RegisterSingleton<IEventAggregator, EventAggregator>();
-        _container.RegisterSingleton<IViewModelLocator, ViewModelLocator>();
-        _container.RegisterSingleton<IViewModelTypeResolver, ViewModelTypeResolver>();
+        services.AddCaliburnLight();
 
-        _container.RegisterPerRequest<OverviewViewModel>();
-
-        var configuration = new ViewModelTypeConfiguration()
+        services.AddTransient<OverviewViewModel>()
             .AddMapping<OverviewView, OverviewViewModel>()
             .AddMapping<CharacterView, CharacterViewModel>();
 
-        _container.RegisterInstance(configuration);
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         Configure();
 
-        _container.GetRequiredInstance<IWindowManager>()
-            .ShowWindow(_container.GetRequiredInstance<OverviewViewModel>());
+        _serviceProvider.GetRequiredService<IWindowManager>()
+            .ShowWindow(_serviceProvider.GetRequiredService<OverviewViewModel>());
     }
 }
