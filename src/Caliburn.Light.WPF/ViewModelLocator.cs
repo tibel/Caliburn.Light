@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -47,17 +46,17 @@ public sealed class ViewModelLocator : IViewModelLocator
         }
 
         var modelType = model.GetType();
-        var viewType = _configuration.Mappings.FirstOrDefault(x => x.ViewModelType == modelType && string.Equals(x.Context, context, StringComparison.Ordinal)).ViewType;
+        var viewType = _configuration.FindViewType(modelType, context);
         if (viewType is null)
         {
             Trace.TraceError("Cannot find view for {0}.", modelType);
             return new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) };
         }
 
-#pragma warning disable IL2077 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
+#pragma warning disable IL2072 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
         return _serviceProvider.GetService(viewType) as UIElement
             ?? (UIElement)Activator.CreateInstance(viewType)!;
-#pragma warning restore IL2077 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
+#pragma warning restore IL2072 // ViewModelTypeConfiguration.AddMapping<TView, TViewModel> requires that TView has a public parameterless constructor.
     }
 
     private static UIElement? TryGetViewFromViewAware(object model, string? context)
@@ -96,7 +95,7 @@ public sealed class ViewModelLocator : IViewModelLocator
         }
 
         var viewType = view.GetType();
-        var modelType = _configuration.Mappings.FirstOrDefault(x => x.ViewType == viewType && x.Context is null).ViewModelType;
+        var modelType = _configuration.FindViewModelType(viewType);
         if (modelType is null)
         {
             Trace.TraceError("Cannot find model for {0}.", viewType);
