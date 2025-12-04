@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- WinUI: Added `ContentDialogLifecycle`
+- WinUI: Added `IWindowManager.ShowContentDialog(viewModel, ownerViewModel, context)`
+
 ### Changed
 - `IWindowManager.ShowDialog(viewModel, ownerViewModel, context)` throws when owner Window cannot be determined
 

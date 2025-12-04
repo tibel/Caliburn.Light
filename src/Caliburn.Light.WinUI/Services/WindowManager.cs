@@ -1,4 +1,6 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -70,6 +72,72 @@ public class WindowManager : IWindowManager
 
         window.Activate();
         return true;
+    }
+
+    /// <summary>
+    /// Shows a <see cref="ContentControl"/> for the specified model.
+    /// </summary>
+    /// <param name="viewModel">The view model.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <param name="context">The context.</param>
+    /// <returns>The content dialog result.</returns>
+    public Task<ContentDialogResult> ShowContentDialog(object viewModel, object ownerViewModel, string? context = null)
+    {
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+        ArgumentNullException.ThrowIfNull(viewModel);
+
+        var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
+
+        var contentDialog = CreateContentDialog(viewModel, context);
+        contentDialog.XamlRoot = owner.Content.XamlRoot;
+
+        return contentDialog.ShowAsync(ContentDialogPlacement.Popup).AsTask();
+    }
+
+    /// <summary>
+    /// Creates a content dialog.
+    /// </summary>
+    /// <param name="viewModel">The view model.</param>
+    /// <param name="context">The view context.</param>
+    /// <returns>The content dialog.</returns>
+    protected ContentDialog CreateContentDialog(object viewModel, string? context)
+    {
+        var view = EnsureContentDialog(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
+        View.SetViewModelLocator(view, _viewModelLocator);
+
+        view.DataContext = viewModel;
+
+        if (viewModel is IHaveDisplayName && !BindingHelper.IsDataBound(view, ContentDialog.TitleProperty))
+        {
+            var binding = new Binding() { Path = new PropertyPath(nameof(IHaveDisplayName.DisplayName)), Mode = BindingMode.OneWay };
+            view.SetBinding(ContentDialog.TitleProperty, binding);
+        }
+
+        return new ContentDialogLifecycle(view, context).View;
+    }
+
+    /// <summary>
+    /// Makes sure the view is a content dialog or is wrapped by one.
+    /// </summary>
+    /// <param name="viewModel">The view model.</param>
+    /// <param name="view">The view.</param>
+    /// <returns>The content dialog.</returns>
+    protected virtual ContentDialog EnsureContentDialog(object viewModel, UIElement view)
+    {
+        if (view is not ContentDialog contentDialog)
+        {
+            contentDialog = new ContentDialog
+            {
+                Content = view,
+                CloseButtonText = "Close",
+            };
+
+            View.SetIsGenerated(contentDialog, true);
+        }
+
+        return contentDialog;
     }
 
     /// <summary>

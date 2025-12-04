@@ -1,8 +1,5 @@
 using Caliburn.Light;
 using Caliburn.Light.WinUI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
 using System.Threading.Tasks;
 
 namespace Demo.HelloSpecialValues;
@@ -38,19 +35,7 @@ public sealed class OverviewViewModel : Screen, IHaveDisplayName
         if (character is null)
             return;
 
-        if (((IViewAware)this).GetView() is not UIElement uiElement)
-            return;
-
-        var dialog = new ContentDialog
-        {
-            XamlRoot = uiElement.XamlRoot,
-            Title = "Character Selected",
-            PrimaryButtonText = "OK",
-            DefaultButton = ContentDialogButton.Primary,
-            Content = string.Format("{0} selected.", character.Name)
-        };
-
-        await dialog.ShowAsync();
+        await _windowManager.ShowContentDialog(character, this, "dialog");
     }
 
     public string? DisplayName => "Demo.HelloSpecialValues";

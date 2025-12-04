@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light.WinUI;
@@ -28,4 +29,13 @@ public interface IWindowManager
     /// <param name="viewModel">The view model of the window.</param>
     /// <returns>true if the window was successfully activated; otherwise, false.</returns>
     bool Activate(object viewModel);
+
+    /// <summary>
+    /// Shows a <see cref="ContentControl"/> for the specified model.
+    /// </summary>
+    /// <param name="viewModel">The view model.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <param name="context">The context.</param>
+    /// <returns>The content dialog result.</returns>
+    Task<ContentDialogResult> ShowContentDialog(object viewModel, object ownerViewModel, string? context = null);
 }

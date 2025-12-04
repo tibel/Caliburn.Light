@@ -25,7 +25,8 @@ public sealed partial class App : Application
 
         services.AddTransient<OverviewViewModel>()
             .AddMapping<OverviewView, OverviewViewModel>()
-            .AddMapping<CharacterView, CharacterViewModel>();
+            .AddMapping<CharacterView, CharacterViewModel>()
+            .AddMapping<CharacterDialogView, CharacterViewModel>("dialog");
 
         _serviceProvider = services.BuildServiceProvider();
     }
