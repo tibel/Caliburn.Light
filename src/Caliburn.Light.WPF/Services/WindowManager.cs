@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 
 namespace Caliburn.Light.WPF;
@@ -80,20 +79,6 @@ public class WindowManager : IWindowManager
 
         var window = GetWindow(viewModel);
         return window?.Activate() ?? false;
-    }
-
-    /// <summary>
-    /// Shows a popup at the current mouse position.
-    /// </summary>
-    /// <param name="viewModel">The view model.</param>
-    /// <param name="context">The view context.</param>
-    public void ShowPopup(object viewModel, string? context)
-    {
-        ArgumentNullException.ThrowIfNull(viewModel);
-
-        var popup = CreatePopup(viewModel, context);
-        popup.IsOpen = true;
-        popup.CaptureMouse();
     }
 
     /// <summary>
@@ -247,45 +232,6 @@ public class WindowManager : IWindowManager
 
         var selectedFolders = result.GetValueOrDefault() ? openFolderDialog.FolderNames : Array.Empty<string>();
         return Task.FromResult<IReadOnlyList<string>>(selectedFolders);
-    }
-
-    /// <summary>
-    /// Creates a popup.
-    /// </summary>
-    /// <param name="viewModel">The view model.</param>
-    /// <param name="context">The view context.</param>
-    /// <returns>The popup.</returns>
-    protected Popup CreatePopup(object viewModel, string? context)
-    {
-        var view = EnsurePopup(viewModel, _viewModelLocator.LocateForModel(viewModel, context));
-        View.SetViewModelLocator(view, _viewModelLocator);
-
-        view.DataContext = viewModel;
-
-        return new PopupLifecycle(view, context).View;
-    }
-
-    /// <summary>
-    /// Ensures the view is a popup or provides one.
-    /// </summary>
-    /// <param name="viewModel">The view model.</param>
-    /// <param name="view">The view.</param>
-    /// <returns>The popup.</returns>
-    protected virtual Popup EnsurePopup(object viewModel, UIElement view)
-    {
-        if (view is not Popup popup)
-        {
-            popup = new Popup
-            {
-                Child = view,
-                Placement = PlacementMode.MousePoint,
-                AllowsTransparency = true
-            };
-
-            View.SetIsGenerated(popup, true);
-        }
-
-        return popup;
     }
 
     /// <summary>

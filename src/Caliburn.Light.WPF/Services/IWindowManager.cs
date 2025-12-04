@@ -32,13 +32,6 @@ public interface IWindowManager
     bool Activate(object viewModel);
 
     /// <summary>
-    /// Shows a popup at the current mouse position.
-    /// </summary>
-    /// <param name="viewModel">The view model.</param>
-    /// <param name="context">The view context.</param>
-    void ShowPopup(object viewModel, string? context = null);
-
-    /// <summary>
     /// Shows a message box.
     /// </summary>
     /// <param name="settings">The message box settings.</param>
