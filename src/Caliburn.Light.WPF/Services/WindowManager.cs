@@ -50,22 +50,12 @@ public class WindowManager : IWindowManager
         ArgumentNullException.ThrowIfNull(viewModel);
 
         var owner = GetWindow(ownerViewModel);
-        var window = CreateWindow(viewModel, context);
-
         if (owner is null)
-        {
-            var tcs = new TaskCompletionSource<bool?>();
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-            window.Closed += (s, e) => tcs.TrySetResult(null);
-            window.Show();
-
-            return tcs.Task;
-        }
-        else
-        {
-            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            return window.ShowModal(owner);
-        }
+        var window = CreateWindow(viewModel, context);
+        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        return window.ShowModal(owner);
     }
 
     /// <summary>
