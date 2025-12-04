@@ -1,22 +1,15 @@
 using Caliburn.Light;
-using Caliburn.Light.WPF;
-using System;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace Demo.WinFormsInterop;
 
 public sealed class MainViewModel : ViewAware
 {
-    private readonly IWindowManager _windowManager;
     private string? _name;
 
-    public MainViewModel(IWindowManager windowManager)
+    public MainViewModel()
     {
-        ArgumentNullException.ThrowIfNull(windowManager);
-
-        _windowManager = windowManager;
-
         SayHelloCommand = DelegateCommandBuilder.NoParameter()
             .OnExecute(SayHello)
             .OnCanExecute(() => !string.IsNullOrWhiteSpace(Name))
@@ -32,15 +25,8 @@ public sealed class MainViewModel : ViewAware
 
     public ICommand SayHelloCommand { get; }
 
-    private Task SayHello()
+    private void SayHello()
     {
-        var settings = new MessageBoxSettings
-        {
-            Text = string.Format("Hello {0}!", Name),
-            Caption = "Message",
-            Image = System.Windows.MessageBoxImage.Information
-        };
-
-        return _windowManager.ShowMessageBox(settings, this);
+        MessageBox.Show(Form.ActiveForm, string.Format("Hello {0}!", Name), "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 }

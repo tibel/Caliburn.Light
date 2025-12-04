@@ -83,10 +83,10 @@ public class WindowManager : IWindowManager
         ArgumentNullException.ThrowIfNull(settings);
 
         var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-        var result = owner is null
-            ? MessageBox.Show(settings.Text, settings.Caption, settings.Button, settings.Image)
-            : MessageBox.Show(owner, settings.Text, settings.Caption, settings.Button, settings.Image);
+        var result = MessageBox.Show(owner, settings.Text, settings.Caption, settings.Button, settings.Image);
 
         return Task.FromResult(result);
     }
@@ -103,6 +103,8 @@ public class WindowManager : IWindowManager
         ArgumentNullException.ThrowIfNull(settings);
 
         var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
         var openFileDialog = new OpenFileDialog
         {
@@ -119,17 +121,13 @@ public class WindowManager : IWindowManager
         bool? result;
         try
         {
-            result = owner is null
-                ? openFileDialog.ShowDialog()
-                : openFileDialog.ShowDialog(owner);
+            result = openFileDialog.ShowDialog(owner);
         }
         catch when (!string.IsNullOrEmpty(openFileDialog.InitialDirectory))
         {
             openFileDialog.InitialDirectory = null;
 
-            result = owner is null
-                ? openFileDialog.ShowDialog()
-                : openFileDialog.ShowDialog(owner);
+            result = openFileDialog.ShowDialog(owner);
         }
 
         var selectedFiles = result.GetValueOrDefault() ? openFileDialog.FileNames : Array.Empty<string>();
@@ -148,6 +146,8 @@ public class WindowManager : IWindowManager
         ArgumentNullException.ThrowIfNull(settings);
 
         var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
         var saveFileDialog = new SaveFileDialog
         {
@@ -168,17 +168,13 @@ public class WindowManager : IWindowManager
         bool? result;
         try
         {
-            result = owner is null
-                ? saveFileDialog.ShowDialog()
-                : saveFileDialog.ShowDialog(owner);
+            result = saveFileDialog.ShowDialog(owner);
         }
         catch when (!string.IsNullOrEmpty(saveFileDialog.InitialDirectory))
         {
             saveFileDialog.InitialDirectory = null;
 
-            result = owner is null
-                ? saveFileDialog.ShowDialog()
-                : saveFileDialog.ShowDialog(owner);
+            result = saveFileDialog.ShowDialog(owner);
         }
 
         var selectedFile = result.GetValueOrDefault() ? saveFileDialog.FileName : string.Empty;
@@ -197,6 +193,8 @@ public class WindowManager : IWindowManager
         ArgumentNullException.ThrowIfNull(settings);
 
         var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
         var openFolderDialog = new OpenFolderDialog
         {
@@ -207,17 +205,13 @@ public class WindowManager : IWindowManager
         bool? result;
         try
         {
-            result = owner is null
-                ? openFolderDialog.ShowDialog()
-                : openFolderDialog.ShowDialog(owner);
+            result = openFolderDialog.ShowDialog(owner);
         }
         catch when (!string.IsNullOrEmpty(openFolderDialog.InitialDirectory))
         {
             openFolderDialog.InitialDirectory = null;
 
-            result = owner is null
-                ? openFolderDialog.ShowDialog()
-                : openFolderDialog.ShowDialog(owner);
+            result = openFolderDialog.ShowDialog(owner);
         }
 
         var selectedFolders = result.GetValueOrDefault() ? openFolderDialog.FolderNames : Array.Empty<string>();
