@@ -37,7 +37,7 @@ public static class BindingHelper
     /// <param name="property">Property from which to remove Binding</param>
     public static void ClearBinding(DependencyObject target, DependencyProperty property)
     {
-        if (IsDataBound(target, property))
+        if (BindingOperations.IsDataBound(target, property))
             target.ClearValue(property);
     }
 

@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -109,12 +108,6 @@ public class WindowManager : IWindowManager
 
         view.DataContext = viewModel;
 
-        if (viewModel is IHaveDisplayName && !BindingHelper.IsDataBound(view, ContentDialog.TitleProperty))
-        {
-            var binding = new Binding() { Path = new PropertyPath(nameof(IHaveDisplayName.DisplayName)), Mode = BindingMode.OneWay };
-            view.SetBinding(ContentDialog.TitleProperty, binding);
-        }
-
         return new ContentDialogLifecycle(view, context).View;
     }
 
@@ -135,6 +128,17 @@ public class WindowManager : IWindowManager
             };
 
             View.SetIsGenerated(contentDialog, true);
+
+            if (viewModel is IHaveDisplayName haveDisplayName && viewModel is INotifyPropertyChanged notifyPropertyChanged)
+            {
+                notifyPropertyChanged.RegisterPropertyChangedWeak(contentDialog, static (t, s, e) =>
+                {
+                    if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(IHaveDisplayName.DisplayName))
+                        t.Title = ((IHaveDisplayName)s!).DisplayName ?? string.Empty;
+                });
+
+                contentDialog.Title = haveDisplayName.DisplayName ?? string.Empty;
+            }
         }
 
         return contentDialog;
@@ -154,17 +158,6 @@ public class WindowManager : IWindowManager
         if (view.Content is FrameworkElement element)
             element.DataContext = viewModel;
 
-        if (viewModel is IHaveDisplayName haveDisplayName && viewModel is INotifyPropertyChanged notifyPropertyChanged)
-        {
-            notifyPropertyChanged.RegisterPropertyChangedWeak(view, static (t, s, e) =>
-            {
-                if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(IHaveDisplayName.DisplayName))
-                    t.Title = ((IHaveDisplayName)s!).DisplayName ?? string.Empty;
-            });
-
-            view.Title = haveDisplayName.DisplayName ?? string.Empty;
-        }
-
         return new WindowLifecycle(view, context, false).View;
     }
 
@@ -182,6 +175,17 @@ public class WindowManager : IWindowManager
         };
 
         View.SetWindow(view, window);
+
+        if (viewModel is IHaveDisplayName haveDisplayName && viewModel is INotifyPropertyChanged notifyPropertyChanged)
+        {
+            notifyPropertyChanged.RegisterPropertyChangedWeak(window, static (t, s, e) =>
+            {
+                if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(IHaveDisplayName.DisplayName))
+                    t.Title = ((IHaveDisplayName)s!).DisplayName ?? string.Empty;
+            });
+
+            window.Title = haveDisplayName.DisplayName ?? string.Empty;
+        }
 
         return window;
     }

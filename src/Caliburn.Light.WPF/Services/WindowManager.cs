@@ -1,10 +1,10 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 
 namespace Caliburn.Light.WPF;
 
@@ -231,12 +231,6 @@ public class WindowManager : IWindowManager
 
         view.DataContext = viewModel;
 
-        if (viewModel is IHaveDisplayName && !BindingOperations.IsDataBound(view, Window.TitleProperty))
-        {
-            var binding = new Binding(nameof(IHaveDisplayName.DisplayName)) { Mode = BindingMode.OneWay };
-            view.SetBinding(Window.TitleProperty, binding);
-        }
-
         return new WindowLifecycle(view, context, false).View;
     }
 
@@ -257,6 +251,17 @@ public class WindowManager : IWindowManager
             };
 
             View.SetIsGenerated(window, true);
+
+            if (viewModel is IHaveDisplayName haveDisplayName && viewModel is INotifyPropertyChanged notifyPropertyChanged)
+            {
+                notifyPropertyChanged.RegisterPropertyChangedWeak(window, static (t, s, e) =>
+                {
+                    if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(IHaveDisplayName.DisplayName))
+                        t.Title = ((IHaveDisplayName)s!).DisplayName ?? string.Empty;
+                });
+
+                window.Title = haveDisplayName.DisplayName ?? string.Empty;
+            }
         }
 
         return window;

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cal="https://github.com/tibel/Caliburn.Light/"
         xmlns:local="clr-namespace:Caliburn.Light.Gallery.WPF"
+        Title="{Binding DisplayName, Mode=OneWay}"
         Width="640"
         Height="480">
     <DockPanel>
