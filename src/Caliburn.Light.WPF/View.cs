@@ -402,7 +402,7 @@ public static class View
 
         public bool CheckAccess() => _dispatcher.CheckAccess();
 
-        public void BeginInvoke(Action action) => _dispatcher.InvokeAsync(action);
+        public void BeginInvoke(Action action) => _dispatcher.BeginInvoke(action);
 
         public override bool Equals(object? obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
 
