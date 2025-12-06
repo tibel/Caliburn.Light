@@ -16,7 +16,7 @@ public sealed class ExecutionContextResolver : Freezable, ISpecialValue
     /// <summary>
     /// Gets or sets the override for <see cref="CommandExecutionContext.Source"/>.
     /// </summary>
-    public object SourceOverride
+    public object? SourceOverride
     {
         get { return GetValue(SourceOverrideProperty); }
         set { SetValue(SourceOverrideProperty, value); }
