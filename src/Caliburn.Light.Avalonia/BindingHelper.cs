@@ -1,0 +1,55 @@
+using Avalonia;
+using Avalonia.Data;
+
+namespace Caliburn.Light.Avalonia;
+
+/// <summary>
+/// Some helper methods when dealing with data bindings.
+/// </summary>
+public static class BindingHelper
+{
+    /// <summary>
+    /// Returns a value that indicates whether the specified property is currently data-bound.
+    /// </summary>
+    /// <param name="target">The object where <paramref name="property"/> is.</param>
+    /// <param name="property">The dependency property to check.</param>
+    /// <returns>True if the specified property is data-bound, otherwise False.</returns>
+    public static bool IsDataBound(AvaloniaObject target, AvaloniaProperty property)
+    {
+        return BindingOperations.GetBindingExpressionBase(target, property) is not null;
+    }
+
+    /// <summary>
+    /// Creates and associates a new <see cref="T:System.Windows.Data.BindingExpressionBase"/> with the specified binding target property.
+    /// </summary>
+    /// <param name="target">The target to set the binding to.</param>
+    /// <param name="property">The property on the target to bind.</param>
+    /// <param name="binding">The binding to assign to the target property.</param>
+    public static void SetBinding(AvaloniaObject target, AvaloniaProperty property, BindingBase binding)
+    {
+        target.Bind(property, binding);
+    }
+
+    /// <summary>
+    /// Remove data Binding (if any) from a property.
+    /// </summary>
+    /// <param name="target">Object from which to remove Binding</param>
+    /// <param name="property">Property from which to remove Binding</param>
+    public static void ClearBinding(AvaloniaObject target, AvaloniaProperty property)
+    {
+        if (BindingOperations.GetBindingExpressionBase(target, property) is not null)
+            target.ClearValue(property);
+    }
+
+    /// <summary>
+    /// Force a data transfer from Binding source to target.
+    /// </summary>
+    /// <param name="target">The object where <paramref name="property"/> is.</param>
+    /// <param name="property">The dependency property to refresh.</param>
+    public static void RefreshBinding(AvaloniaObject target, AvaloniaProperty property)
+    {
+        var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(target, property);
+        if (bindingExpressionBase is null) return;
+        bindingExpressionBase.UpdateTarget();
+    }
+}

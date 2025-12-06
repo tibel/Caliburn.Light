@@ -20,6 +20,8 @@ PM> **Install-Package** [Caliburn.Light.WPF](https://www.nuget.org/packages/Cali
 
 PM> **Install-Package** [Caliburn.Light.WinUI](https://www.nuget.org/packages/Caliburn.Light.WinUI/)
 
+PM> **Install-Package** [Caliburn.Light.Avalonia](https://www.nuget.org/packages/Caliburn.Light.Avalonia/)
+
 
 
 ## Learn

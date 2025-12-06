@@ -7,6 +7,7 @@
   <Folder Name="/samples/">
     <File Path="samples/Directory.Build.props" />
     <Project Path="samples/Caliburn.Light.Gallery.WPF/Caliburn.Light.Gallery.WPF.csproj" />
+    <Project Path="samples/Demo.HelloAvalonia/Demo.HelloAvalonia.csproj" />
     <Project Path="samples/Demo.HelloSpecialValues/Demo.HelloSpecialValues.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
       <Platform Solution="*|arm64" Project="arm64" />
@@ -23,6 +24,7 @@
   </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
+    <Project Path="src/Caliburn.Light.Avalonia/Caliburn.Light.Avalonia.csproj" />
     <Project Path="src/Caliburn.Light.Core/Caliburn.Light.Core.csproj" />
     <Project Path="src/Caliburn.Light.WinUI/Caliburn.Light.WinUI.csproj" />
     <Project Path="src/Caliburn.Light.WPF/Caliburn.Light.WPF.csproj" />
