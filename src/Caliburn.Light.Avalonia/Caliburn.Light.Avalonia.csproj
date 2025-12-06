@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Caliburn.Light.Avalonia</RootNamespace>
+    <Title>Caliburn.Light.Avalonia</Title>
+    <Description>The magic-free Caliburn.Light, a powerful framework designed for building Avalonia applications.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsAotCompatible>true</IsAotCompatible>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="README.md" />
+    <Content Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
+  </ItemGroup>
+</Project>
