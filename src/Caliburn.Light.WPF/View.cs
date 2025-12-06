@@ -189,7 +189,7 @@ public static class View
             CreateView(fe, fe.DataContext, (string)e.NewValue);
     }
 
-    private static void BindViewModel(FrameworkElement view, object oldModel, object newModel, string? oldContext, string? newContext)
+    private static void BindViewModel(FrameworkElement view, object? oldModel, object? newModel, string? oldContext, string? newContext)
     {
         if (oldModel is IViewAware oldViewAware)
             oldViewAware.DetachView(view, oldContext);
@@ -198,7 +198,7 @@ public static class View
             newViewAware.AttachView(view, newContext);
     }
 
-    private static void CreateView(FrameworkElement parentElement, object model, string? context)
+    private static void CreateView(FrameworkElement parentElement, object? model, string? context)
     {
         if (model is null)
         {
