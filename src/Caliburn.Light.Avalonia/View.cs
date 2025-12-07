@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using System;
 
 namespace Caliburn.Light.Avalonia;
@@ -14,8 +13,6 @@ public static class View
 {
     static View()
     {
-        StyledElement.DataContextProperty.Changed.AddClassHandler<Control>(OnDataContextChanged);
-
         BindProperty.Changed.AddClassHandler<AvaloniaObject, bool>(OnBindChanged);
         CreateProperty.Changed.AddClassHandler<AvaloniaObject, bool>(OnCreateChanged);
         ContextProperty.Changed.AddClassHandler<AvaloniaObject, string?>(OnContextChanged);
@@ -25,7 +22,7 @@ public static class View
     /// A dependency property for assigning a <see cref="IViewModelLocator"/> to a particular portion of the UI.
     /// </summary>
     public static readonly AttachedProperty<IViewModelLocator?> ViewModelLocatorProperty =
-        AvaloniaProperty.RegisterAttached<AvaloniaObject, IViewModelLocator?>("ViewModelLocator", typeof(View), null);
+        AvaloniaProperty.RegisterAttached<AvaloniaObject, IViewModelLocator?>("ViewModelLocator", typeof(View), null, inherits: true);
 
     /// <summary>
     /// Gets the attached <see cref="IViewModelLocator"/>.
@@ -45,23 +42,6 @@ public static class View
     public static void SetViewModelLocator(AvaloniaObject d, IViewModelLocator? value)
     {
         d.SetValue(ViewModelLocatorProperty, value);
-    }
-
-    private static IViewModelLocator? GetCurrentViewModelLocator(AvaloniaObject d)
-    {
-        var viewModelLocator = GetViewModelLocator(d);
-
-        var fe = d as Visual;
-        while (viewModelLocator is null)
-        {
-            fe = fe?.GetVisualParent();
-            if (fe is null)
-                break;
-
-            viewModelLocator = GetViewModelLocator(fe);
-        }
-
-        return viewModelLocator;
     }
 
     /// <summary>
@@ -161,13 +141,20 @@ public static class View
 
         if (bind || create)
         {
+            fe.PropertyChanged += OnPropertyChanged;
+
             OnDataContextChanged(fe, null, fe.DataContext);
+        }
+        else
+        {
+            fe.PropertyChanged -= OnPropertyChanged;
         }
     }
 
-    private static void OnDataContextChanged(Control sender, AvaloniaPropertyChangedEventArgs e)
+    private static void OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
-        OnDataContextChanged(sender, e.OldValue, e.NewValue);
+        if (e.Property != StyledElement.DataContextProperty || sender is not Control fe) return;
+        OnDataContextChanged(fe, e.OldValue, e.NewValue);
     }
 
     private static void OnDataContextChanged(Control fe, object? oldValue, object? newValue)
@@ -219,7 +206,7 @@ public static class View
             return;
         }
 
-        var viewModelLocator = GetCurrentViewModelLocator(parentElement);
+        var viewModelLocator = GetViewModelLocator(parentElement);
         if (viewModelLocator is null)
         {
             if (parentElement.IsLoaded)
