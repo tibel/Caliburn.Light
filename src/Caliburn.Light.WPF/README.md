@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Caliburn.Light.WPF.svg)](https://www.nuget.org/packages/Caliburn.Light.WPF/)
 
-WPF-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framework for building WPF applications.
+WPF-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framework for building [WPF](https://github.com/dotnet/wpf) applications.
 
 ## Overview
 

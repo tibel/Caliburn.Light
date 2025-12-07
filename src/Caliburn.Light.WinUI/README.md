@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Caliburn.Light.WinUI.svg)](https://www.nuget.org/packages/Caliburn.Light.WinUI/)
 
-WinUI-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framework for building modern Windows applications with WinUI.
+WinUI-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framework for building modern Windows applications with [WinUI](https://github.com/microsoft/microsoft-ui-xaml).
 
 ## Overview
 

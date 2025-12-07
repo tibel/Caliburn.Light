@@ -7,9 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Added **Avalonia** support
 - WinUI: Added `ContentDialogLifecycle`
 - WinUI: Added `IWindowManager.ShowContentDialog(viewModel, ownerViewModel, context)`
-- Added Avalonia support
 
 ### Changed
 - `IWindowManager` methods throw when owner window cannot be determined

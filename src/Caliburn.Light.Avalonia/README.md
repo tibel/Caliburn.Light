@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Caliburn.Light.Avalonia.svg)](https://www.nuget.org/packages/Caliburn.Light.Avalonia/)
 
-Avalonia-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framework for building Avalonia applications.
+Avalonia-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framework for building [Avalonia](https://github.com/AvaloniaUI/Avalonia) applications.
 
 ## Overview
 
@@ -11,8 +11,7 @@ Caliburn.Light.Avalonia extends the core framework with Avalonia-specific featur
 - **View/ViewModel Resolution**: Automatic view location and binding
 - **Window Management**: Window lifecycle and dialog services
 - **View Adapters**: Avalonia-specific view integration
-- **Page Navigation**: Page lifecycle management
-- **Lifecycle Management**: Window, popup, and page lifecycle handlers
+- **Lifecycle Management**: Window and popup lifecycle handlers
 
 ## Documentation
 
