@@ -59,6 +59,7 @@ internal sealed class ViewAdapter : IViewAdapter
 
     public Task<bool> TryCloseAsync(object view)
     {
+        // https://github.com/microsoft/microsoft-ui-xaml/issues/7305
         if (View.GetWindow((DependencyObject)view) is Window window)
         {
             window.Close();

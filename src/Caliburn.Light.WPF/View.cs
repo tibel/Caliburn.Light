@@ -25,7 +25,18 @@ public static class View
     /// <returns>The <see cref="IViewModelLocator"/>.</returns>
     public static IViewModelLocator? GetViewModelLocator(DependencyObject d)
     {
-        return (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
+        var viewModelLocator = (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
+
+        while (viewModelLocator is null)
+        {
+            d = VisualTreeHelper.GetParent(d);
+            if (d is null)
+                break;
+
+            viewModelLocator = (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
+        }
+
+        return viewModelLocator;
     }
 
     /// <summary>
@@ -36,22 +47,6 @@ public static class View
     public static void SetViewModelLocator(DependencyObject d, IViewModelLocator? value)
     {
         d.SetValue(ViewModelLocatorProperty, value);
-    }
-
-    private static IViewModelLocator? GetCurrentViewModelLocator(DependencyObject d)
-    {
-        var viewModelLocator = GetViewModelLocator(d);
-
-        while (viewModelLocator is null)
-        {
-            d = VisualTreeHelper.GetParent(d);
-            if (d is null)
-                break;
-
-            viewModelLocator = GetViewModelLocator(d);
-        }
-
-        return viewModelLocator;
     }
 
     /// <summary>
@@ -213,7 +208,7 @@ public static class View
             return;
         }
 
-        var viewModelLocator = GetCurrentViewModelLocator(parentElement);
+        var viewModelLocator = GetViewModelLocator(parentElement);
         if (viewModelLocator is null)
         {
             if (parentElement.IsLoaded)

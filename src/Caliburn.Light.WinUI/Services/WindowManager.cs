@@ -174,6 +174,7 @@ public class WindowManager : IWindowManager
             Content = view,
         };
 
+        // https://github.com/microsoft/microsoft-ui-xaml/issues/8322
         View.SetWindow(view, window);
 
         if (viewModel is IHaveDisplayName haveDisplayName && viewModel is INotifyPropertyChanged notifyPropertyChanged)
