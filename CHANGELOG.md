@@ -2,9 +2,11 @@
 
 All notable changes to Caliburn.Light will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [6.1.0] - 2025-12-08
 
 ### Added
 - Added **Avalonia** support
@@ -14,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - `IWindowManager` methods throw when owner window cannot be determined
 - bind to `IHaveDisplayName` in `Ensure` methods only
+- optimize `IViewModelLocator` lookup
 
 ### Removed
 - WPF: Removed `IWindowManager.ShowPopup(viewModel, context)`
@@ -322,7 +325,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Initial release of Caliburn.Light where at least WPF can be considered stable
 
-[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v6.0.0...HEAD
+[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v6.1.0...HEAD
+[6.1.0]: https://github.com/tibel/Caliburn.Light/compare/v6.0.0...v6.1.0
 [6.0.0]: https://github.com/tibel/Caliburn.Light/compare/v5.3.0...v6.0.0
 [5.3.0]: https://github.com/tibel/Caliburn.Light/compare/v5.2.1...v5.3.0
 [5.2.1]: https://github.com/tibel/Caliburn.Light/compare/v5.2.0...v5.2.1
