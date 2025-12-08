@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Caliburn.Light.WPF;
@@ -16,7 +15,7 @@ public static class View
     /// </summary>
     public static readonly DependencyProperty ViewModelLocatorProperty =
         DependencyProperty.RegisterAttached("ViewModelLocator",
-            typeof(IViewModelLocator), typeof(View), null);
+            typeof(IViewModelLocator), typeof(View), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
     /// <summary>
     /// Gets the attached <see cref="IViewModelLocator"/>.
@@ -25,18 +24,7 @@ public static class View
     /// <returns>The <see cref="IViewModelLocator"/>.</returns>
     public static IViewModelLocator? GetViewModelLocator(DependencyObject d)
     {
-        var viewModelLocator = (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
-
-        while (viewModelLocator is null)
-        {
-            d = VisualTreeHelper.GetParent(d);
-            if (d is null)
-                break;
-
-            viewModelLocator = (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
-        }
-
-        return viewModelLocator;
+        return (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
     }
 
     /// <summary>
@@ -255,7 +243,7 @@ public static class View
     /// </summary>
     public static readonly DependencyProperty CommandParameterProperty =
         DependencyProperty.RegisterAttached("CommandParameter",
-            typeof(object), typeof(View), null);
+            typeof(object), typeof(View), new PropertyMetadata(null));
 
     /// <summary>
     /// Gets the command parameter

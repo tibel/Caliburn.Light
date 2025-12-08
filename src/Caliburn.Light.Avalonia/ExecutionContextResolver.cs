@@ -11,7 +11,7 @@ public sealed class ExecutionContextResolver : AvaloniaObject, ISpecialValue
     /// Identifies the <seealso cref="ExecutionContextResolver.SourceOverride"/> dependency property.
     /// </summary>
     public static readonly StyledProperty<object?> SourceOverrideProperty = AvaloniaProperty.Register<ExecutionContextResolver, object?>(
-        "SourceOverride");
+        "SourceOverride", null);
 
     /// <summary>
     /// Gets or sets the override for <see cref="CommandExecutionContext.Source"/>.

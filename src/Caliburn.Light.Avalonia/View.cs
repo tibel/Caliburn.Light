@@ -252,7 +252,7 @@ public static class View
     /// The AvaloniaProperty for the CommandParameter used in x:Bind scenarios.
     /// </summary>
     public static readonly AttachedProperty<object?> CommandParameterProperty =
-        AvaloniaProperty.RegisterAttached<AvaloniaObject, object?>("CommandParameter", typeof(View));
+        AvaloniaProperty.RegisterAttached<AvaloniaObject, object?>("CommandParameter", typeof(View), null);
 
     /// <summary>
     /// Gets the command parameter

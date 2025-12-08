@@ -3,7 +3,6 @@ using Windows.ApplicationModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 
 namespace Caliburn.Light.WinUI;
 
@@ -17,7 +16,7 @@ public static class View
     /// </summary>
     public static readonly DependencyProperty ViewModelLocatorProperty =
         DependencyProperty.RegisterAttached("ViewModelLocator",
-            typeof(IViewModelLocator), typeof(View), null);
+            typeof(IViewModelLocator), typeof(View), new PropertyMetadata(null));
 
     /// <summary>
     /// Gets the attached <see cref="IViewModelLocator"/>.
@@ -28,9 +27,10 @@ public static class View
     {
         var viewModelLocator = (IViewModelLocator?)d.GetValue(ViewModelLocatorProperty);
 
+        // https://github.com/microsoft/microsoft-ui-xaml/issues/3073
         while (viewModelLocator is null)
         {
-            d = VisualTreeHelper.GetParent(d);
+            d = d is FrameworkElement fe ? fe.Parent : null!;
             if (d is null)
                 break;
 
@@ -270,7 +270,7 @@ public static class View
     /// </summary>
     public static readonly DependencyProperty CommandParameterProperty =
         DependencyProperty.RegisterAttached("CommandParameter",
-            typeof(object), typeof(View), null);
+            typeof(object), typeof(View), new PropertyMetadata(null));
 
     /// <summary>
     /// Gets the command parameter
