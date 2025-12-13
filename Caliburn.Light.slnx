@@ -13,7 +13,6 @@
       <Platform Solution="*|x64" Project="x64" />
 	</Project>
     <Project Path="samples/Caliburn.Light.Gallery.WPF/Caliburn.Light.Gallery.WPF.csproj" />
-    <Project Path="samples/Demo.WinFormsInterop/Demo.WinFormsInterop.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
