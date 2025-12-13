@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- Avalonia: Added file-dialogs to `IWindowManager`
+
 ## [6.1.0] - 2025-12-08
 
 ### Added

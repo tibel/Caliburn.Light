@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>6.1.0</VersionPrefix>
+    <VersionPrefix>6.2.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <Nullable>enable</Nullable>
@@ -15,7 +15,7 @@
     <Company>https://github.com/tibel</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
-    <PackageTags>Caliburn MVVM WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
+    <PackageTags>Caliburn MVVM Avalonia WPF WinUI Screen EventAggregator Model-View-ViewModel Presentation UI ViewModel IoC Validation Command Async</PackageTags>
     <PackageReleaseNotes>https://github.com/tibel/Caliburn.Light/blob/main/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 

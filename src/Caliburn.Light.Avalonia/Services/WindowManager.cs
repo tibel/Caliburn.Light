@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -75,6 +77,60 @@ public class WindowManager : IWindowManager
     }
 
     /// <summary>
+    /// Displays an open file picker dialog.
+    /// </summary>
+    /// <param name="options">The dialog options.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <returns>A list of selected files.</returns>
+    public Task<IReadOnlyList<IStorageFile>> ShowOpenFilePickerAsync(FilePickerOpenOptions options, object ownerViewModel)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+
+        var owner = GetTopLevel(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine top-level widget from ownerViewModel.");
+
+        return owner.StorageProvider.OpenFilePickerAsync(options);
+    }
+
+    /// <summary>
+    /// Displays a save file picker dialog.
+    /// </summary>
+    /// <param name="options">The dialog options.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <returns>The selected file</returns>
+    public Task<IStorageFile?> ShowSaveFilePickerAsync(FilePickerSaveOptions options, object ownerViewModel)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+
+        var owner = GetTopLevel(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine top-level widget from ownerViewModel.");
+
+        return owner.StorageProvider.SaveFilePickerAsync(options);
+    }
+
+    /// <summary>
+    /// Displays an open folder picker dialog.
+    /// </summary>
+    /// <param name="options">The dialog options.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <returns>A list of selected folders.</returns>
+    public Task<IReadOnlyList<IStorageFolder>> ShowOpenFolderPickerAsync(FolderPickerOpenOptions options, object ownerViewModel)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+
+        var owner = GetTopLevel(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine top-level widget from ownerViewModel.");
+
+        return owner.StorageProvider.OpenFolderPickerAsync(options);
+    }
+
+    /// <summary>
     /// Creates a window.
     /// </summary>
     /// <param name="viewModel">The view model.</param>
@@ -130,6 +186,16 @@ public class WindowManager : IWindowManager
     /// <returns>The window or null.</returns>
     protected static Window? GetWindow(object? viewModel)
     {
+        return GetTopLevel(viewModel) as Window;
+    }
+
+    /// <summary>
+    /// Gets the top-level widget from the given view model.
+    /// </summary>
+    /// <param name="viewModel">The view model.</param>
+    /// <returns>The top-level widget or null.</returns>
+    protected static TopLevel? GetTopLevel(object? viewModel)
+    {
         object? view = null;
 
         while (viewModel is not null)
@@ -146,7 +212,7 @@ public class WindowManager : IWindowManager
         }
 
         return view is Visual d
-            ? TopLevel.GetTopLevel(d) as Window
+            ? TopLevel.GetTopLevel(d)
             : null;
     }
 }
