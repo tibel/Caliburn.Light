@@ -86,8 +86,7 @@ public class WindowManager : IWindowManager
         if (owner is null)
             throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-        var result = MessageBox.Show(owner, options.Text, options.Caption, options.Button, options.Image);
-
+        var result = MessageBox.Show(owner, options.Text, options.Caption, options.Button, options.Image, options.DefaultResult, options.Options);
         return Task.FromResult(result);
     }
 

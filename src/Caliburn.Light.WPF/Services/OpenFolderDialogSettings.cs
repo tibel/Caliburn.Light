@@ -13,6 +13,11 @@ public sealed class OpenFolderDialogSettings
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets whether it is allows to select multiple folders.
+    /// </summary>
+    public bool Multiselect { get; set; }
+
+    /// <summary>
     /// Gets or sets the initial directory.
     /// </summary>
     public string InitialDirectory { get; set; } = string.Empty;
@@ -24,6 +29,7 @@ public sealed class OpenFolderDialogSettings
     public void ApplyTo(OpenFolderDialog dialog)
     {
         dialog.Title = Title;
+        dialog.Multiselect = Multiselect;
         dialog.InitialDirectory = InitialDirectory;
     }
 }
