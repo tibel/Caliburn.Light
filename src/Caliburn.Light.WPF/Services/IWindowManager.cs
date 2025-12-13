@@ -45,7 +45,7 @@ public interface IWindowManager
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>A list of selected files.</returns>
-    Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings options, object ownerViewModel);
+    Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogOptions options, object ownerViewModel);
 
     /// <summary>
     /// Shows a file save dialog.
@@ -53,7 +53,7 @@ public interface IWindowManager
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The selected file.</returns>
-    Task<string> ShowSaveFileDialog(SaveFileDialogSettings options, object ownerViewModel);
+    Task<string> ShowSaveFileDialog(SaveFileDialogOptions options, object ownerViewModel);
 
     /// <summary>
     /// Shows an open folder dialog.
@@ -61,5 +61,5 @@ public interface IWindowManager
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>A list of selected folders.</returns>
-    Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings options, object ownerViewModel);
+    Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogOptions options, object ownerViewModel);
 }

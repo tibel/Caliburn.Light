@@ -5,7 +5,7 @@ namespace Caliburn.Light.WPF;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowSaveFileDialog"/> method.
 /// </summary>
-public class SaveFileDialogSettings
+public class SaveFileDialogOptions
 {
     /// <summary>
     /// Gets or sets the dialog title.

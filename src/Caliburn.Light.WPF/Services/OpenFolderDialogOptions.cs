@@ -5,7 +5,7 @@ namespace Caliburn.Light.WPF;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowOpenFolderDialog"/> method.
 /// </summary>
-public sealed class OpenFolderDialogSettings
+public sealed class OpenFolderDialogOptions
 {
     /// <summary>
     /// Gets or sets the dialog title.

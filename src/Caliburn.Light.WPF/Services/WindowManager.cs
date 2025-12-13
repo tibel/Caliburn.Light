@@ -96,7 +96,7 @@ public class WindowManager : IWindowManager
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>A list of selected files.</returns>
-    public Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings options, object ownerViewModel)
+    public Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogOptions options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
         ArgumentNullException.ThrowIfNull(options);
@@ -129,7 +129,7 @@ public class WindowManager : IWindowManager
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The selected file.</returns>
-    public Task<string> ShowSaveFileDialog(SaveFileDialogSettings options, object ownerViewModel)
+    public Task<string> ShowSaveFileDialog(SaveFileDialogOptions options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
         ArgumentNullException.ThrowIfNull(options);
@@ -162,7 +162,7 @@ public class WindowManager : IWindowManager
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>A list of selected folders.</returns>
-    public Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings options, object ownerViewModel)
+    public Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogOptions options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
         ArgumentNullException.ThrowIfNull(options);
