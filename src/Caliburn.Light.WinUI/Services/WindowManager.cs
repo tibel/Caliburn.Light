@@ -155,8 +155,8 @@ public class WindowManager : IWindowManager
     /// </summary>
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
-    /// <returns>The selected folder.</returns>
-    public Task<PickFolderResult?> ShowFolderPickerAsync(FolderPickerOptions options, object ownerViewModel)
+    /// <returns>A list of selected folders.</returns>
+    public Task<IReadOnlyList<PickFolderResult>> ShowFolderPickerAsync(FolderPickerOptions options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(ownerViewModel);
@@ -168,7 +168,15 @@ public class WindowManager : IWindowManager
         var picker = new FolderPicker(owner.AppWindow.Id);
         options.ApplyTo(picker);
 
-        return picker.PickSingleFolderAsync().AsTask();
+        static async Task<IReadOnlyList<PickFolderResult>> PickSingleFolderAsync(FolderPicker picker)
+        {
+            var folder = await picker.PickSingleFolderAsync();
+            if (folder is null)
+                return Array.Empty<PickFolderResult>();
+            return new PickFolderResult[] { folder };
+        }
+
+        return PickSingleFolderAsync(picker);
     }
 
     /// <summary>

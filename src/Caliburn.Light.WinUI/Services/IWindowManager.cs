@@ -62,6 +62,6 @@ public interface IWindowManager
     /// </summary>
     /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
-    /// <returns>The selected folder.</returns>
-    Task<PickFolderResult?> ShowFolderPickerAsync(FolderPickerOptions options, object ownerViewModel);
+    /// <returns>A list of selected folders.</returns>
+    Task<IReadOnlyList<PickFolderResult>> ShowFolderPickerAsync(FolderPickerOptions options, object ownerViewModel);
 }
