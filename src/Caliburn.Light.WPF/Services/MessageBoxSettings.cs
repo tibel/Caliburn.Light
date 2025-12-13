@@ -3,7 +3,7 @@ using System.Windows;
 namespace Caliburn.Light.WPF;
 
 /// <summary>
-/// Settings for a message box
+/// Options class for <see cref="IWindowManager.ShowMessageBox"/> method.
 /// </summary>
 public sealed class MessageBoxSettings
 {

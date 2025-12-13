@@ -74,19 +74,19 @@ public class WindowManager : IWindowManager
     /// <summary>
     /// Shows a message box.
     /// </summary>
-    /// <param name="settings">The message box settings.</param>
+    /// <param name="options">The message box options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The message box result.</returns>
-    public Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings settings, object ownerViewModel)
+    public Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
-        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(options);
 
         var owner = GetWindow(ownerViewModel);
         if (owner is null)
             throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-        var result = MessageBox.Show(owner, settings.Text, settings.Caption, settings.Button, settings.Image);
+        var result = MessageBox.Show(owner, options.Text, options.Caption, options.Button, options.Image);
 
         return Task.FromResult(result);
     }
@@ -94,127 +94,99 @@ public class WindowManager : IWindowManager
     /// <summary>
     /// Shows a file open dialog.
     /// </summary>
-    /// <param name="settings">The open file dialog settings.</param>
+    /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>A list of selected files.</returns>
-    public Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings settings, object ownerViewModel)
+    public Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
-        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(options);
 
         var owner = GetWindow(ownerViewModel);
         if (owner is null)
             throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-        var openFileDialog = new OpenFileDialog
-        {
-            RestoreDirectory = true,
-            CheckFileExists = true,
-            CheckPathExists = true,
-
-            Multiselect = settings.Multiselect,
-            Filter = settings.FileTypeFilter,
-            Title = settings.Title,
-            InitialDirectory = settings.InitialDirectory
-        };
+        var dialog = new OpenFileDialog();
+        options.ApplyTo(dialog);
 
         bool? result;
         try
         {
-            result = openFileDialog.ShowDialog(owner);
+            result = dialog.ShowDialog(owner);
         }
-        catch when (!string.IsNullOrEmpty(openFileDialog.InitialDirectory))
+        catch when (!string.IsNullOrEmpty(dialog.InitialDirectory))
         {
-            openFileDialog.InitialDirectory = null;
-
-            result = openFileDialog.ShowDialog(owner);
+            dialog.InitialDirectory = null;
+            result = dialog.ShowDialog(owner);
         }
 
-        var selectedFiles = result.GetValueOrDefault() ? openFileDialog.FileNames : Array.Empty<string>();
+        var selectedFiles = result.GetValueOrDefault() ? dialog.FileNames : Array.Empty<string>();
         return Task.FromResult<IReadOnlyList<string>>(selectedFiles);
     }
 
     /// <summary>
     /// Shows a file save dialog.
     /// </summary>
-    /// <param name="settings">The save file dialog settings.</param>
+    /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The selected file.</returns>
-    public Task<string> ShowSaveFileDialog(SaveFileDialogSettings settings, object ownerViewModel)
+    public Task<string> ShowSaveFileDialog(SaveFileDialogSettings options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
-        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(options);
 
         var owner = GetWindow(ownerViewModel);
         if (owner is null)
             throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-        var saveFileDialog = new SaveFileDialog
-        {
-            RestoreDirectory = true,
-            AddExtension = true,
-            CheckPathExists = true,
-
-            Filter = settings.FileTypeFilter,
-            DefaultExt = settings.DefaultFileExtension,
-
-            Title = settings.Title,
-            FileName = settings.InitialFileName,
-            CreatePrompt = settings.PromptForCreate,
-            OverwritePrompt = settings.PromptForOverwrite,
-            InitialDirectory = settings.InitialDirectory
-        };
+        var dialog = new SaveFileDialog();
+        options.ApplyTo(dialog);
 
         bool? result;
         try
         {
-            result = saveFileDialog.ShowDialog(owner);
+            result = dialog.ShowDialog(owner);
         }
-        catch when (!string.IsNullOrEmpty(saveFileDialog.InitialDirectory))
+        catch when (!string.IsNullOrEmpty(dialog.InitialDirectory))
         {
-            saveFileDialog.InitialDirectory = null;
-
-            result = saveFileDialog.ShowDialog(owner);
+            dialog.InitialDirectory = null;
+            result = dialog.ShowDialog(owner);
         }
 
-        var selectedFile = result.GetValueOrDefault() ? saveFileDialog.FileName : string.Empty;
+        var selectedFile = result.GetValueOrDefault() ? dialog.FileName : string.Empty;
         return Task.FromResult(selectedFile);
     }
 
     /// <summary>
     /// Shows an open folder dialog.
     /// </summary>
-    /// <param name="settings">The open folder dialog settings.</param>
+    /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
-    /// <returns>The selected folder.</returns>
-    public Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings settings, object ownerViewModel)
+    /// <returns>A list of selected folders.</returns>
+    public Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
-        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(options);
 
         var owner = GetWindow(ownerViewModel);
         if (owner is null)
             throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
-        var openFolderDialog = new OpenFolderDialog
-        {
-            Title = settings.Title,
-            InitialDirectory = settings.InitialDirectory,
-        };
+        var dialog = new OpenFolderDialog();
+        options.ApplyTo(dialog);
 
         bool? result;
         try
         {
-            result = openFolderDialog.ShowDialog(owner);
+            result = dialog.ShowDialog(owner);
         }
-        catch when (!string.IsNullOrEmpty(openFolderDialog.InitialDirectory))
+        catch when (!string.IsNullOrEmpty(dialog.InitialDirectory))
         {
-            openFolderDialog.InitialDirectory = null;
-
-            result = openFolderDialog.ShowDialog(owner);
+            dialog.InitialDirectory = null;
+            result = dialog.ShowDialog(owner);
         }
 
-        var selectedFolders = result.GetValueOrDefault() ? openFolderDialog.FolderNames : Array.Empty<string>();
+        var selectedFolders = result.GetValueOrDefault() ? dialog.FolderNames : Array.Empty<string>();
         return Task.FromResult<IReadOnlyList<string>>(selectedFolders);
     }
 

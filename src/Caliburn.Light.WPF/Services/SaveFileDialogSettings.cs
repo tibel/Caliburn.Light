@@ -1,7 +1,9 @@
+using Microsoft.Win32;
+
 namespace Caliburn.Light.WPF;
 
 /// <summary>
-/// Settings for a file save dialog.
+/// Options class for <see cref="IWindowManager.ShowSaveFileDialog"/> method.
 /// </summary>
 public class SaveFileDialogSettings
 {
@@ -39,4 +41,24 @@ public class SaveFileDialogSettings
     /// Gets or sets whether the user is asked for permission if a new file will be created.
     /// </summary>
     public bool PromptForCreate { get; set; }
+
+    /// <summary>
+    /// Applies the current configuration settings to the specified <see cref="SaveFileDialog"/> instance.
+    /// </summary>
+    /// <param name="dialog">The <see cref="SaveFileDialog"/> to which the settings will be applied.</param>
+    public void ApplyTo(SaveFileDialog dialog)
+    {
+        dialog.RestoreDirectory = true;
+        dialog.AddExtension = true;
+        dialog.CheckPathExists = true;
+
+        dialog.Filter = FileTypeFilter;
+        dialog.DefaultExt = DefaultFileExtension;
+
+        dialog.Title = Title;
+        dialog.FileName = InitialFileName;
+        dialog.CreatePrompt = PromptForCreate;
+        dialog.OverwritePrompt = PromptForOverwrite;
+        dialog.InitialDirectory = InitialDirectory;
+    }
 }

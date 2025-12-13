@@ -34,32 +34,32 @@ public interface IWindowManager
     /// <summary>
     /// Shows a message box.
     /// </summary>
-    /// <param name="settings">The message box settings.</param>
+    /// <param name="options">The message box options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The message box result.</returns>
-    Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings settings, object ownerViewModel);
+    Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings options, object ownerViewModel);
 
     /// <summary>
     /// Shows a file open dialog.
     /// </summary>
-    /// <param name="settings">The open file dialog settings.</param>
+    /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>A list of selected files.</returns>
-    Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings settings, object ownerViewModel);
+    Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogSettings options, object ownerViewModel);
 
     /// <summary>
     /// Shows a file save dialog.
     /// </summary>
-    /// <param name="settings">The save file dialog settings.</param>
+    /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The selected file.</returns>
-    Task<string> ShowSaveFileDialog(SaveFileDialogSettings settings, object ownerViewModel);
+    Task<string> ShowSaveFileDialog(SaveFileDialogSettings options, object ownerViewModel);
 
     /// <summary>
     /// Shows an open folder dialog.
     /// </summary>
-    /// <param name="settings">The open folder dialog settings.</param>
+    /// <param name="options">The dialog options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
-    /// <returns>The selected folder.</returns>
-    Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings settings, object ownerViewModel);
+    /// <returns>A list of selected folders.</returns>
+    Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogSettings options, object ownerViewModel);
 }
