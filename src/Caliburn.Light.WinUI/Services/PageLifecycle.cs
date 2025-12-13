@@ -27,6 +27,9 @@ public sealed class PageLifecycle : IDisposable
         NavigationService = navigationService;
         Context = context;
 
+        // block DataContext inheritance
+        navigationService.DataContext = null;
+
         navigationService.Navigating += OnNavigating;
         navigationService.Navigated += OnNavigated;
         navigationService.NavigationStopped += OnNavigationStopped;

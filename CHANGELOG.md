@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - WPF: Renamed file-dialog types
 - WPF: extended `MessageBoxDialogOptions`
 
+### Fixed
+- WinUI: Fixed `PageLifecycle` to block DataContext inheritance
+
 ## [6.1.0] - 2025-12-08
 
 ### Added
