@@ -1,0 +1,25 @@
+<UserControl x:Class="Caliburn.Light.Gallery.WinUI.HomeView"
+             x:Name="RootControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Caliburn.Light.Gallery.WinUI.Home"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ItemsControl ItemsSource="{Binding Items, Mode=OneWay}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="local:HomeItemViewModel">
+                <Button Width="120" Height="120" Margin="10"
+                        Command="{Binding ElementName=RootControl, Path=DataContext.OpenCommand}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Bind Title}" />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

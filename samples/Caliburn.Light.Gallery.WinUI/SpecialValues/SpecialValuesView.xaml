@@ -1,0 +1,29 @@
+﻿<UserControl
+    x:Class="Caliburn.Light.Gallery.WinUI.SpecialValues.SpecialValuesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cal="using:Caliburn.Light.WinUI"
+    xmlns:local="using:Caliburn.Light.Gallery.WinUI.SpecialValues"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <GridView ItemsSource="{x:Bind Model.Entity.Characters}"
+              SelectionMode="None"
+              IsSwipeEnabled="False"
+              IsItemClickEnabled="True"
+              Margin="20"
+              ItemClick="{x:Bind Model.Entity.CharacterSelectedCommand.OnEvent}">
+        <cal:View.CommandParameter>
+            <local:ClickedItem />
+        </cal:View.CommandParameter>
+
+        <GridView.ItemTemplate>
+            <DataTemplate>
+                <local:CharacterView cal:View.Bind="True" />
+            </DataTemplate>
+        </GridView.ItemTemplate>
+    </GridView>
+</UserControl>
