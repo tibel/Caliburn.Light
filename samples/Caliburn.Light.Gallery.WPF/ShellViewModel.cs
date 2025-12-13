@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WPF;
 
-public sealed class ShellViewModel : Conductor<BindableObject>, IHaveDisplayName
+public sealed class ShellViewModel : Conductor<IHaveDisplayName>, IHaveDisplayName
 {
     public ICommand HomeCommand { get; }
 
