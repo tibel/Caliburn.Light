@@ -1,6 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Windows.Storage.Pickers;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -93,6 +95,80 @@ public class WindowManager : IWindowManager
         contentDialog.XamlRoot = owner.Content.XamlRoot;
 
         return contentDialog.ShowAsync(ContentDialogPlacement.Popup).AsTask();
+    }
+
+    /// <summary>
+    /// Displays an open file picker dialog.
+    /// </summary>
+    /// <param name="options">The dialog options.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <returns>A list of selected files.</returns>
+    public Task<IReadOnlyList<PickFileResult>> ShowFileOpenPickerAsync(FileOpenPickerOptions options, object ownerViewModel)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+
+        var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
+
+        var picker = new FileOpenPicker(owner.AppWindow.Id);
+        options.ApplyTo(picker);
+
+        if (options.AllowMultiple)
+            return picker.PickMultipleFilesAsync().AsTask();
+
+        static async Task<IReadOnlyList<PickFileResult>> PickSingleFileAsync(FileOpenPicker picker)
+        {
+            var file = await picker.PickSingleFileAsync();
+            if (file is null)
+                return Array.Empty<PickFileResult>();
+            return new PickFileResult[] { file };
+        }
+
+        return PickSingleFileAsync(picker);
+    }
+
+    /// <summary>
+    /// Displays a save file picker dialog.
+    /// </summary>
+    /// <param name="options">The dialog options.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <returns>The selected file</returns>
+    public Task<PickFileResult?> ShowFileSavePickerAsync(FileSavePickerOptions options, object ownerViewModel)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+
+        var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
+
+        var picker = new FileSavePicker(owner.AppWindow.Id);
+        options.ApplyTo(picker);
+
+        return picker.PickSaveFileAsync().AsTask();
+    }
+
+    /// <summary>
+    /// Displays an open folder picker dialog.
+    /// </summary>
+    /// <param name="options">The dialog options.</param>
+    /// <param name="ownerViewModel">The owner view model.</param>
+    /// <returns>The selected folder.</returns>
+    public Task<PickFolderResult?> ShowFolderPickerAsync(FolderPickerOptions options, object ownerViewModel)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(ownerViewModel);
+
+        var owner = GetWindow(ownerViewModel);
+        if (owner is null)
+            throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
+
+        var picker = new FolderPicker(owner.AppWindow.Id);
+        options.ApplyTo(picker);
+
+        return picker.PickSingleFolderAsync().AsTask();
     }
 
     /// <summary>
