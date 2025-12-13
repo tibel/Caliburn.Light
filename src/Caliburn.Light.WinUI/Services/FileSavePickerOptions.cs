@@ -6,7 +6,7 @@ namespace Caliburn.Light.WinUI;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowFileSavePickerAsync"/> method.
 /// </summary>
-public sealed class FileSavePickerOptions
+public class FileSavePickerOptions
 {
     /// <summary>
     /// Specifies the text displayed on commit button. If not specified, the system default is used.
@@ -42,7 +42,7 @@ public sealed class FileSavePickerOptions
     /// Applies the current configuration settings to the specified <see cref="FileSavePicker"/> instance.
     /// </summary>
     /// <param name="picker">The <see cref="FileSavePicker"/> to which the settings will be applied.</param>
-    public void ApplyTo(FileSavePicker picker)
+    public virtual void ApplyTo(FileSavePicker picker)
     {
         picker.CommitButtonText = CommitButtonText;
         picker.DefaultFileExtension = DefaultFileExtension;

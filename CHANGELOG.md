@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Avalonia: Added file-dialogs to `IWindowManager`
 - WinUI: Added file-dialogs to `IWindowManager`
 
+### Changed
+- WPF: Renamed file-dialog types
+- WPF: extended `MessageBoxDialogOptions`
+
 ## [6.1.0] - 2025-12-08
 
 ### Added

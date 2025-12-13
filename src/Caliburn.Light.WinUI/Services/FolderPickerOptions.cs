@@ -5,7 +5,7 @@ namespace Caliburn.Light.WinUI;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowFolderPickerAsync"/> method.
 /// </summary>
-public sealed class FolderPickerOptions
+public class FolderPickerOptions
 {
     /// <summary>
     /// Specifies the text displayed on the commit button. If not specified, the system default text is used.
@@ -26,7 +26,7 @@ public sealed class FolderPickerOptions
     /// Applies the current configuration settings to the specified <see cref="FolderPicker"/> instance.
     /// </summary>
     /// <param name="picker">The <see cref="FolderPicker"/> to which the settings will be applied.</param>
-    public void ApplyTo(FolderPicker picker)
+    public virtual void ApplyTo(FolderPicker picker)
     {
         picker.CommitButtonText = CommitButtonText;
         picker.SuggestedStartLocation = SuggestedStartLocation;

@@ -5,7 +5,7 @@ namespace Caliburn.Light.WPF;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowOpenFileDialog"/> method.
 /// </summary>
-public sealed class OpenFileDialogOptions
+public class OpenFileDialogOptions
 {
     /// <summary>
     /// Gets or sets the dialog title.
@@ -31,7 +31,7 @@ public sealed class OpenFileDialogOptions
     /// Applies the current configuration settings to the specified <see cref="OpenFileDialog"/> instance.
     /// </summary>
     /// <param name="dialog">The <see cref="OpenFileDialog"/> to which the settings will be applied.</param>
-    public void ApplyTo(OpenFileDialog dialog)
+    public virtual void ApplyTo(OpenFileDialog dialog)
     {
         dialog.RestoreDirectory = true;
         dialog.CheckFileExists = true;

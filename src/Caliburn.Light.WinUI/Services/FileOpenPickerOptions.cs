@@ -6,7 +6,7 @@ namespace Caliburn.Light.WinUI;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowFileOpenPickerAsync"/> method.
 /// </summary>
-public sealed class FileOpenPickerOptions
+public class FileOpenPickerOptions
 {
     /// <summary>
     /// Specifies the text displayed on commit button. If not specified, system default text is used.
@@ -37,7 +37,7 @@ public sealed class FileOpenPickerOptions
     /// Applies the current configuration settings to the specified <see cref="FileOpenPicker"/> instance.
     /// </summary>
     /// <param name="picker">The <see cref="FileOpenPicker"/> to which the settings will be applied.</param>
-    public void ApplyTo(FileOpenPicker picker)
+    public virtual void ApplyTo(FileOpenPicker picker)
     {
         picker.CommitButtonText = CommitButtonText;
 

@@ -5,7 +5,7 @@ namespace Caliburn.Light.WPF;
 /// <summary>
 /// Options class for <see cref="IWindowManager.ShowOpenFolderDialog"/> method.
 /// </summary>
-public sealed class OpenFolderDialogOptions
+public class OpenFolderDialogOptions
 {
     /// <summary>
     /// Gets or sets the dialog title.
@@ -26,7 +26,7 @@ public sealed class OpenFolderDialogOptions
     /// Applies the current configuration settings to the specified <see cref="OpenFolderDialog"/> instance.
     /// </summary>
     /// <param name="dialog">The <see cref="OpenFolderDialog"/> to which the settings will be applied.</param>
-    public void ApplyTo(OpenFolderDialog dialog)
+    public virtual void ApplyTo(OpenFolderDialog dialog)
     {
         dialog.Title = Title;
         dialog.Multiselect = Multiselect;

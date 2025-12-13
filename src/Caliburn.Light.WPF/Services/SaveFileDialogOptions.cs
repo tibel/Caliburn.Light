@@ -46,7 +46,7 @@ public class SaveFileDialogOptions
     /// Applies the current configuration settings to the specified <see cref="SaveFileDialog"/> instance.
     /// </summary>
     /// <param name="dialog">The <see cref="SaveFileDialog"/> to which the settings will be applied.</param>
-    public void ApplyTo(SaveFileDialog dialog)
+    public virtual void ApplyTo(SaveFileDialog dialog)
     {
         dialog.RestoreDirectory = true;
         dialog.AddExtension = true;
