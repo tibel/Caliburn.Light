@@ -77,7 +77,7 @@ public class WindowManager : IWindowManager
     /// <param name="options">The message box options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The message box result.</returns>
-    public Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings options, object ownerViewModel)
+    public Task<MessageBoxResult> ShowMessageBoxDialog(MessageBoxDialogOptions options, object ownerViewModel)
     {
         ArgumentNullException.ThrowIfNull(ownerViewModel);
         ArgumentNullException.ThrowIfNull(options);

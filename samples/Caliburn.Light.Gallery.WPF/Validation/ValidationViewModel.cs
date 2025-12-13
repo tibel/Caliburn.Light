@@ -70,14 +70,14 @@ public sealed class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDa
 
     private Task Save()
     {
-        var settings = new MessageBoxSettings
+        var options = new MessageBoxDialogOptions
         {
             Caption = "Save",
             Text = "Your changes where saved.",
             Image = MessageBoxImage.Information,
         };
 
-        return _windowManager.ShowMessageBox(settings, this);
+        return _windowManager.ShowMessageBoxDialog(options, this);
     }
 
     private readonly ValidationAdapter _validation;

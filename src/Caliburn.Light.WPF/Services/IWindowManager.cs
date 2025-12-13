@@ -37,7 +37,7 @@ public interface IWindowManager
     /// <param name="options">The message box options.</param>
     /// <param name="ownerViewModel">The owner view model.</param>
     /// <returns>The message box result.</returns>
-    Task<MessageBoxResult> ShowMessageBox(MessageBoxSettings options, object ownerViewModel);
+    Task<MessageBoxResult> ShowMessageBoxDialog(MessageBoxDialogOptions options, object ownerViewModel);
 
     /// <summary>
     /// Shows a file open dialog.

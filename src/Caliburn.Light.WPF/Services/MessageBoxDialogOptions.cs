@@ -3,9 +3,9 @@ using System.Windows;
 namespace Caliburn.Light.WPF;
 
 /// <summary>
-/// Options class for <see cref="IWindowManager.ShowMessageBox"/> method.
+/// Options class for <see cref="IWindowManager.ShowMessageBoxDialog"/> method.
 /// </summary>
-public sealed class MessageBoxSettings
+public sealed class MessageBoxDialogOptions
 {
     /// <summary>
     /// Gets or sets the text.
