@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cal="https://github.com/tibel/Caliburn.Light/"
+        xmlns:local="using:Caliburn.Light.Gallery.Avalonia"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480"
+        x:Class="Caliburn.Light.Gallery.Avalonia.ShellView"
+        x:DataType="local:ShellViewModel"
+        Title="{Binding DisplayName, Mode=OneWay}"
+        Width="640"
+        Height="480">
+    <DockPanel>
+        <Border DockPanel.Dock="Top"
+                BorderThickness="0,0,0,2"
+                BorderBrush="LightBlue"
+                Padding="10">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Home"
+                    Margin="0,0,10,0"
+                    Command="{Binding HomeCommand, Mode=OneTime}" />
+
+                <TextBlock Text="{Binding ActiveItem.DisplayName}"
+                       VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <ContentControl DataContext="{Binding ActiveItem}"
+                        cal:View.Create="True" />
+    </DockPanel>
+</Window>

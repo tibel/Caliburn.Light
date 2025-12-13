@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="https://github.com/tibel/Caliburn.Light/"
+             xmlns:local="using:Caliburn.Light.Gallery.Avalonia.Hierarchies"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:ChildLevel1ViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Class="Caliburn.Light.Gallery.Avalonia.Hierarchies.ChildLevel1View"
+             x:DataType="local:ChildLevel1ViewModel">
+    <ContentControl HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    DataContext="{Binding ActiveItem, Mode=OneWay}"
+                    cal:View.Create="True" />
+</UserControl>

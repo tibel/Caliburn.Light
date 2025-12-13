@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,10 +6,11 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
+    <Content Include="logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,8 +27,8 @@
     <PackageReference Include="Microsoft.Extensions.Options" />
   </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
-		<ProjectReference Include="..\..\src\Caliburn.Light.Avalonia\Caliburn.Light.Avalonia.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Caliburn.Light.Core\Caliburn.Light.Core.csproj" />
+    <ProjectReference Include="..\..\src\Caliburn.Light.Avalonia\Caliburn.Light.Avalonia.csproj" />
+  </ItemGroup>
 </Project>

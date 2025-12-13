@@ -1,7 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Demo.HelloAvalonia.App"
-             xmlns:local="using:Demo.HelloAvalonia"
+             x:Class="Caliburn.Light.Gallery.Avalonia.App"
+             xmlns:local="using:Caliburn.Light.Gallery.Avalonia"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
   

@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="using:Caliburn.Light.Gallery.Avalonia.Threading"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Class="Caliburn.Light.Gallery.Avalonia.Threading.ThreadingView"
+             x:DataType="local:ThreadingViewModel">
+    <StackPanel HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+        <Button Content="SwitchTo()"
+                Command="{Binding SwitchToCommand, Mode=OneTime}"
+                Padding="10"
+                Margin="10" />
+
+        <Button Content="ConfigureAwait(false)"
+                Command="{Binding ConfigureAwaitFalseCommand, Mode=OneTime}"
+                Padding="10"
+                Margin="10" />
+
+        <Button Content="ConfigureAwait(true)"
+                Command="{Binding ConfigureAwaitTrueCommand, Mode=OneTime}"
+                Padding="10"
+                Margin="10" />
+    </StackPanel>
+</UserControl>

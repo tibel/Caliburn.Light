@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Avalonia;
 
-namespace Demo.HelloAvalonia;
+namespace Caliburn.Light.Gallery.Avalonia;
 
 internal sealed class Program
 {
