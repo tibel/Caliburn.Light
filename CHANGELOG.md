@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - WPF: Renamed file-dialog types
-- WPF: extended `MessageBoxDialogOptions`
+- WPF: Extended `MessageBoxDialogOptions`
 
 ### Fixed
 - WinUI: Fixed `PageLifecycle` to block DataContext inheritance
