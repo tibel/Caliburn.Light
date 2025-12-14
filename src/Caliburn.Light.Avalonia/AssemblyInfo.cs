@@ -1,4 +1,4 @@
-﻿using Avalonia.Metadata;
+using Avalonia.Metadata;
 using System;
 using System.Runtime.InteropServices;
 

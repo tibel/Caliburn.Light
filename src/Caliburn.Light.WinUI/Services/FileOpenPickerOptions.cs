@@ -1,4 +1,4 @@
-﻿using Microsoft.Windows.Storage.Pickers;
+using Microsoft.Windows.Storage.Pickers;
 using System.Collections.Generic;
 
 namespace Caliburn.Light.WinUI;

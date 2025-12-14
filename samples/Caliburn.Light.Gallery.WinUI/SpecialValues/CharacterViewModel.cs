@@ -1,5 +1,3 @@
-using Caliburn.Light;
-
 namespace Caliburn.Light.Gallery.WinUI.SpecialValues;
 
 public sealed partial class CharacterViewModel : BindableObject

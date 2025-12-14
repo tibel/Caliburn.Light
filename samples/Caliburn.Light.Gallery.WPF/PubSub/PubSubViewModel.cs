@@ -1,5 +1,3 @@
-using Caliburn.Light;
-
 namespace Caliburn.Light.Gallery.WPF.PubSub;
 
 public sealed class PubSubViewModel : BindableObject, IHaveDisplayName

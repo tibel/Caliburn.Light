@@ -1,5 +1,4 @@
 using Caliburn.Light.WinUI;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Caliburn.Light.Gallery.WinUI;

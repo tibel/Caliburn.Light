@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

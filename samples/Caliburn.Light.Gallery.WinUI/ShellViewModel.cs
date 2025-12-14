@@ -1,5 +1,4 @@
 using Caliburn.Light.Gallery.WinUI.Home;
-using Caliburn.Light.WinUI;
 using System;
 using System.Windows.Input;
 

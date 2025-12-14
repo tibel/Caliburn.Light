@@ -1,4 +1,4 @@
-﻿namespace Caliburn.Light;
+namespace Caliburn.Light;
 
 /// <summary>
 /// Denotes an instance which maintains an active item.

@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Caliburn.Light;
-using Caliburn.Light.Avalonia;
 
 namespace Caliburn.Light.Gallery.Avalonia.Threading;
 

@@ -1,4 +1,3 @@
-using Caliburn.Light;
 using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.Avalonia.Validation;

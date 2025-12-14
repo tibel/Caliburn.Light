@@ -1,8 +1,8 @@
-using System;
-using Windows.ApplicationModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System;
+using Windows.ApplicationModel;
 
 namespace Caliburn.Light.WinUI;
 

@@ -1,6 +1,5 @@
 using Caliburn.Light.WinUI;
 using Microsoft.UI.Xaml.Controls;
-using System;
 
 namespace Caliburn.Light.Gallery.WinUI.PageNavigation;
 

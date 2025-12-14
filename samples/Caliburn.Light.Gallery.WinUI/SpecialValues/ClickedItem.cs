@@ -1,4 +1,3 @@
-using Caliburn.Light;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Caliburn.Light.Gallery.WinUI.SpecialValues;

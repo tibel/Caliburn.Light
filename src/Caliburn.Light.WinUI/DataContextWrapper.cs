@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Microsoft.UI.Xaml;
+using System.ComponentModel;
 
 namespace Caliburn.Light.WinUI;
 

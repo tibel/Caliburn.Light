@@ -1,4 +1,4 @@
-﻿using Caliburn.Light.Gallery.WPF.Home;
+using Caliburn.Light.Gallery.WPF.Home;
 using Caliburn.Light.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

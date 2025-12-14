@@ -1,5 +1,3 @@
-using Caliburn.Light;
-
 namespace Caliburn.Light.Gallery.Avalonia.PubSub;
 
 public sealed class SubscriberViewModel : BindableObject

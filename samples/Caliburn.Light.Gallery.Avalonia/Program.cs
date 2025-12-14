@@ -1,5 +1,5 @@
-using System;
 using Avalonia;
+using System;
 
 namespace Caliburn.Light.Gallery.Avalonia;
 

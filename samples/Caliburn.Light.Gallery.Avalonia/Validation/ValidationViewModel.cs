@@ -1,4 +1,3 @@
-using Caliburn.Light;
 using Caliburn.Light.Avalonia;
 using System;
 using System.Collections;

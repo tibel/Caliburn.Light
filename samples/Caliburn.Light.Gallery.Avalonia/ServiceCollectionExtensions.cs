@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Caliburn.Light;
 using Caliburn.Light.Avalonia;
 using Caliburn.Light.Gallery.Avalonia.Home;
 using Microsoft.Extensions.DependencyInjection;

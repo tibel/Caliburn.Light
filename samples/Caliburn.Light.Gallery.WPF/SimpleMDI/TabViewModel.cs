@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Caliburn.Light;
 
 namespace Caliburn.Light.Gallery.WPF.SimpleMDI;
 

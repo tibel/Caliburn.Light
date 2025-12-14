@@ -1,4 +1,3 @@
-using Caliburn.Light;
 using Caliburn.Light.WPF;
 using System;
 using System.Collections;
