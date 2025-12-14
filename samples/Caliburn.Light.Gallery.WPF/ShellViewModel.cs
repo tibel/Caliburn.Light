@@ -8,7 +8,7 @@ public sealed class ShellViewModel : Conductor<IHaveDisplayName>, IHaveDisplayNa
 {
     public ICommand HomeCommand { get; }
 
-    public string? DisplayName => "Caliburn.Light Gallery";
+    public string? DisplayName => "Caliburn.Light Gallery WPF";
 
     public ShellViewModel(Func<HomeViewModel> createHomeViewModel)
     {

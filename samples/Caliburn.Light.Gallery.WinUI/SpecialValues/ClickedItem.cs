@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Caliburn.Light.Gallery.WinUI.SpecialValues;
 
-public sealed class ClickedItem : ISpecialValue
+public sealed partial class ClickedItem : ISpecialValue
 {
     public object? Resolve(CommandExecutionContext context)
     {

@@ -1,9 +1,9 @@
 using Caliburn.Light;
 using System.Windows.Input;
 
-namespace Caliburn.Light.Gallery.Avalonia.Validation;
+namespace Caliburn.Light.Gallery.WinUI.Validation;
 
-public sealed class SaveConfirmationViewModel : Screen, IHaveDisplayName
+public sealed partial class SaveConfirmationViewModel : Screen, IHaveDisplayName
 {
     public SaveConfirmationViewModel()
     {

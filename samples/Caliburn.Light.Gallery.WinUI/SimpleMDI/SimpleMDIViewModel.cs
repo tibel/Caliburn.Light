@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.SimpleMDI;
 
-public sealed class SimpleMDIViewModel : Conductor<TabViewModel>.Collection.OneActive, IHaveDisplayName
+public sealed partial class SimpleMDIViewModel : Conductor<TabViewModel>.Collection.OneActive, IHaveDisplayName
 {
     private readonly Func<TabViewModel> _createTabViewModel;
     private int _count;

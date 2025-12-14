@@ -1,5 +1,4 @@
 using Caliburn.Light.WinUI;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -9,7 +8,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.Validation;
 
-public sealed class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDataErrorInfo
+public sealed partial class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDataErrorInfo
 {
     private readonly IWindowManager _windowManager;
 
@@ -67,20 +66,9 @@ public sealed class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDa
 
     public ICommand SaveCommand { get; }
 
-    private async Task Save()
+    private Task Save()
     {
-        var dialog = new ContentDialog
-        {
-            Title = "Save",
-            Content = "Your changes were saved.",
-            CloseButtonText = "OK"
-        };
-
-        if (((IViewAware)this).GetView() is Microsoft.UI.Xaml.FrameworkElement view)
-        {
-            dialog.XamlRoot = view.XamlRoot;
-            await dialog.ShowAsync();
-        }
+        return _windowManager.ShowContentDialog(new SaveConfirmationViewModel(), this);
     }
 
     private readonly ValidationAdapter _validation;

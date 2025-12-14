@@ -5,18 +5,14 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI;
 
-public sealed class ShellViewModel : Conductor<IHaveDisplayName>, IHaveDisplayName
+public sealed partial class ShellViewModel : Conductor<IHaveDisplayName>, IHaveDisplayName
 {
     public ICommand HomeCommand { get; }
 
-    public string? DisplayName => "Caliburn.Light Gallery";
+    public string? DisplayName => "Caliburn.Light Gallery WinUI";
 
-    public IViewModelLocator ViewModelLocator { get; }
-
-    public ShellViewModel(Func<HomeViewModel> createHomeViewModel, IViewModelLocator viewModelLocator)
+    public ShellViewModel(Func<HomeViewModel> createHomeViewModel)
     {
-        ViewModelLocator = viewModelLocator;
-
         HomeCommand = DelegateCommandBuilder.NoParameter()
             .OnExecute(() => ActivateItemAsync(createHomeViewModel.Invoke()))
             .OnCanExecute(() => ActiveItem is not HomeViewModel)

@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.PageNavigation;
 
-public sealed class Child1ViewModel : Screen
+public sealed partial class Child1ViewModel : Screen
 {
     public ICommand NavigateCommand { get; }
 

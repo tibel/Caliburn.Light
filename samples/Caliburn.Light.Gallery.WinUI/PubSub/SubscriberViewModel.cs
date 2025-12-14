@@ -1,6 +1,6 @@
 namespace Caliburn.Light.Gallery.WinUI.PubSub;
 
-public sealed class SubscriberViewModel : BindableObject
+public sealed partial class SubscriberViewModel : BindableObject
 {
     private readonly BindableCollection<string> _messages = new BindableCollection<string>();
 

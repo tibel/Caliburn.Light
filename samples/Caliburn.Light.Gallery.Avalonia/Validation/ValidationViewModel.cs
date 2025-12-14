@@ -69,7 +69,6 @@ public sealed class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDa
 
     private Task Save()
     {
-        // In Avalonia, we use a simple dialog since MessageBox is not available
         return _windowManager.ShowDialog(new SaveConfirmationViewModel(), this);
     }
 

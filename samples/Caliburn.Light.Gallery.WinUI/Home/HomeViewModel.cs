@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.Home;
 
-public sealed class HomeViewModel : Conductor<HomeItemViewModel>.Collection.AllActive, IHaveDisplayName, IChild
+public sealed partial class HomeViewModel : Conductor<HomeItemViewModel>.Collection.AllActive, IHaveDisplayName, IChild
 {
     private object? _parent;
 

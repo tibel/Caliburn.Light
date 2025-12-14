@@ -2,7 +2,7 @@ using Caliburn.Light;
 
 namespace Caliburn.Light.Gallery.WinUI.SpecialValues;
 
-public sealed class CharacterViewModel : BindableObject
+public sealed partial class CharacterViewModel : BindableObject
 {
     public CharacterViewModel(string name, string image)
     {

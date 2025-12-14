@@ -2,7 +2,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.PubSub;
 
-public sealed class PublisherViewModel : BindableObject
+public sealed partial class PublisherViewModel : BindableObject
 {
     private readonly IEventAggregator _eventAggregator;
     private string? _message;

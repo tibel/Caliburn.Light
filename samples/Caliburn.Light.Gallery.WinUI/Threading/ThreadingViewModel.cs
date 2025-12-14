@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.Threading;
 
-public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
+public sealed partial class ThreadingViewModel : ViewAware, IHaveDisplayName
 {
     private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
 

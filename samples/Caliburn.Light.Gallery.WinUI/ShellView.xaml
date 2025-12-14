@@ -23,7 +23,7 @@
             </StackPanel>
         </Border>
 
-        <ContentControl Grid.Row="1"
+        <ContentControl Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                         DataContext="{x:Bind Model.Entity.ActiveItem, Mode=OneWay}"
                         cal:View.Create="True" />
     </Grid>

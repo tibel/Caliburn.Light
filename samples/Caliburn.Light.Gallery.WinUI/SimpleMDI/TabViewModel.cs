@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.SimpleMDI;
 
-public sealed class TabViewModel : Screen, IChild, IHaveDisplayName
+public sealed partial class TabViewModel : Screen, IChild, IHaveDisplayName
 {
     private object? _parent;
     private string? _displayName;

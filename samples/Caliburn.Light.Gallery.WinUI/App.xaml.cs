@@ -38,7 +38,8 @@ public sealed partial class App : Application
             .AddView<HomeView, HomeViewModel>();
 
         services.AddDemo<PubSubView, PubSubViewModel>("Pub/Sub");
-        services.AddDemo<ValidationView, ValidationViewModel>("Validation");
+        services.AddDemo<ValidationView, ValidationViewModel>("Validation")
+            .AddMapping<SaveConfirmationView, SaveConfirmationViewModel>();
         services.AddDemo<SimpleMDIView, SimpleMDIViewModel>("Simple MDI");
         services.AddDemo<ThreadingView, ThreadingViewModel>("Threading");
         services.AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies")

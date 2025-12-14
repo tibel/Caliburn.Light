@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Caliburn.Light.Gallery.WinUI.SpecialValues;
 
-public sealed class SpecialValuesViewModel : Screen, IHaveDisplayName
+public sealed partial class SpecialValuesViewModel : Screen, IHaveDisplayName
 {
     private readonly IWindowManager _windowManager;
 

@@ -1,6 +1,6 @@
 namespace Caliburn.Light.Gallery.WinUI.PubSub;
 
-public sealed class PubSubViewModel : BindableObject, IHaveDisplayName
+public sealed partial class PubSubViewModel : BindableObject, IHaveDisplayName
 {
     public string? DisplayName => "Pub/Sub";
 

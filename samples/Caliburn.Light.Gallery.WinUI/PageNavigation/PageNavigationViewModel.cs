@@ -4,7 +4,7 @@ using System;
 
 namespace Caliburn.Light.Gallery.WinUI.PageNavigation;
 
-public sealed class PageNavigationViewModel : ViewAware, IHaveDisplayName
+public sealed partial class PageNavigationViewModel : ViewAware, IHaveDisplayName
 {
     private readonly IViewModelLocator _viewModelLocator;
 

@@ -11,13 +11,7 @@
     <UserControl.Styles>
         <Style Selector="TextBox">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0,2,40,2" />
-        </Style>
-        <Style Selector="TextBox:error">
-            <Setter Property="BorderBrush" Value="Red" />
-        </Style>
-        <Style Selector="DataValidationErrors">
-            <Setter Property="Theme" Value="{DynamicResource TooltipDataValidationErrors}" />
+            <Setter Property="Margin" Value="0,2,3,2" />
         </Style>
     </UserControl.Styles>
 
@@ -47,6 +41,6 @@
         <TextBlock Text="Website:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="3" />
         <TextBox Text="{Binding Website, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
 
-        <Button Command="{Binding SaveCommand}" Content="Save" Padding="5" Grid.Row="4" Grid.Column="1" Margin="0,10,40,0" HorizontalAlignment="Right" VerticalAlignment="Top" />
+        <Button Command="{Binding SaveCommand}" Content="Save" Padding="5" Grid.Row="4" Grid.Column="1" Margin="0,10,3,0" HorizontalAlignment="Right" VerticalAlignment="Top" />
     </Grid>
 </UserControl>

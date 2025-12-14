@@ -2,7 +2,7 @@ using System;
 
 namespace Caliburn.Light.Gallery.WinUI.Home;
 
-public sealed class HomeItemViewModel : BindableObject
+public sealed partial class HomeItemViewModel : BindableObject
 {
     private readonly Func<object> _createInstance;
 
