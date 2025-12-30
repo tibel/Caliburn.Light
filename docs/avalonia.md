@@ -1,27 +1,31 @@
-# WPF Specifics
+# Avalonia Specifics
 
-Caliburn.Light supports WPF applications on .NET 8.0+.
+Caliburn.Light supports Avalonia applications.
 
 ## Getting Started
 
 ### Configuration
 
-Configure your WPF application by setting up dependency injection in your `App.xaml.cs`:
+Configure your Avalonia application by setting up dependency injection in your `App.axaml.cs`:
 
 ```csharp
+using Avalonia;
+using Avalonia.Markup.Xaml;
 using Caliburn.Light;
-using Caliburn.Light.WPF;
+using Caliburn.Light.Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Windows;
 
 namespace YourNamespace;
 
 public partial class App : Application
 {
-    private IServiceProvider? _serviceProvider;
+    public override void Initialize()
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
 
-    private void Configure()
+    private IServiceProvider Configure()
     {
         var services = new ServiceCollection();
 
@@ -39,26 +43,24 @@ public partial class App : Application
         services.AddTransient<ShellView>();
         services.AddTransient<ShellViewModel>();
 
-        _serviceProvider = services.BuildServiceProvider();
+        return services.BuildServiceProvider();
     }
 
-    protected override void OnStartup(StartupEventArgs e)
+    public override void OnFrameworkInitializationCompleted()
     {
-        Configure();
+        var serviceProvider = Configure();
 
-        base.OnStartup(e);
+        serviceProvider.GetRequiredService<IWindowManager>()
+            .ShowWindow(serviceProvider.GetRequiredService<ShellViewModel>());
 
-        _serviceProvider!.GetRequiredService<IWindowManager>()
-            .ShowWindow(_serviceProvider.GetRequiredService<ShellViewModel>());
+        base.OnFrameworkInitializationCompleted();
     }
 }
 ```
 
-**Note**: Remove the `StartupUri` attribute from App.xaml as Caliburn.Light handles window creation.
-
 ## Window Manager
 
-The WPF `IWindowManager` provides the following functionality:
+The Avalonia `IWindowManager` provides the following functionality:
 
 ### Windows and Dialogs
 
@@ -73,47 +75,39 @@ public interface IWindowManager
 
     // Bring a window to the foreground
     bool Activate(object viewModel);
-
-    // Show a message box
-    Task<MessageBoxResult> ShowMessageBoxDialog(MessageBoxDialogOptions options, object ownerViewModel);
 }
 ```
 
-### File Dialogs
+### File Pickers
 
 ```csharp
-// Open file dialog
-Task<IReadOnlyList<string>> ShowOpenFileDialog(OpenFileDialogOptions options, object ownerViewModel);
+// Open file picker
+Task<IReadOnlyList<IStorageFile>> ShowOpenFilePickerAsync(FilePickerOpenOptions options, object ownerViewModel);
 
-// Save file dialog
-Task<string> ShowSaveFileDialog(SaveFileDialogOptions options, object ownerViewModel);
+// Save file picker
+Task<IStorageFile?> ShowSaveFilePickerAsync(FilePickerSaveOptions options, object ownerViewModel);
 
-// Open folder dialog
-Task<IReadOnlyList<string>> ShowOpenFolderDialog(OpenFolderDialogOptions options, object ownerViewModel);
+// Folder picker
+Task<IReadOnlyList<IStorageFolder>> ShowOpenFolderPickerAsync(FolderPickerOpenOptions options, object ownerViewModel);
 ```
+
+The file picker options and return types use Avalonia's native `Avalonia.Platform.Storage` types.
 
 ## Lifecycle Classes
 
-WPF provides several lifecycle classes:
+Avalonia provides lifecycle classes:
 
 - `WindowLifecycle` - Manages the lifecycle of a Window
 - `PopupLifecycle` - Manages the lifecycle of a Popup
-- `PageLifecycle` - Manages the lifecycle of a Page
 
 These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden.
 
 ## XAML Namespace
 
-Import the Caliburn.Light namespace in your XAML files:
+Import the Caliburn.Light namespace in your AXAML files:
 
 ```xml
-xmlns:cal="http://www.dvd-shop.ch/caliburn.light"
-```
-
-or
-
-```xml
-xmlns:cal="clr-namespace:Caliburn.Light.WPF;assembly=Caliburn.Light.WPF"
+xmlns:cal="clr-namespace:Caliburn.Light.Avalonia;assembly=Caliburn.Light.Avalonia"
 ```
 
 ## View-First vs ViewModel-First
@@ -137,19 +131,3 @@ Use `View.Bind` attached property inside DataTemplates:
     <local:ItemView cal:View.Bind="True" />
 </DataTemplate>
 ```
-
-## Multiple Views per ViewModel
-
-You can have multiple views for the same ViewModel by using the `View.Context` attached property:
-
-```xml
-<ContentControl DataContext="{Binding Item}" 
-                cal:View.Create="True"
-                cal:View.Context="Detail" />
-```
-
-Register the view with context:
-
-```csharp
-services.Configure<ViewModelLocatorConfiguration>(config =>
-    config.AddMapping<DetailView, ItemViewModel>("Detail"));

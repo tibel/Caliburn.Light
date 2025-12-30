@@ -1,29 +1,64 @@
 # Basic Configuration
 
-Configuring Caliburn.Light is quite easy, when you know what steps you need.
-
+Configuring Caliburn.Light is straightforward when using dependency injection.
 
 ## Attached Properties
 
-### View-First
-- `Bind.Model` (use on root nodes like Window/UserControl/Page)  
-  Sets the DataContext and attaches the view to the view-model.
-- `Bind.ModelWithoutContext` (use inside of DataTemplate)  
-  Attaches the view to the view-model only.
-
 ### ViewModel-First
-- `View.Model`  
-  Locates the view for the specified VM instance and injects it at the content site.
-  Sets the VM as DataContext on the view.
+- `View.Create`  
+  Set to `True` on a ContentControl to locate the view for the DataContext and inject it.
 - `View.Context`  
   To support multiple views over the same ViewModel, set this property on the injection site.
 
+### View-First
+- `View.Bind`  
+  Set to `True` on a view inside a DataTemplate to attach the view to the view-model.
+
 ## Samples
 
-### WPF
+The gallery samples demonstrate the recommended configuration approach using `Microsoft.Extensions.DependencyInjection`:
 
-For a basic WPF sample see [SimpleMDI]({{site.github.repository_url}}/tree/master/samples/Demo.SimpleMDI).
+- [WPF Gallery]({{site.github.repository_url}}/tree/master/samples/Caliburn.Light.Gallery.WPF)
+- [WinUI Gallery]({{site.github.repository_url}}/tree/master/samples/Caliburn.Light.Gallery.WinUI)
+- [Avalonia Gallery]({{site.github.repository_url}}/tree/master/samples/Caliburn.Light.Gallery.Avalonia)
 
-### Windows Runtime
+### Basic Setup Pattern
 
-For a WinRT sample see [HelloEventAggregator]({{site.github.repository_url}}/tree/master/samples/Demo.HelloEventAggregator).
+All platforms follow a similar configuration pattern:
+
+```csharp
+using Caliburn.Light;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+var services = new ServiceCollection();
+
+// Register core Caliburn.Light services
+services.AddSingleton<IWindowManager, WindowManager>();
+services.AddSingleton<IEventAggregator, EventAggregator>();
+services.AddSingleton<IViewModelLocator, ViewModelLocator>();
+services.AddTransient(sp => sp.GetRequiredService<IOptions<ViewModelLocatorConfiguration>>().Value);
+
+// Register view-viewmodel mappings
+services.Configure<ViewModelLocatorConfiguration>(config =>
+{
+    config.AddMapping<ShellView, ShellViewModel>();
+    config.AddMapping<HomeView, HomeViewModel>();
+});
+
+// Register views and view models
+services.AddTransient<ShellView>();
+services.AddTransient<ShellViewModel>();
+services.AddTransient<HomeView>();
+services.AddTransient<HomeViewModel>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Show the main window
+serviceProvider.GetRequiredService<IWindowManager>()
+    .ShowWindow(serviceProvider.GetRequiredService<ShellViewModel>());
+```
+
+> **Tip:** The gallery samples include helper extension methods like `AddCaliburnLight()` and `AddView<>()` 
+> that wrap the registration pattern above. You can create similar helpers in your own application
+> to reduce boilerplate. See `ServiceCollectionExtensions.cs` in the sample projects.
