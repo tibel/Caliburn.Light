@@ -425,6 +425,6 @@ Now that you have a working application, explore these topics:
 
 Check out the complete sample applications in the repository:
 
-- [WPF Gallery](https://github.com/tibel/Caliburn.Light/tree/master/samples/Caliburn.Light.Gallery.WPF)
-- [WinUI Gallery](https://github.com/tibel/Caliburn.Light/tree/master/samples/Caliburn.Light.Gallery.WinUI)
-- [Avalonia Gallery](https://github.com/tibel/Caliburn.Light/tree/master/samples/Caliburn.Light.Gallery.Avalonia)
+- [WPF Gallery](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.WPF)
+- [WinUI Gallery](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.WinUI)
+- [Avalonia Gallery](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.Avalonia)

@@ -63,9 +63,9 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 
 Explore the sample applications to see Caliburn.Light in action:
 
-- [WPF Gallery](https://github.com/tibel/Caliburn.Light/tree/master/samples/Caliburn.Light.Gallery.WPF) - Comprehensive WPF examples
-- [WinUI Gallery](https://github.com/tibel/Caliburn.Light/tree/master/samples/Caliburn.Light.Gallery.WinUI) - WinUI 3 demonstrations
-- [Avalonia Gallery](https://github.com/tibel/Caliburn.Light/tree/master/samples/Caliburn.Light.Gallery.Avalonia) - Cross-platform Avalonia examples
+- [WPF Gallery](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.WPF) - Comprehensive WPF examples
+- [WinUI Gallery](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.WinUI) - WinUI 3 demonstrations
+- [Avalonia Gallery](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.Avalonia) - Cross-platform Avalonia examples
 
 ---
 

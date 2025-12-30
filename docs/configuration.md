@@ -18,9 +18,9 @@ Configuring Caliburn.Light is straightforward when using dependency injection.
 
 The gallery samples demonstrate the recommended configuration approach using `Microsoft.Extensions.DependencyInjection`:
 
-- [WPF Gallery]({{site.github.repository_url}}/tree/master/samples/Caliburn.Light.Gallery.WPF)
-- [WinUI Gallery]({{site.github.repository_url}}/tree/master/samples/Caliburn.Light.Gallery.WinUI)
-- [Avalonia Gallery]({{site.github.repository_url}}/tree/master/samples/Caliburn.Light.Gallery.Avalonia)
+- [WPF Gallery]({{site.github.repository_url}}/tree/main/samples/Caliburn.Light.Gallery.WPF)
+- [WinUI Gallery]({{site.github.repository_url}}/tree/main/samples/Caliburn.Light.Gallery.WinUI)
+- [Avalonia Gallery]({{site.github.repository_url}}/tree/main/samples/Caliburn.Light.Gallery.Avalonia)
 
 ### Basic Setup Pattern
 
