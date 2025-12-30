@@ -1,49 +1,117 @@
 # Async (Task Support)
 
-From the beginning Caliburn.Light uses Task and async/await for asynchronous operations.
+Caliburn.Light uses Task and async/await for all asynchronous operations.
 
+## Screen Lifecycle
 
-#### Coroutines
+All lifecycle methods in Caliburn.Light are async:
 
-Await a coroutines async execution:
+```csharp
+public class Screen : ViewAware, IActivatable, ICloseGuard
+{
+    // Called once when the screen is first activated
+    protected virtual Task OnInitializeAsync() => Task.CompletedTask;
 
-``` csharp
-public static class Coroutine {
-    public static Task ExecuteAsync(
-		IEnumerator<ICoTask> coroutine,
-		CoroutineExecutionContext context = null)  { }
+    // Called every time the screen is activated
+    protected virtual Task OnActivateAsync() => Task.CompletedTask;
+
+    // Called every time the screen is deactivated
+    protected virtual Task OnDeactivateAsync(bool close) => Task.CompletedTask;
+
+    // Called to determine if the screen can be closed
+    public virtual Task<bool> CanCloseAsync() => Task.FromResult(true);
 }
 ```
 
-A Task object can be wrapped in an ICoTask and used inside a coroutine as if it were an ICoTask: 
+## Example Usage
 
-``` csharp
-public static class TaskExtensions {
+```csharp
+public class MyViewModel : Screen
+{
+    private readonly IDataService _dataService;
 
-    public static Task ExecuteAsync(
-		this ICoTask result, CoroutineExecutionContext context = null) { }
+    public MyViewModel(IDataService dataService)
+    {
+        _dataService = dataService;
+    }
 
-    public static Task<TResult> ExecuteAsync<TResult>(
-		this ICoTask<TResult> result,
-		CoroutineExecutionContext context = null) { }
+    protected override async Task OnInitializeAsync()
+    {
+        // Load data when the screen is first activated
+        Data = await _dataService.LoadDataAsync();
+    }
 
-    public static ICoTask AsCoTask(this Task task) { }
+    protected override async Task OnActivateAsync()
+    {
+        // Refresh data every time the screen is activated
+        await _dataService.RefreshAsync();
+    }
 
-    public static ICoTask<TResult> AsCoTask<TResult>(this Task<TResult> task) { }
+    protected override async Task OnDeactivateAsync(bool close)
+    {
+        if (close)
+        {
+            // Save data when the screen is closed
+            await _dataService.SaveAsync();
+        }
+    }
 
+    public override async Task<bool> CanCloseAsync()
+    {
+        if (HasUnsavedChanges)
+        {
+            // Ask user if they want to save
+            return await PromptSaveChangesAsync();
+        }
+        return true;
+    }
 }
 ```
 
-##### Example
+## Conductor Operations
 
-``` csharp
-yield return Task.Delay(500).AsCoTask();
+All conductor operations are also async:
+
+```csharp
+public interface IConductor
+{
+    Task ActivateItemAsync(object item);
+    Task DeactivateItemAsync(object item, bool close);
+}
 ```
 
-The other way round also works as you can wrap an ICoTask in a Task by ExecuteAsync.
+Example:
 
-##### Example
+```csharp
+public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
+{
+    public async Task OpenTabAsync()
+    {
+        var newTab = new TabViewModel();
+        await ActivateItemAsync(newTab);
+    }
 
-``` csharp
-await new SimpleResult().ExecuteAsync();
+    public async Task CloseActiveTabAsync()
+    {
+        if (ActiveItem != null)
+        {
+            await DeactivateItemAsync(ActiveItem, close: true);
+        }
+    }
+}
+```
+
+## Window Manager
+
+The Window Manager also uses async for modal dialogs:
+
+```csharp
+// Show a modal dialog and wait for it to close
+await windowManager.ShowDialog(viewModel, ownerViewModel);
+
+// Show a message box and get the result
+var result = await windowManager.ShowMessageBoxDialog(options, ownerViewModel);
+
+// Show file dialogs
+var files = await windowManager.ShowOpenFileDialog(options, ownerViewModel);
 ```
