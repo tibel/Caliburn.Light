@@ -83,7 +83,7 @@ public interface IConductor
 Example:
 
 ```csharp
-public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
+public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
 {
     public async Task OpenTabAsync()
     {

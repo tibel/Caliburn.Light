@@ -138,7 +138,7 @@ When you request a view model for a view:
 ## Example
 
 ```csharp
-public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
+public class ShellViewModel : Conductor<IHaveDisplayName>.Collection.OneActive
 {
     public ShellViewModel()
     {

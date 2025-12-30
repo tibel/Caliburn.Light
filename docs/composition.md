@@ -36,7 +36,8 @@ Additional helper interfaces:
 
 - **BindableObject** – Implements `IBindableObject` (and thus `INotifyPropertyChanged`)
 - **BindableCollection&lt;T&gt;** – Implements `IBindableCollection<T>` by inheriting from `ObservableCollection<T>`
-- **Screen** – Inherits from `BindableObject` and implements `IActivatable`, `ICloseGuard`, and `IViewAware`
+- **ViewAware** – Inherits from `BindableObject` and implements `IViewAware`, providing access to attached views
+- **Screen** – Inherits from `ViewAware` and implements `IActivatable`, `ICloseGuard`
 
 ### Screen Lifecycle Methods
 
@@ -97,7 +98,7 @@ public class ShellViewModel : Conductor<object>
 Maintains a collection of items but only one is active at a time. Items remain in the collection when deactivated.
 
 ```csharp
-public class TabsViewModel : Conductor<IScreen>.Collection.OneActive
+public class TabsViewModel : Conductor<Screen>.Collection.OneActive
 {
     public async Task OpenTabAsync()
     {
@@ -105,7 +106,7 @@ public class TabsViewModel : Conductor<IScreen>.Collection.OneActive
         await ActivateItemAsync(tab);
     }
 
-    public async Task CloseTabAsync(IScreen tab)
+    public async Task CloseTabAsync(Screen tab)
     {
         await DeactivateItemAsync(tab, close: true);
     }
@@ -116,9 +117,9 @@ public class TabsViewModel : Conductor<IScreen>.Collection.OneActive
 Maintains a collection where all items can be active simultaneously.
 
 ```csharp
-public class DashboardViewModel : Conductor<IWidget>.Collection.AllActive
+public class DashboardViewModel : Conductor<WidgetViewModel>.Collection.AllActive
 {
-    public async Task AddWidgetAsync(IWidget widget)
+    public async Task AddWidgetAsync(WidgetViewModel widget)
     {
         await ActivateItemAsync(widget);
     }
@@ -171,7 +172,7 @@ View:
 ## Simple MDI Example
 
 ```csharp
-public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
+public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
 {
     private int _count = 1;
 
@@ -240,9 +241,9 @@ services.Configure<ViewModelLocatorConfiguration>(config =>
 You can provide a custom close strategy:
 
 ```csharp
-public class MyCloseStrategy : ICloseStrategy<IScreen>
+public class MyCloseStrategy<T> : ICloseStrategy<T> where T : class
 {
-    public async Task<CloseResult<IScreen>> ExecuteAsync(IReadOnlyList<IScreen> toClose)
+    public async Task<CloseResult<T>> ExecuteAsync(IReadOnlyList<T> toClose)
     {
         // Custom logic to determine which items can close
     }

@@ -93,7 +93,7 @@ Task<IReadOnlyList<IStorageFolder>> ShowOpenFolderPickerAsync(FolderPickerOpenOp
 ## Usage Example
 
 ```csharp
-public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
+public class ShellViewModel : Conductor<IHaveDisplayName>.Collection.OneActive
 {
     private readonly IWindowManager _windowManager;
 
