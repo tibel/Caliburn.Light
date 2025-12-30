@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -24,7 +24,7 @@ jobs:
       run: msbuild Caliburn.Light.slnx /restore /t:Pack /p:Configuration=Release /p:ContinuousIntegrationBuild=True
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: NuGet packages
         path: bin/platform/**/*.nupkg
