@@ -11,14 +11,14 @@ public abstract class WeakEventHandlerBase<TSubscriber, TEventArgs> : IWeakEvent
     where TSubscriber : class
 {
     private readonly WeakReference<TSubscriber> _subscriber;
-    private readonly Action<TSubscriber, object, TEventArgs> _weakHandler;
+    private readonly Action<TSubscriber, object?, TEventArgs> _weakHandler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WeakEventHandlerBase&lt;TSubscriber, TEventArgs&gt;"/> class.
     /// </summary>
     /// <param name="subscriber">The event subscriber.</param>
     /// <param name="weakHandler">The weak handler.</param>
-    protected WeakEventHandlerBase(TSubscriber subscriber, Action<TSubscriber, object, TEventArgs> weakHandler)
+    protected WeakEventHandlerBase(TSubscriber subscriber, Action<TSubscriber, object?, TEventArgs> weakHandler)
     {
         ArgumentNullException.ThrowIfNull(subscriber);
         ArgumentNullException.ThrowIfNull(weakHandler);
@@ -38,7 +38,7 @@ public abstract class WeakEventHandlerBase<TSubscriber, TEventArgs> : IWeakEvent
     /// <param name="sender">The sender.</param>
     /// <param name="args">The <typeparamref name="TEventArgs"/> instance containing the event data.</param>
     /// <remarks>Register this method on the source event.</remarks>
-    protected void OnEvent(object sender, TEventArgs args)
+    protected void OnEvent(object? sender, TEventArgs args)
     {
         if (_subscriber.TryGetTarget(out var subscriber))
         {

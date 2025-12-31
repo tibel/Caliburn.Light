@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light;
@@ -20,12 +21,22 @@ public static class ViewHelper
     /// Initializes the <see cref="ViewHelper"/>.
     /// </summary>
     /// <param name="viewAdapter">The adapter to interact with view elements.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static void Initialize(IViewAdapter viewAdapter)
     {
         if (_viewAdapters.Contains(viewAdapter))
             return;
 
         _viewAdapters.Add(viewAdapter);
+    }
+
+    /// <summary>
+    /// Removes all registered view adapters and restores the initial state.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void Reset()
+    {
+        _viewAdapters.Clear();
     }
 
     /// <summary>
