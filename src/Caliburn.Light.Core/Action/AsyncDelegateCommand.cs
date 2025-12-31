@@ -48,7 +48,7 @@ public sealed class AsyncDelegateCommand : AsyncCommand
         _execute = execute;
         _canExecute = canExecute;
         _propertyNames = propertyNames;
-        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, _, e) => t.OnPropertyChanged(e));
+        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, static (t, _, e) => t.OnPropertyChanged(e));
     }
 
     private void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -132,7 +132,7 @@ public sealed class AsyncDelegateCommand<TParameter> : AsyncCommand
         _execute = execute;
         _canExecute = canExecute;
         _propertyNames = propertyNames;
-        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, (t, _, e) => t.OnPropertyChanged(e));
+        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, static (t, _, e) => t.OnPropertyChanged(e));
     }
 
     private void OnPropertyChanged(PropertyChangedEventArgs e)

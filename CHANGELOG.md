@@ -76,7 +76,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - WinUI: Updated AppSDK to 1.2.1
 - WinUI: Use DispatcherQueue
 
-### Changed
+### Removed
 - Removed .NET Core 3.1
 - WinUI: Removed sharing service
 

@@ -73,7 +73,7 @@ public class SubscriberViewModel
         // Subscribe with a handler that receives the target and message
         _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
             this,
-            (target, message) => target.HandleMessage(message));
+            static (target, message) => target.HandleMessage(message));
     }
 
     private void HandleMessage(MyMessage message)
@@ -90,7 +90,7 @@ You can also use async handlers:
 ```csharp
 _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
     this,
-    async (target, message) => await target.HandleMessageAsync(message));
+    static async (target, message) => await target.HandleMessageAsync(message));
 ```
 
 ### Thread Dispatching
@@ -100,7 +100,7 @@ You can specify an `IDispatcher` to control which thread the handler runs on:
 ```csharp
 _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
     this,
-    (target, message) => target.HandleMessage(message),
+    static (target, message) => target.HandleMessage(message),
     dispatcher: uiDispatcher);
 ```
 
@@ -119,7 +119,7 @@ public class SubscriberViewModel : IDisposable
         _eventAggregator = eventAggregator;
         _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
             this,
-            (target, message) => target.HandleMessage(message));
+            static (target, message) => target.HandleMessage(message));
     }
 
     public void Dispose()
@@ -150,10 +150,10 @@ public class MultiSubscriberViewModel
     public MultiSubscriberViewModel(IEventAggregator eventAggregator)
     {
         _subscriptions.Add(eventAggregator.Subscribe<MultiSubscriberViewModel, StringMessage>(
-            this, (t, m) => t.HandleString(m)));
+            this, static (t, m) => t.HandleString(m)));
         
         _subscriptions.Add(eventAggregator.Subscribe<MultiSubscriberViewModel, NumberMessage>(
-            this, (t, m) => t.HandleNumber(m)));
+            this, static (t, m) => t.HandleNumber(m)));
     }
 
     private void HandleString(StringMessage message) { }

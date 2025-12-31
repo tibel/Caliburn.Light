@@ -21,8 +21,8 @@ In an application like Visual Studio, you would have both a ScreenConductor mana
 
 Caliburn.Light breaks down the notion of screen activation into several interfaces:
 
-- **IActivatable** – Combines activation and deactivation. Provides `ActivateAsync()` and `DeactivateAsync(bool close)` methods, `IsActive` property, and `Activated`, `Deactivating`, and `Deactivated` events.
-- **ICloseGuard** – Indicates that the implementer may need to cancel a close operation. Has one method: `CanCloseAsync()` which returns a `Task<bool>`.
+- **IActivatable** – Combines activation and deactivation. Provides `ActivateAsync()` and `DeactivateAsync(bool close)` methods, `IsActive` property, and three events: `Activated`, `Deactivating`, and `Deactivated`.
+- **ICloseGuard** – Inherits from `IClose` and indicates that the implementer may need to cancel a close operation. Has one method: `CanCloseAsync()` which returns a `Task<bool>`.
 
 Additional helper interfaces:
 

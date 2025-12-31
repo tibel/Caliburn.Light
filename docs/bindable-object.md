@@ -92,7 +92,19 @@ Use `RaisePropertyChanged` when you need to manually notify that a property has 
 protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
 ```
 
-This is useful for computed properties:
+### RaisePropertyChanging
+
+Similarly, use `RaisePropertyChanging` to notify that a property is about to change:
+
+```csharp
+protected void RaisePropertyChanging([CallerMemberName] string? propertyName = null)
+```
+
+This is called automatically by `SetProperty` before the value is updated.
+
+### Computed Properties
+
+`RaisePropertyChanged` is useful for computed properties:
 
 ```csharp
 private string _firstName = string.Empty;
