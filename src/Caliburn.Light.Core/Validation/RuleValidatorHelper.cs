@@ -60,16 +60,15 @@ public static class RuleValidatorHelper
     /// <param name="ruleValidator">The rule validator.</param>
     /// <param name="propertyName">The name of the property this instance applies to.</param>
     /// <param name="getPropertyValue">Gets the value of the property.</param>
-    /// <param name="pattern">The regular expression pattern to match.</param>
+    /// <param name="getRegex">Gets the regular expression to match.</param>
     /// <param name="errorMessage">The error message.</param>
-    public static void AddRegexRule<T>(this RuleValidator ruleValidator, string propertyName, Func<T, string> getPropertyValue, string pattern, string errorMessage)
+    public static void AddRegexRule<T>(this RuleValidator ruleValidator, string propertyName, Func<T, string> getPropertyValue, Func<Regex> getRegex, string errorMessage)
     {
         ArgumentNullException.ThrowIfNull(ruleValidator);
         ArgumentNullException.ThrowIfNull(getPropertyValue);
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        ArgumentNullException.ThrowIfNull(getRegex);
 
-        var regex = new Regex(pattern);
-        var rule = new DelegateValidationRule(propertyName, obj => regex.IsMatch(getPropertyValue((T)obj)), errorMessage);
+        var rule = new DelegateValidationRule(propertyName, obj => getRegex().IsMatch(getPropertyValue((T)obj)), errorMessage);
         ruleValidator.AddRule(rule);
     }
 
@@ -93,31 +92,11 @@ public static class RuleValidatorHelper
         bool validateProperty(object obj)
         {
             var value = getPropertyValue((T)obj);
-            var length = string.IsNullOrEmpty(value) ? 0 : GetTrimmedLength(value);
+            var length = string.IsNullOrEmpty(value) ? 0 : value.AsSpan().Trim().Length;
             return length >= minimumLength && length <= maximumLength;
         }
 
         var rule = new DelegateValidationRule(propertyName, validateProperty, errorMessage);
         ruleValidator.AddRule(rule);
-    }
-
-    private static int GetTrimmedLength(string value)
-    {
-        //end will point to the first non-trimmed character on the right
-        //start will point to the first non-trimmed character on the Left
-        var end = value.Length - 1;
-        var start = 0;
-
-        for (; start < value.Length; start++)
-        {
-            if (!char.IsWhiteSpace(value[start])) break;
-        }
-
-        for (; end >= start; end--)
-        {
-            if (!char.IsWhiteSpace(value[end])) break;
-        }
-
-        return end - start + 1;
     }
 }

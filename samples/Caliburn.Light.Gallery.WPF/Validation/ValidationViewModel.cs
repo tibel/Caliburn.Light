@@ -3,13 +3,14 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WPF.Validation;
 
-public sealed class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDataErrorInfo
+public sealed partial class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDataErrorInfo
 {
     private readonly IWindowManager _windowManager;
 
@@ -101,13 +102,16 @@ public sealed class ValidationViewModel : ViewAware, IHaveDisplayName, INotifyDa
         RaisePropertyChanged(nameof(HasErrors));
     }
 
-    private static IValidator SetupValidator()
+    private static RuleValidator SetupValidator()
     {
         var ruleValidator = new RuleValidator();
         ruleValidator.AddStringLengthRule<ValidationViewModel>(nameof(Name), static m => m.Name, 1, 100, "Name is required.");
         ruleValidator.AddStringLengthRule<ValidationViewModel>(nameof(Address), static m => m.Address, 1, 100, "Address is required.");
         ruleValidator.AddStringLengthRule<ValidationViewModel>(nameof(Website), static m => m.Website, 1, 100, "Website is required.");
-        ruleValidator.AddRegexRule<ValidationViewModel>(nameof(Website), static m => m.Website, "^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", "The format of the web address is not valid.");
+        ruleValidator.AddRegexRule<ValidationViewModel>(nameof(Website), static m => m.Website, UrlRegex, "The format of the web address is not valid.");
         return ruleValidator;
     }
+
+    [GeneratedRegex("^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, 100)]
+    private static partial Regex UrlRegex();
 }

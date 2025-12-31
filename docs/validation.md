@@ -23,7 +23,7 @@ See the validation demos in the gallery samples:
 The recommended approach is to use `ValidationAdapter` with `RuleValidator`:
 
 ```csharp
-public sealed class MyViewModel : BindableObject, INotifyDataErrorInfo
+public sealed partial class MyViewModel : BindableObject, INotifyDataErrorInfo
 {
     private readonly ValidationAdapter _validation;
     private string _name = string.Empty;
@@ -71,11 +71,14 @@ public sealed class MyViewModel : BindableObject, INotifyDataErrorInfo
         validator.AddRegexRule<MyViewModel>(
             nameof(Email), 
             m => m.Email, 
-            @"^[\w\.-]+@[\w\.-]+\.\w+$", 
+            EmailRegex, 
             "Invalid email format.");
         
         return validator;
     }
+
+    [GeneratedRegex(@"^[\w\.-]+@[\w\.-]+\.\w+$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, 100)]
+    private static partial Regex EmailRegex();
 
     // INotifyDataErrorInfo implementation
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
@@ -108,8 +111,8 @@ validator.AddStringLengthRule<T>(propertyName, getValue, minimumLength, maximumL
 // Range validation (for comparable types)
 validator.AddRangeRule<T, TProperty>(propertyName, getValue, minimum, maximum, errorMessage);
 
-// Regex validation
-validator.AddRegexRule<T>(propertyName, getValue, pattern, errorMessage);
+// Regex validation (uses Func<Regex> for the regex parameter)
+validator.AddRegexRule<T>(propertyName, getValue, getRegex, errorMessage);
 
 // Custom delegate validation
 validator.AddDelegateRule<T>(propertyName, validateFunc, errorMessage);
