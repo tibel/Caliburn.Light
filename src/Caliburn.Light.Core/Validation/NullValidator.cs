@@ -7,9 +7,9 @@ internal sealed class NullValidator : IValidator
 {
     public static readonly NullValidator Instance = new NullValidator();
 
-    private static readonly ReadOnlyCollection<string> _emtpyList = new ReadOnlyCollection<string>(new List<string>());
+    private readonly ReadOnlyCollection<string> _emtpyList = new ReadOnlyCollection<string>(new List<string>());
 
-    private static readonly ReadOnlyDictionary<string, IReadOnlyCollection<string>> _emptyDictionary =
+    private readonly ReadOnlyDictionary<string, IReadOnlyCollection<string>> _emptyDictionary =
         new ReadOnlyDictionary<string, IReadOnlyCollection<string>>(new Dictionary<string, IReadOnlyCollection<string>>());
 
     private NullValidator()

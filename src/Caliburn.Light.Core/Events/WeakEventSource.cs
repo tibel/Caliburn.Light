@@ -12,7 +12,7 @@ public sealed class WeakEventSource : WeakEventSourceBase<EventHandler>
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">An object that contains the event data.</param>
-    public void Raise(object sender, EventArgs e)
+    public void Raise(object? sender, EventArgs e)
     {
         var handlers = GetHandlers();
 
@@ -35,7 +35,7 @@ public sealed class WeakEventSource<TEventArgs> : WeakEventSourceBase<EventHandl
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">An object that contains the event data.</param>
-    public void Raise(object sender, TEventArgs e)
+    public void Raise(object? sender, TEventArgs e)
     {
         var handlers = GetHandlers();
 

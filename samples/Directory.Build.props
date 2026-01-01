@@ -6,6 +6,5 @@
 
   <PropertyGroup>
     <BaseOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/samples/$(MSBuildProjectName)'))</BaseOutputPath>
-    <PackageOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/samples'))</PackageOutputPath>
   </PropertyGroup>
 </Project>
