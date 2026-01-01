@@ -229,3 +229,142 @@ public static class CustomWeakEventExtensions
 ```
 
 For static events, use the two-type-parameter version `WeakEventHandlerBase<TSubscriber, TEventArgs>` and override the parameterless `RemoveEventHandler()` method.
+
+## WeakEventSource
+
+While `WeakEventHandler` helps subscribers avoid memory leaks when subscribing to events, `WeakEventSource` solves the problem from the publisher's side. It allows event publishers to hold only weak references to their subscribers, preventing the publisher from keeping subscribers alive.
+
+### When to Use WeakEventSource
+
+Use `WeakEventSource` when:
+
+- You are implementing a custom event on a class
+- The event source typically has a longer lifetime than subscribers
+- You want to prevent memory leaks even if subscribers forget to unsubscribe
+
+### Available Classes
+
+#### WeakEventSource
+
+A weak event source for standard `EventHandler` delegates with `EventArgs`.
+
+```csharp
+public sealed class WeakEventSource : WeakEventSourceBase<EventHandler>
+{
+    public void Add(EventHandler eventHandler);
+    public void Remove(EventHandler eventHandler);
+    public void Raise(object? sender, EventArgs e);
+}
+```
+
+#### WeakEventSource&lt;TEventArgs&gt;
+
+A generic weak event source for `EventHandler<TEventArgs>` delegates with custom event arguments.
+
+```csharp
+public sealed class WeakEventSource<TEventArgs> : WeakEventSourceBase<EventHandler<TEventArgs>>
+    where TEventArgs : EventArgs
+{
+    public void Add(EventHandler<TEventArgs> eventHandler);
+    public void Remove(EventHandler<TEventArgs> eventHandler);
+    public void Raise(object? sender, TEventArgs e);
+}
+```
+
+### Usage Example
+
+```csharp
+public class DataService
+{
+    // Use WeakEventSource instead of a regular event
+    private readonly WeakEventSource _dataChanged = new();
+
+    // Expose as a standard event pattern
+    public event EventHandler DataChanged
+    {
+        add => _dataChanged.Add(value);
+        remove => _dataChanged.Remove(value);
+    }
+
+    public void UpdateData()
+    {
+        // ... update data logic ...
+
+        // Raise the event
+        _dataChanged.Raise(this, EventArgs.Empty);
+    }
+}
+```
+
+### Example with Custom EventArgs
+
+```csharp
+public class ItemChangedEventArgs : EventArgs
+{
+    public ItemChangedEventArgs(string itemName, ChangeType changeType)
+    {
+        ItemName = itemName;
+        ChangeType = changeType;
+    }
+
+    public string ItemName { get; }
+    public ChangeType ChangeType { get; }
+}
+
+public enum ChangeType { Added, Removed, Modified }
+
+public class ItemRepository
+{
+    private readonly WeakEventSource<ItemChangedEventArgs> _itemChanged = new();
+
+    public event EventHandler<ItemChangedEventArgs> ItemChanged
+    {
+        add => _itemChanged.Add(value);
+        remove => _itemChanged.Remove(value);
+    }
+
+    public void AddItem(string name)
+    {
+        // ... add item logic ...
+
+        _itemChanged.Raise(this, new ItemChangedEventArgs(name, ChangeType.Added));
+    }
+
+    public void RemoveItem(string name)
+    {
+        // ... remove item logic ...
+
+        _itemChanged.Raise(this, new ItemChangedEventArgs(name, ChangeType.Removed));
+    }
+}
+```
+
+### How It Works
+
+`WeakEventSource` uses `WeakEventSourceBase<TEventHandler>` internally, which:
+
+1. **Stores handlers weakly** - Event handlers are stored using weak references, allowing subscribers to be garbage collected even if they don't explicitly unsubscribe
+2. **Thread-safe** - All operations are protected by a lock for safe concurrent access
+3. **Automatic cleanup** - Dead (garbage collected) handlers are automatically removed when the event is raised
+4. **Null-safe** - Adding or removing `null` handlers is safely ignored
+
+### Key Behaviors
+
+| Operation | Behavior |
+|-----------|----------|
+| `Add(null)` | Safely ignored, no exception thrown |
+| `Remove(null)` | Safely ignored, no exception thrown |
+| `Raise()` with no handlers | Works without error |
+| Subscriber garbage collected | Handler automatically cleaned up on next `Raise()` |
+| Multiple handlers from same target | All handlers invoked correctly |
+
+### WeakEventSource vs WeakEventHandler
+
+| Aspect | WeakEventSource | WeakEventHandler |
+|--------|-----------------|------------------|
+| **Implemented by** | Event publisher | Event subscriber |
+| **Weak reference to** | Subscribers | Subscriber |
+| **Use case** | Custom events you're defining | Existing events you're subscribing to |
+| **Returns** | N/A | `IDisposable` for unsubscription |
+
+Use `WeakEventSource` when you're creating a class that publishes events. Use `WeakEventHandler` extension methods when you're subscribing to events from other classes (especially framework events like `PropertyChanged`).
