@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [6.2.1] - 2026-01-03
+
 ### Changed
 - Avalonia: Updated to 11.3.10
 - Changed `AddRegexRule()` use `Func<Regex>` to support `GeneratedRegexAttribute`
@@ -345,7 +347,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Initial release of Caliburn.Light where at least WPF can be considered stable
 
-[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v6.2.0...HEAD
+[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v6.2.1...HEAD
+[6.2.1]: https://github.com/tibel/Caliburn.Light/compare/v6.2.0...v6.2.1
 [6.2.0]: https://github.com/tibel/Caliburn.Light/compare/v6.1.0...v6.2.0
 [6.1.0]: https://github.com/tibel/Caliburn.Light/compare/v6.0.0...v6.1.0
 [6.0.0]: https://github.com/tibel/Caliburn.Light/compare/v5.3.0...v6.0.0
