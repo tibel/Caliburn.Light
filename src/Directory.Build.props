@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>6.3.0</VersionPrefix>
+    <VersionPrefix>6.2.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <Nullable>enable</Nullable>

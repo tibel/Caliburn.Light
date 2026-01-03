@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- Avalonia: Updated to 11.3.10
+- Changed `AddRegexRule()` use `Func<Regex>` to support `GeneratedRegexAttribute`
+
+### Fixed
+- nullable annotations for weak events
+
 ## [6.2.0] - 2025-12-20
 
 ### Added
