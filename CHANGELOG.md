@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- EventAggregator: allow unsubscribe in message handler
+
 ## [6.2.1] - 2026-01-03
 
 ### Changed
