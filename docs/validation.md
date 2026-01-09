@@ -14,9 +14,9 @@ The validation framework is built on the standard `INotifyDataErrorInfo` interfa
 
 See the validation demos in the gallery samples:
 
-- [WPF Validation Demo]({{site.github.repository_url}}/tree/main/samples/Caliburn.Light.Gallery.WPF/Validation)
-- [WinUI Validation Demo]({{site.github.repository_url}}/tree/main/samples/Caliburn.Light.Gallery.WinUI/Validation)
-- [Avalonia Validation Demo]({{site.github.repository_url}}/tree/main/samples/Caliburn.Light.Gallery.Avalonia/Validation)
+- [WPF Validation Demo](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.WPF/Validation)
+- [WinUI Validation Demo](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.WinUI/Validation)
+- [Avalonia Validation Demo](https://github.com/tibel/Caliburn.Light/tree/main/samples/Caliburn.Light.Gallery.Avalonia/Validation)
 
 ## Using ValidationAdapter and RuleValidator
 
