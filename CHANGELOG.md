@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Fixed
 - EventAggregator: allow unsubscribe in message handler
+- WeakEventSource: avoid to create list on publish
 
 ## [6.2.1] - 2026-01-03
 

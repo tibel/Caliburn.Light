@@ -14,12 +14,8 @@ public sealed class WeakEventSource : WeakEventSourceBase<EventHandler>
     /// <param name="e">An object that contains the event data.</param>
     public void Raise(object? sender, EventArgs e)
     {
-        var handlers = GetHandlers();
-
-        for (var i = 0; i < handlers.Count; i++)
-        {
-            handlers[i].Invoke(sender, e);
-        }
+        foreach (var handler in GetHandlers())
+            handler.Invoke(sender, e);
     }
 }
 
@@ -37,11 +33,7 @@ public sealed class WeakEventSource<TEventArgs> : WeakEventSourceBase<EventHandl
     /// <param name="e">An object that contains the event data.</param>
     public void Raise(object? sender, TEventArgs e)
     {
-        var handlers = GetHandlers();
-
-        for (var i = 0; i < handlers.Count; i++)
-        {
-            handlers[i].Invoke(sender, e);
-        }
+        foreach (var handler in GetHandlers())
+            handler.Invoke(sender, e);
     }
 }
