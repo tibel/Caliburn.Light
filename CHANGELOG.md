@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- WinUI: Updated AppSDK to 1.8.4
+
 ### Fixed
 - EventAggregator: allow unsubscribe in message handler
 - WeakEventSource: avoid to create list on publish
