@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - WinUI: Updated AppSDK to 1.8.4
+- Avalonia: Updated to 11.3.11
 
 ### Fixed
 - EventAggregator: allow unsubscribe in message handler
