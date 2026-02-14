@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- Added .NET 10.0 support
+
 ### Changed
 - WinUI: Updated AppSDK to 1.8.5
 - Avalonia: Updated to 11.3.12
