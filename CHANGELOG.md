@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [6.3.0] - 2026-02-14
+
 ### Added
 - Added .NET 10.0 support
 
@@ -358,7 +360,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Initial release of Caliburn.Light where at least WPF can be considered stable
 
-[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v6.2.1...HEAD
+[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v6.3.0...HEAD
+[6.3.0]: https://github.com/tibel/Caliburn.Light/compare/v6.2.1...v6.3.0
 [6.2.1]: https://github.com/tibel/Caliburn.Light/compare/v6.2.0...v6.2.1
 [6.2.0]: https://github.com/tibel/Caliburn.Light/compare/v6.1.0...v6.2.0
 [6.1.0]: https://github.com/tibel/Caliburn.Light/compare/v6.0.0...v6.1.0
