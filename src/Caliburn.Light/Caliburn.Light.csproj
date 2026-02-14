@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows7.0;net10.0-windows7.0</TargetFrameworks>
+    <Title>Caliburn.Light</Title>
+    <Description>The magic-free Caliburn.Light, a powerful framework designed for building XAML applications.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="README.md" />
+    <Content Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Caliburn.Light.WPF\Caliburn.Light.WPF.csproj" />
+  </ItemGroup>
+</Project>

@@ -27,5 +27,6 @@
     <Project Path="src/Caliburn.Light.Core/Caliburn.Light.Core.csproj" />
     <Project Path="src/Caliburn.Light.WinUI/Caliburn.Light.WinUI.csproj" />
     <Project Path="src/Caliburn.Light.WPF/Caliburn.Light.WPF.csproj" />
+    <Project Path="src/Caliburn.Light/Caliburn.Light.csproj" />
   </Folder>
 </Solution>
