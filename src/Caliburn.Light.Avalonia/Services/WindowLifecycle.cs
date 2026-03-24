@@ -34,8 +34,8 @@ public sealed class WindowLifecycle
         {
             if (activateWithWindow)
             {
-                view.Activated += (s, _) => ((IActivatable)((Control)s!).DataContext!).ActivateAsync().Observe();
-                view.Deactivated += (s, _) => ((IActivatable)((Control)s!).DataContext!).DeactivateAsync(false).Observe();
+                view.Activated += OnViewActivated;
+                view.Deactivated += OnViewDeactivated;
             }
             else
             {
@@ -57,6 +57,18 @@ public sealed class WindowLifecycle
     /// </summary>
     public string? Context { get; }
 
+    private void OnViewActivated(object? sender, EventArgs e)
+    {
+        if (View.DataContext is IActivatable activatable)
+            activatable.ActivateAsync().Observe();
+    }
+
+    private void OnViewDeactivated(object? sender, EventArgs e)
+    {
+        if (View.DataContext is IActivatable activatable)
+            activatable.DeactivateAsync(false).Observe();
+    }
+
     private void OnViewClosing(object? sender, CancelEventArgs e)
     {
         if (e.Cancel)
@@ -74,6 +86,8 @@ public sealed class WindowLifecycle
     private async void OnViewClosed(object? sender, EventArgs e)
     {
         View.Closed -= OnViewClosed;
+        View.Activated -= OnViewActivated;
+        View.Deactivated -= OnViewDeactivated;
         View.Closing -= OnViewClosing;
 
         if (View.DataContext is IActivatable activatable)

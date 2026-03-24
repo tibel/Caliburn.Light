@@ -54,9 +54,9 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 - [Weak Event Handler](weak-event-handler.md) - Prevent memory leaks with weak event subscriptions
 - [Design Time Support](design-time.md) - Visual Studio designer integration
 
-### Reference
+### Development
+- [Build the Code](build.md) - Building from source and running tests
 - [History](history.md) - Project history and evolution
-- [Build the Code](build.md) - Building from source
 
 ---
 

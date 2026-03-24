@@ -1,6 +1,6 @@
 # WPF Specifics
 
-Caliburn.Light supports WPF applications on .NET 8.0+.
+Caliburn.Light supports WPF applications on .NET 8.0 and later.
 
 ## Getting Started
 

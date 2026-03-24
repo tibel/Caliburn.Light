@@ -43,8 +43,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download) or later
-- Visual Studio 2022 or VS Code with C# extension
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
+- Visual Studio 2026 or VS Code with C# extension
 - For WinUI development: Windows App SDK
 - For Avalonia development: Avalonia templates
 

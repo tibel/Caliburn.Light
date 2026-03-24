@@ -1,3 +1,4 @@
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using System;
 using System.Threading.Tasks;
@@ -36,6 +37,9 @@ public sealed class WindowLifecycle
             else
                 activatable.ActivateAsync().Observe();
         }
+
+        if (viewModel is ICloseGuard)
+            view.AppWindow.Closing += OnAppWindowClosing;
     }
 
     /// <summary>
@@ -50,30 +54,41 @@ public sealed class WindowLifecycle
 
     private static object? GetViewModel(Window view) => view.Content is FrameworkElement fe ? fe.DataContext : null;
 
-    private void OnViewActivated(object sender, WindowActivatedEventArgs args)
+    private void OnViewActivated(object sender, WindowActivatedEventArgs e)
     {
         var viewModel = GetViewModel(View);
         if (viewModel is not IActivatable activatable)
             return;
 
-        if (args.WindowActivationState == WindowActivationState.CodeActivated || args.WindowActivationState == WindowActivationState.PointerActivated)
+        if (e.WindowActivationState == WindowActivationState.CodeActivated || e.WindowActivationState == WindowActivationState.PointerActivated)
             activatable.ActivateAsync().Observe();
-        else if (args.WindowActivationState == WindowActivationState.Deactivated)
+        else if (e.WindowActivationState == WindowActivationState.Deactivated)
             activatable.DeactivateAsync(false).Observe();
+    }
+
+    private void OnAppWindowClosing(AppWindow sender, AppWindowClosingEventArgs e)
+    {
+        if (e.Cancel)
+            return;
+
+        if (_actuallyClosing)
+        {
+            _actuallyClosing = false;
+            return;
+        }
+
+        var viewModel = GetViewModel(View);
+        if (viewModel is ICloseGuard closeGuard)
+            e.Cancel = !EvaluateCanClose(closeGuard);
     }
 
     private async void OnViewClosed(object sender, WindowEventArgs e)
     {
-        if (e.Handled)
-            return;
+        View.Closed -= OnViewClosed;
+        View.Activated -= OnViewActivated;
+        View.AppWindow.Closing -= OnAppWindowClosing;
 
         var viewModel = GetViewModel(View);
-
-        if (!_actuallyClosing && viewModel is ICloseGuard closeGuard && !EvaluateCanClose(closeGuard))
-        {
-            e.Handled = true;
-            return;
-        }
 
         if (viewModel is IActivatable activatable)
             await activatable.DeactivateAsync(true).ConfigureAwait(true);

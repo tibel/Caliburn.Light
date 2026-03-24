@@ -165,6 +165,9 @@ public partial class App : Application
         services.AddTransient<ShellView>();
         services.AddTransient<ShellViewModel>();
 
+        return services.BuildServiceProvider();
+    }
+
     public override void OnFrameworkInitializationCompleted()
     {
         var serviceProvider = Configure();

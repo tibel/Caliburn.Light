@@ -4,8 +4,8 @@ This guide will help you get up and running with Caliburn.Light as quickly as po
 
 ## Prerequisites
 
-- Visual Studio 2022 or later
-- .NET 8.0 SDK or later
+- Visual Studio 2026 or later
+- .NET 8.0 SDK or later (10.0 recommended)
 - For WinUI: Windows App SDK
 
 ## Creating a New Project
@@ -23,7 +23,7 @@ Choose the platform you want to target:
 ### Step 1: Create a New WPF Project
 
 1. Open Visual Studio
-2. Create a new **WPF Application** project targeting .NET 8.0+
+2. Create a new **WPF Application** project targeting .NET 8.0 or later
 3. Name it something like `MyApp`
 
 ### Step 2: Install NuGet Packages

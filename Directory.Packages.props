@@ -8,8 +8,8 @@
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.12" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.260204000" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.260224000" />
   </ItemGroup>
 </Project>

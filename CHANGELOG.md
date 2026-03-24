@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- WinUI: Updated AppSDK to 1.8.6
+
+### Fixed
+- WinUI: Fixed `ICloseGuard` support in `WindowLifecycle` (use `AppWindow.Closing` instead of `Window.Closed`)
+- WinUI: Fixed `WindowLifecycle` crash when `Activated` event fires on a closed window
+- WPF: Fixed `WindowLifecycle` missing `Activated`/`Deactivated` event unsubscription on close
+- Avalonia: Fixed `WindowLifecycle` missing `Activated`/`Deactivated` event unsubscription on close
+
 ## [6.3.0] - 2026-02-14
 
 ### Added
