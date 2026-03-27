@@ -62,6 +62,23 @@ dotnet build
 dotnet test
 ```
 
+### Running Tests
+
+Tests use the [TUnit](https://github.com/thomhurst/TUnit) framework.
+
+```bash
+# Run all tests
+dotnet test
+
+# Run a specific test project
+dotnet test --project tests/Caliburn.Light.Core.Tests
+dotnet test --project tests/Caliburn.Light.WPF.Tests
+dotnet test --project tests/Caliburn.Light.Avalonia.Tests
+
+# WinUI tests require a runtime identifier
+dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
+```
+
 ### Project Structure
 
 - `src/` - Main library source code
@@ -69,6 +86,11 @@ dotnet test
   - `Caliburn.Light.WPF/` - WPF-specific implementation
   - `Caliburn.Light.WinUI/` - WinUI-specific implementation
   - `Caliburn.Light.Avalonia/` - Avalonia-specific implementation
+- `tests/` - Test projects (TUnit)
+  - `Caliburn.Light.Core.Tests/` - Core library tests
+  - `Caliburn.Light.WPF.Tests/` - WPF platform tests
+  - `Caliburn.Light.WinUI.Tests/` - WinUI platform tests
+  - `Caliburn.Light.Avalonia.Tests/` - Avalonia platform tests
 - `samples/` - Sample applications demonstrating usage
 - `docs/` - Documentation
 
@@ -80,6 +102,15 @@ dotnet test
 - Keep methods focused and small.
 - Prefer composition over inheritance.
 - Write unit tests for new functionality.
+
+### Test guidelines
+
+- Name tests `MethodName_Condition_ExpectedResult`.
+- Use hand-written test doubles (stubs/fakes) — no mocking libraries.
+- One assertion per test, clear Arrange/Act/Assert structure.
+- Use `[NotInParallel("key")]` when tests touch static state (see `.github/copilot-instructions.md` for details).
+- For async UI events, use `TaskCompletionSource` with `.WaitAsync(TimeSpan.FromSeconds(5))` timeout guards.
+- TUnit uses `--treenode-filter` (not `--filter`) for test filtering.
 
 ## Commit Messages
 
