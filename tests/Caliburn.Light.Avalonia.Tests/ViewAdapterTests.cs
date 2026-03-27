@@ -9,6 +9,7 @@ namespace Caliburn.Light.Avalonia.Tests;
 /// The ViewAdapter is registered via [ModuleInitializer] when the assembly loads.
 /// </summary>
 [TestExecutor<AvaloniaTestExecutor>]
+[NotInParallel("ViewHelper")]
 public class ViewAdapterTests
 {
     [Test]
@@ -144,7 +145,7 @@ public class ViewAdapterTests
         await Assert.That(canHandle).IsTrue();
     }
 
-    [Test, NotInParallel]
+    [Test]
     public async Task Reset_ThenReinitialize_WorksCorrectly()
     {
         ViewHelper.Reset();

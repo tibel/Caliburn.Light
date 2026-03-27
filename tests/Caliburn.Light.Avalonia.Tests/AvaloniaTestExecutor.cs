@@ -15,7 +15,7 @@ namespace Caliburn.Light.Avalonia.Tests;
 /// </summary>
 public class AvaloniaTestExecutor : ITestExecutor
 {
-    private static bool _initialized;
+    private static volatile bool _initialized;
     private static readonly object _lock = new();
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)

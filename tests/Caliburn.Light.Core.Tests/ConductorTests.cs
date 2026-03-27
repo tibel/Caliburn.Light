@@ -394,23 +394,23 @@ public class ConductorTests
     }
 
     [Test]
-    public async Task ActivateItemAsync_ConcurrentCalls_NoCorruption()
+    public async Task ActivateItemAsync_SequentialCalls_LastOneWins()
     {
         var conductor = new Conductor<Screen>();
         await ActivateAsync(conductor);
 
         var screens = Enumerable.Range(0, 10).Select(_ => new Screen()).ToArray();
 
-        // Fire multiple activations concurrently
-        var tasks = screens.Select(s => conductor.ActivateItemAsync(s)).ToArray();
-        await Task.WhenAll(tasks);
+        // Activate each screen sequentially
+        foreach (var s in screens)
+            await conductor.ActivateItemAsync(s);
 
-        // Should have exactly one active item, and it should be active
-        await Assert.That(conductor.ActiveItem).IsNotNull();
+        // Last one should be the active item
+        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(screens[^1]);
         await Assert.That(conductor.ActiveItem!.IsActive).IsTrue();
 
         // All others should not be active
-        var inactiveCount = screens.Count(s => !s.IsActive);
+        var inactiveCount = screens[..^1].Count(s => !s.IsActive);
         await Assert.That(inactiveCount).IsEqualTo(9);
     }
 

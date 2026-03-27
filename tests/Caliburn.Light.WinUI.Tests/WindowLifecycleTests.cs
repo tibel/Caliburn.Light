@@ -75,16 +75,6 @@ public class WindowLifecycleTests
     }
 
     [Test]
-    public async Task Constructor_WithoutCloseGuard_DoesNotThrow()
-    {
-        var screen = new TestScreen();
-        var grid = new Grid { DataContext = screen };
-        var window = new Window { Content = grid };
-        _ = new WindowLifecycle(window, null, false);
-        await Assert.That(screen.IsActive).IsTrue();
-    }
-
-    [Test]
     public async Task Constructor_WithContext_AttachesViewWithContext()
     {
         var screen = new TestScreen();

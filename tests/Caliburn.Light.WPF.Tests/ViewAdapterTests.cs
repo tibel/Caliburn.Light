@@ -1,10 +1,12 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
+using TUnit.Core;
 using TUnit.Core.Executors;
 
 namespace Caliburn.Light.WPF.Tests;
 
 [TestExecutor<WpfTestExecutor>]
+[NotInParallel("ViewHelper")]
 public class ViewAdapterTests
 {
     [Test]
@@ -129,7 +131,7 @@ public class ViewAdapterTests
         await Assert.That(dispatcher.CheckAccess()).IsTrue();
     }
 
-    [Test, NotInParallel]
+    [Test]
     public async Task Reset_ThenReinitialize_WorksCorrectly()
     {
         ViewHelper.Reset();

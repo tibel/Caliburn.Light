@@ -143,10 +143,18 @@ public class WeakEventHandlerTests
         GC.Collect(2, GCCollectionMode.Forced, blocking: true);
         GC.WaitForPendingFinalizers();
 
-        // Trigger event - the dead handler detects GC'd subscriber and auto-removes
+        await Assert.That(weakRef.IsAlive).IsFalse();
+
+        // Trigger event — dead handler should auto-remove without throwing
         source.Name = "test";
 
-        await Assert.That(weakRef.IsAlive).IsFalse();
+        // Verify a new live subscriber receives events (proving dead handler is gone)
+        var liveSubscriber = new PropertyChangedSubscriber();
+        source.RegisterPropertyChangedWeak(liveSubscriber,
+            static (s, sender, e) => s.OnPropertyChanged(sender, e));
+
+        source.Name = "test2";
+        await Assert.That(liveSubscriber.CallCount).IsEqualTo(1);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]

@@ -7,6 +7,7 @@ using TUnit.Core.Executors;
 namespace Caliburn.Light.Avalonia.Tests;
 
 [TestExecutor<AvaloniaTestExecutor>]
+[NotInParallel("ViewHelper")]
 public class ViewTests
 {
     [Test]
@@ -95,7 +96,7 @@ public class ViewTests
     }
 
     [Test]
-    public async Task ExecuteOnFirstLoad_FiresOnLoad()
+    public async Task ExecuteOnFirstLoad_WiresLoadedHandler()
     {
         var control = new TextBlock();
         var handlerFired = false;
@@ -158,9 +159,8 @@ public class ViewTests
         var action = () =>
         {
             var control = new TextBlock();
-            int callCount = 0;
-            View.ExecuteOnFirstLoad(control, _ => callCount++);
-            View.ExecuteOnFirstLoad(control, _ => callCount++);
+            View.ExecuteOnFirstLoad(control, _ => { });
+            View.ExecuteOnFirstLoad(control, _ => { });
         };
 
         await Assert.That(action).ThrowsNothing();

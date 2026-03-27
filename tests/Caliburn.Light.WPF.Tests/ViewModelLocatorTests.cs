@@ -1,20 +1,11 @@
-using Microsoft.UI.Xaml.Controls;
+using System.Windows.Controls;
 using TUnit.Core.Executors;
 
-namespace Caliburn.Light.WinUI.Tests;
+namespace Caliburn.Light.WPF.Tests;
 
-[TestExecutor<WinUITestExecutor>]
+[TestExecutor<WpfTestExecutor>]
 public class ViewModelLocatorTests
 {
-    [Test]
-    public async Task Constructor_WithValidArgs_Succeeds()
-    {
-        var config = new ViewModelLocatorConfiguration()
-            .AddMapping<Page, SampleViewModel>();
-        var locator = new ViewModelLocator(config, new SimpleServiceProvider());
-        await Assert.That(locator).IsNotNull();
-    }
-
     [Test]
     public async Task Constructor_NullConfig_Throws()
     {
@@ -34,46 +25,47 @@ public class ViewModelLocatorTests
     public async Task LocateForModel_FindsView_WhenMappingExists()
     {
         var config = new ViewModelLocatorConfiguration()
-            .AddMapping<SampleView, SampleViewModel>();
+            .AddMapping<TestView1, TestViewModel1>();
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var view = locator.LocateForModel(new SampleViewModel(), null);
-        await Assert.That(view.GetType()).IsEqualTo(typeof(SampleView));
+        var view = locator.LocateForModel(new TestViewModel1(), null);
+        await Assert.That(view is TestView1).IsTrue();
     }
 
     [Test]
     public async Task LocateForModel_FindsCorrectView_WithMultipleMappings()
     {
         var config = new ViewModelLocatorConfiguration()
-            .AddMapping<SampleView, SampleViewModel>()
-            .AddMapping<AnotherView, AnotherViewModel>();
+            .AddMapping<TestView1, TestViewModel1>()
+            .AddMapping<TestView2, TestViewModel2>();
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var view1 = locator.LocateForModel(new SampleViewModel(), null);
-        var view2 = locator.LocateForModel(new AnotherViewModel(), null);
-        await Assert.That(view1.GetType()).IsEqualTo(typeof(SampleView));
-        await Assert.That(view2.GetType()).IsEqualTo(typeof(AnotherView));
+        var view1 = locator.LocateForModel(new TestViewModel1(), null);
+        await Assert.That(view1 is TestView1).IsTrue();
+
+        var view2 = locator.LocateForModel(new TestViewModel2(), null);
+        await Assert.That(view2 is TestView2).IsTrue();
     }
 
     [Test]
     public async Task LocateForModel_WithContext_FindsCorrectView()
     {
         var config = new ViewModelLocatorConfiguration()
-            .AddMapping<SampleView, SampleViewModel>("detail");
+            .AddMapping<TestView1, TestViewModel1>("detail");
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var view = locator.LocateForModel(new SampleViewModel(), "detail");
-        await Assert.That(view.GetType()).IsEqualTo(typeof(SampleView));
+        var view = locator.LocateForModel(new TestViewModel1(), "detail");
+        await Assert.That(view is TestView1).IsTrue();
     }
 
     [Test]
-    public async Task LocateForModel_WrongContext_ReturnsFallbackTextBlock()
+    public async Task LocateForModel_WrongContext_ReturnsTextBlock()
     {
         var config = new ViewModelLocatorConfiguration()
-            .AddMapping<SampleView, SampleViewModel>("detail");
+            .AddMapping<TestView1, TestViewModel1>("detail");
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var view = locator.LocateForModel(new SampleViewModel(), null);
+        var view = locator.LocateForModel(new TestViewModel1(), null);
         await Assert.That(view is TextBlock).IsTrue();
     }
 
@@ -83,7 +75,8 @@ public class ViewModelLocatorTests
         var config = new ViewModelLocatorConfiguration();
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var view = locator.LocateForModel(new SampleViewModel(), null);
+        var view = locator.LocateForModel(new TestViewModel1(), null);
+
         await Assert.That(view).IsTypeOf<TextBlock>();
         var tb = (TextBlock)view;
         await Assert.That(tb.Text).Contains("Cannot find view");
@@ -95,10 +88,24 @@ public class ViewModelLocatorTests
         var config = new ViewModelLocatorConfiguration();
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var vm = new SampleViewModel();
-        var page = new Page { DataContext = vm };
-        var located = locator.LocateForView(page);
-        await Assert.That(ReferenceEquals(located, vm)).IsTrue();
+        var vm = new TestViewModel1();
+        var view = new TestView1 { DataContext = vm };
+        var result = locator.LocateForView(view);
+        await Assert.That(ReferenceEquals(result, vm)).IsTrue();
+    }
+
+    [Test]
+    public async Task LocateForView_ReturnsModelFromServiceProvider_WhenNoDataContext()
+    {
+        var expectedVm = new TestViewModel1();
+        var config = new ViewModelLocatorConfiguration()
+            .AddMapping<TestView1, TestViewModel1>();
+        var sp = new SimpleServiceProvider(typeof(TestViewModel1), expectedVm);
+        var locator = new ViewModelLocator(config, sp);
+
+        var view = new TestView1();
+        var result = locator.LocateForView(view);
+        await Assert.That(ReferenceEquals(result, expectedVm)).IsTrue();
     }
 
     [Test]
@@ -107,8 +114,8 @@ public class ViewModelLocatorTests
         var config = new ViewModelLocatorConfiguration();
         var locator = new ViewModelLocator(config, new SimpleServiceProvider());
 
-        var page = new Page();
-        var result = locator.LocateForView(page);
+        var view = new TestView1();
+        var result = locator.LocateForView(view);
         await Assert.That(result).IsNull();
     }
 }

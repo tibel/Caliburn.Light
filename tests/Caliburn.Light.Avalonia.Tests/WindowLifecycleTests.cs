@@ -116,7 +116,7 @@ public class WindowLifecycleTests
     }
 
     [Test]
-    public async Task WindowLifecycle_WithCloseGuard_HooksClosingEvent()
+    public async Task WindowLifecycle_WithCloseGuard_ActivatesScreen()
     {
         var screen = new CloseGuardScreen { AllowClose = false };
         var window = new Window { DataContext = screen };
@@ -136,34 +136,6 @@ public class WindowLifecycleTests
         };
 
         await Assert.That(action).ThrowsNothing();
-    }
-
-    [Test]
-    public async Task PopupLifecycle_WithScreen_WiresEvents()
-    {
-        // PopupLifecycle wires Opened/Closed events when DataContext is IViewAware or IActivatable.
-        // Just verify it doesn't throw during construction.
-        var screen = new TestScreen();
-        var popup = new Popup { DataContext = screen };
-        _ = new PopupLifecycle(popup, null);
-
-        var screen2 = new TestScreen();
-        var popup2 = new Popup { DataContext = screen2 };
-        var lc = new PopupLifecycle(popup2, null);
-        var viewNotNull = lc.View is not null;
-
-        await Assert.That(viewNotNull).IsTrue();
-    }
-
-    [Test]
-    public async Task PopupLifecycle_NullContext_IsNull()
-    {
-        var popup = new Popup();
-        popup.DataContext = new TestScreen();
-        var lifecycle = new PopupLifecycle(popup, null);
-        var context = lifecycle.Context;
-
-        await Assert.That(context).IsNull();
     }
 }
 

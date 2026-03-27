@@ -29,7 +29,7 @@ public class TestBindableObject : BindableObject
 public class BindableObjectTests
 {
     [Test]
-    public async Task SetProperty_NewValue_ReturnsTrue()
+    public async Task SetProperty_NewValue_StoresValue()
     {
         var obj = new TestBindableObject();
 
@@ -123,7 +123,9 @@ public class BindableObjectTests
 
         obj.Name = "Alice";
 
-        await Assert.That(events).IsEquivalentTo(new[] { "Changing:Name", "Changed:Name" });
+        await Assert.That(events).Count().IsEqualTo(2);
+        await Assert.That(events[0]).IsEqualTo("Changing:Name");
+        await Assert.That(events[1]).IsEqualTo("Changed:Name");
     }
 
     [Test]

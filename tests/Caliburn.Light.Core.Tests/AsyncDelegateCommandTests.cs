@@ -1,8 +1,10 @@
 using System.ComponentModel;
 using Caliburn.Light;
+using TUnit.Core;
 
 namespace Caliburn.Light.Core.Tests;
 
+[NotInParallel("StaticExecutingEvent")]
 public class AsyncDelegateCommandTests
 {
     [Test]

@@ -17,7 +17,7 @@ public class PopupLifecycleTests
 
         var loadedTcs = new TaskCompletionSource();
         grid.Loaded += (_, _) => loadedTcs.SetResult();
-        await loadedTcs.Task;
+        await loadedTcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         var popup = new Popup
         {
@@ -39,7 +39,7 @@ public class PopupLifecycleTests
         };
         popup.Opened += handler;
         popup.IsOpen = true;
-        await tcs.Task;
+        await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     private static async Task ClosePopupAsync(Popup popup)
@@ -53,7 +53,7 @@ public class PopupLifecycleTests
         };
         popup.Closed += handler;
         popup.IsOpen = false;
-        await tcs.Task;
+        await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     [Test]

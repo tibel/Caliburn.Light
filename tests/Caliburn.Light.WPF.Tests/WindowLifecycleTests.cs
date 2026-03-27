@@ -98,7 +98,7 @@ public class WindowLifecycleTests
     }
 
     [Test]
-    public async Task WindowLifecycle_WithCloseGuard_HooksClosingEvent()
+    public async Task WindowLifecycle_WithCloseGuard_ActivatesScreen()
     {
         var screen = new CloseGuardScreen { AllowClose = false };
         var window = new Window { DataContext = screen };

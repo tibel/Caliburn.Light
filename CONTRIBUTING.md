@@ -103,6 +103,15 @@ dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
 - Prefer composition over inheritance.
 - Write unit tests for new functionality.
 
+### Test guidelines
+
+- Name tests `MethodName_Condition_ExpectedResult`.
+- Use hand-written test doubles (stubs/fakes) — no mocking libraries.
+- One assertion per test, clear Arrange/Act/Assert structure.
+- Use `[NotInParallel("key")]` when tests touch static state (see `.github/copilot-instructions.md` for details).
+- For async UI events, use `TaskCompletionSource` with `.WaitAsync(TimeSpan.FromSeconds(5))` timeout guards.
+- TUnit uses `--treenode-filter` (not `--filter`) for test filtering.
+
 ## Commit Messages
 
 - Use the present tense ("Add feature" not "Added feature").

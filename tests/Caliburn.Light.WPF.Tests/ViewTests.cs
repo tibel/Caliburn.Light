@@ -1,11 +1,13 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using TUnit.Core;
 using TUnit.Core.Executors;
 
 namespace Caliburn.Light.WPF.Tests;
 
 [TestExecutor<WpfTestExecutor>]
+[NotInParallel("ViewHelper")]
 public class ViewTests
 {
     [Test]

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Caliburn.Light;
+using TUnit.Core;
 
 namespace Caliburn.Light.Core.Tests;
 
@@ -11,6 +12,7 @@ public class TestTarget
     public List<object> ReceivedMessages { get; } = [];
 }
 
+[NotInParallel("StaticExecutingEvent")]
 public class EventAggregatorTests
 {
     [Test]

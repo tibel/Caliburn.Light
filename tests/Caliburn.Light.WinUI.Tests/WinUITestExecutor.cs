@@ -23,7 +23,7 @@ namespace Caliburn.Light.WinUI.Tests;
 public class WinUITestExecutor : ITestExecutor
 {
     internal static DispatcherQueue? _dispatcherQueue;
-    internal static bool _initialized;
+    internal static volatile bool _initialized;
     private static readonly object _lock = new();
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)

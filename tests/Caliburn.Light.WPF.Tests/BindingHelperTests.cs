@@ -55,5 +55,8 @@ public class BindingHelperTests
         BindingHelper.SetBinding(tb, TextBox.TextProperty, new Binding("Path2"));
 
         await Assert.That(BindingHelper.IsDataBound(tb, TextBox.TextProperty)).IsTrue();
+
+        var binding = System.Windows.Data.BindingOperations.GetBinding(tb, TextBox.TextProperty);
+        await Assert.That(binding.Path.Path).IsEqualTo("Path2");
     }
 }

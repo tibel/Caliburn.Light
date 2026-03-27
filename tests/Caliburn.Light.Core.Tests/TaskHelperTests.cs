@@ -55,7 +55,7 @@ public class TaskHelperTests
     }
 
     [Test]
-    public async Task Observe_DelayedTask_CompletesSuccessfully()
+    public async Task Observe_DelayedTask_DoesNotPreventCompletion()
     {
         var tcs = new TaskCompletionSource();
         var task = tcs.Task;
@@ -64,7 +64,6 @@ public class TaskHelperTests
         await Assert.That(task.IsCompleted).IsFalse();
 
         tcs.SetResult();
-        await Task.Delay(50);
 
         await Assert.That(task.IsCompleted).IsTrue();
     }
