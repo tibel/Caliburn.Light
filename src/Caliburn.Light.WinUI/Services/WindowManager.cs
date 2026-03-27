@@ -92,7 +92,8 @@ public class WindowManager : IWindowManager
             throw new InvalidOperationException("Cannot determine window from ownerViewModel.");
 
         var contentDialog = CreateContentDialog(viewModel, context);
-        contentDialog.XamlRoot = owner.Content.XamlRoot;
+        contentDialog.XamlRoot = owner.Content?.XamlRoot
+            ?? throw new InvalidOperationException("Owner window must be activated before showing a content dialog.");
 
         return contentDialog.ShowAsync(ContentDialogPlacement.Popup).AsTask();
     }
@@ -297,7 +298,7 @@ public class WindowManager : IWindowManager
                 : null;
         }
 
-        return view is UIElement element
+        return view is UIElement element && element.XamlRoot is not null
             ? View.GetWindow(element.XamlRoot.Content)
             : null;
     }

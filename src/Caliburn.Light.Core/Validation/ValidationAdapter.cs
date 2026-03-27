@@ -85,7 +85,7 @@ public sealed class ValidationAdapter
     public IReadOnlyCollection<string> GetErrors()
     {
         if (_errors.Count == 0)
-            Array.Empty<string>();
+            return Array.Empty<string>();
 
         var errors = new List<string>();
         foreach (var entry in _errors)

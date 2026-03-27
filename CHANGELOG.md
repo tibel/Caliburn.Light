@@ -12,8 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Fixed
 - WinUI: Fixed `ICloseGuard` support in `WindowLifecycle` (use `AppWindow.Closing` instead of `Window.Closed`)
 - WinUI: Fixed `WindowLifecycle` crash when `Activated` event fires on a closed window
+- WinUI: Fixed `NullReferenceException` in `WindowManager.GetWindow` when `XamlRoot` is null
+- WinUI: Fixed `NullReferenceException` in `WindowManager.ShowContentDialog` when owner content is not initialized
 - WPF: Fixed `WindowLifecycle` missing `Activated`/`Deactivated` event unsubscription on close
+- WPF: Fixed `InvalidCastException` in `WindowLifecycle.OnViewClosing` when `DataContext` changes
 - Avalonia: Fixed `WindowLifecycle` missing `Activated`/`Deactivated` event unsubscription on close
+- Avalonia: Fixed `InvalidCastException` in `WindowLifecycle.OnViewClosing` when `DataContext` changes
+- Core: Fixed missing `return` in `ValidationAdapter.GetErrors` causing unnecessary allocation
 
 ## [6.3.0] - 2026-02-14
 

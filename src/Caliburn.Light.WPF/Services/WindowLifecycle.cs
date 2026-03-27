@@ -80,7 +80,8 @@ public sealed class WindowLifecycle
             return;
         }
 
-        e.Cancel = !EvaluateCanClose((ICloseGuard)View.DataContext);
+        if (View.DataContext is ICloseGuard guard)
+            e.Cancel = !EvaluateCanClose(guard);
     }
 
     private async void OnViewClosed(object? sender, EventArgs e)
