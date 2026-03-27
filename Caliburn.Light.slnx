@@ -21,6 +21,16 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Caliburn.Light.Avalonia.Tests/Caliburn.Light.Avalonia.Tests.csproj" />
+    <Project Path="tests/Caliburn.Light.Core.Tests/Caliburn.Light.Core.Tests.csproj" />
+    <Project Path="tests/Caliburn.Light.WPF.Tests/Caliburn.Light.WPF.Tests.csproj" />
+    <Project Path="tests/Caliburn.Light.WinUI.Tests/Caliburn.Light.WinUI.Tests.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+  </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
     <Project Path="src/Caliburn.Light.Avalonia/Caliburn.Light.Avalonia.csproj" />

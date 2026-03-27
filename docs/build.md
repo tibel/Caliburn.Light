@@ -29,10 +29,27 @@ For building Caliburn.Light yourself you need:
   - `Caliburn.Light.WinUI` - WinUI 3 platform support
   - `Caliburn.Light.Avalonia` - Avalonia platform support
 
+- `tests/` - Test projects ([TUnit](https://github.com/thomhurst/TUnit))
+  - `Caliburn.Light.Core.Tests` - Core library tests
+  - `Caliburn.Light.WPF.Tests` - WPF platform tests
+  - `Caliburn.Light.WinUI.Tests` - WinUI platform tests
+  - `Caliburn.Light.Avalonia.Tests` - Avalonia platform tests
+
 - `samples/` - Sample applications
   - `Caliburn.Light.Gallery.WPF` - WPF gallery demo
   - `Caliburn.Light.Gallery.WinUI` - WinUI gallery demo
   - `Caliburn.Light.Gallery.Avalonia` - Avalonia gallery demo
+
+## Running Tests
+
+```
+dotnet test
+```
+
+WinUI tests require a runtime identifier:
+```
+dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
+```
 
 ## Running the Samples
 
