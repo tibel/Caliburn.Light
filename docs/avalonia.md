@@ -1,6 +1,6 @@
 # Avalonia Specifics
 
-Caliburn.Light supports Avalonia applications.
+Caliburn.Light supports Avalonia applications on .NET 8.0 and later.
 
 ## Getting Started
 
@@ -100,11 +100,17 @@ Avalonia provides lifecycle classes:
 - `WindowLifecycle` - Manages the lifecycle of a Window
 - `PopupLifecycle` - Manages the lifecycle of a Popup
 
-These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden.
+These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` also respects `ICloseGuard` — see [Composition & Lifecycle](composition.md) for details.
 
 ## XAML Namespace
 
 Import the Caliburn.Light namespace in your AXAML files:
+
+```xml
+xmlns:cal="https://github.com/tibel/Caliburn.Light/"
+```
+
+or
 
 ```xml
 xmlns:cal="clr-namespace:Caliburn.Light.Avalonia;assembly=Caliburn.Light.Avalonia"
@@ -130,4 +136,21 @@ Use `View.Bind` attached property inside DataTemplates:
 <DataTemplate>
     <local:ItemView cal:View.Bind="True" />
 </DataTemplate>
+```
+
+## Multiple Views per ViewModel
+
+You can have multiple views for the same ViewModel by using the `View.Context` attached property:
+
+```xml
+<ContentControl DataContext="{Binding Item}" 
+                cal:View.Create="True"
+                cal:View.Context="Detail" />
+```
+
+Register the view with context:
+
+```csharp
+services.Configure<ViewModelLocatorConfiguration>(config =>
+    config.AddMapping<DetailView, ItemViewModel>("Detail"));
 ```

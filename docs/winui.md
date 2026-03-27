@@ -102,7 +102,15 @@ WinUI provides several lifecycle classes:
 - `PageLifecycle` - Manages the lifecycle of a Page
 - `ContentDialogLifecycle` - Manages the lifecycle of a ContentDialog
 
-These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden.
+These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` also respects `ICloseGuard` — see [Composition & Lifecycle](composition.md) for details.
+
+## XAML Namespace
+
+Import the Caliburn.Light namespace in your XAML files:
+
+```xml
+xmlns:cal="using:Caliburn.Light.WinUI"
+```
 
 ## View-First vs ViewModel-First
 
@@ -124,6 +132,23 @@ Use `View.Bind` attached property inside DataTemplates:
 <DataTemplate>
     <local:ItemView cal:View.Bind="True" />
 </DataTemplate>
+```
+
+## Multiple Views per ViewModel
+
+You can have multiple views for the same ViewModel by using the `View.Context` attached property:
+
+```xml
+<ContentControl DataContext="{x:Bind Item}" 
+                cal:View.Create="True"
+                cal:View.Context="Detail" />
+```
+
+Register the view with context:
+
+```csharp
+services.Configure<ViewModelLocatorConfiguration>(config =>
+    config.AddMapping<DetailView, ItemViewModel>("Detail"));
 ```
 
 ## Special Values (Event to Command)
@@ -161,7 +186,7 @@ public sealed class ClickedItem : ISpecialValue
 3. Define the command in your ViewModel:
 
 ```csharp
-public AsyncCommand ItemClickCommand { get; }
+public DelegateCommand<ItemViewModel> ItemClickCommand { get; }
 
 public MyViewModel()
 {

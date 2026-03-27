@@ -100,14 +100,14 @@ WPF provides several lifecycle classes:
 - `PopupLifecycle` - Manages the lifecycle of a Popup
 - `PageLifecycle` - Manages the lifecycle of a Page
 
-These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden.
+These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` also respects `ICloseGuard` — see [Composition & Lifecycle](composition.md) for details.
 
 ## XAML Namespace
 
 Import the Caliburn.Light namespace in your XAML files:
 
 ```xml
-xmlns:cal="http://www.dvd-shop.ch/caliburn.light"
+xmlns:cal="https://github.com/tibel/Caliburn.Light/"
 ```
 
 or
@@ -153,3 +153,4 @@ Register the view with context:
 ```csharp
 services.Configure<ViewModelLocatorConfiguration>(config =>
     config.AddMapping<DetailView, ItemViewModel>("Detail"));
+```

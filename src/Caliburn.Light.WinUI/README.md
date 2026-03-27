@@ -12,7 +12,7 @@ Caliburn.Light.WinUI extends the core framework with WinUI-specific features:
 - **Window Management**: Window lifecycle and dialog services
 - **View Adapters**: WinUI-specific view integration
 - **Page Navigation**: Page lifecycle management
-- **Lifecycle Management**: Window, popup, and page lifecycle handlers
+- **Lifecycle Management**: Window, popup, page, and content dialog lifecycle handlers
 
 ## Documentation
 

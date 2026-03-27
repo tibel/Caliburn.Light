@@ -27,7 +27,7 @@ dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*
 dotnet test --project tests/Caliburn.Light.Core.Tests --coverage --coverage-output-format cobertura
 ```
 
-CI packs NuGet packages with `dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegrationBuild=True`. Solution uses `.slnx` format. Central package management via `Directory.Packages.props`.
+CI packs NuGet packages with `dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegrationBuild=True`. CI also runs Core and Avalonia tests on `ubuntu-latest`. Solution uses `.slnx` format. Central package management via `Directory.Packages.props`.
 
 ## Architecture
 
@@ -164,14 +164,3 @@ Avalonia headless mode does not provide `IPopupImpl`. Popup open/close lifecycle
 - `Popup.Opened`/`Closed` events fire asynchronously — use one-shot handlers that unsubscribe themselves.
 - WinUI tests require `-r win-x64` runtime identifier.
 - `Conductor<T>` is **not thread-safe** — do not write concurrent tests for it; use sequential assertions.
-
-### Coverage expectations
-
-| Project | Coverage | Untestable areas |
-|---------|----------|------------------|
-| **Core** | ~92% | Near-complete; only edge cases in weak-reference GC timing |
-| **WPF** | ~64% | `WindowManager` (real OS dialogs), `User32`/`WindowHelper` (P/Invoke) |
-| **Avalonia** | ~72% | `PopupLifecycle` (headless limitation), `WindowManager` (real windows) |
-| **WinUI** | ~29%* | `WindowManager` (OS dialogs/pickers), WinRT-generated `*GenericHelpers` at 0% inflate denominator |
-
-*WinUI coverage is artificially low because auto-generated WinRT helper classes (~0% coverage) are included in the denominator.
