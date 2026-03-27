@@ -9,6 +9,20 @@ on:
     branches: [ main ]
 
 jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Test Core
+      run: dotnet test tests/Caliburn.Light.Core.Tests
+
+    - name: Test Avalonia
+      run: dotnet test tests/Caliburn.Light.Avalonia.Tests
+
   build:
 
     runs-on: windows-2025-vs2026
