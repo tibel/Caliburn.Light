@@ -99,8 +99,37 @@ Avalonia provides lifecycle classes:
 
 - `WindowLifecycle` - Manages the lifecycle of a Window
 - `PopupLifecycle` - Manages the lifecycle of a Popup
+- `PageLifecycle` - Manages the lifecycle of pages in a `NavigationPage`
 
-These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` also respects `ICloseGuard` — see [Composition & Lifecycle](composition.md) for details.
+These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` and `PageLifecycle` also respect `ICloseGuard` — see [Composition & Lifecycle](composition.md) for details.
+
+### PageLifecycle
+
+`PageLifecycle` integrates Caliburn.Light's MVVM lifecycle with Avalonia's `NavigationPage` control. It automatically resolves view models, activates/deactivates them during navigation, and supports `ICloseGuard` for navigation cancellation.
+
+```csharp
+// In your ViewModel
+protected override void OnViewAttached(object view, string context)
+{
+    base.OnViewAttached(view, context);
+
+    if (view is UserControl uc && uc.Content is NavigationPage navigationPage)
+    {
+        new PageLifecycle(navigationPage, View.GetContext(navigationPage), _viewModelLocator);
+        navigationPage.PushAsync(new FirstPageView()).Observe();
+    }
+}
+```
+
+Child page views should extend `ContentPage`, and their view models can use `Page.Navigation` for navigation:
+
+```csharp
+private void Navigate()
+{
+    if (((IViewAware)this).GetView() is ContentPage page)
+        page.Navigation?.PushAsync(new NextPageView()).Observe();
+}
+```
 
 ## XAML Namespace
 

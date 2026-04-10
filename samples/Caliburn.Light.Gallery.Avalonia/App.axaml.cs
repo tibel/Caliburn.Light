@@ -3,6 +3,7 @@ using Avalonia.Markup.Xaml;
 using Caliburn.Light.Avalonia;
 using Caliburn.Light.Gallery.Avalonia.Hierarchies;
 using Caliburn.Light.Gallery.Avalonia.Home;
+using Caliburn.Light.Gallery.Avalonia.PageNavigation;
 using Caliburn.Light.Gallery.Avalonia.PubSub;
 using Caliburn.Light.Gallery.Avalonia.SimpleMDI;
 using Caliburn.Light.Gallery.Avalonia.Threading;
@@ -37,6 +38,9 @@ public sealed partial class App : Application
         services.AddDemo<HierarchiesView, HierarchiesViewModel>("Hierarchies")
             .AddView<ChildLevel1View, ChildLevel1ViewModel>()
             .AddView<ChildLevel2View, ChildLevel2ViewModel>();
+        services.AddDemo<PageNavigationView, PageNavigationViewModel>("Page Navigation")
+            .AddView<Child1View, Child1ViewModel>()
+            .AddView<Child2View, Child2ViewModel>();
 
         return services.BuildServiceProvider();
     }
