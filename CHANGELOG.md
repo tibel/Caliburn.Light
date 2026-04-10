@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - Avalonia: Updated to 12.0.0
+- .NET 10.0 only
 
 ## [6.3.1] - 2026-04-10
 

@@ -1,6 +1,6 @@
 # Avalonia Specifics
 
-Caliburn.Light supports Avalonia applications on .NET 8.0 and later.
+Caliburn.Light supports Avalonia applications on .NET 10.0.
 
 ## Getting Started
 

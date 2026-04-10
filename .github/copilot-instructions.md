@@ -33,10 +33,10 @@ CI packs NuGet packages with `dotnet pack Caliburn.Light.slnx --configuration Re
 
 Four NuGet packages with a shared core:
 
-- **Caliburn.Light.Core** — Platform-agnostic MVVM: `Screen`, `Conductor`, `EventAggregator`, `DelegateCommand`, validation, weak events. Targets `net8.0;net10.0`. AOT-compatible.
-- **Caliburn.Light.WPF** — WPF integration: `WindowManager`, lifecycle classes, view location. Targets `net8.0-windows7.0;net10.0-windows7.0`.
-- **Caliburn.Light.Avalonia** — Avalonia integration: same API surface as WPF. Targets `net8.0;net10.0`. AOT-compatible.
-- **Caliburn.Light.WinUI** — WinUI integration: adds `ContentDialogLifecycle`, uses `AppWindow.Closing` for close guard support. Targets `net8.0-windows10.0.19041.0;net10.0-windows10.0.19041.0`. AOT-compatible.
+- **Caliburn.Light.Core** — Platform-agnostic MVVM: `Screen`, `Conductor`, `EventAggregator`, `DelegateCommand`, validation, weak events. Targets `net10.0`. AOT-compatible.
+- **Caliburn.Light.WPF** — WPF integration: `WindowManager`, lifecycle classes, view location. Targets `net10.0-windows7.0`.
+- **Caliburn.Light.Avalonia** — Avalonia integration: same API surface as WPF. Targets `net10.0`. AOT-compatible.
+- **Caliburn.Light.WinUI** — WinUI integration: adds `ContentDialogLifecycle`, uses `AppWindow.Closing` for close guard support. Targets `net10.0-windows10.0.19041.0`. AOT-compatible.
 
 Each platform project references Core and mirrors the same patterns: `WindowLifecycle`, `PopupLifecycle`, `WindowManager`, `ViewModelLocator`, `View`, `ViewAdapter`, `BindingHelper`.
 

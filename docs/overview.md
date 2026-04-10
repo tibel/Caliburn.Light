@@ -31,9 +31,9 @@ This framework enables MVVM. MVVM isn't hard on its own, but Caliburn.Light stri
 
 ### Supported Platforms
 Caliburn.Light supports the following platforms:
-- **WPF** (.NET 8.0+)
-- **WinUI** (Windows App SDK, .NET 8.0+)
-- **Avalonia** (.NET 8.0+)
+- **WPF** (.NET 10.0)
+- **WinUI** (Windows App SDK, .NET 10.0)
+- **Avalonia** (.NET 10.0)
 
 ### Dependency Injection
 Caliburn.Light is designed to work with any dependency injection container. The samples demonstrate usage with `Microsoft.Extensions.DependencyInjection`. Register your services, view models, and the Caliburn.Light infrastructure using the provided extension methods.
