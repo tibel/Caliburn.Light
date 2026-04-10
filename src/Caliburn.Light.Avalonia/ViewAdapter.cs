@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Threading;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -30,8 +29,8 @@ internal sealed class ViewAdapter : IViewAdapter
 
     public object GetFirstNonGeneratedView(object view)
     {
-        var AvaloniaObject = (AvaloniaObject)view;
-        if (!View.GetIsGenerated(AvaloniaObject))
+        var avaloniaObject = (AvaloniaObject)view;
+        if (!View.GetIsGenerated(avaloniaObject))
             return view;
 
         if (view is ContentControl contentControl)
@@ -74,8 +73,8 @@ internal sealed class ViewAdapter : IViewAdapter
 
     public object? GetCommandParameter(object view)
     {
-        var AvaloniaObject = (AvaloniaObject)view;
-        var commandParameter = View.GetCommandParameter(AvaloniaObject);
+        var avaloniaObject = (AvaloniaObject)view;
+        var commandParameter = View.GetCommandParameter(avaloniaObject);
         if (commandParameter is not null)
             return commandParameter;
 
@@ -87,6 +86,7 @@ internal sealed class ViewAdapter : IViewAdapter
 
     public IDispatcher GetDispatcher(object view)
     {
-        return View.GetDispatcherFrom(Dispatcher.UIThread);
+        var avaloniaObject = (AvaloniaObject)view;
+        return View.GetDispatcherFrom(avaloniaObject.Dispatcher);
     }
 }
