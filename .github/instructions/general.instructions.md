@@ -57,13 +57,21 @@ One shared core, three platform packages, plus a deprecated meta-package:
 - **Caliburn.Light.WinUI** — WinUI integration: adds `ContentDialogLifecycle`, uses `AppWindow.Closing` for close guard support. Targets `net10.0-windows10.0.19041.0`. AOT-compatible.
 - **Caliburn.Light** — Meta-package; re-exports WPF. No independent source.
 
-Each platform project references Core and mirrors the same patterns: `WindowLifecycle`, `PopupLifecycle`, `WindowManager`, `ViewModelLocator`, `View`, `ViewAdapter`, `BindingHelper`.
+Each platform project references Core and mirrors the same patterns: `WindowLifecycle`, `PopupLifecycle`, `PageLifecycle`, `WindowManager`, `ViewModelLocator`, `View`, `ViewAdapter`, `BindingHelper`.
 
 ## Key Conventions
 
 ### Lifecycle event cleanup
 
 All events subscribed in lifecycle constructors **must** be unsubscribed when the lifecycle ends. In `WindowLifecycle`, `OnViewClosed` is terminal — unsubscribe everything (`Closed`, `Activated`, `Deactivated`, `Closing`) there. In `PopupLifecycle` and `ContentDialogLifecycle`, `Closed` is **not** terminal (controls can reopen), so events stay wired.
+
+### Platform differences in PageLifecycle
+
+Each platform wraps a different navigation host:
+
+- **WPF**: Wraps `NavigationService` (from `Frame.NavigationService`). Uses synchronous `Navigating` event with cancel-and-retry pattern for async `ICloseGuard`.
+- **WinUI**: Wraps `Frame`. Same cancel-and-retry pattern as WPF.
+- **Avalonia**: Wraps `NavigationPage`. Uses `NavigationPage.Pushed`/`Popped` events for activation/deactivation. `ICloseGuard` uses `Page.Navigating` (async event: `Func<NavigatingFromEventArgs, Task>`) — no cancel-and-retry needed since handlers are awaited natively. Passes `close: false` when a page is pushed to background, `close: true` when popped, removed, or replaced (no page caching concept).
 
 ### Weak events
 

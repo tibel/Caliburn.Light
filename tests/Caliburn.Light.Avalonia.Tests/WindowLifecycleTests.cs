@@ -142,14 +142,14 @@ public class WindowLifecycleTests
 /// <summary>
 /// A Screen-derived test class for lifecycle tests.
 /// </summary>
-public class TestScreen : Screen
+public sealed class TestScreen : Screen
 {
 }
 
 /// <summary>
 /// A Screen-derived test class that implements ICloseGuard for close-guard tests.
 /// </summary>
-public class CloseGuardScreen : Screen
+public sealed class CloseGuardScreen : Screen
 {
     public bool AllowClose { get; set; }
     public override Task<bool> CanCloseAsync() => Task.FromResult(AllowClose);

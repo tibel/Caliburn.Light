@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cal="https://github.com/tibel/Caliburn.Light/"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:Caliburn.Light.Gallery.Avalonia.PageNavigation"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Caliburn.Light.Gallery.Avalonia.PageNavigation.PageNavigationView"
+             x:DataType="local:PageNavigationViewModel">
+    <NavigationPage x:Name="NavPage" />
+</UserControl>
