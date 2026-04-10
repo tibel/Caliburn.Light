@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - WinUI: Updated AppSDK to 1.8.6
+- Avalonia: Updated to 11.3.13
 
 ### Fixed
 - WinUI: Fixed `ICloseGuard` support in `WindowLifecycle` (use `AppWindow.Closing` instead of `Window.Closed`)
