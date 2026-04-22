@@ -1,10 +1,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using TUnit.Core;
 using TUnit.Core.Executors;
 
 namespace Caliburn.Light.WinUI.Tests;
 
 [TestExecutor<WinUITestExecutor>]
+[NotInParallel("ViewHelper")]
 public class ViewAdapterTests
 {
     [Test]
@@ -116,7 +118,7 @@ public class ViewAdapterTests
         await Assert.That(dispatcher is not null && dispatcher.CheckAccess()).IsTrue();
     }
 
-    [Test, NotInParallel]
+    [Test]
     public async Task Reset_ThenReinitialize_WorksCorrectly()
     {
         ViewHelper.Reset();

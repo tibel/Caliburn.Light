@@ -62,6 +62,8 @@ internal sealed class ViewAdapter : IViewAdapter
         // https://github.com/microsoft/microsoft-ui-xaml/issues/7305
         if (View.GetWindow((DependencyObject)view) is Window window)
         {
+            // Note: window.Close() bypasses AppWindow.Closing.
+            // ICloseGuard is handled via AppWindow.Closing in WindowLifecycle.
             window.Close();
             return TaskHelper.TrueTask;
         }
