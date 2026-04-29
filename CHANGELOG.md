@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Changed
-- Avalonia: Updated to 12.0.1
+- Avalonia: Updated to 12.0.2
 - WinUI: Updated AppSDK to 1.8.7
 - .NET 10.0 only
 
