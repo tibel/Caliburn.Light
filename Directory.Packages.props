@@ -11,6 +11,6 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.7" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.260415005" />
-    <PackageVersion Include="TUnit" Version="1.37.24" />
+    <PackageVersion Include="TUnit" Version="1.40.10" />
   </ItemGroup>
 </Project>
