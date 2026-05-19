@@ -6,3 +6,4 @@ TestResults/
 *.user
 *.nupkg
 *.cache
+*.lscache
