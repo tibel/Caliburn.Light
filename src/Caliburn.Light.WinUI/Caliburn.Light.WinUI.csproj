@@ -4,6 +4,7 @@
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <RootNamespace>Caliburn.Light.WinUI</RootNamespace>
     <Title>Caliburn.Light.WinUI</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building WinUI applications.</Description>

@@ -3,6 +3,7 @@
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <RootNamespace>Caliburn.Light.WPF.Tests</RootNamespace>
     <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
