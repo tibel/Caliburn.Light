@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Test Core
       run: dotnet test --project tests/Caliburn.Light.Core.Tests
@@ -29,7 +29,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Pack
       run: dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegrationBuild=True
