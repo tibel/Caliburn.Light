@@ -3,14 +3,14 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="12.1.0" />
-    <PackageVersion Include="Avalonia.Desktop" Version="12.1.0" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.0" />
-    <PackageVersion Include="Avalonia.Headless" Version="12.1.0" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+    <PackageVersion Include="Avalonia" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Headless" Version="12.1.1" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.1" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.10" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.3.2" />
-    <PackageVersion Include="TUnit" Version="1.61.0" />
+    <PackageVersion Include="TUnit" Version="1.63.0" />
   </ItemGroup>
 </Project>
