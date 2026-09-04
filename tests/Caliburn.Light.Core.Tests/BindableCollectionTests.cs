@@ -57,6 +57,17 @@ public class BindableCollectionTests
         await Assert.That(properties).Contains("Count");
     }
 
+    [Test]
+    public async Task Add_CallsOnItemAdded()
+    {
+        var collection = new RecordingBindableCollection<string>();
+
+        collection.Add("item");
+
+        await Assert.That(collection.AddedItems).IsEquivalentTo(["item"]);
+        await Assert.That(collection.RemovedItems).IsEmpty();
+    }
+
     // --- Remove tests ---
 
     [Test]
@@ -70,6 +81,16 @@ public class BindableCollectionTests
 
         await Assert.That(args).IsNotNull();
         await Assert.That(args!.Action).IsEqualTo(NotifyCollectionChangedAction.Remove);
+    }
+
+    [Test]
+    public async Task Remove_CallsOnItemRemoved()
+    {
+        var collection = new RecordingBindableCollection<string>(["item"]);
+
+        collection.Remove("item");
+
+        await Assert.That(collection.RemovedItems).IsEquivalentTo(["item"]);
     }
 
     // --- Clear tests ---
@@ -97,6 +118,16 @@ public class BindableCollectionTests
         await Assert.That(collection.Count).IsEqualTo(0);
     }
 
+    [Test]
+    public async Task Clear_CallsOnItemRemovedForEachItem()
+    {
+        var collection = new RecordingBindableCollection<string>(["a", "b"]);
+
+        collection.Clear();
+
+        await Assert.That(collection.RemovedItems).IsEquivalentTo(["a", "b"]);
+    }
+
     // --- AddRange tests ---
 
     [Test]
@@ -107,6 +138,16 @@ public class BindableCollectionTests
         collection.AddRange(["a", "b", "c"]);
 
         await Assert.That(collection.Count).IsEqualTo(3);
+    }
+
+    [Test]
+    public async Task AddRange_CallsOnItemAddedForEachItem()
+    {
+        var collection = new RecordingBindableCollection<string>();
+
+        collection.AddRange(["a", "b", "c"]);
+
+        await Assert.That(collection.AddedItems).IsEquivalentTo(["a", "b", "c"]);
     }
 
     [Test]
@@ -141,6 +182,16 @@ public class BindableCollectionTests
         await Assert.That(collection.Count).IsEqualTo(2);
         await Assert.That(collection[0]).IsEqualTo("a");
         await Assert.That(collection[1]).IsEqualTo("c");
+    }
+
+    [Test]
+    public async Task RemoveRange_CallsOnItemRemovedForEachRemovedItem()
+    {
+        var collection = new RecordingBindableCollection<string>(["a", "b", "c"]);
+
+        collection.RemoveRange(["a", "c"]);
+
+        await Assert.That(collection.RemovedItems).IsEquivalentTo(["a", "c"]);
     }
 
     [Test]
@@ -349,4 +400,35 @@ public class BindableCollectionTests
         await Assert.That(args).IsNotNull();
         await Assert.That(args!.Action).IsEqualTo(NotifyCollectionChangedAction.Replace);
     }
+
+    [Test]
+    public async Task Indexer_Set_CallsOnItemRemovedAndOnItemAdded()
+    {
+        var collection = new RecordingBindableCollection<string>(["old"]);
+
+        collection[0] = "new";
+
+        await Assert.That(collection.RemovedItems).IsEquivalentTo(["old"]);
+        await Assert.That(collection.AddedItems).IsEquivalentTo(["new"]);
+    }
+
+}
+
+internal sealed class RecordingBindableCollection<T> : BindableCollection<T>
+{
+    public RecordingBindableCollection()
+    {
+    }
+
+    public RecordingBindableCollection(IEnumerable<T> collection) : base(collection)
+    {
+    }
+
+    public List<T> AddedItems { get; } = [];
+
+    public List<T> RemovedItems { get; } = [];
+
+    protected override void OnItemAdded(T item) => AddedItems.Add(item);
+
+    protected override void OnItemRemoved(T item) => RemovedItems.Add(item);
 }

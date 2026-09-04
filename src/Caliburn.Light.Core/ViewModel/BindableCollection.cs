@@ -74,14 +74,85 @@ public class BindableCollection<T> : ObservableCollection<T>, IBindableCollectio
     }
 
     /// <summary>
+    /// Clears the collection.
+    /// </summary>
+    protected override void ClearItems()
+    {
+        CheckReentrancy();
+
+        var oldItems = Items.Count > 0 ? new List<T>(Items) : null;
+        Items.Clear();
+
+        if (oldItems is not null)
+        {
+            foreach (var item in oldItems)
+                OnItemRemoved(item);
+        }
+
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
+    }
+
+    /// <summary>
+    /// Inserts an item and assigns this collection's parent to it when applicable.
+    /// </summary>
+    protected override void InsertItem(int index, T item)
+    {
+        CheckReentrancy();
+
+        Items.Insert(index, item);
+
+        OnItemAdded(item);
+
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+    }
+
+    /// <summary>
+    /// Removes an item and clears its parent when applicable.
+    /// </summary>
+    protected override void RemoveItem(int index)
+    {
+        CheckReentrancy();
+
+        var item = Items[index];
+        Items.RemoveAt(index);
+
+        OnItemRemoved(item);
+
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+    }
+
+    /// <summary>
+    /// Replaces an item and updates the parent references when applicable.
+    /// </summary>
+    protected override void SetItem(int index, T item)
+    {
+        CheckReentrancy();
+
+        var oldItem = Items[index];
+        Items[index] = item;
+
+        OnItemRemoved(oldItem);
+        OnItemAdded(item);
+
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, oldItem, item, index));
+    }
+
+    /// <summary>
     /// Raises a property and collection changed event that notifies that all of the properties on this object have changed.
     /// </summary>
     protected virtual void OnCollectionRefreshed()
     {
         if (AreNotificationsSuspended()) return;
-        OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-        OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
     }
 
     /// <summary>
@@ -102,7 +173,13 @@ public class BindableCollection<T> : ObservableCollection<T>, IBindableCollectio
         ArgumentNullException.ThrowIfNull(items);
 
         CheckReentrancy();
-        foreach (var item in items) { Items.Add(item); }
+
+        foreach (var item in items)
+        {
+            Items.Add(item);
+            OnItemAdded(item);
+        }
+
         OnCollectionRefreshed();
     }
 
@@ -115,7 +192,38 @@ public class BindableCollection<T> : ObservableCollection<T>, IBindableCollectio
         ArgumentNullException.ThrowIfNull(items);
 
         CheckReentrancy();
-        foreach (var item in items) { Items.Remove(item); }
+
+        foreach (var item in items)
+        {
+            var index = Items.IndexOf(item);
+            if (index < 0) continue;
+            var removedItem = Items[index];
+            Items.RemoveAt(index);
+
+            OnItemRemoved(removedItem);
+        }
+
         OnCollectionRefreshed();
     }
+
+    /// <summary>
+    /// Called after an item is added to the collection and before change notifications are raised.
+    /// </summary>
+    protected virtual void OnItemAdded(T item)
+    {
+    }
+
+    /// <summary>
+    /// Called after an item is removed from the collection and before change notifications are raised.
+    /// </summary>
+    protected virtual void OnItemRemoved(T item)
+    {
+    }
+}
+
+internal static class EventArgsCache
+{
+    internal static readonly PropertyChangedEventArgs CountPropertyChanged = new PropertyChangedEventArgs("Count");
+    internal static readonly PropertyChangedEventArgs IndexerPropertyChanged = new PropertyChangedEventArgs("Item[]");
+    internal static readonly NotifyCollectionChangedEventArgs ResetCollectionChanged = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 }

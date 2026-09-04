@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Avalonia: Updated to 12.1.1
 - WinUI: Updated AppSDK to 2.4.0
 
+### Fixed
+- Core: Fixed `IChild.Parent` references not being cleared when conductor collections are cleared or items are removed in ranges
+
 ## [7.0.0] - 2026-05-08
 
 ### Changed

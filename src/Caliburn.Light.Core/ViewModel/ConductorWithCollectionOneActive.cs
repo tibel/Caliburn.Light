@@ -16,14 +16,14 @@ public partial class Conductor<T>
         /// </summary>
         public class OneActive : ConductorBaseWithActiveItem<T>
         {
-            private readonly BindableCollection<T> _items = new BindableCollection<T>();
+            private readonly ConductorCollection _items;
 
             /// <summary>
             /// Initializes a new instance of <see cref="Conductor&lt;T&gt;.Collection.OneActive"/>.
             /// </summary>
             public OneActive()
             {
-                _items.AreChildrenOf(this);
+                _items = new ConductorCollection(this);
             }
 
             /// <summary>

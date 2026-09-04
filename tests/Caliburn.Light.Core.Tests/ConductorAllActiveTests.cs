@@ -184,6 +184,37 @@ public class ConductorAllActiveTests
     }
 
     [Test]
+    public async Task Items_Clear_ClearsParentFromItems()
+    {
+        var conductor = new Conductor<Screen>.Collection.AllActive();
+        var item1 = new TestScreen();
+        var item2 = new TestScreen();
+        conductor.Items.Add(item1);
+        conductor.Items.Add(item2);
+
+        conductor.Items.Clear();
+
+        await Assert.That(item1.Parent).IsNull();
+        await Assert.That(item2.Parent).IsNull();
+    }
+
+    [Test]
+    public async Task Items_RemoveRange_ClearsParentFromRemovedItems()
+    {
+        var conductor = new Conductor<Screen>.Collection.AllActive();
+        var item1 = new TestScreen();
+        var item2 = new TestScreen();
+        var item3 = new TestScreen();
+        conductor.Items.AddRange([item1, item2, item3]);
+
+        conductor.Items.RemoveRange([item1, item3]);
+
+        await Assert.That(item1.Parent).IsNull();
+        await Assert.That(item3.Parent).IsNull();
+        await Assert.That(item2.Parent).IsEqualTo(conductor);
+    }
+
+    [Test]
     public async Task CanCloseAsync_AllCanClose_ReturnsTrue()
     {
         var conductor = new Conductor<Screen>.Collection.AllActive();
