@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Changed
 - Avalonia: Updated to 12.1.2
 - WinUI: Updated AppSDK to 2.4.0
-- Core: Reworked `IChild` parent association and conductor active-item transitions
+- Core: Reworked parent association and conductor active-item transitions
 - WPF: Updated `WindowManager` parent traversal to use `IParentAware`
 - Avalonia: Updated `WindowManager` parent traversal to use `IParentAware`
 - WinUI: Updated `WindowManager` parent traversal to use `IParentAware`
@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: Obsoleted `IChild`; inherit from `Screen` or `ParentAware`, or implement `IParentAware` directly
 
 ### Fixed
-- Core: Fixed `IChild.Parent` references not being cleared when conductor collections are cleared or items are removed in ranges
+- Core: Fixed parent references not being cleared when conductor collections are cleared or items are removed in ranges
 - Core: Fixed single-item conductor parent references becoming stale after replacement or failed activation
 
 ## [7.0.0] - 2026-05-08
