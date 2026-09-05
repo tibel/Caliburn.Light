@@ -51,7 +51,7 @@ dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegration
 
 One shared core, three platform packages, plus a deprecated meta-package:
 
-- **Caliburn.Light.Core** — Platform-agnostic MVVM: `Screen`, `Conductor`, `EventAggregator`, `DelegateCommand`, validation, weak events (`WeakEventHandler`/`WeakEventSource`). Targets `net10.0`. AOT-compatible.
+- **Caliburn.Light.Core** — Platform-agnostic MVVM: `Screen`, `ParentAware`, `Conductor`, `EventAggregator`, `DelegateCommand`, validation, weak events (`WeakEventHandler`/`WeakEventSource`). Targets `net10.0`. AOT-compatible.
 - **Caliburn.Light.WPF** — WPF integration: `WindowManager`, lifecycle classes, view location. Targets `net10.0-windows7.0`.
 - **Caliburn.Light.Avalonia** — Avalonia integration: same API surface as WPF. Targets `net10.0`. AOT-compatible.
 - **Caliburn.Light.WinUI** — WinUI integration: adds `ContentDialogLifecycle`, uses `AppWindow.Closing` for close guard support. Targets `net10.0-windows10.0.19041.0`. AOT-compatible.

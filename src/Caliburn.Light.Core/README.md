@@ -13,6 +13,7 @@ Caliburn.Light.Core provides the platform-agnostic foundation for MVVM applicati
 - **Validation**: Comprehensive validation framework with `IValidator` and rule-based validation
 - **Event Aggregation**: Loosely-coupled communication via `IEventAggregator`
 - **Screen Management**: Lifecycle management with conductors and activation/deactivation
+- **Parent-aware composition**: Parent association through `IParentAware` and `ParentAware`
 - **Weak Events**: Memory-efficient event handling
 
 ## Documentation

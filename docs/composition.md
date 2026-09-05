@@ -29,15 +29,24 @@ Additional helper interfaces:
 - **IHaveDisplayName** – Has a single property called `DisplayName`
 - **IBindableObject** – Inherits from `INotifyPropertyChanged` with additional behaviors
 - **IBindableCollection&lt;T&gt;** – Composes `IList<T>`, `IBindableObject`, and `INotifyCollectionChanged`
-- **IChild** – Implemented by elements that are part of a hierarchy. Has one property named `Parent`.
+- **IParentAware** – Provides parent association through `AttachParent`, `DetachParent`, and the `Parent` property
 - **IViewAware** – Implemented by classes which need to be made aware of the view they are bound to
 
 ### Base Classes
 
 - **BindableObject** – Implements `IBindableObject` (and thus `INotifyPropertyChanged`)
 - **BindableCollection&lt;T&gt;** – Implements `IBindableCollection<T>` by inheriting from `ObservableCollection<T>`
-- **ViewAware** – Inherits from `BindableObject` and implements `IViewAware`, providing access to attached views
+- **ParentAware** – Inherits from `BindableObject` and implements `IParentAware`, providing parent association
+- **ViewAware** – Inherits from `ParentAware` and implements `IViewAware`, providing access to attached views
 - **Screen** – Inherits from `ViewAware` and implements `IActivatable`, `ICloseGuard`
+
+Parent-aware view models follow this hierarchy:
+
+```text
+BindableObject -> ParentAware -> ViewAware -> Screen
+```
+
+Most view models inherit from `Screen` and receive parent awareness automatically. For non-screen view models that participate in conductor hierarchies, inherit from `ParentAware` directly. Custom types that cannot inherit from these base classes can implement `IParentAware`.
 
 ### Screen Lifecycle Methods
 
