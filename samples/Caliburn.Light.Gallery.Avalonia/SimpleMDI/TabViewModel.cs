@@ -3,9 +3,8 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.Avalonia.SimpleMDI;
 
-public sealed class TabViewModel : Screen, IChild, IHaveDisplayName
+public sealed class TabViewModel : Screen, IHaveDisplayName
 {
-    private object? _parent;
     private string? _displayName;
 
     public TabViewModel()
@@ -16,12 +15,6 @@ public sealed class TabViewModel : Screen, IChild, IHaveDisplayName
     }
 
     public ICommand CloseCommand { get; }
-
-    public object? Parent
-    {
-        get { return _parent; }
-        set { SetProperty(ref _parent, value); }
-    }
 
     public string? DisplayName
     {

@@ -123,16 +123,16 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
         if (oldItem is IActivatable deactivator)
             await deactivator.DeactivateAsync(closePrevious);
 
-        if (newItem is IChild newChild)
-            newChild.Parent = this;
+        if (newItem is IParentAware newParentAware)
+            newParentAware.AttachParent(this);
 
         if (IsActive && newItem is IActivatable activator)
             await activator.ActivateAsync();
 
         SetActiveItem(newItem);
 
-        if (oldItem is IChild oldChild)
-            oldChild.Parent = null;
+        if (oldItem is IParentAware oldParentAware)
+            oldParentAware.DetachParent(this);
 
         if (newItem is not null)
             OnActivationProcessed(newItem, true);

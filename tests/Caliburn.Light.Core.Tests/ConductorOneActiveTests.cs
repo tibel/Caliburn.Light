@@ -282,8 +282,8 @@ public class ConductorOneActiveTests
 
         conductor.Items.Clear();
 
-        await Assert.That(item1.Parent).IsNull();
-        await Assert.That(item2.Parent).IsNull();
+        await Assert.That(((IParentAware)item1).Parent).IsNull();
+        await Assert.That(((IParentAware)item2).Parent).IsNull();
     }
 
     [Test]
@@ -297,13 +297,13 @@ public class ConductorOneActiveTests
 
         conductor.Items.RemoveRange([item1, item3]);
 
-        await Assert.That(item1.Parent).IsNull();
-        await Assert.That(item3.Parent).IsNull();
-        await Assert.That(item2.Parent).IsEqualTo(conductor);
+        await Assert.That(((IParentAware)item1).Parent).IsNull();
+        await Assert.That(((IParentAware)item3).Parent).IsNull();
+        await Assert.That(((IParentAware)item2).Parent).IsEqualTo(conductor);
     }
 
     [Test]
-    public async Task EnsureItem_SetsParentOnIChild()
+    public async Task ActivateItemAsync_SetsParentOnParentAware()
     {
         var conductor = new Conductor<Screen>.Collection.OneActive();
         await ActivateAsync(conductor);
@@ -311,7 +311,7 @@ public class ConductorOneActiveTests
 
         await conductor.ActivateItemAsync(item);
 
-        await Assert.That(item.Parent).IsEqualTo(conductor);
+        await Assert.That(((IParentAware)item).Parent).IsEqualTo(conductor);
     }
 
     [Test]

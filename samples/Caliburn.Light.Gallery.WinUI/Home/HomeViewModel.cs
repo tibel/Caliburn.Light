@@ -4,10 +4,8 @@ using System.Windows.Input;
 
 namespace Caliburn.Light.Gallery.WinUI.Home;
 
-public sealed partial class HomeViewModel : Conductor<HomeItemViewModel>.Collection.AllActive, IHaveDisplayName, IChild
+public sealed partial class HomeViewModel : Conductor<HomeItemViewModel>.Collection.AllActive, IHaveDisplayName
 {
-    private object? _parent;
-
     public HomeViewModel(IEnumerable<HomeItemViewModel> items)
     {
         OpenCommand = DelegateCommandBuilder.WithParameter<HomeItemViewModel>()
@@ -18,12 +16,6 @@ public sealed partial class HomeViewModel : Conductor<HomeItemViewModel>.Collect
     }
 
     public string? DisplayName => "Demos";
-
-    public object? Parent
-    {
-        get { return _parent; }
-        set { SetProperty(ref _parent, value); }
-    }
 
     public ICommand? OpenCommand { get; }
 

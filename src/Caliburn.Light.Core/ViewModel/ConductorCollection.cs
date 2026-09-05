@@ -15,14 +15,14 @@ public partial class Conductor<T>
 
             protected override void OnItemAdded(T item)
             {
-                if (item is IChild child)
-                    child.Parent = _parent;
+                if (item is IParentAware parentAware)
+                    parentAware.AttachParent(_parent);
             }
 
             protected override void OnItemRemoved(T item)
             {
-                if (item is IChild child)
-                    child.Parent = null;
+                if (item is IParentAware parentAware)
+                    parentAware.DetachParent(_parent);
             }
         }
     }

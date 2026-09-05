@@ -31,9 +31,8 @@ public class ScreenTestScreen : Screen
     }
 }
 
-public class TestChildScreen : Screen, IChild
+public class TestChildScreen : Screen
 {
-    public object? Parent { get; set; }
 }
 
 public class StubConductor : IConductor
@@ -318,7 +317,7 @@ public class ScreenTests
     {
         var screen = new TestChildScreen();
         var conductor = new StubConductor();
-        screen.Parent = conductor;
+        ((IParentAware)screen).AttachParent(conductor);
 
         await screen.TryCloseAsync();
 

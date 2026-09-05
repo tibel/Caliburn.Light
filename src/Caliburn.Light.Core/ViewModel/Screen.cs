@@ -131,7 +131,7 @@ public class Screen : ViewAware, IActivatable, ICloseGuard
     /// </summary>
     public virtual async Task TryCloseAsync()
     {
-        if (this is IChild child && child.Parent is IConductor conductor)
+        if (Parent is IConductor conductor)
         {
             await conductor.DeactivateItemAsync(this, true);
             return;
@@ -143,6 +143,6 @@ public class Screen : ViewAware, IActivatable, ICloseGuard
                 return;
         }
 
-        Trace.TraceInformation("TryClose {0} requires an IChild.Parent of IConductor or a top-level view.", this);
+        Trace.TraceInformation("TryClose {0} requires an IParentAware.Parent of IConductor or a top-level view.", this);
     }
 }

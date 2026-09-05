@@ -3,22 +3,15 @@ using Caliburn.Light;
 namespace Caliburn.Light.Core.Tests;
 
 /// <summary>
-/// A Screen subclass that implements IChild and allows controlling CanCloseAsync.
+/// A Screen subclass that allows controlling CanCloseAsync.
 /// Shared across conductor test files.
 /// </summary>
-internal class TestScreen : Screen, IChild
+internal class TestScreen : Screen
 {
     public bool CanCloseResult { get; set; } = true;
 
     public override Task<bool> CanCloseAsync() => Task.FromResult(CanCloseResult);
 
-    private object? _parent;
-
-    public object? Parent
-    {
-        get => _parent;
-        set => _parent = value;
-    }
 }
 
 public class ConductorTests
@@ -128,7 +121,7 @@ public class ConductorTests
 
         await Assert.That(action).ThrowsExactly<InvalidOperationException>();
         await Assert.That(conductor.ActiveItem).IsSameReferenceAs(oldItem);
-        await Assert.That(oldItem.Parent).IsSameReferenceAs(conductor);
+        await Assert.That(((IParentAware)oldItem).Parent).IsSameReferenceAs(conductor);
     }
 
     [Test]
@@ -272,7 +265,7 @@ public class ConductorTests
     }
 
     [Test]
-    public async Task EnsureItem_SetsParentOnIChild()
+    public async Task ActivateItemAsync_SetsParentOnParentAware()
     {
         var conductor = new Conductor<Screen>();
         await ActivateAsync(conductor);
@@ -280,7 +273,7 @@ public class ConductorTests
 
         await conductor.ActivateItemAsync(item);
 
-        await Assert.That(item.Parent).IsEqualTo(conductor);
+        await Assert.That(((IParentAware)item).Parent).IsEqualTo(conductor);
     }
 
     [Test]

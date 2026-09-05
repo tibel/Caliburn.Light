@@ -6,11 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- Core: Added `IParentAware` and the `ParentAware` base class for parent/child lifecycle association
+- Core: Made `ViewAware` inherit from `ParentAware`
+
 ### Changed
 - Avalonia: Updated to 12.1.2
 - WinUI: Updated AppSDK to 2.4.0
 - Core: Reworked `IChild` parent association and conductor active-item transitions
+- WPF: Updated `WindowManager` parent traversal to use `IParentAware`
+- Avalonia: Updated `WindowManager` parent traversal to use `IParentAware`
+- WinUI: Updated `WindowManager` parent traversal to use `IParentAware`
+- Samples: Migrated custom parent implementations to framework-provided `ParentAware` support
+
+### Deprecated
 - Core: Obsoleted legacy `ConductorBase<T>.EnsureItem` and `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` APIs; existing binaries remain loadable, but source consumers must migrate
+- Core: Obsoleted `IChild`; inherit from `Screen` or `ParentAware`, or implement `IParentAware` directly
 
 ### Fixed
 - Core: Fixed `IChild.Parent` references not being cleared when conductor collections are cleared or items are removed in ranges

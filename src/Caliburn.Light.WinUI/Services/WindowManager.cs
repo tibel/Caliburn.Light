@@ -293,8 +293,8 @@ public class WindowManager : IWindowManager
             if (view is not null)
                 break;
 
-            viewModel = viewModel is IChild child
-                ? child.Parent
+            viewModel = viewModel is IParentAware parentAware
+                ? parentAware.Parent
                 : null;
         }
 

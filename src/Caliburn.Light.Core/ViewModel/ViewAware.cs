@@ -7,7 +7,7 @@ namespace Caliburn.Light;
 /// <summary>
 /// A base implementation of <see cref = "IViewAware" /> which is aware of its view(s).
 /// </summary>
-public class ViewAware : BindableObject, IViewAware
+public class ViewAware : ParentAware, IViewAware
 {
     private const string DefaultContext = "__default__";
 

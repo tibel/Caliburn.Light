@@ -54,11 +54,12 @@ public class WindowManagerTests
     }
 
     [Test]
-    public async Task GetWindow_TraversesParent_ViaIChild()
+    public async Task GetWindow_TraversesParent_ViaIParentAware()
     {
         // Create a parent screen with a view and a child without views
         var parent = new Screen();
-        var child = new ChildScreen { Parent = parent };
+        var child = new ChildScreen();
+        ((IParentAware)child).AttachParent(parent);
 
         // Parent has no views either, so GetWindow returns null
         // but it should traverse without throwing
@@ -142,7 +143,6 @@ public class WindowManagerTests
     // not feasible in a headless CI test environment. Those would need integration tests.
 }
 
-internal class ChildScreen : Screen, IChild
+internal class ChildScreen : Screen
 {
-    public object? Parent { get; set; }
 }
