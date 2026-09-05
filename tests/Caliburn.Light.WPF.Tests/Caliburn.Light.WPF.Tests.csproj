@@ -8,10 +8,11 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <ItemGroup>
 
+  <ItemGroup>
     <PackageReference Include="TUnit" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Caliburn.Light.WPF\Caliburn.Light.WPF.csproj" />
   </ItemGroup>

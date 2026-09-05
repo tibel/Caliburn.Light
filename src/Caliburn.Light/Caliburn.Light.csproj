@@ -18,5 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Caliburn.Light.WPF\Caliburn.Light.WPF.csproj" />
+    <ProjectReference Include="..\Caliburn.Light.Coroutines\Caliburn.Light.Coroutines.csproj" />
   </ItemGroup>
 </Project>
