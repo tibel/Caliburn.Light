@@ -24,6 +24,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/Caliburn.Light.Avalonia.Tests/Caliburn.Light.Avalonia.Tests.csproj" />
     <Project Path="tests/Caliburn.Light.Core.Tests/Caliburn.Light.Core.Tests.csproj" />
+    <Project Path="tests/Caliburn.Light.Coroutines.Tests/Caliburn.Light.Coroutines.Tests.csproj" />
     <Project Path="tests/Caliburn.Light.WPF.Tests/Caliburn.Light.WPF.Tests.csproj" />
     <Project Path="tests/Caliburn.Light.WinUI.Tests/Caliburn.Light.WinUI.Tests.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
