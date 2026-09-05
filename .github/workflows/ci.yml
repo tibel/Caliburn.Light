@@ -20,6 +20,9 @@ jobs:
     - name: Test Core
       run: dotnet test --project tests/Caliburn.Light.Core.Tests
 
+    - name: Test Coroutines
+      run: dotnet test --project tests/Caliburn.Light.Coroutines.Tests
+
     - name: Test Avalonia
       run: dotnet test --project tests/Caliburn.Light.Avalonia.Tests
 

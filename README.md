@@ -28,9 +28,10 @@ Caliburn.Light is available on [NuGet](https://www.nuget.org/profiles/tibel):
 dotnet add package Caliburn.Light.WPF
 dotnet add package Caliburn.Light.WinUI
 dotnet add package Caliburn.Light.Avalonia
+dotnet add package Caliburn.Light.Coroutines
 ```
 
-The platform packages include `Caliburn.Light.Core` automatically.
+The platform packages include `Caliburn.Light.Core` automatically. Install `Caliburn.Light.Coroutines` separately when using coroutine support.
 
 ## Documentation
 

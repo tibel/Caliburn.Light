@@ -21,7 +21,13 @@ PM> Install-Package Caliburn.Light.WinUI
 PM> Install-Package Caliburn.Light.Avalonia
 ```
 
+**For coroutine support:**
+```
+PM> Install-Package Caliburn.Light.Coroutines
+```
+
 The platform packages automatically include `Caliburn.Light.Core` as a dependency.
+The legacy `Caliburn.Light` meta-package also includes `Caliburn.Light.Coroutines` for compatibility and easier migration from earlier Caliburn.Light versions.
 
 ### After installation
 
