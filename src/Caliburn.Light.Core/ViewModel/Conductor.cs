@@ -115,4 +115,26 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
     {
         return ActiveItem is null ? Array.Empty<T>() : new[] { ActiveItem };
     }
+
+    private new async Task ChangeActiveItemAsync(T? newItem, bool closePrevious)
+    {
+        var oldItem = ActiveItem;
+
+        if (oldItem is IActivatable deactivator)
+            await deactivator.DeactivateAsync(closePrevious);
+
+        if (newItem is IChild newChild)
+            newChild.Parent = this;
+
+        if (IsActive && newItem is IActivatable activator)
+            await activator.ActivateAsync();
+
+        SetActiveItem(newItem);
+
+        if (oldItem is IChild oldChild)
+            oldChild.Parent = null;
+
+        if (newItem is not null)
+            OnActivationProcessed(newItem, true);
+    }
 }

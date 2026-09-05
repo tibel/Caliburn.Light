@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light;
@@ -76,13 +77,9 @@ public abstract class ConductorBase<T> : Screen, IConductor where T : class
     /// <summary>
     /// Ensures that an item is ready to be activated.
     /// </summary>
-    /// <param name="newItem"></param>
+    /// <param name="newItem">The item to ensure.</param>
     /// <returns>The item to be activated.</returns>
-    protected virtual T EnsureItem(T newItem)
-    {
-        if (newItem is IChild node && node.Parent != this)
-            node.Parent = this;
-
-        return newItem;
-    }
+    [Obsolete("Override item association in the concrete conductor instead.", true)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual T EnsureItem(T newItem) => newItem;
 }

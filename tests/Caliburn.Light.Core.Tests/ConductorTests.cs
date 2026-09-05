@@ -115,6 +115,23 @@ public class ConductorTests
     }
 
     [Test]
+    public async Task ActivateItemAsync_NewItemActivationFails_KeepsOldParent()
+    {
+        var conductor = new Conductor<Screen>();
+        await ActivateAsync(conductor);
+        var oldItem = new TestScreen();
+        var newItem = new ThrowingActivationScreen();
+
+        await conductor.ActivateItemAsync(oldItem);
+
+        var action = () => conductor.ActivateItemAsync(newItem);
+
+        await Assert.That(action).ThrowsExactly<InvalidOperationException>();
+        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(oldItem);
+        await Assert.That(oldItem.Parent).IsSameReferenceAs(conductor);
+    }
+
+    [Test]
     public async Task ActivationProcessed_OnActivation_FiresWithSuccess()
     {
         var conductor = new Conductor<Screen>();
@@ -418,5 +435,13 @@ public class ConductorTests
     {
         public bool AllowClose { get; set; } = true;
         public override Task<bool> CanCloseAsync() => Task.FromResult(AllowClose);
+    }
+
+    private class ThrowingActivationScreen : Screen
+    {
+        protected override Task OnActivateAsync()
+        {
+            throw new InvalidOperationException("Activation failed.");
+        }
     }
 }

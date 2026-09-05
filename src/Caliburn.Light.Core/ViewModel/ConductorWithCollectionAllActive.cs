@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,7 +91,9 @@ public partial class Conductor<T>
                 if (item is null)
                     return;
 
-                item = EnsureItem(item);
+                var index = _items.IndexOf(item);
+                if (index < 0)
+                    _items.Add(item);
 
                 if (IsActive && item is IActivatable activator)
                     await activator.ActivateAsync();
@@ -121,16 +125,11 @@ public partial class Conductor<T>
             /// <summary>
             /// Ensures that an item is ready to be activated.
             /// </summary>
-            /// <param name="newItem"></param>
+            /// <param name="newItem">The item to ensure.</param>
             /// <returns>The item to be activated.</returns>
-            protected override T EnsureItem(T newItem)
-            {
-                var index = _items.IndexOf(newItem);
-                if (index < 0)
-                    _items.Add(newItem);
-
-                return base.EnsureItem(newItem);
-            }
+            [Obsolete("Override item association in the concrete conductor instead.", true)]
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            protected override T EnsureItem(T newItem) => base.EnsureItem(newItem);
         }
     }
 }
