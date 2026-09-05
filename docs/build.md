@@ -25,12 +25,14 @@ For building Caliburn.Light yourself you need:
 
 - `src/` - Framework source code
   - `Caliburn.Light.Core` - Core library (platform-independent)
+  - `Caliburn.Light.Coroutines` - Composable asynchronous coroutine support
   - `Caliburn.Light.WPF` - WPF platform support
   - `Caliburn.Light.WinUI` - WinUI 3 platform support
   - `Caliburn.Light.Avalonia` - Avalonia platform support
 
 - `tests/` - Test projects ([TUnit](https://github.com/thomhurst/TUnit))
   - `Caliburn.Light.Core.Tests` - Core library tests
+  - `Caliburn.Light.Coroutines.Tests` - Coroutine library tests
   - `Caliburn.Light.WPF.Tests` - WPF platform tests
   - `Caliburn.Light.WinUI.Tests` - WinUI platform tests
   - `Caliburn.Light.Avalonia.Tests` - Avalonia platform tests

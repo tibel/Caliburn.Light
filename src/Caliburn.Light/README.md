@@ -2,12 +2,12 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Caliburn.Light.svg)](https://www.nuget.org/packages/Caliburn.Light/)
 
-> ⚠️ **Deprecated:** This is a meta package that forwards to [Caliburn.Light.WPF](https://www.nuget.org/packages/Caliburn.Light.WPF/).
+> ⚠️ **Deprecated:** This is a compatibility meta package that forwards to [Caliburn.Light.WPF](https://www.nuget.org/packages/Caliburn.Light.WPF/) and [Caliburn.Light.Coroutines](https://www.nuget.org/packages/Caliburn.Light.Coroutines/).
 > Please migrate to the **Caliburn.Light.WPF** package directly.
 
 ## Migration
 
-This package only forwards to `Caliburn.Light.WPF`, so no code changes are required.
+This package forwards to `Caliburn.Light.WPF` and `Caliburn.Light.Coroutines`, so existing applications using the legacy package can migrate without code changes.
 Replace the package reference in your project file:
 
 ```diff
