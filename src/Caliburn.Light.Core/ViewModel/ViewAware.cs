@@ -25,11 +25,10 @@ public class ViewAware : ParentAware, IViewAware
 
         Trace.TraceInformation("Attaching view {0} to {1}.", view, this);
         var index = _views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
-        var entry = new KeyValuePair<string, WeakReference>(context, new WeakReference(view));
         if (index < 0)
-            _views.Add(entry);
+            _views.Add(new KeyValuePair<string, WeakReference>(context, new WeakReference(view)));
         else
-            _views[index] = entry;
+            _views[index].Value.Target = view;
 
         OnViewAttached(view, context);
     }

@@ -14,14 +14,25 @@ public class ParentAware : BindableObject, IParentAware
     void IParentAware.AttachParent(object parent)
     {
         ArgumentNullException.ThrowIfNull(parent);
-        _parent = new WeakReference(parent);
+
+        if (_parent is null)
+            _parent = new WeakReference(parent);
+        else
+            _parent.Target = parent;
     }
 
     bool IParentAware.DetachParent(object parent)
     {
         ArgumentNullException.ThrowIfNull(parent);
 
-        if (!ReferenceEquals(_parent?.Target, parent))
+        var currentParent = _parent?.Target;
+        if (currentParent is null)
+        {
+            _parent = null;
+            return false;
+        }
+
+        if (!ReferenceEquals(currentParent, parent))
             return false;
 
         _parent = null;
