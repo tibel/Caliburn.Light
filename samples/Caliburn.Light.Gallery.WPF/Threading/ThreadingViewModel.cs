@@ -29,13 +29,13 @@ public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
     public ICommand ConfigureAwaitFalseCommand { get; }
     public ICommand ConfigureAwaitTrueCommand { get; }
 
-    protected override void OnViewAttached(object view, string context)
+    protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
         _dispatcher = ViewHelper.GetDispatcher(view);
     }
 
-    protected override void OnViewDetached(object view, string context)
+    protected override void OnViewDetached(object view, string? context)
     {
         _dispatcher = CurrentThreadDispatcher.Instance;
         base.OnViewDetached(view, context);

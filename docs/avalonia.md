@@ -109,7 +109,7 @@ These classes ensure that `IActivatable` view models are properly activated and 
 
 ```csharp
 // In your ViewModel
-protected override void OnViewAttached(object view, string context)
+protected override void OnViewAttached(object view, string? context)
 {
     base.OnViewAttached(view, context);
 

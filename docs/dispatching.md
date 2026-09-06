@@ -41,13 +41,13 @@ public class MyViewModel : ViewAware
 {
     private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
 
-    protected override void OnViewAttached(object view, string context)
+    protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
         _dispatcher = ViewHelper.GetDispatcher(view);
     }
 
-    protected override void OnViewDetached(object view, string context)
+    protected override void OnViewDetached(object view, string? context)
     {
         _dispatcher = CurrentThreadDispatcher.Instance;
         base.OnViewDetached(view, context);
@@ -66,7 +66,7 @@ public class DataViewModel : ViewAware
 {
     private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
 
-    protected override void OnViewAttached(object view, string context)
+    protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
         _dispatcher = ViewHelper.GetDispatcher(view);
@@ -169,13 +169,13 @@ public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
 
     public ICommand SwitchToCommand { get; }
 
-    protected override void OnViewAttached(object view, string context)
+    protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
         _dispatcher = ViewHelper.GetDispatcher(view);
     }
 
-    protected override void OnViewDetached(object view, string context)
+    protected override void OnViewDetached(object view, string? context)
     {
         _dispatcher = CurrentThreadDispatcher.Instance;
         base.OnViewDetached(view, context);
@@ -228,7 +228,7 @@ private async Task ProcessAsync()
 Always obtain the dispatcher when the view is attached:
 
 ```csharp
-protected override void OnViewAttached(object view, string context)
+protected override void OnViewAttached(object view, string? context)
 {
     base.OnViewAttached(view, context);
     _dispatcher = ViewHelper.GetDispatcher(view);

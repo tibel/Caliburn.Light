@@ -14,7 +14,7 @@ public sealed partial class PageNavigationViewModel : ViewAware, IHaveDisplayNam
         _viewModelLocator = viewModelLocator;
     }
 
-    protected override void OnViewAttached(object view, string context)
+    protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
 

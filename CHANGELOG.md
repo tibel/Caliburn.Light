@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - WinUI: Updated `WindowManager` parent traversal to use `IParentAware`
 - Samples: Migrated custom parent implementations to framework-provided `ParentAware` support
 - Compatibility: Restored `SimpleContainer` to the legacy `Caliburn.Light` package for migration support
+- Core: Preserved nullable view contexts in `ViewAware`; the default context is now represented by `null` instead of an internal sentinel value
+- Core: Updated `IViewAware.GetViews()` and `ViewAware.OnViewAttached`/`OnViewDetached` to expose nullable contexts
 
 ### Deprecated
 - Core: Obsoleted legacy `ConductorBase<T>.EnsureItem` and `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` APIs; existing binaries remain loadable, but source consumers must migrate

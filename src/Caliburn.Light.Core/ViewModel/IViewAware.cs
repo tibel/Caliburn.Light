@@ -32,5 +32,5 @@ public interface IViewAware
     /// Gets all views previously attached to this instance.
     /// </summary>
     /// <returns>The views.</returns>
-    IEnumerable<KeyValuePair<string, object>> GetViews();
+    IEnumerable<KeyValuePair<string?, object>> GetViews();
 }

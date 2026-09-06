@@ -128,11 +128,11 @@ public class ViewAwareTests
         va.AttachView(view1, "ctx1");
         va.AttachView(view2, "ctx2");
 
-        var views = va.GetViews().ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        var views = va.GetViews().ToList();
 
         await Assert.That(views.Count).IsEqualTo(2);
-        await Assert.That(views["ctx1"]).IsEqualTo(view1);
-        await Assert.That(views["ctx2"]).IsEqualTo(view2);
+        await Assert.That(views.Single(x => x.Key == "ctx1").Value).IsEqualTo(view1);
+        await Assert.That(views.Single(x => x.Key == "ctx2").Value).IsEqualTo(view2);
     }
 
     [Test]
