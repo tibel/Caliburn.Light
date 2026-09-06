@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: Added `IParentAware` and the `ParentAware` base class for parent/child lifecycle association
 - Core: Made `ViewAware` inherit from `ParentAware`
 - Reintroduced `Caliburn.Light.Coroutines` for compatibility and easier migration from earlier Caliburn.Light versions
+- Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
 
 ### Changed
 - Avalonia: Updated to 12.1.2
@@ -19,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Avalonia: Updated `WindowManager` parent traversal to use `IParentAware`
 - WinUI: Updated `WindowManager` parent traversal to use `IParentAware`
 - Samples: Migrated custom parent implementations to framework-provided `ParentAware` support
+- Compatibility: Restored `SimpleContainer` to the legacy `Caliburn.Light` package for migration support
 
 ### Deprecated
 - Core: Obsoleted legacy `ConductorBase<T>.EnsureItem` and `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` APIs; existing binaries remain loadable, but source consumers must migrate
