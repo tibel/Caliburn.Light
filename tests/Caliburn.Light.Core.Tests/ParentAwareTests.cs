@@ -93,4 +93,57 @@ public class ParentAwareTests
 
         await Assert.That(parentAware.Parent).IsSameReferenceAs(parent);
     }
+
+    [Test]
+    public async Task AttachParent_CallsOnParentAttached()
+    {
+        var parentAware = new TestParentAware();
+        var parent = new object();
+
+        ((IParentAware)parentAware).AttachParent(parent);
+
+        await Assert.That(parentAware.AttachedParent).IsSameReferenceAs(parent);
+    }
+
+    [Test]
+    public async Task DetachParent_CallsOnParentDetached()
+    {
+        var parentAware = new TestParentAware();
+        var parent = new object();
+        ((IParentAware)parentAware).AttachParent(parent);
+
+        ((IParentAware)parentAware).DetachParent(parent);
+
+        await Assert.That(parentAware.DetachedParent).IsSameReferenceAs(parent);
+    }
+
+    [Test]
+    public async Task DetachParent_NonMatchingParent_DoesNotCallOnParentDetached()
+    {
+        var parentAware = new TestParentAware();
+        var parent = new object();
+        var otherParent = new object();
+        ((IParentAware)parentAware).AttachParent(parent);
+
+        ((IParentAware)parentAware).DetachParent(otherParent);
+
+        await Assert.That(parentAware.DetachedParent).IsNull();
+    }
+
+    private sealed class TestParentAware : ParentAware
+    {
+        public object? AttachedParent { get; private set; }
+
+        public object? DetachedParent { get; private set; }
+
+        protected override void OnParentAttached(object parent)
+        {
+            AttachedParent = parent;
+        }
+
+        protected override void OnParentDetached(object parent)
+        {
+            DetachedParent = parent;
+        }
+    }
 }

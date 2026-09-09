@@ -19,6 +19,8 @@ public class ParentAware : BindableObject, IParentAware
             _parent = new WeakReference(parent);
         else
             _parent.Target = parent;
+
+        OnParentAttached(parent);
     }
 
     bool IParentAware.DetachParent(object parent)
@@ -26,17 +28,28 @@ public class ParentAware : BindableObject, IParentAware
         ArgumentNullException.ThrowIfNull(parent);
 
         var currentParent = _parent?.Target;
-        if (currentParent is null)
-        {
-            _parent = null;
-            return false;
-        }
-
-        if (!ReferenceEquals(currentParent, parent))
+        if (currentParent is null || !ReferenceEquals(currentParent, parent))
             return false;
 
         _parent = null;
+        OnParentDetached(parent);
         return true;
+    }
+
+    /// <summary>
+    /// Called when a parent is attached.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    protected virtual void OnParentAttached(object parent)
+    {
+    }
+
+    /// <summary>
+    /// Called when a parent is detached.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    protected virtual void OnParentDetached(object parent)
+    {
     }
 
     /// <summary>
