@@ -33,7 +33,8 @@ public class ViewAware : ParentAware, IViewAware
         Trace.TraceInformation("Detaching view {0} from {1}.", view, this);
         var detached = _views?.RemoveAll(p => string.Equals(p.Key, context, StringComparison.Ordinal)) > 0;
 
-        OnViewDetached(view, context);
+        if (detached)
+            OnViewDetached(view, context);
 
         return detached;
     }
