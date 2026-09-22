@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - Avalonia: Updated to 12.1.3
-- WinUI: Updated AppSDK to 2.4.0
+- WinUI: Updated AppSDK to 2.5.1
 - Core: Reworked parent association and conductor active-item transitions
 - WPF: Updated `WindowManager` parent traversal to use `IParentAware`
 - Avalonia: Updated `WindowManager` parent traversal to use `IParentAware`
