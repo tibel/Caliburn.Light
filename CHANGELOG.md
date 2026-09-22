@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
 
 ### Changed
-- Avalonia: Updated to 12.1.2
+- Avalonia: Updated to 12.1.3
 - WinUI: Updated AppSDK to 2.4.0
 - Core: Reworked parent association and conductor active-item transitions
 - WPF: Updated `WindowManager` parent traversal to use `IParentAware`
