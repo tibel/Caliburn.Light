@@ -30,13 +30,13 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
 
         if (ActiveItem is null)
         {
-            await ChangeActiveItemAsync(item, true);
+            await ChangeActiveItemAsync(item);
             return;
         }
 
         var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
         if (result.CanClose)
-            await ChangeActiveItemAsync(item, true);
+            await ChangeActiveItemAsync(item);
         else if (item is not null)
             OnActivationProcessed(item, false);
     }
@@ -55,7 +55,7 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
         {
             var result = await CloseStrategy.ExecuteAsync(new[] { item });
             if (result.CanClose)
-                await ChangeActiveItemAsync(null, true);
+                await ChangeActiveItemAsync(null);
         }
         else
         {
@@ -76,7 +76,7 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
         var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
 
         if (!result.CanClose && result.Closeables.Count > 0)
-            await ChangeActiveItemAsync(null, true);
+            await ChangeActiveItemAsync(null);
 
         return result.CanClose;
     }
@@ -98,7 +98,7 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
     {
         if (close)
         {
-            await ChangeActiveItemAsync(null, true);
+            await ChangeActiveItemAsync(null);
         }
         else
         {
@@ -116,12 +116,12 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
         return ActiveItem is null ? Array.Empty<T>() : new[] { ActiveItem };
     }
 
-    private new async Task ChangeActiveItemAsync(T? newItem, bool closePrevious)
+    private async Task ChangeActiveItemAsync(T? newItem)
     {
         var oldItem = ActiveItem;
 
         if (oldItem is IActivatable deactivator)
-            await deactivator.DeactivateAsync(closePrevious);
+            await deactivator.DeactivateAsync(true);
 
         if (newItem is IParentAware newParentAware)
             newParentAware.AttachParent(this);
