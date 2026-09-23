@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Core: Added `IParentAware` and the `ParentAware` base class for parent/child lifecycle association
 - Core: Made `ViewAware` inherit from `ParentAware`
+- Core: Added protected `ViewAware.GetAttachedView()` convenience accessor for derived view models
 - Reintroduced `Caliburn.Light.Coroutines` for compatibility and easier migration from earlier Caliburn.Light versions
 - Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
 
