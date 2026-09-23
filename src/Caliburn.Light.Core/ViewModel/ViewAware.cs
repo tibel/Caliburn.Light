@@ -57,11 +57,18 @@ public class ViewAware : ParentAware, IViewAware
     {
     }
 
-    object? IViewAware.GetView(string? context)
+    /// <summary>
+    /// Gets a view previously attached to this instance.
+    /// </summary>
+    /// <param name="context">The context denoting which view to retrieve.</param>
+    /// <returns>The view.</returns>
+    protected object? GetAttachedView(string? context = null)
     {
         var entry = _views?.Find(p => string.Equals(p.Key, context, StringComparison.Ordinal)) ?? default;
         return entry.Value?.Target;
     }
+
+    object? IViewAware.GetView(string? context) => GetAttachedView(context);
 
     IEnumerable<KeyValuePair<string?, object>> IViewAware.GetViews()
     {

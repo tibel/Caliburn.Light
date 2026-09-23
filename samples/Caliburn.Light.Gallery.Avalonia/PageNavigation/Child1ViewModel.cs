@@ -18,7 +18,7 @@ public sealed class Child1ViewModel : Screen
 
     private async Task NavigateAsync()
     {
-        if (((IViewAware)this).GetView() is ContentPage page)
+        if (GetAttachedView() is ContentPage page)
             await page.Navigation!.PushAsync<Child2View>();
     }
 

@@ -17,7 +17,7 @@ public sealed partial class Child2ViewModel : Screen
 
     private void Navigate()
     {
-        if (((IViewAware)this).GetView() is Page page && page.Frame is Frame frame)
+        if (GetAttachedView() is Page page && page.Frame is Frame frame)
             frame.Navigate(typeof(Child1View));
     }
 

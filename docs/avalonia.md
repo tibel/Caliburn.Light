@@ -126,7 +126,7 @@ Child page views should extend `ContentPage`, and their view models can use `Pag
 ```csharp
 private void Navigate()
 {
-    if (((IViewAware)this).GetView() is ContentPage page)
+    if (GetAttachedView() is ContentPage page)
         page.Navigation?.PushAsync(new NextPageView()).Observe();
 }
 ```
