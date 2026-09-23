@@ -38,9 +38,5 @@ public abstract class ConductorBaseWithActiveItem<T> : ConductorBase<T>, IHaveAc
     /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
     [Obsolete("Override active-item transitions in the concrete conductor instead.", true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected Task ChangeActiveItemAsync(T? newItem, bool closePrevious)
-    {
-        throw new NotSupportedException(
-            "ChangeActiveItemAsync is obsolete. Override the conductor's activation behavior instead.");
-    }
+    protected Task ChangeActiveItemAsync(T? newItem, bool closePrevious) => Task.CompletedTask;
 }
