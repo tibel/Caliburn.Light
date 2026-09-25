@@ -4,8 +4,6 @@
     <Title>Caliburn.Light</Title>
     <Description>The magic-free Caliburn.Light, a powerful framework designed for building XAML applications.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NoWarn>$(NoWarn);NU5128</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
