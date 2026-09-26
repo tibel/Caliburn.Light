@@ -8,7 +8,7 @@ Caliburn.Light is a magic-free MVVM framework supporting WPF, Avalonia, and WinU
 # Build
 dotnet build Caliburn.Light.slnx
 
-# Run all tests (from solution root)
+# Run all tests from solution root (runs Core, WPF, Avalonia; excludes WinUI which requires -r win-x64)
 dotnet test
 
 # Test each project individually (WinUI requires runtime identifier)
@@ -22,6 +22,9 @@ dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*
 
 # Single test method
 dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*/ScreenTests/ActivateAsync_FirstTime_SetsIsActive"
+
+# Single WinUI test method (requires -r win-x64 before --)
+dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64 -- --treenode-filter "/*/*/WindowLifecycleTests/*"
 
 # With coverage
 dotnet test --project tests/Caliburn.Light.Core.Tests --coverage --coverage-output-format cobertura
