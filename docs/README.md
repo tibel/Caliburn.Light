@@ -35,6 +35,7 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 - [BindableObject](bindable-object.md) - Base class for ViewModels with `INotifyPropertyChanged`
 - [BindableCollection](bindable-collection.md) - Observable collection for data binding
 - [Commands](commands.md) - DelegateCommand, AsyncCommand, and the builder pattern
+- [Coroutines](coroutines.md) - Compose sequential async workflows with `ICoTask`
 - [ViewModel-First](viewmodel-resolver.md) - View/ViewModel resolution and composition
 
 ### Application Structure

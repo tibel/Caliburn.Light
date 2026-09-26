@@ -13,6 +13,7 @@ A magic-free MVVM framework for building modern .NET applications with **WPF**, 
 - **Magic-free** — no conventions, no surprises; explicit configuration only
 - **Screens & Conductors** — lifecycle management with activation, deactivation, and close guards
 - **Commands** — type-safe `DelegateCommand` and `AsyncCommand` with builder pattern
+- **Coroutines** — sequential, composable async workflows with `ICoTask`
 - **Event Aggregator** — loosely-coupled pub/sub messaging with weak references
 - **Validation** — built-in `INotifyDataErrorInfo` support with rule-based validation
 - **Window Manager** — show windows, dialogs, and file pickers in a ViewModel-centric way
