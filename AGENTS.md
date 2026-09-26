@@ -34,7 +34,7 @@ dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegration
 ```
 
 - `.slnx` solution format. Central package management via `Directory.Packages.props`.
-- CI runs Core and Avalonia tests on `ubuntu-latest`.
+- CI runs Core and Avalonia tests on `ubuntu-latest`. WPF and WinUI tests require Windows (`Caliburn.Light.WPF.Tests` targets `net10.0-windows7.0`; `Caliburn.Light.WinUI.Tests` requires `-r win-x64`).
 
 ## Architecture
 
@@ -61,6 +61,14 @@ Each platform wraps a different navigation host:
 - **WPF**: Wraps `NavigationService` (from `Frame.NavigationService`). Uses synchronous `Navigating` event with cancel-and-retry pattern for async `ICloseGuard`.
 - **WinUI**: Wraps `Frame`. Same cancel-and-retry pattern as WPF.
 - **Avalonia**: Wraps `NavigationPage`. Uses `NavigationPage.Pushed`/`Popped` events for activation/deactivation. `ICloseGuard` uses `Page.Navigating` (async event: `Func<NavigatingFromEventArgs, Task>`) — no cancel-and-retry needed since handlers are awaited natively. Passes `close: false` when a page is pushed to background, `close: true` when popped, removed, or replaced (no page caching concept).
+
+### Platform differences in WindowLifecycle (WinUI)
+
+WinUI differs from WPF/Avalonia in three important ways in `WindowLifecycle`:
+
+1. **Close guard**: Uses `view.AppWindow.Closing` (not `Window.Closed`, which fires too late to cancel).
+2. **ViewModel access**: Via `(view.Content as FrameworkElement)?.DataContext` (WinUI `Window` is not a `FrameworkElement`), whereas WPF/Avalonia use `view.DataContext` directly.
+3. **Activation**: Single `Activated` handler checks `WindowActivationState` enum (CodeActivated/PointerActivated/Deactivated), whereas WPF/Avalonia use separate `Activated`/`Deactivated` events.
 
 ### Weak events
 

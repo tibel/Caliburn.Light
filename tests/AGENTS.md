@@ -81,4 +81,3 @@ await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));  // always add timeout
 ```
 
 Close windows/dialogs at the end of each test method (`window.Close()`, `dialog.Hide()`) to prevent cross-test state pollution.
-

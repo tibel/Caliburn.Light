@@ -1,8 +1,5 @@
 # WinUI Test Guidelines
 
-For WinUI platform lifecycle differences and conventions, see:
-@[WinUI Guidelines](../../src/Caliburn.Light.WinUI/AGENTS.md)
-
 ## WinUI Testing Specifics
 
 - `FrameworkElement.XamlRoot` is null until `Loaded` fires — await it before using `ContentDialog`, `Popup`, or `Frame`.
