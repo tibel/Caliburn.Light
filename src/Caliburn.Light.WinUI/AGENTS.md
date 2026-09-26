@@ -1,15 +1,4 @@
----
-description: >-
-  WinUI-specific conventions for WindowLifecycle, close guard, and DataContext access
-  in Caliburn.Light.WinUI source and test files.
-applyTo:
-  globs:
-    - "src/Caliburn.Light.WinUI/**/*.cs"
-    - "tests/Caliburn.Light.WinUI.Tests/**/*.cs"
-    - "samples/Caliburn.Light.Gallery.WinUI/**/*.cs"
----
-
-# WinUI Platform Differences
+# WinUI Platform Guidelines
 
 WinUI differs from WPF/Avalonia in three important ways in `WindowLifecycle`:
 

@@ -1,17 +1,3 @@
----
-description: >-
-  Project overview, architecture, build/test commands, and key coding conventions
-  for Caliburn.Light — a magic-free MVVM framework supporting WPF, Avalonia, and WinUI.
-applyTo:
-  globs:
-    - "**/*.cs"
-    - "**/*.csproj"
-    - "**/*.slnx"
-    - "**/*.props"
-    - "global.json"
-    - ".github/workflows/*.yml"
----
-
 # Caliburn.Light
 
 Caliburn.Light is a magic-free MVVM framework supporting WPF, Avalonia, and WinUI. It uses explicit wiring (no automatic conventions), weak events to prevent memory leaks, and does not auto-switch to the UI thread.
@@ -35,7 +21,7 @@ dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
 dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*/ScreenTests/*"
 
 # Single test method
-dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*/ScreenTests/ActivateAsync_SetsIsActive"
+dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*/ScreenTests/ActivateAsync_FirstTime_SetsIsActive"
 
 # With coverage
 dotnet test --project tests/Caliburn.Light.Core.Tests --coverage --coverage-output-format cobertura
