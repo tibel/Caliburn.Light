@@ -8,11 +8,12 @@ Caliburn.Light is a magic-free MVVM framework supporting WPF, Avalonia, and WinU
 # Build
 dotnet build Caliburn.Light.slnx
 
-# Run all tests from solution root (runs Core, WPF, Avalonia; excludes WinUI which requires -r win-x64)
+# Run all tests from solution root (runs Core, Coroutines, WPF, Avalonia; excludes WinUI which requires -r win-x64)
 dotnet test
 
 # Test each project individually (WinUI requires runtime identifier)
 dotnet test --project tests/Caliburn.Light.Core.Tests
+dotnet test --project tests/Caliburn.Light.Coroutines.Tests
 dotnet test --project tests/Caliburn.Light.WPF.Tests
 dotnet test --project tests/Caliburn.Light.Avalonia.Tests
 dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
@@ -34,17 +35,18 @@ dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegration
 ```
 
 - `.slnx` solution format. Central package management via `Directory.Packages.props`.
-- CI runs Core and Avalonia tests on `ubuntu-latest`. WPF and WinUI tests require Windows (`Caliburn.Light.WPF.Tests` targets `net10.0-windows7.0`; `Caliburn.Light.WinUI.Tests` requires `-r win-x64`).
+- CI runs Core, Coroutines, and Avalonia tests on `ubuntu-latest`. WPF and WinUI tests require Windows (`Caliburn.Light.WPF.Tests` targets `net10.0-windows7.0`; `Caliburn.Light.WinUI.Tests` requires `-r win-x64`).
 
 ## Architecture
 
-One shared core, three platform packages, plus a deprecated meta-package:
+One shared core, one coroutines package, three platform packages, plus a deprecated meta-package:
 
 - **Caliburn.Light.Core** — Platform-agnostic MVVM: `Screen`, `ParentAware`, `Conductor`, `EventAggregator`, `DelegateCommand`, validation, weak events (`WeakEventHandler`/`WeakEventSource`). Targets `net10.0`. AOT-compatible.
+- **Caliburn.Light.Coroutines** — Lightweight coroutine model for composing asynchronous workflows as sequential `ICoTask` steps. Targets `net10.0`. AOT-compatible.
 - **Caliburn.Light.WPF** — WPF integration: `WindowManager`, lifecycle classes, view location. Targets `net10.0-windows7.0`.
 - **Caliburn.Light.Avalonia** — Avalonia integration: same API surface as WPF. Targets `net10.0`. AOT-compatible.
 - **Caliburn.Light.WinUI** — WinUI integration: adds `ContentDialogLifecycle`, uses `AppWindow.Closing` for close guard support. Targets `net10.0-windows10.0.19041.0`. AOT-compatible.
-- **Caliburn.Light** — Meta-package; re-exports WPF. No independent source.
+- **Caliburn.Light** — Meta-package; re-exports WPF and Coroutines. No independent source.
 
 Each platform project references Core and mirrors the same patterns: `WindowLifecycle`, `PopupLifecycle`, `PageLifecycle`, `WindowManager`, `ViewModelLocator`, `View`, `ViewAdapter`, `BindingHelper`.
 
