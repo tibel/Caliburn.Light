@@ -151,6 +151,27 @@ Bind commands to buttons and other controls:
         CommandParameter="{Binding SelectedItem}" />
 ```
 
+## CommandExecutionContext
+
+A `CommandExecutionContext` describes a command invocation. The indexer `this[string key]` holds additional custom values:
+
+```csharp
+public sealed class CommandExecutionContext
+{
+    public object? this[string key] { get; set; }
+
+    public object? Source { get; set; }
+    public object? Target { get; set; }
+    public object? EventArgs { get; set; }
+}
+```
+
+- `Source` — the element that raised the event (populated on the `OnEvent` invocation path)
+- `Target` — the intended target of the command (not populated by the framework)
+- `EventArgs` — the event data of the triggering event (populated on the `OnEvent` invocation path)
+
+When a bound `CommandParameter` is an `ISpecialValue` — such as the platform's `ExecutionContextResolver` — and the command is invoked through `OnEvent`, the framework creates a context populated with `Source` and `EventArgs` and calls `ISpecialValue.Resolve(context)`, which may override `Source`. When the parameter is coerced through `CoerceParameter<TParameter>.Default` instead, the context is created empty (`Source`/`EventArgs` are `null`).
+
 ## Direct Command Creation
 
 You can also create commands directly without the builder:

@@ -16,8 +16,9 @@ The coroutine model is built around a small set of types:
 
 - `ICoTask` — a single unit of work that executes and raises `Completed`
 - `ICoTask<TResult>` — a typed co-task that also exposes a result value
-- `CommandExecutionContext` — metadata about the command invocation (source, target, event args, and custom values)
 - `Coroutine` — helpers for wrapping delegates, tasks, and sequences as coroutines
+
+Every co-task receives a `CommandExecutionContext` — the same type used to carry command invocation metadata, which `ExecuteAsync` forwards into the co-task. Its shape is documented in [Commands](commands.md#commandexecutioncontext).
 
 ## A simple coroutine
 
@@ -25,6 +26,7 @@ The simplest pattern is to create a sequence of steps and convert it into a sing
 
 ```csharp
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Caliburn.Light;
 
 public class UserWorkflow
@@ -104,7 +106,7 @@ public sealed class BusyIndicatorCoTask : ICoTask
     {
         // Execute the work here.
         // Once finished, notify the coroutine engine.
-        Completed?.Invoke(this, new CoTaskCompletedEventArgs());
+        Completed?.Invoke(this, new CoTaskCompletedEventArgs(null, false));
     }
 }
 ```
@@ -131,27 +133,13 @@ await workflow.ExecuteAsync();
 
 Useful helpers include:
 
-- `Rescue<TException>(...)` — execute an alternate coroutine when a matching exception occurs
-- `Rescue(...)` — recover from any exception
+- `Rescue<TException>(...)` — execute an alternate coroutine when a matching exception occurs; the optional `cancelCoTask` parameter (default `true`) controls whether the overall coroutine is reported as cancelled after the rescue runs
+- `Rescue(...)` — recover from any exception (same `cancelCoTask` option)
 - `WhenCancelled(...)` — run a fallback coroutine when the current one is canceled
 - `OverrideCancel(...)` — suppress cancellation and continue with a replacement result when needed
 - `SimpleCoTask.Succeeded()`, `Cancelled()`, and `Failed(exception)` — create trivial coroutines
 
-## `CommandExecutionContext`
-
-When a co-task is invoked as part of a command flow, it receives a `CommandExecutionContext` containing contextual metadata:
-
-```csharp
-public sealed class CommandExecutionContext
-{
-    public object? Source { get; set; }
-    public object? Target { get; set; }
-    public object? EventArgs { get; set; }
-    public object? this[string key] { get; set; }
-}
-```
-
-This lets UI tasks access the original source element or command arguments without tightly coupling the workflow to the view.
+Note that `Rescue` (with the default `cancelCoTask: true`) and `WhenCancelled` keep the overall coroutine marked as cancelled even when the fallback succeeds — so `await workflow.ExecuteAsync()` above throws `TaskCanceledException`. Use `.OverrideCancel()`, or `.OverrideCancel<TResult>(...)` when a result is involved, to turn the cancelled outcome into a successful one instead.
 
 ## When to use coroutines
 

@@ -196,7 +196,8 @@ public MyViewModel()
 }
 ```
 
-The `ISpecialValue.Resolve` method receives a `CommandExecutionContext` containing:
-- `Source` - The UI element that raised the event
-- `EventArgs` - The event arguments
-- `Parameter` - The command parameter (if any)
+The `ISpecialValue.Resolve` method receives a `CommandExecutionContext`:
+- `Source` - The UI element that raised the event (populated on the `OnEvent` invocation path)
+- `EventArgs` - The event arguments (populated on the `OnEvent` invocation path)
+
+See [Commands](commands.md#commandexecutioncontext) for the full member list.
