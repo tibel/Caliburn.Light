@@ -27,6 +27,10 @@ dotnet test --project tests/Caliburn.Light.Core.Tests -- --treenode-filter "/*/*
 # Single WinUI test method (requires -r win-x64 before --)
 dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64 -- --treenode-filter "/*/*/WindowLifecycleTests/*"
 
+# Do NOT pass flags that `dotnet test` does not recognize (e.g. --nologo) — they are forwarded to
+# the Microsoft.Testing.Platform executable and yield exit code 5 ("no tests executed").
+# MSBuild-recognised flags (--configuration, --property, -p:) are fine; runner arguments go after --.
+
 # With coverage
 dotnet test --project tests/Caliburn.Light.Core.Tests --coverage --coverage-output-format cobertura
 
