@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Caliburn.Light;
@@ -7,11 +8,7 @@ namespace Caliburn.Light;
 /// </summary>
 public sealed class CommandExecutionContext
 {
-    private const string SourceKey = "source";
-    private const string TargetKey = "target";
-    private const string EventArgsKey = "eventargs";
-
-    private readonly Dictionary<string, object?> _values = new Dictionary<string, object?>();
+    private Dictionary<string, object?>? _values;
 
     /// <summary>
     /// Gets or sets additional data needed to invoke the command.
@@ -22,36 +19,31 @@ public sealed class CommandExecutionContext
     {
         get
         {
-            _values.TryGetValue(key, out var result);
-            return result;
+            ArgumentNullException.ThrowIfNull(key);
+
+            return _values?.TryGetValue(key, out var result) == true ? result : null;
         }
-        set { _values[key] = value; }
+        set
+        {
+            ArgumentNullException.ThrowIfNull(key);
+
+            _values ??= new Dictionary<string, object?>();
+            _values[key] = value;
+        }
     }
 
     /// <summary>
     /// The source from which the command originates.
     /// </summary>
-    public object? Source
-    {
-        get { return this[SourceKey]; }
-        set { this[SourceKey] = value; }
-    }
+    public object? Source { get; set; }
 
     /// <summary>
     /// The instance on which the command is invoked.
     /// </summary>
-    public object? Target
-    {
-        get { return this[TargetKey]; }
-        set { this[TargetKey] = value; }
-    }
+    public object? Target { get; set; }
 
     /// <summary>
     /// Any event arguments associated with the command invocation.
     /// </summary>
-    public object? EventArgs
-    {
-        get { return this[EventArgsKey]; }
-        set { this[EventArgsKey] = value; }
-    }
+    public object? EventArgs { get; set; }
 }
