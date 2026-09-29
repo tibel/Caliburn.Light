@@ -16,12 +16,15 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path="AGENTS.md" />
     <File Path="CHANGELOG.md" />
     <File Path="Directory.Packages.props" />
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/tests/">
+    <File Path="tests/AGENTS.md" />
+    <File Path="tests/Directory.Build.props" />
     <Project Path="tests/Caliburn.Light.Avalonia.Tests/Caliburn.Light.Avalonia.Tests.csproj" />
     <Project Path="tests/Caliburn.Light.Core.Tests/Caliburn.Light.Core.Tests.csproj" />
     <Project Path="tests/Caliburn.Light.Coroutines.Tests/Caliburn.Light.Coroutines.Tests.csproj" />
