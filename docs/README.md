@@ -50,7 +50,6 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 - [Avalonia](avalonia.md) - Cross-platform UI with Avalonia
 
 ### Advanced Topics
-- [SimpleContainer](simple-container.md) - Lightweight dependency injection container
 - [UI Thread Dispatching](dispatching.md) - Working with the UI thread
 - [Async (Task Support)](async.md) - Asynchronous patterns and lifecycle
 - [Weak Event Handler](weak-event-handler.md) - Prevent memory leaks with weak event subscriptions
@@ -59,6 +58,10 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 ### Development
 - [Build the Code](build.md) - Building from source and running tests
 - [History](history.md) - Project history and evolution
+
+### Legacy and Migration
+- [Migration Guide](migration-guide.md) - The deprecated meta-package and removed or obsoleted APIs
+- [SimpleContainer](simple-container.md) - The legacy container, available in the meta-package only
 
 ---
 

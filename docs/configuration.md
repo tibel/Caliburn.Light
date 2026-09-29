@@ -1,7 +1,7 @@
 # Basic Configuration
 
 Configuring Caliburn.Light is straightforward when using dependency injection.
-The examples use `Microsoft.Extensions.DependencyInjection`; [SimpleContainer](simple-container.md) is also available as a lightweight alternative.
+The examples use `Microsoft.Extensions.DependencyInjection`, but Caliburn.Light does not require a specific container.
 
 ## Attached Properties
 

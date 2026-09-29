@@ -1,8 +1,10 @@
 # SimpleContainer
 
-`SimpleContainer` is a lightweight dependency injection container included in the `Caliburn.Light` package. It supports instance, per-request, and singleton registrations, constructor injection, keyed registrations, and child containers.
+`SimpleContainer` is a lightweight dependency injection container. It supports instance, per-request, and singleton registrations, constructor injection, keyed registrations, and child containers.
 
-The current Caliburn.Light configuration examples use `Microsoft.Extensions.DependencyInjection`. `SimpleContainer` is an alternative when you want a smaller container; it is not automatically installed as a framework-wide service locator. Register the services your application needs and resolve them from the container.
+`SimpleContainer` was removed in 6.0.0 and restored to the deprecated `Caliburn.Light` meta-package for migration support. It is not part of `Caliburn.Light.Core` or any platform package, so referencing a platform package directly does not give you this type. New applications should use any `IServiceProvider` — see [Basic Configuration](configuration.md) and the [Migration Guide](migration-guide.md).
+
+It is not a framework-wide service locator. Register the services your application needs and resolve them from the container.
 
 ## Creating and registering services
 

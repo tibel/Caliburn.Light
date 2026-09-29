@@ -12,9 +12,19 @@ Conventions were removed and instead `ICommand` support was added.
 In 2025, version 6.0 brought major changes:
 - **.NET 8.0 only** - Modernized to target .NET 8.0
 - **Nullable enabled** - Full nullable reference type annotations
-- **Avalonia support** - Added support for Avalonia UI framework
-- **Simplified API** - Removed `SimpleContainer` and `IoC` in favor of standard DI
+- **Simplified API** - Removed `SimpleContainer` and `IoC` in favor of standard DI (see [SimpleContainer](simple-container.md))
 - **Async lifecycle** - All lifecycle methods are now async
+- **ViewModelLocatorConfiguration** - Made view/ViewModel mappings explicit instead of convention-based
+
+Later in 2025, version 6.1 and 6.2 followed:
+- **Avalonia support** - Added support for the Avalonia UI framework, giving Caliburn.Light a cross-platform target next to WPF and WinUI
+- **WinUI content dialogs** - Added `ContentDialogLifecycle` and `IWindowManager.ShowContentDialog`
+- **File dialogs** - Added file dialogs to `IWindowManager` for WinUI and Avalonia; WPF already had them
+
+In 2026, version 6.3 and 7.0 continued that work:
+- **.NET 10.0** - Added .NET 10.0 support in 6.3, then made it the only supported target in 7.0
+- **Platform updates** - Avalonia 12 and Windows App SDK 2.x
+- **Lifecycle fixes** - Fixed close-guard handling in the WinUI `WindowLifecycle` and activation-event unsubscription on close in the WPF and Avalonia ones
 
 And the rest is history!
 
