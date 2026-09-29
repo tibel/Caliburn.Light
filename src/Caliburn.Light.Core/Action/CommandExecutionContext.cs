@@ -8,7 +8,7 @@ namespace Caliburn.Light;
 /// </summary>
 public sealed class CommandExecutionContext
 {
-    private Dictionary<string, object?>? _values;
+    private List<KeyValuePair<string, object?>>? _values;
 
     /// <summary>
     /// Gets or sets additional data needed to invoke the command.
@@ -21,14 +21,19 @@ public sealed class CommandExecutionContext
         {
             ArgumentNullException.ThrowIfNull(key);
 
-            return _values?.TryGetValue(key, out var result) == true ? result : null;
+            var entry = _values?.Find(p => string.Equals(p.Key, key, StringComparison.Ordinal));
+            return entry?.Value;
         }
         set
         {
             ArgumentNullException.ThrowIfNull(key);
 
-            _values ??= new Dictionary<string, object?>();
-            _values[key] = value;
+            _values ??= new List<KeyValuePair<string, object?>>();
+            var index = _values.FindIndex(p => string.Equals(p.Key, key, StringComparison.Ordinal));
+            if (index < 0)
+                _values.Add(new KeyValuePair<string, object?>(key, value));
+            else
+                _values[index] = new KeyValuePair<string, object?>(key, value);
         }
     }
 
