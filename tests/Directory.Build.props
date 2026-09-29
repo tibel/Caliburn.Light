@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign>true</PublicSign>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)../src/Caliburn.Light.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BaseOutputPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)../bin/tests/$(MSBuildProjectName)'))</BaseOutputPath>
+  </PropertyGroup>
+</Project>

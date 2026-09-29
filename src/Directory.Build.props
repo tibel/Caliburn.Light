@@ -42,4 +42,8 @@
       <Visible>False</Visible>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" Key="00240000048000009400000006020000002400005253413100040000010001006b63d2adab1f6cebde3f9492498ec0777833b6ec37725162698d910661a0a2edf2b74d7426c9e5e178edf25c6a6026b884cc3b49da6b54de5ac5e5a6a639b70a95b0e2f268e5ba325fc45a339240fe98afea427c6b2dcce224dab56ae1459c62b5e0b0278404ba081f44e4d6fb1d6d7c8cabe0bdf99bfe183f9b097df3cef6e4" />
+  </ItemGroup>
 </Project>
