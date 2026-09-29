@@ -296,6 +296,91 @@ public class ValidationAdapterTests
         await Assert.That(errors).Contains("Age error");
     }
 
+    [Test]
+    public async Task GetErrors_RepeatedCalls_ReturnSameInstance()
+    {
+        var validator = new RuleValidator();
+        validator.AddDelegateRule<object>("Name", _ => false, "Name error");
+
+        var adapter = new ValidationAdapter();
+        adapter.Validator = validator;
+
+        adapter.Validate(new object());
+
+        await Assert.That(adapter.GetErrors()).IsSameReferenceAs(adapter.GetErrors());
+    }
+
+    [Test]
+    public async Task GetErrors_AfterValidatePropertyWithRemainingErrors_IsRebuilt()
+    {
+        var validator = new RuleValidator();
+        var nameShouldFail = true;
+        validator.AddDelegateRule<object>("Name", _ => !nameShouldFail, "Name error");
+        validator.AddDelegateRule<object>("Age", _ => false, "Age error");
+
+        var adapter = new ValidationAdapter();
+        adapter.Validator = validator;
+
+        adapter.Validate(new object());
+        await Assert.That(adapter.GetErrors().Count).IsEqualTo(2);
+
+        nameShouldFail = false;
+        adapter.ValidateProperty(new object(), "Name");
+
+        var errors = adapter.GetErrors();
+        await Assert.That(errors.Count).IsEqualTo(1);
+        await Assert.That(errors).Contains("Age error");
+    }
+
+    [Test]
+    public async Task GetErrors_AfterValidateWithRemainingErrors_IsRebuilt()
+    {
+        var validator = new RuleValidator();
+        var nameShouldFail = true;
+        validator.AddDelegateRule<object>("Name", _ => !nameShouldFail, "Name error");
+        validator.AddDelegateRule<object>("Age", _ => false, "Age error");
+
+        var adapter = new ValidationAdapter();
+        adapter.Validator = validator;
+
+        adapter.Validate(new object());
+        await Assert.That(adapter.GetErrors().Count).IsEqualTo(2);
+
+        nameShouldFail = false;
+        adapter.Validate(new object());
+
+        var errors = adapter.GetErrors();
+        await Assert.That(errors.Count).IsEqualTo(1);
+        await Assert.That(errors).Contains("Age error");
+    }
+
+    [Test]
+    public async Task GetErrors_InsideErrorsChangedCallback_SeesUpdatedErrors()
+    {
+        var validator = new RuleValidator();
+        var nameShouldFail = true;
+        validator.AddDelegateRule<object>("Name", _ => !nameShouldFail, "Name error");
+        validator.AddDelegateRule<object>("Age", _ => false, "Age error");
+
+        ValidationAdapter? adapter = null;
+        IReadOnlyCollection<string>? observed = null;
+
+        adapter = new ValidationAdapter(_ => observed = adapter!.GetErrors());
+        adapter.Validator = validator;
+
+        // Populate the cache while both properties fail.
+        adapter.Validate(new object());
+        await Assert.That(adapter.GetErrors().Count).IsEqualTo(2);
+
+        // The callback must observe the state after this validation, not the cached one.
+        nameShouldFail = false;
+        adapter.ValidateProperty(new object(), "Name");
+
+        await Assert.That(observed).IsNotNull();
+        await Assert.That(observed!.Count).IsEqualTo(1);
+        await Assert.That(observed).Contains("Age error");
+    }
+
     // --- Callback not set ---
 
     [Test]

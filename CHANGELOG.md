@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Compatibility: Restored `SimpleContainer` to the legacy `Caliburn.Light` package for migration support, documented together with the other legacy APIs in a new migration page
 - Core: Preserved nullable view contexts in `ViewAware`; the default context is now represented by `null` instead of an internal sentinel value
 - Core: Updated `IViewAware.GetViews()` and `ViewAware.OnViewAttached`/`OnViewDetached` to expose nullable contexts
+- Core: `ValidationAdapter.GetErrors()` now returns a cached snapshot that is recomputed on each validation
 
 ### Deprecated
 - Core: Obsoleted legacy `ConductorBase<T>.EnsureItem` and `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` APIs; existing binaries remain loadable, but source consumers must migrate

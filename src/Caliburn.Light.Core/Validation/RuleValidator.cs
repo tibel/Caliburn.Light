@@ -65,7 +65,7 @@ public sealed class RuleValidator : IValidator
     public IReadOnlyCollection<string> ValidateProperty(object obj, string propertyName)
     {
         if (!_rules.TryGetValue(propertyName, out var propertyRules))
-            return new List<string>();
+            return Array.Empty<string>();
 
         return ValidateCore(propertyRules, obj);
     }
@@ -94,7 +94,7 @@ public sealed class RuleValidator : IValidator
 
     private static IReadOnlyCollection<string> ValidateCore(List<ValidationRule> rules, object obj)
     {
-        var errors = new List<string>();
+        List<string>? errors = null;
 
         foreach (var rule in rules)
         {
@@ -102,10 +102,10 @@ public sealed class RuleValidator : IValidator
 
             if (!valid)
             {
-                errors.Add(rule.ErrorMessage);
+                (errors ??= new List<string>(rules.Count)).Add(rule.ErrorMessage);
             }
         }
 
-        return errors;
+        return (IReadOnlyCollection<string>?)errors ?? Array.Empty<string>();
     }
 }

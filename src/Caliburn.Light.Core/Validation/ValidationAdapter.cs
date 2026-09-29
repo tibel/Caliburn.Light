@@ -11,6 +11,7 @@ public sealed class ValidationAdapter
 {
     private readonly Action<string>? _onErrorsChanged;
     private readonly Dictionary<string, IReadOnlyCollection<string>> _errors = new Dictionary<string, IReadOnlyCollection<string>>();
+    private IReadOnlyCollection<string>? _allErrors;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationAdapter"/> class.
@@ -35,15 +36,15 @@ public sealed class ValidationAdapter
     public bool ValidateProperty(object instance, string propertyName)
     {
         var validator = Validator ?? NullValidator.Instance;
-        var errors = validator.ValidateProperty(instance, propertyName);
+        var propertyErrors = validator.ValidateProperty(instance, propertyName);
 
-        if (errors.Count == 0)
+        if (propertyErrors.Count == 0)
             _errors.Remove(propertyName);
         else
-            _errors[propertyName] = errors;
+            _errors[propertyName] = propertyErrors;
 
         OnErrorsChanged(propertyName);
-        return errors.Count == 0;
+        return propertyErrors.Count == 0;
     }
 
     /// <summary>
@@ -57,10 +58,9 @@ public sealed class ValidationAdapter
         var errors = validator.Validate(instance);
 
         _errors.Clear();
+        _errors.EnsureCapacity(errors.Count);
         foreach (var error in errors)
-        {
             _errors.Add(error.Key, error.Value);
-        }
 
         OnErrorsChanged(string.Empty);
         return _errors.Count == 0;
@@ -73,9 +73,10 @@ public sealed class ValidationAdapter
     /// <returns>List of validation errors.</returns>
     public IReadOnlyCollection<string> GetPropertyErrors(string propertyName)
     {
-        if (_errors.TryGetValue(propertyName, out var errors))
-            return errors;
-        return Array.Empty<string>();
+        if (!_errors.TryGetValue(propertyName, out var propertyErrors))
+            return Array.Empty<string>();
+
+        return propertyErrors;
     }
 
     /// <summary>
@@ -87,9 +88,17 @@ public sealed class ValidationAdapter
         if (_errors.Count == 0)
             return Array.Empty<string>();
 
-        var errors = new List<string>();
+        if (_allErrors is not null)
+            return _allErrors;
+
+        var capacity = 0;
+        foreach (var entry in _errors)
+            capacity += entry.Value.Count;
+
+        var errors = new List<string>(capacity);
         foreach (var entry in _errors)
             errors.AddRange(entry.Value);
+        _allErrors = errors;
 
         return errors;
     }
@@ -111,6 +120,7 @@ public sealed class ValidationAdapter
 
     private void OnErrorsChanged(string propertyName)
     {
+        _allErrors = null;
         _onErrorsChanged?.Invoke(propertyName);
     }
 }
