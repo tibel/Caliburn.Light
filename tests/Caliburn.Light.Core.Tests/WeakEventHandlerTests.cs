@@ -157,6 +157,174 @@ public class WeakEventHandlerTests
         await Assert.That(liveSubscriber.CallCount).IsEqualTo(1);
     }
 
+    [Test]
+    public async Task RegisterActivatedWeak_ReceivesEvents()
+    {
+        var source = new TestScreen();
+        var subscriber = new ActivatedSubscriber();
+        using var reg = source.RegisterActivatedWeak(subscriber,
+            static (s, sender, e) => s.OnActivated(sender, e));
+
+        await ((IActivatable)source).ActivateAsync();
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(1);
+        await Assert.That(subscriber.WasInitialized).IsTrue();
+    }
+
+    [Test]
+    public async Task RegisterActivatedWeak_Dispose_StopsEvents()
+    {
+        var source = new TestScreen();
+        var subscriber = new ActivatedSubscriber();
+        var reg = source.RegisterActivatedWeak(subscriber,
+            static (s, sender, e) => s.OnActivated(sender, e));
+
+        reg.Dispose();
+        await ((IActivatable)source).ActivateAsync();
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task RegisterDeactivatingWeak_ReceivesEvents()
+    {
+        var source = new TestScreen();
+        var subscriber = new DeactivatingSubscriber();
+        using var reg = source.RegisterDeactivatingWeak(subscriber,
+            static (s, sender, e) => s.OnDeactivating(sender, e));
+
+        await ((IActivatable)source).ActivateAsync();
+        await ((IActivatable)source).DeactivateAsync(true);
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(1);
+        await Assert.That(subscriber.WasClosed).IsTrue();
+    }
+
+    [Test]
+    public async Task RegisterDeactivatingWeak_Dispose_StopsEvents()
+    {
+        var source = new TestScreen();
+        var subscriber = new DeactivatingSubscriber();
+        var reg = source.RegisterDeactivatingWeak(subscriber,
+            static (s, sender, e) => s.OnDeactivating(sender, e));
+
+        reg.Dispose();
+        await ((IActivatable)source).ActivateAsync();
+        await ((IActivatable)source).DeactivateAsync(true);
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task RegisterDeactivatedWeak_ReceivesEvents()
+    {
+        var source = new TestScreen();
+        var subscriber = new DeactivatedSubscriber();
+        using var reg = source.RegisterDeactivatedWeak(subscriber,
+            static (s, sender, e) => s.OnDeactivated(sender, e));
+
+        await ((IActivatable)source).ActivateAsync();
+        await ((IActivatable)source).DeactivateAsync(false);
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(1);
+        await Assert.That(subscriber.WasClosed).IsFalse();
+    }
+
+    [Test]
+    public async Task RegisterDeactivatedWeak_Dispose_StopsEvents()
+    {
+        var source = new TestScreen();
+        var subscriber = new DeactivatedSubscriber();
+        var reg = source.RegisterDeactivatedWeak(subscriber,
+            static (s, sender, e) => s.OnDeactivated(sender, e));
+
+        reg.Dispose();
+        await ((IActivatable)source).ActivateAsync();
+        await ((IActivatable)source).DeactivateAsync(false);
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task RegisterActivationProcessedWeak_ReceivesEvents()
+    {
+        var conductor = new Conductor<TestScreen>();
+        var subscriber = new ActivationProcessedSubscriber();
+        var item = new TestScreen();
+        using var reg = conductor.RegisterActivationProcessedWeak(subscriber,
+            static (s, sender, e) => s.OnActivationProcessed(sender, e));
+
+        await conductor.ActivateItemAsync(item);
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(1);
+        await Assert.That(subscriber.Item).IsSameReferenceAs(item);
+        await Assert.That(subscriber.Success).IsTrue();
+    }
+
+    [Test]
+    public async Task RegisterActivationProcessedWeak_CloseGuardDenied_ReceivesFailure()
+    {
+        var conductor = new Conductor<TestScreen>();
+        var subscriber = new ActivationProcessedSubscriber();
+        using var reg = conductor.RegisterActivationProcessedWeak(subscriber,
+            static (s, sender, e) => s.OnActivationProcessed(sender, e));
+
+        await conductor.ActivateItemAsync(new TestScreen { CanCloseResult = false });
+        await conductor.ActivateItemAsync(new TestScreen());
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(2);
+        await Assert.That(subscriber.Success).IsFalse();
+    }
+
+    [Test]
+    public async Task RegisterActivationProcessedWeak_Dispose_StopsEvents()
+    {
+        var conductor = new Conductor<TestScreen>();
+        var subscriber = new ActivationProcessedSubscriber();
+        var reg = conductor.RegisterActivationProcessedWeak(subscriber,
+            static (s, sender, e) => s.OnActivationProcessed(sender, e));
+
+        reg.Dispose();
+        await conductor.ActivateItemAsync(new TestScreen());
+
+        await Assert.That(subscriber.CallCount).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task RegisterActivatedWeak_SubscriberCollected_AutoRemoves()
+    {
+        var source = new TestScreen();
+        var weakRef = RegisterAndAbandonActivatedSubscriber(source);
+
+        GC.Collect(2, GCCollectionMode.Forced, blocking: true);
+        GC.WaitForPendingFinalizers();
+        GC.Collect(2, GCCollectionMode.Forced, blocking: true);
+        GC.WaitForPendingFinalizers();
+
+        await Assert.That(weakRef.IsAlive).IsFalse();
+
+        // Trigger the event — the dead handler should auto-remove without throwing
+        await ((IActivatable)source).ActivateAsync();
+
+        var liveSubscriber = new ActivatedSubscriber();
+        source.RegisterActivatedWeak(liveSubscriber,
+            static (s, sender, e) => s.OnActivated(sender, e));
+
+        await ((IActivatable)source).DeactivateAsync(false);
+        await ((IActivatable)source).ActivateAsync();
+
+        await Assert.That(liveSubscriber.CallCount).IsEqualTo(1);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static WeakReference RegisterAndAbandonActivatedSubscriber(TestScreen source)
+    {
+        var subscriber = new ActivatedSubscriber();
+        source.RegisterActivatedWeak(subscriber,
+            static (s, sender, e) => s.OnActivated(sender, e));
+        return new WeakReference(subscriber);
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static WeakReference RegisterAndAbandonPropertyChangedSubscriber(TestBindableObject source)
     {
@@ -211,6 +379,56 @@ public class WeakEventHandlerTests
         public void OnCanExecuteChanged(object? sender, EventArgs e)
         {
             CallCount++;
+        }
+    }
+
+    private class ActivatedSubscriber
+    {
+        public int CallCount;
+        public bool? WasInitialized;
+
+        public void OnActivated(object? sender, ActivationEventArgs e)
+        {
+            CallCount++;
+            WasInitialized = e.WasInitialized;
+        }
+    }
+
+    private class DeactivatingSubscriber
+    {
+        public int CallCount;
+        public bool? WasClosed;
+
+        public void OnDeactivating(object? sender, DeactivationEventArgs e)
+        {
+            CallCount++;
+            WasClosed = e.WasClosed;
+        }
+    }
+
+    private class DeactivatedSubscriber
+    {
+        public int CallCount;
+        public bool? WasClosed;
+
+        public void OnDeactivated(object? sender, DeactivationEventArgs e)
+        {
+            CallCount++;
+            WasClosed = e.WasClosed;
+        }
+    }
+
+    private class ActivationProcessedSubscriber
+    {
+        public int CallCount;
+        public object? Item;
+        public bool? Success;
+
+        public void OnActivationProcessed(object? sender, ActivationProcessedEventArgs e)
+        {
+            CallCount++;
+            Item = e.Item;
+            Success = e.Success;
         }
     }
 

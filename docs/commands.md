@@ -127,6 +127,25 @@ AsyncCommand.Executing += (sender, args) =>
 };
 ```
 
+`Executing` is a static event, so a plain subscription keeps any captured object alive for the lifetime of the process. For handlers that should not outlive the object they capture, register weakly instead:
+
+```csharp
+private readonly IDisposable _registration;
+
+public LoadingIndicator()
+{
+    _registration = WeakEventHandler.RegisterAsyncCommandExecutingWeak(this,
+        static (subscriber, sender, args) => subscriber.OnCommandExecuting(args.Task));
+}
+
+private void OnCommandExecuting(Task task) { }
+
+// Dispose the registration to detach deterministically
+_registration.Dispose();
+```
+
+See [Weak Event Handler](weak-event-handler.md) for details.
+
 ## Observing Property Changes
 
 Commands can automatically re-evaluate `CanExecute` when properties change:

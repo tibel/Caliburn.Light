@@ -64,6 +64,104 @@ public static IDisposable RegisterCanExecuteChangedWeak<TSubscriber>(
     where TSubscriber : class
 ```
 
+### RegisterActivatedWeak
+
+Registers a weak handler to `IActivatable.Activated`. `ActivationEventArgs.WasInitialized` indicates whether the item was initialized in addition to being activated.
+
+```csharp
+public static IDisposable RegisterActivatedWeak<TSubscriber>(
+    this IActivatable source,
+    TSubscriber subscriber,
+    Action<TSubscriber, object?, ActivationEventArgs> weakHandler)
+    where TSubscriber : class
+```
+
+### RegisterDeactivatingWeak
+
+Registers a weak handler to `IActivatable.Deactivating`. `DeactivationEventArgs.WasClosed` indicates whether the item is being closed in addition to being deactivated.
+
+```csharp
+public static IDisposable RegisterDeactivatingWeak<TSubscriber>(
+    this IActivatable source,
+    TSubscriber subscriber,
+    Action<TSubscriber, object?, DeactivationEventArgs> weakHandler)
+    where TSubscriber : class
+```
+
+### RegisterDeactivatedWeak
+
+Registers a weak handler to `IActivatable.Deactivated`.
+
+```csharp
+public static IDisposable RegisterDeactivatedWeak<TSubscriber>(
+    this IActivatable source,
+    TSubscriber subscriber,
+    Action<TSubscriber, object?, DeactivationEventArgs> weakHandler)
+    where TSubscriber : class
+```
+
+### RegisterActivationProcessedWeak
+
+Registers a weak handler to `IConductor.ActivationProcessed`. `ActivationProcessedEventArgs.Success` is `false` when a close guard on the outgoing item vetoed the activation.
+
+```csharp
+public static IDisposable RegisterActivationProcessedWeak<TSubscriber>(
+    this IConductor source,
+    TSubscriber subscriber,
+    Action<TSubscriber, object?, ActivationProcessedEventArgs> weakHandler)
+    where TSubscriber : class
+```
+
+### RegisterAsyncCommandExecutingWeak
+
+Registers a weak handler to the static `AsyncCommand.Executing` event.
+
+```csharp
+public static IDisposable RegisterAsyncCommandExecutingWeak<TSubscriber>(
+    TSubscriber subscriber,
+    Action<TSubscriber, object?, TaskEventArgs> weakHandler)
+    where TSubscriber : class
+```
+
+### RegisterEventAggregatorExecutingWeak
+
+Registers a weak handler to the static `EventAggregator.Executing` event.
+
+```csharp
+public static IDisposable RegisterEventAggregatorExecutingWeak<TSubscriber>(
+    TSubscriber subscriber,
+    Action<TSubscriber, object?, TaskEventArgs> weakHandler)
+    where TSubscriber : class
+```
+
+### Static Events
+
+`AsyncCommand.Executing` and `EventAggregator.Executing` are static, so a plain subscription pins the subscriber for the lifetime of the process. Use the two methods above for these.
+
+Because a static event has no instance, these are plain static methods on `WeakEventHandler` rather than extension methods on the declaring type.
+
+Weak registration on a static event means the event still holds the small *handler* object strongly, but only a weak reference to your *subscriber*. The handler removes itself the next time the event is raised after the subscriber has been collected. Dispose the returned registration for deterministic cleanup instead of relying on that:
+
+```csharp
+public class LoadingIndicator : IDisposable
+{
+    private readonly IDisposable _subscription;
+
+    public LoadingIndicator()
+    {
+        _subscription = WeakEventHandler.RegisterAsyncCommandExecutingWeak(this,
+            static (subscriber, sender, e) => subscriber.OnCommandExecuting(e));
+    }
+
+    private void OnCommandExecuting(TaskEventArgs e)
+    {
+        // React to the still-running command
+    }
+
+    public void Dispose() => _subscription.Dispose();
+}
+```
+
 ## Usage
 
 All methods return an `IDisposable` that can be used to explicitly unsubscribe from the event when needed.
@@ -151,6 +249,30 @@ public class CommandMonitor
 }
 ```
 
+### Monitoring Screen Activation
+
+```csharp
+public class ActivationMonitor
+{
+    private readonly IDisposable _subscription;
+
+    public ActivationMonitor(IConductor conductor)
+    {
+        // Reacts to activation attempts performed through the conductor
+        _subscription = conductor.RegisterActivationProcessedWeak(this,
+            static (subscriber, sender, e) => subscriber.OnActivationProcessed(e));
+    }
+
+    private void OnActivationProcessed(ActivationProcessedEventArgs e)
+    {
+        if (!e.Success)
+        {
+            // The outgoing item's close guard vetoed the activation
+        }
+    }
+}
+```
+
 ## How It Works
 
 The weak event handler infrastructure consists of:
@@ -228,7 +350,7 @@ public static class CustomWeakEventExtensions
 }
 ```
 
-For static events, use the two-type-parameter version `WeakEventHandlerBase<TSubscriber, TEventArgs>` and override the parameterless `RemoveEventHandler()` method.
+For static events, use the two-type-parameter version `WeakEventHandlerBase<TSubscriber, TEventArgs>` and override the parameterless `RemoveEventHandler()` method. This is what `RegisterAsyncCommandExecutingWeak` and `RegisterEventAggregatorExecutingWeak` are built on.
 
 ## WeakEventSource
 

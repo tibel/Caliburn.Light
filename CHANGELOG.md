@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: Added protected `ViewAware.GetAttachedView()` convenience accessor for derived view models
 - Reintroduced `Caliburn.Light.Coroutines` for compatibility and easier migration from earlier Caliburn.Light versions
 - Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
+- Core: Added `WeakEventHandler.RegisterActivatedWeak`, `RegisterDeactivatingWeak` and `RegisterDeactivatedWeak` for `IActivatable` activation events
+- Core: Added `WeakEventHandler.RegisterActivationProcessedWeak` for `IConductor.ActivationProcessed`
+- Core: Added `WeakEventHandler.RegisterAsyncCommandExecutingWeak` and `RegisterEventAggregatorExecutingWeak` for the static `AsyncCommand.Executing` and `EventAggregator.Executing` events
 
 ### Changed
 - Avalonia: Updated to 12.1.3

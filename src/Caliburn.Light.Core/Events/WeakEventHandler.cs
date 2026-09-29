@@ -69,4 +69,102 @@ public static class WeakEventHandler
     {
         return new WeakCanExecuteChangedHandler<TSubscriber>(source, subscriber, weakHandler);
     }
+
+    /// <summary>
+    /// Registers a weak event handler to <see cref="IActivatable.Activated"/>.
+    /// </summary>
+    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+    /// <param name="source">The event source.</param>
+    /// <param name="subscriber">The event subscriber.</param>
+    /// <param name="weakHandler">The weak handler.</param>
+    /// <returns>A registration object that can be used to deregister from the event.</returns>
+    public static IDisposable RegisterActivatedWeak<TSubscriber>(this IActivatable source,
+        TSubscriber subscriber, Action<TSubscriber, object?, ActivationEventArgs> weakHandler)
+        where TSubscriber : class
+    {
+        return new WeakActivatedHandler<TSubscriber>(source, subscriber, weakHandler);
+    }
+
+    /// <summary>
+    /// Registers a weak event handler to <see cref="IActivatable.Deactivating"/>.
+    /// </summary>
+    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+    /// <param name="source">The event source.</param>
+    /// <param name="subscriber">The event subscriber.</param>
+    /// <param name="weakHandler">The weak handler.</param>
+    /// <returns>A registration object that can be used to deregister from the event.</returns>
+    public static IDisposable RegisterDeactivatingWeak<TSubscriber>(this IActivatable source,
+        TSubscriber subscriber, Action<TSubscriber, object?, DeactivationEventArgs> weakHandler)
+        where TSubscriber : class
+    {
+        return new WeakDeactivatingHandler<TSubscriber>(source, subscriber, weakHandler);
+    }
+
+    /// <summary>
+    /// Registers a weak event handler to <see cref="IActivatable.Deactivated"/>.
+    /// </summary>
+    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+    /// <param name="source">The event source.</param>
+    /// <param name="subscriber">The event subscriber.</param>
+    /// <param name="weakHandler">The weak handler.</param>
+    /// <returns>A registration object that can be used to deregister from the event.</returns>
+    public static IDisposable RegisterDeactivatedWeak<TSubscriber>(this IActivatable source,
+        TSubscriber subscriber, Action<TSubscriber, object?, DeactivationEventArgs> weakHandler)
+        where TSubscriber : class
+    {
+        return new WeakDeactivatedHandler<TSubscriber>(source, subscriber, weakHandler);
+    }
+
+    /// <summary>
+    /// Registers a weak event handler to <see cref="IConductor.ActivationProcessed"/>.
+    /// </summary>
+    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+    /// <param name="source">The event source.</param>
+    /// <param name="subscriber">The event subscriber.</param>
+    /// <param name="weakHandler">The weak handler.</param>
+    /// <returns>A registration object that can be used to deregister from the event.</returns>
+    public static IDisposable RegisterActivationProcessedWeak<TSubscriber>(this IConductor source,
+        TSubscriber subscriber, Action<TSubscriber, object?, ActivationProcessedEventArgs> weakHandler)
+        where TSubscriber : class
+    {
+        return new WeakActivationProcessedHandler<TSubscriber>(source, subscriber, weakHandler);
+    }
+
+    /// <summary>
+    /// Registers a weak handler to the static <see cref="AsyncCommand.Executing"/> event.
+    /// </summary>
+    /// <remarks>
+    /// The event is static, so this is a static method rather than an extension method. Dispose the
+    /// returned registration for deterministic cleanup; otherwise the handler detaches itself the next
+    /// time the event is raised after <paramref name="subscriber"/> has been collected.
+    /// </remarks>
+    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+    /// <param name="subscriber">The event subscriber.</param>
+    /// <param name="weakHandler">The weak handler.</param>
+    /// <returns>A registration object that can be used to deregister from the event.</returns>
+    public static IDisposable RegisterAsyncCommandExecutingWeak<TSubscriber>(TSubscriber subscriber,
+        Action<TSubscriber, object?, TaskEventArgs> weakHandler)
+        where TSubscriber : class
+    {
+        return new WeakAsyncCommandExecutingHandler<TSubscriber>(subscriber, weakHandler);
+    }
+
+    /// <summary>
+    /// Registers a weak handler to the static <see cref="EventAggregator.Executing"/> event.
+    /// </summary>
+    /// <remarks>
+    /// The event is static, so this is a static method rather than an extension method. Dispose the
+    /// returned registration for deterministic cleanup; otherwise the handler detaches itself the next
+    /// time the event is raised after <paramref name="subscriber"/> has been collected.
+    /// </remarks>
+    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
+    /// <param name="subscriber">The event subscriber.</param>
+    /// <param name="weakHandler">The weak handler.</param>
+    /// <returns>A registration object that can be used to deregister from the event.</returns>
+    public static IDisposable RegisterEventAggregatorExecutingWeak<TSubscriber>(TSubscriber subscriber,
+        Action<TSubscriber, object?, TaskEventArgs> weakHandler)
+        where TSubscriber : class
+    {
+        return new WeakEventAggregatorExecutingHandler<TSubscriber>(subscriber, weakHandler);
+    }
 }
