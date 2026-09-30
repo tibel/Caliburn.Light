@@ -58,21 +58,8 @@ public class StubConductor : IConductor
     public IEnumerable GetChildren() => Array.Empty<object>();
 }
 
-[NotInParallel("ViewHelperTests")]
 public class ScreenTests
 {
-    [Before(Test)]
-    public void ResetViewHelperBefore()
-    {
-        ViewHelper.Reset();
-    }
-
-    [After(Test)]
-    public void ResetViewHelperAfter()
-    {
-        ViewHelper.Reset();
-    }
-
     [Test]
     public async Task InitialState_IsNotActive()
     {

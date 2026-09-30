@@ -2,7 +2,7 @@ using Caliburn.Light;
 
 namespace Caliburn.Light.Core.Tests;
 
-[NotInParallel(nameof(ViewHelperTests))]
+[NotInParallel("ViewHelperTests")]
 public class ViewHelperTests
 {
     [Before(Test)]

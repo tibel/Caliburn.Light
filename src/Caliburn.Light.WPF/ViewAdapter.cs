@@ -9,7 +9,7 @@ namespace Caliburn.Light.WPF;
 
 internal sealed class ViewAdapter : IViewAdapter
 {
-    private ViewAdapter()
+    internal ViewAdapter()
     {
     }
 

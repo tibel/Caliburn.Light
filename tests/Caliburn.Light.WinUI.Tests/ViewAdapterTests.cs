@@ -5,28 +5,33 @@ using TUnit.Core.Executors;
 
 namespace Caliburn.Light.WinUI.Tests;
 
+/// <summary>
+/// Tests the internal ViewAdapter directly, reachable via InternalsVisibleTo.
+/// Each test constructs its own adapter, so nothing here touches the
+/// ViewHelper static registry.
+/// </summary>
 [TestExecutor<WinUITestExecutor>]
-[NotInParallel("ViewHelper")]
 public class ViewAdapterTests
 {
-    [Test]
-    public async Task ViewHelper_IsInitialized_ReturnsTrue()
-    {
-        // ViewAdapter registers itself via [ModuleInitializer]
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-    }
+    private readonly ViewAdapter _adapter = new();
 
     [Test]
     public async Task IsInDesignTool_ReturnsFalse_InTestContext()
     {
-        await Assert.That(ViewHelper.IsInDesignTool).IsFalse();
+        await Assert.That(_adapter.IsInDesignTool).IsFalse();
+    }
+
+    [Test]
+    public async Task CanHandle_WinUIElement_ReturnsTrue()
+    {
+        await Assert.That(_adapter.CanHandle(new TextBlock())).IsTrue();
     }
 
     [Test]
     public async Task GetFirstNonGeneratedView_ReturnsSelf_WhenNotGenerated()
     {
         var cc = new ContentControl();
-        var result = ViewHelper.GetFirstNonGeneratedView(cc);
+        var result = _adapter.GetFirstNonGeneratedView(cc);
         await Assert.That(ReferenceEquals(cc, result)).IsTrue();
     }
 
@@ -36,7 +41,7 @@ public class ViewAdapterTests
         var inner = new TextBlock { Text = "inner" };
         var cc = new ContentControl { Content = inner };
         View.SetIsGenerated(cc, true);
-        var result = ViewHelper.GetFirstNonGeneratedView(cc);
+        var result = _adapter.GetFirstNonGeneratedView(cc);
         await Assert.That(ReferenceEquals(inner, result)).IsTrue();
     }
 
@@ -45,14 +50,14 @@ public class ViewAdapterTests
     {
         var tb = new TextBlock();
         View.SetCommandParameter(tb, "attached-value");
-        await Assert.That(ViewHelper.GetCommandParameter(tb)).IsEqualTo("attached-value");
+        await Assert.That(_adapter.GetCommandParameter(tb)).IsEqualTo("attached-value");
     }
 
     [Test]
     public async Task GetCommandParameter_ReturnsNull_WhenNotSet()
     {
         var tb = new TextBlock();
-        await Assert.That(ViewHelper.GetCommandParameter(tb)).IsNull();
+        await Assert.That(_adapter.GetCommandParameter(tb)).IsNull();
     }
 
     [Test]
@@ -60,14 +65,14 @@ public class ViewAdapterTests
     {
         var btn = new Button();
         btn.CommandParameter = "button-param";
-        await Assert.That(ViewHelper.GetCommandParameter(btn)).IsEqualTo("button-param");
+        await Assert.That(_adapter.GetCommandParameter(btn)).IsEqualTo("button-param");
     }
 
     [Test]
     public async Task GetDispatcher_ReturnsIDispatcher()
     {
         var tb = new TextBlock();
-        await Assert.That(ViewHelper.GetDispatcher(tb)).IsNotNull();
+        await Assert.That(_adapter.GetDispatcher(tb)).IsNotNull();
     }
 
     [Test]
@@ -75,8 +80,8 @@ public class ViewAdapterTests
     {
         var tb1 = new TextBlock();
         var tb2 = new TextBlock();
-        var d1 = ViewHelper.GetDispatcher(tb1);
-        var d2 = ViewHelper.GetDispatcher(tb2);
+        var d1 = _adapter.GetDispatcher(tb1);
+        var d2 = _adapter.GetDispatcher(tb2);
         await Assert.That(d1.Equals(d2)).IsTrue();
     }
 
@@ -84,7 +89,7 @@ public class ViewAdapterTests
     public async Task TryCloseAsync_NonWindowControl_ReturnsFalse()
     {
         var tb = new TextBlock();
-        var result = ViewHelper.TryCloseAsync(tb).GetAwaiter().GetResult();
+        var result = await _adapter.TryCloseAsync(tb);
         await Assert.That(result).IsFalse();
     }
 
@@ -92,58 +97,7 @@ public class ViewAdapterTests
     public async Task TryCloseAsync_Popup_ReturnsTrue()
     {
         var popup = new Microsoft.UI.Xaml.Controls.Primitives.Popup { IsOpen = true };
-        var result = ViewHelper.TryCloseAsync(popup).GetAwaiter().GetResult();
+        var result = await _adapter.TryCloseAsync(popup);
         await Assert.That(result).IsTrue();
-    }
-
-    [Test]
-    public async Task ModuleInitializer_RegistersWinUIAdapter()
-    {
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-        var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
-        await Assert.That(dispatcher is not null && dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
-    public async Task Initialize_CalledTwice_DoesNotCorruptState()
-    {
-        InvokeViewAdapterInitialize();
-
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-        var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
-        await Assert.That(dispatcher is not null && dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
-    public async Task Reset_ThenReinitialize_WorksCorrectly()
-    {
-        ViewHelper.Reset();
-        try
-        {
-            await Assert.That(ViewHelper.IsInitialized).IsFalse();
-
-            InvokeViewAdapterInitialize();
-            await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-            var button = new Button();
-            var dispatcher = ViewHelper.GetDispatcher(button);
-            await Assert.That(dispatcher is not null && dispatcher.CheckAccess()).IsTrue();
-        }
-        finally
-        {
-            if (!ViewHelper.IsInitialized)
-                InvokeViewAdapterInitialize();
-        }
-    }
-
-    private static void InvokeViewAdapterInitialize()
-    {
-        var viewAdapterType = typeof(View).Assembly.GetType("Caliburn.Light.WinUI.ViewAdapter")!;
-        viewAdapterType.GetMethod("Initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)!
-            .Invoke(null, null);
     }
 }

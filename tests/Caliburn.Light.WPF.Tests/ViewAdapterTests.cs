@@ -5,21 +5,26 @@ using TUnit.Core.Executors;
 
 namespace Caliburn.Light.WPF.Tests;
 
+/// <summary>
+/// Tests the internal ViewAdapter directly, reachable via InternalsVisibleTo.
+/// Each test constructs its own adapter, so nothing here touches the
+/// ViewHelper static registry.
+/// </summary>
 [TestExecutor<WpfTestExecutor>]
-[NotInParallel("ViewHelper")]
 public class ViewAdapterTests
 {
-    [Test]
-    public async Task ViewHelper_IsInitialized_ReturnsTrue()
-    {
-        // ViewAdapter.Initialize is called via [ModuleInitializer]
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-    }
+    private readonly ViewAdapter _adapter = new();
 
     [Test]
     public async Task IsInDesignTool_ReturnsFalse_InTestContext()
     {
-        await Assert.That(ViewHelper.IsInDesignTool).IsFalse();
+        await Assert.That(_adapter.IsInDesignTool).IsFalse();
+    }
+
+    [Test]
+    public async Task CanHandle_WpfElement_ReturnsTrue()
+    {
+        await Assert.That(_adapter.CanHandle(new Button())).IsTrue();
     }
 
     [Test]
@@ -29,7 +34,7 @@ public class ViewAdapterTests
         var cc = new ContentControl { Content = inner };
         View.SetIsGenerated(cc, true);
 
-        var result = ViewHelper.GetFirstNonGeneratedView(cc);
+        var result = _adapter.GetFirstNonGeneratedView(cc);
         await Assert.That(ReferenceEquals(result, inner)).IsTrue();
     }
 
@@ -37,7 +42,7 @@ public class ViewAdapterTests
     public async Task GetFirstNonGeneratedView_ReturnsSelf_WhenNotGenerated()
     {
         var cc = new ContentControl();
-        var result = ViewHelper.GetFirstNonGeneratedView(cc);
+        var result = _adapter.GetFirstNonGeneratedView(cc);
         await Assert.That(ReferenceEquals(result, cc)).IsTrue();
     }
 
@@ -47,7 +52,7 @@ public class ViewAdapterTests
         var button = new Button();
         View.SetCommandParameter(button, "test-param");
 
-        var result = ViewHelper.GetCommandParameter(button);
+        var result = _adapter.GetCommandParameter(button);
         await Assert.That(result).IsEqualTo("test-param");
     }
 
@@ -55,7 +60,7 @@ public class ViewAdapterTests
     public async Task GetCommandParameter_ReturnsNull_WhenNotSet()
     {
         var button = new Button();
-        var result = ViewHelper.GetCommandParameter(button);
+        var result = _adapter.GetCommandParameter(button);
         await Assert.That(result).IsNull();
     }
 
@@ -63,7 +68,7 @@ public class ViewAdapterTests
     public async Task GetCommandParameter_ReturnsButtonCommandParameter_WhenAttachedNotSet()
     {
         var button = new Button { CommandParameter = "native-param" };
-        var result = ViewHelper.GetCommandParameter(button);
+        var result = _adapter.GetCommandParameter(button);
         await Assert.That(result).IsEqualTo("native-param");
     }
 
@@ -71,7 +76,7 @@ public class ViewAdapterTests
     public async Task GetDispatcher_ReturnsIDispatcher_WithCheckAccess()
     {
         var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
+        var dispatcher = _adapter.GetDispatcher(button);
 
         await Assert.That(dispatcher).IsNotNull();
         await Assert.That(dispatcher.CheckAccess()).IsTrue();
@@ -83,8 +88,8 @@ public class ViewAdapterTests
         var button1 = new Button();
         var button2 = new Button();
 
-        var d1 = ViewHelper.GetDispatcher(button1);
-        var d2 = ViewHelper.GetDispatcher(button2);
+        var d1 = _adapter.GetDispatcher(button1);
+        var d2 = _adapter.GetDispatcher(button2);
 
         await Assert.That(d1.Equals(d2)).IsTrue();
     }
@@ -93,7 +98,7 @@ public class ViewAdapterTests
     public async Task TryCloseAsync_Window_ReturnsTrue()
     {
         var window = new Window();
-        var result = await ViewHelper.TryCloseAsync(window);
+        var result = await _adapter.TryCloseAsync(window);
         await Assert.That(result).IsTrue();
     }
 
@@ -101,62 +106,7 @@ public class ViewAdapterTests
     public async Task TryCloseAsync_NonWindowElement_ReturnsFalse()
     {
         var button = new Button();
-        var result = await ViewHelper.TryCloseAsync(button);
+        var result = await _adapter.TryCloseAsync(button);
         await Assert.That(result).IsFalse();
-    }
-
-    [Test]
-    public async Task ModuleInitializer_RegistersWpfAdapter()
-    {
-        // ViewHelper.IsInitialized proves the [ModuleInitializer] ran
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-        // Verify the adapter handles WPF types correctly
-        var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
-        await Assert.That(dispatcher).IsNotNull();
-        await Assert.That(dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
-    public async Task Initialize_CalledTwice_DoesNotCorruptState()
-    {
-        InvokeViewAdapterInitialize();
-
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-        var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
-        await Assert.That(dispatcher).IsNotNull();
-        await Assert.That(dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
-    public async Task Reset_ThenReinitialize_WorksCorrectly()
-    {
-        ViewHelper.Reset();
-        try
-        {
-            await Assert.That(ViewHelper.IsInitialized).IsFalse();
-
-            InvokeViewAdapterInitialize();
-            await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-            var button = new Button();
-            var dispatcher = ViewHelper.GetDispatcher(button);
-            await Assert.That(dispatcher).IsNotNull();
-        }
-        finally
-        {
-            if (!ViewHelper.IsInitialized)
-                InvokeViewAdapterInitialize();
-        }
-    }
-
-    private static void InvokeViewAdapterInitialize()
-    {
-        var viewAdapterType = typeof(View).Assembly.GetType("Caliburn.Light.WPF.ViewAdapter")!;
-        viewAdapterType.GetMethod("Initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)!
-            .Invoke(null, null);
     }
 }

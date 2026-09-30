@@ -7,7 +7,6 @@ using TUnit.Core.Executors;
 namespace Caliburn.Light.Avalonia.Tests;
 
 [TestExecutor<AvaloniaTestExecutor>]
-[NotInParallel("ViewHelper")]
 public class ViewTests
 {
     [Test]

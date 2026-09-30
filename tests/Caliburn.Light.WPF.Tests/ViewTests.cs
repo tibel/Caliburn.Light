@@ -7,7 +7,6 @@ using TUnit.Core.Executors;
 namespace Caliburn.Light.WPF.Tests;
 
 [TestExecutor<WpfTestExecutor>]
-[NotInParallel("ViewHelper")]
 public class ViewTests
 {
     [Test]

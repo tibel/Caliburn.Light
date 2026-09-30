@@ -10,7 +10,7 @@ namespace Caliburn.Light.Avalonia;
 
 internal sealed class ViewAdapter : IViewAdapter
 {
-    private ViewAdapter()
+    internal ViewAdapter()
     {
     }
 

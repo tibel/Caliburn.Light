@@ -10,7 +10,7 @@ namespace Caliburn.Light.WinUI;
 
 internal sealed class ViewAdapter : IViewAdapter
 {
-    private ViewAdapter()
+    internal ViewAdapter()
     {
     }
 

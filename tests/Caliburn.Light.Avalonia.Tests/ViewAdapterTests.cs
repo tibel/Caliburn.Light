@@ -5,31 +5,32 @@ using TUnit.Core.Executors;
 namespace Caliburn.Light.Avalonia.Tests;
 
 /// <summary>
-/// Tests the internal ViewAdapter through the public ViewHelper static API.
-/// The ViewAdapter is registered via [ModuleInitializer] when the assembly loads.
+/// Tests the internal ViewAdapter directly, reachable via InternalsVisibleTo.
+/// Each test constructs its own adapter, so nothing here touches the
+/// ViewHelper static registry.
 /// </summary>
 [TestExecutor<AvaloniaTestExecutor>]
-[NotInParallel("ViewHelper")]
 public class ViewAdapterTests
 {
-    [Test]
-    public async Task ViewHelper_IsInitialized_AfterSetup_ReturnsTrue()
-    {
-        // The executor starts the Avalonia app; the [ModuleInitializer] on
-        // ViewAdapter registers the adapter with ViewHelper.
-        // Under coverage instrumentation, module init order may vary,
-        // so we explicitly re-initialize if needed.
-        if (!ViewHelper.IsInitialized)
-            InvokeViewAdapterInitialize();
+    private readonly ViewAdapter _adapter = new();
 
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
+    [Test]
+    public async Task IsInDesignTool_ReturnsFalse_InTestContext()
+    {
+        await Assert.That(_adapter.IsInDesignTool).IsFalse();
+    }
+
+    [Test]
+    public async Task CanHandle_AvaloniaObject_ReturnsTrue()
+    {
+        await Assert.That(_adapter.CanHandle(new TextBlock())).IsTrue();
     }
 
     [Test]
     public async Task GetFirstNonGeneratedView_NotGenerated_ReturnsSameView()
     {
         var control = new TextBlock();
-        var result = ViewHelper.GetFirstNonGeneratedView(control);
+        var result = _adapter.GetFirstNonGeneratedView(control);
         var areSame = ReferenceEquals(control, result);
 
         await Assert.That(areSame).IsTrue();
@@ -42,7 +43,7 @@ public class ViewAdapterTests
         var outer = new ContentControl { Content = inner };
         View.SetIsGenerated(outer, true);
 
-        var result = ViewHelper.GetFirstNonGeneratedView(outer);
+        var result = _adapter.GetFirstNonGeneratedView(outer);
         var areSame = ReferenceEquals(inner, result);
 
         await Assert.That(areSame).IsTrue();
@@ -53,7 +54,7 @@ public class ViewAdapterTests
     {
         var control = new TextBlock();
         View.SetCommandParameter(control, "test-param");
-        var result = ViewHelper.GetCommandParameter(control);
+        var result = _adapter.GetCommandParameter(control);
 
         await Assert.That(result).IsEqualTo("test-param");
     }
@@ -62,28 +63,28 @@ public class ViewAdapterTests
     public async Task GetCommandParameter_NoParam_ReturnsNull()
     {
         var control = new TextBlock();
-        var result = ViewHelper.GetCommandParameter(control);
+        var result = _adapter.GetCommandParameter(control);
 
         await Assert.That(result).IsNull();
-    }
-
-    [Test]
-    public async Task GetDispatcher_ReturnsIDispatcher()
-    {
-        var control = new TextBlock();
-        var result = ViewHelper.GetDispatcher(control);
-
-        await Assert.That(result).IsNotNull();
-        await Assert.That(result).IsAssignableTo<IDispatcher>();
     }
 
     [Test]
     public async Task GetCommandParameter_ReturnsButtonCommandParameter_WhenAttachedNotSet()
     {
         var button = new Button { CommandParameter = "native-param" };
-        var result = ViewHelper.GetCommandParameter(button);
+        var result = _adapter.GetCommandParameter(button);
 
         await Assert.That(result).IsEqualTo("native-param");
+    }
+
+    [Test]
+    public async Task GetDispatcher_ReturnsIDispatcher()
+    {
+        var control = new TextBlock();
+        var result = _adapter.GetDispatcher(control);
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result).IsAssignableTo<IDispatcher>();
     }
 
     [Test]
@@ -91,8 +92,8 @@ public class ViewAdapterTests
     {
         var control1 = new TextBlock();
         var control2 = new TextBlock();
-        var d1 = ViewHelper.GetDispatcher(control1);
-        var d2 = ViewHelper.GetDispatcher(control2);
+        var d1 = _adapter.GetDispatcher(control1);
+        var d2 = _adapter.GetDispatcher(control2);
         var areEqual = d1.Equals(d2);
 
         await Assert.That(areEqual).IsTrue();
@@ -103,7 +104,8 @@ public class ViewAdapterTests
     {
         var window = new Window();
         window.Show();
-        var result = await ViewHelper.TryCloseAsync(window);
+        var result = await _adapter.TryCloseAsync(window);
+        window.Close();
 
         await Assert.That(result).IsTrue();
     }
@@ -111,62 +113,10 @@ public class ViewAdapterTests
     [Test]
     public async Task TryCloseAsync_NonWindowControl_ReturnsFalse()
     {
-        // ViewHelper.TryCloseAsync for a non-Window, non-Popup AvaloniaObject
-        // The adapter returns FalseTask
         var control = new TextBlock();
-        var result = await ViewHelper.TryCloseAsync(control);
+        var result = await _adapter.TryCloseAsync(control);
 
         await Assert.That(result).IsFalse();
-    }
-
-    [Test]
-    public async Task ModuleInitializer_RegistersAvaloniaAdapter()
-    {
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-        var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
-        var canHandle = dispatcher is not null && dispatcher.CheckAccess();
-
-        await Assert.That(canHandle).IsTrue();
-    }
-
-    [Test]
-    public async Task Initialize_CalledTwice_DoesNotCorruptState()
-    {
-        InvokeViewAdapterInitialize();
-
-        await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-        var button = new Button();
-        var dispatcher = ViewHelper.GetDispatcher(button);
-        var canHandle = dispatcher is not null && dispatcher.CheckAccess();
-
-        await Assert.That(canHandle).IsTrue();
-    }
-
-    [Test]
-    public async Task Reset_ThenReinitialize_WorksCorrectly()
-    {
-        ViewHelper.Reset();
-        try
-        {
-            await Assert.That(ViewHelper.IsInitialized).IsFalse();
-
-            InvokeViewAdapterInitialize();
-            await Assert.That(ViewHelper.IsInitialized).IsTrue();
-
-            var button = new Button();
-            var dispatcher = ViewHelper.GetDispatcher(button);
-            var canHandle = dispatcher is not null && dispatcher.CheckAccess();
-
-            await Assert.That(canHandle).IsTrue();
-        }
-        finally
-        {
-            if (!ViewHelper.IsInitialized)
-                InvokeViewAdapterInitialize();
-        }
     }
 
     [Test]
@@ -175,16 +125,9 @@ public class ViewAdapterTests
         var action = () =>
         {
             var tb = new TextBlock();
-            ViewHelper.ExecuteOnLayoutUpdated(tb, _ => { });
+            _adapter.ExecuteOnLayoutUpdated(tb, _ => { });
         };
 
         await Assert.That(action).ThrowsNothing();
-    }
-
-    private static void InvokeViewAdapterInitialize()
-    {
-        var viewAdapterType = typeof(View).Assembly.GetType("Caliburn.Light.Avalonia.ViewAdapter")!;
-        viewAdapterType.GetMethod("Initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)!
-            .Invoke(null, null);
     }
 }
