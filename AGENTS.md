@@ -8,7 +8,7 @@ Caliburn.Light is a magic-free MVVM framework supporting WPF, Avalonia, and WinU
 # Build
 dotnet build Caliburn.Light.slnx
 
-# Run all tests from solution root (runs Core, Coroutines, WPF, Avalonia, meta-package; excludes WinUI which requires -r win-x64)
+# Run all tests from solution root (runs Core, Coroutines, WPF, Avalonia; excludes WinUI which requires -r win-x64)
 dotnet test
 
 # Test each project individually (WinUI requires runtime identifier)
@@ -16,7 +16,6 @@ dotnet test --project tests/Caliburn.Light.Core.Tests
 dotnet test --project tests/Caliburn.Light.Coroutines.Tests
 dotnet test --project tests/Caliburn.Light.WPF.Tests
 dotnet test --project tests/Caliburn.Light.Avalonia.Tests
-dotnet test --project tests/Caliburn.Light.Tests
 dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
 
 # Single test class (TUnit uses --treenode-filter, NOT --filter)
@@ -40,7 +39,7 @@ dotnet pack Caliburn.Light.slnx --configuration Release -p:ContinuousIntegration
 ```
 
 - `.slnx` solution format. Central package management via `Directory.Packages.props`.
-- CI runs Core, Coroutines, and Avalonia tests on `ubuntu-latest`. WPF, meta-package, and WinUI tests require Windows (`Caliburn.Light.WPF.Tests` and `Caliburn.Light.Tests` target `net10.0-windows7.0`; `Caliburn.Light.WinUI.Tests` requires `-r win-x64`).
+- CI runs Core, Coroutines, and Avalonia tests on `ubuntu-latest`. WPF and WinUI tests require Windows (`Caliburn.Light.WPF.Tests` targets `net10.0-windows7.0`; `Caliburn.Light.WinUI.Tests` requires `-r win-x64`).
 
 ## Architecture
 
@@ -51,7 +50,7 @@ One shared core, one coroutines package, three platform packages, plus a depreca
 - **Caliburn.Light.WPF** — WPF integration: `WindowManager`, lifecycle classes, view location. Targets `net10.0-windows7.0`.
 - **Caliburn.Light.Avalonia** — Avalonia integration: same API surface as WPF. Targets `net10.0`. AOT-compatible.
 - **Caliburn.Light.WinUI** — WinUI integration: adds `ContentDialogLifecycle`, uses `AppWindow.Closing` for close guard support. Targets `net10.0-windows10.0.19041.0`. AOT-compatible.
-- **Caliburn.Light** — Deprecated meta-package; re-exports WPF and Coroutines, and is the only project with the legacy `SimpleContainer` IoC container as its own source. Targets `net10.0-windows7.0`. Covered by `tests/Caliburn.Light.Tests`, the only test project that references the meta-package.
+- **Caliburn.Light** — Deprecated meta-package with no source of its own; re-exports WPF and Coroutines. Targets `net10.0-windows7.0`. No test project references it.
 
 Each platform project references Core and mirrors the same patterns: `WindowLifecycle`, `PopupLifecycle`, `PageLifecycle`, `WindowManager`, `ViewModelLocator`, `View`, `ViewAdapter`, `BindingHelper`.
 

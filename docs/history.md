@@ -12,7 +12,7 @@ Conventions were removed and instead `ICommand` support was added.
 In 2025, version 6.0 brought major changes:
 - **.NET 8.0 only** - Modernized to target .NET 8.0
 - **Nullable enabled** - Full nullable reference type annotations
-- **Simplified API** - Removed `SimpleContainer` and `IoC` in favor of standard DI (see [SimpleContainer](simple-container.md))
+- **Simplified API** - Removed `SimpleContainer` and `IoC` in favor of standard DI
 - **Async lifecycle** - All lifecycle methods are now async
 - **ViewModelLocatorConfiguration** - Made view/ViewModel mappings explicit instead of convention-based
 

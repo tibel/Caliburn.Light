@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: Added `WeakEventHandler.RegisterActivatedWeak`, `RegisterDeactivatingWeak` and `RegisterDeactivatedWeak` for `IActivatable` activation events
 - Core: Added `WeakEventHandler.RegisterActivationProcessedWeak` for `IConductor.ActivationProcessed`
 - Core: Added `WeakEventHandler.RegisterAsyncCommandExecutingWeak` and `RegisterEventAggregatorExecutingWeak` for the static `AsyncCommand.Executing` and `EventAggregator.Executing` events
+- Docs: Added a migration guide from `SimpleContainer` to `Microsoft.Extensions.DependencyInjection`, covering the API mapping and the behavioral differences in keyed registrations, multiple registrations, scopes, disposal, and constructor selection
 
 ### Changed
 - Avalonia: Updated to 12.1.3
@@ -24,7 +25,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Avalonia: Updated `WindowManager` parent traversal to use `IParentAware`
 - WinUI: Updated `WindowManager` parent traversal to use `IParentAware`
 - Samples: Migrated custom parent implementations to framework-provided `ParentAware` support
-- Compatibility: Restored `SimpleContainer` to the legacy `Caliburn.Light` package for migration support, documented together with the other legacy APIs in a new migration page
 - Core: Preserved nullable view contexts in `ViewAware`; the default context is now represented by `null` instead of an internal sentinel value
 - Core: Updated `IViewAware.GetViews()` and `ViewAware.OnViewAttached`/`OnViewDetached` to expose nullable contexts
 - Core: `ValidationAdapter.GetErrors()` now returns a cached snapshot that is recomputed on each validation

@@ -74,8 +74,6 @@ Each UI platform has a custom `ITestExecutor` — **any test class that creates 
 
 Both Avalonia and WinUI executors use `volatile` on the `_initialized` field for correct double-checked locking, and suppress TUnit0031 for intentional `async void` lambdas in dispatcher callbacks — the completion is bridged via `TaskCompletionSource`. Do not remove either.
 
-`Caliburn.Light.Tests` targets `net10.0-windows7.0` because it references the meta-package, but it needs no executor at all: it covers `SimpleContainer`, which is platform-agnostic logic, and touches no control. Do not add `[TestExecutor<T>]` to classes there unless they start creating UI elements.
-
 ### Async UI event coordination
 
 For UI events that fire asynchronously (Opened, Closed, Loaded), use this pattern — adapt the handler delegate type to the actual event signature (`RoutedEventHandler`, `TypedEventHandler<T,TArgs>`, etc.):

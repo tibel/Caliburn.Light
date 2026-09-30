@@ -2,8 +2,6 @@
 
 This page covers the parts of Caliburn.Light that exist for migration from earlier versions: the deprecated meta-package and the APIs that were removed or obsoleted along the way. Nothing on this page is required for new applications — see [Basic Configuration](configuration.md) and [NuGet Packages](nuget.md) instead.
 
-The [SimpleContainer](simple-container.md) reference lives on its own page, since the type itself only ships in the deprecated meta-package.
-
 ## The Caliburn.Light meta-package
 
 `Caliburn.Light` is a deprecated compatibility package that forwards to `Caliburn.Light.WPF` and `Caliburn.Light.Coroutines`. New applications should reference the package for their platform instead:
@@ -14,14 +12,19 @@ The [SimpleContainer](simple-container.md) reference lives on its own page, sinc
 | WinUI 3 | `Caliburn.Light.WinUI` |
 | Avalonia | `Caliburn.Light.Avalonia` |
 
-Migrating away from the meta-package is a package reference change; no code changes are required:
+Migrating away from the meta-package is a package reference change; the framework code itself needs no changes:
 
 ```diff
 - <PackageReference Include="Caliburn.Light" Version="..." />
 + <PackageReference Include="Caliburn.Light.WPF" Version="..." />
 ```
 
-The platform packages ship the same API surface as the meta-package, with one exception: [SimpleContainer](simple-container.md) only exists in the meta-package.
+The three platform packages share one API surface. The meta-package forwards to `Caliburn.Light.WPF` **and** `Caliburn.Light.Coroutines`, so an application that used coroutines must add that reference explicitly:
+
+```diff
+  <PackageReference Include="Caliburn.Light.WPF" Version="..." />
++ <PackageReference Include="Caliburn.Light.Coroutines" Version="..." />
+```
 
 ## Migrating removed and obsoleted APIs
 
@@ -40,6 +43,7 @@ The following APIs are no longer part of the framework. Members marked as obsole
 | In-framework coroutines | 5.0.0 | The `Caliburn.Light.Coroutines` package, documented in [Coroutines](coroutines.md) |
 | Logging | 5.0.0 | Removed without replacement; use your preferred logging library |
 | `ViewModelTypeResolver` | 6.0.0 | `IViewModelLocator`/`ViewModelLocator` |
+| `SimpleContainer` | 6.0.0 | Any `IServiceProvider`; [Migrating from the legacy container](simple-container-migration.md) maps the API |
 | `IViewAware.ViewAttached`, `ViewAware.Views` | 6.0.0 | `ViewAware.OnViewAttached(view, context)`, `IViewAware.GetViews()` |
 | WinUI `SuspensionManager`, `NavigationService`, `FrameAdapter` | 6.0.0 | `PageLifecycle` wrapping a `Frame` |
 | WPF `IWindowManager.ShowPopup(viewModel, context)` | 6.1.0 | No direct replacement; host a `Popup` yourself and use `PopupLifecycle` for activation |
@@ -47,7 +51,7 @@ The following APIs are no longer part of the framework. Members marked as obsole
 | `ConductorBase<T>.EnsureItem` (obsoleted) | current release | Override item association in the concrete conductor |
 | `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` (obsoleted) | current release | Override active-item transitions in the concrete conductor |
 
-`SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and restored to the meta-package afterwards. It is documented in [SimpleContainer](simple-container.md) for applications that still depend on it.
+`SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.
 
 `EnsureItem` and `ChangeActiveItemAsync` were reduced to no-ops before being obsoleted. Applications that relied on overriding them should move the logic into the concrete conductor, as described in [Screens, Conductors and Composition](composition.md).
 
