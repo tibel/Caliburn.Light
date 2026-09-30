@@ -110,7 +110,7 @@ var optional = container.GetInstance<IMessageService>();
 var required = container.GetRequiredInstance<IMessageService>();
 ```
 
-`GetAllInstances<TService>()` returns all registrations for a service, including keyed ones. `IEnumerable<TService>` can also be requested through `GetInstance`. Resolving a single service throws only when the same service *and* key are registered more than once, because then the container cannot choose between the handlers. That error does not fire for distinct keys: `"home"` and `"search"` are separate registrations, so each resolves by its own key, and a keyless or mistyped request silently falls back to the first-registered one as described in [How keys are resolved](#how-keys-are-resolved). Use `GetAllInstances` when multiple implementations are expected.
+`GetAllInstances<TService>()` returns all registrations for a service, including keyed ones. `IEnumerable<TService>` can also be requested through `GetInstance`. Resolving a single service throws only when the same service *and* key are registered more than once, because then the container cannot choose between the handlers. That error does not fire for distinct keys: `"home"` and `"search"` are separate registrations, each resolving by its own key. A keyless request falls back to the first-registered one as described in [How keys are resolved](#how-keys-are-resolved). Use `GetAllInstances` when multiple implementations are expected.
 
 The container implements `IServiceProvider`. Its `GetService(Type)` implementation is explicit, so access it through the interface:
 
