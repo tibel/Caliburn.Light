@@ -286,7 +286,7 @@ public class SimpleContainer : IServiceProvider
     {
         ArgumentNullException.ThrowIfNull(service);
 
-        var entry = _entries.Find(x => x.Service == service && x.Key == key) ?? _entries.Find(x => x.Service == service);
+        var entry = FindEntry(service, key);
         if (entry is not null)
         {
             if (entry.Count != 1)
@@ -359,6 +359,15 @@ public class SimpleContainer : IServiceProvider
             .ToArray();
 
         return instances;
+    }
+
+    private ContainerEntry? FindEntry(Type service, string? key)
+    {
+        if (key is not null)
+            return _entries.Find(x => x.Service == service && x.Key == key);
+
+        return _entries.Find(x => x.Service == service && x.Key is null)
+               ?? _entries.Find(x => x.Service == service);
     }
 
     private ContainerEntry GetOrCreateEntry(Type service, string? key)

@@ -37,6 +37,38 @@ var home = container.GetRequiredInstance<IPageViewModel>("home");
 
 The non-generic overloads accept `Type` values for the service and implementation. Singleton registrations create their instance on first resolution and reuse it; per-request registrations create a new instance for each resolution. Instance registrations use the object supplied at registration time.
 
+### How keys are resolved
+
+A request that carries a key must match a registration exactly — service *and* key. A request that carries no key is resolved in two steps.
+
+**With a key**, there is no fallback. If no registration has both the service and that key, the service is simply not found, so `GetInstance` returns `null` and `GetRequiredInstance` throws:
+
+```csharp
+container.RegisterPerRequest<IPageViewModel, HomeViewModel>("home");
+container.RegisterPerRequest<IPageViewModel, SearchViewModel>("search");
+
+container.GetInstance<IPageViewModel>("home");     // exact match -> HomeViewModel
+container.GetInstance<IPageViewModel>("search");   // exact match -> SearchViewModel
+container.GetInstance<IPageViewModel>("missing");  // not found -> null
+container.GetInstance<IPageViewModel>();           // not found -> null (see below)
+```
+
+**Without a key**, the container prefers a registration that has no key. Only if the service has none does it fall back to the *first* registration for that service, whatever key that registration uses:
+
+```csharp
+container.RegisterPerRequest<IPageViewModel, HomeViewModel>("home");
+container.GetInstance<IPageViewModel>();           // no keyless registration -> falls back -> HomeViewModel
+```
+
+Two consequences worth planning around:
+
+- **A keyless request that relies on the fallback depends on registration order.** It always resolves to the *first* registration for the service, never the most recently added, so reordering registrations changes which instance a keyless request returns.
+- **The fallback is silent.** Register the keyless implementation explicitly rather than relying on a keyed one to satisfy keyless requests.
+
+An empty-string key is an ordinary key, distinct from having no key at all.
+
+`IsRegistered` is always an exact match on service and key, with no fallback. A service registered only under `"home"` therefore reports `IsRegistered<IPageViewModel>()` as `false` even though the keyless `GetInstance<IPageViewModel>()` above still resolves.
+
 ## Constructor injection
 
 When creating a registered implementation, the container selects its public constructor with the most parameters and resolves each parameter from the container:
@@ -78,7 +110,7 @@ var optional = container.GetInstance<IMessageService>();
 var required = container.GetRequiredInstance<IMessageService>();
 ```
 
-`GetAllInstances<TService>()` returns all registrations for a service. `IEnumerable<TService>` can also be requested through `GetInstance`. Resolving a single service with multiple matching registrations throws; use `GetAllInstances` when multiple implementations are expected.
+`GetAllInstances<TService>()` returns all registrations for a service, including keyed ones. `IEnumerable<TService>` can also be requested through `GetInstance`. Resolving a single service throws only when the same service *and* key are registered more than once, because then the container cannot choose between the handlers. That error does not fire for distinct keys: `"home"` and `"search"` are separate registrations, so each resolves by its own key, and a keyless or mistyped request silently falls back to the first-registered one as described in [How keys are resolved](#how-keys-are-resolved). Use `GetAllInstances` when multiple implementations are expected.
 
 The container implements `IServiceProvider`. Its `GetService(Type)` implementation is explicit, so access it through the interface:
 
