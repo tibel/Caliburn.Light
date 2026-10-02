@@ -93,6 +93,23 @@ Replacement patterns:
 Additional notes:
 - `UIContext.TaskScheduler` and `IUIContext` have no direct equivalent on `IDispatcher`. If your code relied on them, consider using the platform's dispatcher TaskScheduler or an app-owned abstraction tailored to your needs.
 
+### Migration checklist (3.x → current)
+
+Use this checklist to estimate and track migration work. It highlights what is typically mechanical versus what requires behavior decisions or remains application-owned.
+
+- [ ] **Package split** (mechanical) — Update package references. Use `Caliburn.Light.Core` plus the appropriate platform package (`Caliburn.Light.WPF`, `Caliburn.Light.WinUI`, or `Caliburn.Light.Avalonia`). Add `Caliburn.Light.Coroutines` only if you use the coroutine APIs.
+- [ ] **Startup composition and view-model mappings** (decision) — Replace any removed bootstrapper model with explicit app startup. Verify view location/view-model mapping is configured via `ViewModelLocator` and platform conventions; no legacy bootstrapper types remain.
+- [ ] **SimpleContainer and service-locator migration** (decision/app-owned) — `SimpleContainer` was removed. Port registrations and lifetimes to your chosen DI container. If you previously relied on service-locator patterns, refactor to constructor injection where feasible.
+- [ ] **Dispatcher, lifecycle, and view-awareness** (mix) — Migrate from `UIContext` to `IDispatcher` patterns (see [UI dispatching migration](#ui-dispatching-migration-idispatcher)). Update lifecycle/view-awareness usage to current platform APIs. Behavior around activation, close guards, and navigation differs by platform (see platform-specific docs).
+- [ ] **Coroutines** (mix) — Replace `Coroutine.FromTask(...)`/`AsCoTask(...)` legacy patterns with `Coroutine.From(...)` overloads where applicable. If you have custom co-tasks derived from removed base classes, implement `ICoTask` or `ICoTask<T>` directly (see [Coroutines](coroutines.md)). Ensure completion is raised exactly once with correct cancellation/error precedence.
+- [ ] **File dialogs responsibilities** (app/platform-owned) — Replace any old coroutine-based file dialog helpers with Task-based `IWindowManager` methods on your platform (see [File dialogs migration](#file-dialogs-migration) and [Window Manager](window-manager.md)). File dialogs are platform-specific, not part of Core.
+- [ ] **Configuration and assembly-name checks** (mechanical) — Update namespaces, using directives, and any assembly references to match current package names. Verify target frameworks align with your app (`net10.0` / platform-specific TFMs). Remove references to deprecated types (e.g. removed bootstrapper/container/dispatcher types).
+
+> **Notes:**
+> - **Mechanical** items are typically rename/reference updates.
+> - **Decision** items require choosing how to structure startup/DI/lifetimes.
+> - **App-owned** behavior (e.g. container lifetimes, view mapping, dialog ownership) is intentionally not auto-upgraded; test these areas explicitly after migration.
+
 ### File dialogs migration
 
 Older versions of Caliburn.Light provided coroutine-based file dialog helpers. In current versions, file dialogs are exposed as Task-based methods on `IWindowManager` (platform-specific implementations), not as coroutines in the core framework.
