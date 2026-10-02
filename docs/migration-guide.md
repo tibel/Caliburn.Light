@@ -62,3 +62,34 @@ Coroutines moved out of the framework in 5.0.0 and are back as the `Caliburn.Lig
 - `ICoTask.BeginExecute` takes a `CommandExecutionContext` instead of a `CoroutineExecutionContext`, so custom `ICoTask` implementations no longer compile.
 - The public `CoTask` base class is gone and `CoTaskDecorator` is now internal, so there is no longer a public base class to derive from. Implement `ICoTask` or `ICoTask<T>` directly.
 - `OverrideCancel<TResult>()` no longer defaults its result argument, so `coTask.OverrideCancel<string>()` must become `coTask.OverrideCancel(default(string))`. The non-generic `OverrideCancel()` is unchanged.
+
+### UI dispatching migration (IDispatcher)
+
+The framework no longer has `UIContext`. In modern Caliburn.Light, UI thread marshaling is handled by `IDispatcher`, which is defined in Caliburn.Light.Core and implemented by the platform-specific dispatchers.
+
+To obtain an `IDispatcher`:
+- When a view is attached, use `Caliburn.Light.ViewHelper.GetDispatcher(view)` (or platform-specific `View.GetDispatcherFrom` helpers). See [UI Thread Dispatching](dispatching.md) for more details.
+- If no view is attached, do not use `Caliburn.Light.CurrentThreadDispatcher.Instance` as a fallback for UI thread marshaling—it always executes work on the current thread with no marshaling, and its `SwitchTo()`/`BeginInvoke` complete inline. Instead, use a dispatcher from your application shell/view, or resolve `IDispatcher` from the platform context your app already has (e.g. the main window/view's dispatcher). See [UI Thread Dispatching](dispatching.md) for guidance.
+
+Notes about behavior:
+- `IDispatcher.BeginInvoke(Action)` returns `void` (unlike `UIContext.Run`, which returned a `Task`). Exceptions thrown by the dispatched action surface on the dispatcher thread unless you explicitly await the work.
+- Behavior differs by implementation: platform dispatchers (WPF, Avalonia, WinUI) always enqueue work; `CurrentThreadDispatcher` always executes work inline on the calling thread with no marshaling. WinUI enqueues can also be rejected (e.g. during shutdown), in which case the work may not execute. Always consider using `dispatcher.CheckAccess()` when appropriate.
+- `UIContext.VerifyAccess()` maps to `dispatcher.CheckAccess()` (but `VerifyAccess()` threw if not on the UI thread, whereas `CheckAccess()` only returns a boolean; if you need the throwing behavior, check the result and throw explicitly).
+
+Replacement patterns:
+- **Continue on the UI thread (async continuation):** `await dispatcher.SwitchTo();` (or your platform's equivalent).
+- **Fire-and-forget UI work:** `dispatcher.BeginInvoke(action);`. Be aware that exceptions from the action will not be propagated to the caller.
+- **Await a dispatched callback that returns a value:** In an async method, switch to the UI thread and then compute the result:
+  ```csharp
+  static async Task<T> RunOnUiThreadAsync<T>(IDispatcher dispatcher, Func<T> func)
+  {
+      await dispatcher.SwitchTo();
+      return func();
+  }
+  ```
+  This propagates exceptions and results to the caller. If `func` is synchronous, you can also return it directly after switching. Use `ConfigureAwait(false)` when the continuation doesn't need to be on the UI thread.
+- **Migrating from `UIContext.Run`:** There is no direct 1:1 mapping for all `UIContext.Run` overloads. For fire-and-forget cases, use `BeginInvoke`. For cases where you need the result or exception propagation, switch to the UI thread in an async method and execute the work. The replacement depends on whether you need fire-and-forget execution, return a value, or propagate exceptions/cancellation.
+
+Additional notes:
+- `UIContext.TaskScheduler` and `IUIContext` have no direct equivalent on `IDispatcher`. If your code relied on them, consider using the platform's dispatcher TaskScheduler or an app-owned abstraction tailored to your needs.
+
