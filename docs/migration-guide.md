@@ -39,7 +39,7 @@ The following APIs are no longer part of the framework. Members marked as obsole
 | `IServiceLocator` | 4.0.0 | `IServiceProvider` |
 | `IActivate`, `IDeactivate` | 4.0.0 | `IActivable` |
 | `IParent`, `IConductActiveItem`, `IScreen` | 5.0.0 | `IParentAware`/`ParentAware`, `IConductor`, `Screen` |
-| `dialogResult` on `TryClose()` | 5.0.0 | `CloseResult<T>` |
+| `dialogResult` on `TryClose()` | 5.0.0 | Removed without replacement |
 | In-framework coroutines | 5.0.0 | The `Caliburn.Light.Coroutines` package, documented in [Coroutines](coroutines.md) |
 | Logging | 5.0.0 | Removed without replacement; use your preferred logging library |
 | `ViewModelTypeResolver` | 6.0.0 | `IViewModelLocator`/`ViewModelLocator` |

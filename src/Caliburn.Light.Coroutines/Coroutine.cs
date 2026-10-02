@@ -74,8 +74,9 @@ public static class Coroutine
     /// </summary>
     /// <param name="enumerator">The enumerator.</param>
     /// <returns>The coroutine that encapsulates the sequence.</returns>
-    public static ICoTask AsCoTask(this IEnumerator<ICoTask> enumerator)
+    public static ICoTask From(IEnumerator<ICoTask> enumerator)
     {
+        ArgumentNullException.ThrowIfNull(enumerator);
         return new SequentialCoTask(enumerator);
     }
 
@@ -84,8 +85,9 @@ public static class Coroutine
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The coroutine that encapsulates the action.</returns>
-    public static ICoTask AsCoTask(this Action action)
+    public static ICoTask From(Action action)
     {
+        ArgumentNullException.ThrowIfNull(action);
         return new DelegateCoTask(action);
     }
 
@@ -95,30 +97,56 @@ public static class Coroutine
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action.</param>
     /// <returns>The coroutine that encapsulates the action.</returns>
-    public static ICoTask<TResult> AsCoTask<TResult>(this Func<TResult> action)
+    public static ICoTask<TResult> From<TResult>(Func<TResult> action)
     {
+        ArgumentNullException.ThrowIfNull(action);
         return new DelegateCoTask<TResult>(action);
     }
 
     /// <summary>
-    /// Encapsulates a <see cref="Task"/> inside a coroutine.
+    /// Creates a coroutine from a lazy Task factory.
     /// </summary>
-    /// <param name="task">The task.</param>
-    /// <returns>The coroutine that encapsulates the task.</returns>
-    public static ICoTask AsCoTask(this Task task)
+    /// <param name="operation">The operation that produces the Task when executed.</param>
+    /// <returns>The coroutine that encapsulates the operation.</returns>
+    public static ICoTask From(Func<CommandExecutionContext, Task> operation)
     {
-        return new TaskDecoratorCoTask(task);
+        ArgumentNullException.ThrowIfNull(operation);
+        return new TaskFactoryCoTask(operation);
     }
 
     /// <summary>
-    /// Encapsulates a <see cref="Task&lt;TResult&gt;"/> inside a coroutine.
+    /// Creates a coroutine from a lazy Task factory.
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    /// <param name="task">The task.</param>
-    /// <returns>The coroutine that encapsulates the task.</returns>
-    public static ICoTask<TResult> AsCoTask<TResult>(this Task<TResult> task)
+    /// <param name="operation">The operation that produces the Task when executed.</param>
+    /// <returns>The coroutine that encapsulates the operation.</returns>
+    public static ICoTask<TResult> From<TResult>(Func<CommandExecutionContext, Task<TResult>> operation)
     {
-        return new TaskDecoratorCoTask<TResult>(task);
+        ArgumentNullException.ThrowIfNull(operation);
+        return new TaskFactoryCoTask<TResult>(operation);
+    }
+
+    /// <summary>
+    /// Creates a coroutine from a lazy Task factory.
+    /// </summary>
+    /// <param name="operation">The operation that produces the Task when executed.</param>
+    /// <returns>The coroutine that encapsulates the operation.</returns>
+    public static ICoTask From(Func<Task> operation)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+        return new TaskFactoryCoTask(_ => operation());
+    }
+
+    /// <summary>
+    /// Creates a coroutine from a lazy Task factory.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="operation">The operation that produces the Task when executed.</param>
+    /// <returns>The coroutine that encapsulates the operation.</returns>
+    public static ICoTask<TResult> From<TResult>(Func<Task<TResult>> operation)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+        return new TaskFactoryCoTask<TResult>(_ => operation());
     }
 
     /// <summary>

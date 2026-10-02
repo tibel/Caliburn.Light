@@ -9,7 +9,7 @@ public class DelegateCoTaskTests
     {
         var executed = false;
 
-        await new Action(() => executed = true).AsCoTask().ExecuteAsync();
+        await Coroutine.From(() => executed = true).ExecuteAsync();
 
         await Assert.That(executed).IsTrue();
     }
@@ -19,7 +19,7 @@ public class DelegateCoTaskTests
     {
         var error = new InvalidOperationException();
 
-        await Assert.That(async () => await new Action(() => throw error).AsCoTask().ExecuteAsync())
+        await Assert.That(async () => await Coroutine.From(() => throw error).ExecuteAsync())
             .Throws<InvalidOperationException>();
     }
 
@@ -28,20 +28,20 @@ public class DelegateCoTaskTests
     {
         var error = new InvalidOperationException();
 
-        await Assert.That(async () => await new Func<int>(() => throw error).AsCoTask().ExecuteAsync())
+        await Assert.That(async () => await Coroutine.From(() => throw error).ExecuteAsync())
             .Throws<InvalidOperationException>();
     }
 
     [Test]
     public async Task ActionAdapter_NullAction_ThrowsArgumentNullException()
     {
-        await Assert.That(() => ((Action)null!).AsCoTask()).Throws<ArgumentNullException>();
+        await Assert.That(() => Coroutine.From((Action)null!)).Throws<ArgumentNullException>();
     }
 
     [Test]
     public async Task FuncAdapter_NullFunction_ThrowsArgumentNullException()
     {
-        await Assert.That(() => ((Func<int>)null!).AsCoTask()).Throws<ArgumentNullException>();
+        await Assert.That(() => Coroutine.From((Func<int>)null!)).Throws<ArgumentNullException>();
     }
 
     [Test]

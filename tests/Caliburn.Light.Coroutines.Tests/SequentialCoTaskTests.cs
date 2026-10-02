@@ -13,7 +13,7 @@ public class SequentialCoTaskTests
             yield break;
         }
 
-        await Sequence().GetEnumerator().AsCoTask().ExecuteAsync();
+        await Coroutine.From(Sequence().GetEnumerator()).ExecuteAsync();
     }
 
     [Test]
@@ -22,11 +22,11 @@ public class SequentialCoTaskTests
         var steps = new List<int>();
         IEnumerator<ICoTask> sequence()
         {
-            yield return new Action(() => steps.Add(1)).AsCoTask();
-            yield return new Action(() => steps.Add(2)).AsCoTask();
+            yield return Coroutine.From(() => steps.Add(1));
+            yield return Coroutine.From(() => steps.Add(2));
         }
 
-        await sequence().AsCoTask().ExecuteAsync();
+        await Coroutine.From(sequence()).ExecuteAsync();
 
         await Assert.That(steps.Count).IsEqualTo(2);
         await Assert.That(steps[0]).IsEqualTo(1);
@@ -40,10 +40,10 @@ public class SequentialCoTaskTests
         IEnumerator<ICoTask> sequence()
         {
             yield return SimpleCoTask.Failed(new InvalidOperationException());
-            yield return new Action(() => executed = true).AsCoTask();
+            yield return Coroutine.From(() => executed = true);
         }
 
-        await Assert.That(async () => await sequence().AsCoTask().ExecuteAsync())
+        await Assert.That(async () => await Coroutine.From(sequence()).ExecuteAsync())
             .Throws<InvalidOperationException>();
 
         await Assert.That(executed).IsFalse();
@@ -58,7 +58,7 @@ public class SequentialCoTaskTests
             throw new InvalidOperationException("The sequence should stop.");
         }
 
-        var task = Sequence().GetEnumerator().AsCoTask().ExecuteAsync();
+        var task = Coroutine.From(Sequence().GetEnumerator()).ExecuteAsync();
 
         await Assert.That(task.IsCanceled).IsTrue();
     }
@@ -70,10 +70,10 @@ public class SequentialCoTaskTests
         static IEnumerable<ICoTask> Sequence(Action action)
         {
             yield return null!;
-            yield return action.AsCoTask();
+            yield return Coroutine.From(action);
         }
 
-        await Sequence(() => executed = true).GetEnumerator().AsCoTask().ExecuteAsync();
+        await Coroutine.From(Sequence(() => executed = true).GetEnumerator()).ExecuteAsync();
 
         await Assert.That(executed).IsTrue();
     }
@@ -81,7 +81,7 @@ public class SequentialCoTaskTests
     [Test]
     public async Task SequentialCoroutine_EnumeratorException_Propagates()
     {
-        await Assert.That(async () => await new ThrowingEnumerator().AsCoTask().ExecuteAsync())
+        await Assert.That(async () => await Coroutine.From(new ThrowingEnumerator()).ExecuteAsync())
             .Throws<InvalidOperationException>();
     }
 
@@ -93,10 +93,10 @@ public class SequentialCoTaskTests
         static IEnumerable<ICoTask> Sequence(TestCoTask first, Action second)
         {
             yield return first;
-            yield return second.AsCoTask();
+            yield return Coroutine.From(second);
         }
 
-        var task = Sequence(first, () => secondExecuted = true).GetEnumerator().AsCoTask().ExecuteAsync();
+        var task = Coroutine.From(Sequence(first, () => secondExecuted = true).GetEnumerator()).ExecuteAsync();
         first.Complete();
 
         await task;

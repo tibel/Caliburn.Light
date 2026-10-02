@@ -33,10 +33,10 @@ public class UserWorkflow
 {
     public IEnumerator<ICoTask> LoadUser()
     {
-        yield return new Action(() => IsBusy = true).AsCoTask();
-        yield return LoadUserAsync().AsCoTask();
-        yield return new Action(() => IsBusy = false).AsCoTask();
-        yield return new Action(() => DetailsVisible = true).AsCoTask();
+        yield return Coroutine.From(() => IsBusy = true);
+        yield return Coroutine.From(LoadUserAsync);
+        yield return Coroutine.From(() => IsBusy = false);
+        yield return Coroutine.From(() => DetailsVisible = true);
     }
 
     private bool IsBusy { get; set; }
@@ -53,7 +53,7 @@ Then execute it with `ExecuteAsync()`:
 
 ```csharp
 var workflow = new UserWorkflow();
-await workflow.LoadUser().AsCoTask().ExecuteAsync();
+    await Coroutine.From(workflow.LoadUser()).ExecuteAsync();
 ```
 
 This preserves a sequential flow while still allowing asynchronous steps in between.
@@ -63,30 +63,34 @@ This preserves a sequential flow while still allowing asynchronous steps in betw
 The `Coroutine` helper class wraps common patterns without requiring custom implementations:
 
 ```csharp
-ICoTask syncStep = new Action(() => Console.WriteLine("Hello")).AsCoTask();
-ICoTask asyncStep = LoadDataAsync().AsCoTask();
-ICoTask sequence = GetSteps().AsCoTask();
+ICoTask syncStep = Coroutine.From(() => Console.WriteLine("Hello"));
+ICoTask asyncStep = Coroutine.From(LoadDataAsync);
+ICoTask sequence = Coroutine.From(GetSteps());
 
 IEnumerator<ICoTask> GetSteps()
 {
-    yield return new Action(() => Console.WriteLine("Step 1")).AsCoTask();
-    yield return LoadDataAsync().AsCoTask();
-    yield return new Action(() => Console.WriteLine("Step 2")).AsCoTask();
+    yield return Coroutine.From(() => Console.WriteLine("Step 1"));
+    yield return Coroutine.From(LoadDataAsync);
+    yield return Coroutine.From(() => Console.WriteLine("Step 2"));
 }
 ```
 
 The following adapters are available:
 
 - `Action` and `Func<TResult>`
-- `Task` and `Task<TResult>`
+- `Func<Task>` and `Func<Task<TResult>>` method groups or lambdas
+- `Func<CommandExecutionContext, Task>`, `Func<CommandExecutionContext, Task<TResult>>`, `Func<Task>`, and `Func<Task<TResult>>` (lazy factories that are invoked when the co-task begins executing)
 - `IEnumerator<ICoTask>` sequences
 
 ## Implementing `ICoTask`
 
 If you need custom behavior, implement `ICoTask` and raise `Completed` when the work finishes. The framework treats both synchronous and asynchronous completion the same way.
 
+When implementing `ICoTask` for async work, **never** use `async void` methods as an event handler substitute. Instead, execute the async work inside `BeginExecute`, observe the returned `Task` (by awaiting it or attaching continuations), and raise `Completed` exactly once when the Task completes. The example below shows the correct pattern:
+
 ```csharp
 using System;
+using System.Threading.Tasks;
 using Caliburn.Light;
 
 public sealed class BusyIndicatorCoTask : ICoTask
@@ -104,12 +108,14 @@ public sealed class BusyIndicatorCoTask : ICoTask
 
     public void BeginExecute(CommandExecutionContext context)
     {
-        // Execute the work here.
-        // Once finished, notify the coroutine engine.
+        // Show or hide the busy indicator.
         Completed?.Invoke(this, new CoTaskCompletedEventArgs(null, false));
     }
+
 }
 ```
+
+If you prefer to express async work with the coroutine API without implementing `ICoTask` yourself, you can also use the lazy Task factory adapters described in the [Adapters and wrappers](#adapters-and-wrappers) section.
 
 `CoTaskCompletedEventArgs` carries the final status:
 
@@ -123,10 +129,9 @@ The sequential co-task engine stops on error or cancellation and continues only 
 Coroutines provide decorators for recovery and continuation logic:
 
 ```csharp
-ICoTask workflow = LoadUserAsync()
-    .AsCoTask()
-    .Rescue<HttpRequestException>(ex => ShowError(ex).AsCoTask())
-    .WhenCancelled(() => RetryPrompt().AsCoTask());
+ICoTask workflow = Coroutine.From(LoadUserAsync)
+    .Rescue<HttpRequestException>(ex => Coroutine.From(() => ShowError(ex)))
+    .WhenCancelled(() => Coroutine.From(RetryPrompt));
 
 await workflow.ExecuteAsync();
 ```
@@ -138,6 +143,15 @@ Useful helpers include:
 - `WhenCancelled(...)` — run a fallback coroutine when the current one is canceled
 - `OverrideCancel(...)` — suppress cancellation and continue with a replacement result when needed
 - `SimpleCoTask.Succeeded()`, `Cancelled()`, and `Failed(exception)` — create trivial coroutines
+
+## Completion semantics
+
+When a co-task completes, `CoTaskCompletedEventArgs` indicates the final outcome. The sequential executor interprets completion as follows:
+- If `WasCancelled` is `true`, the coroutine is treated as cancelled (and `Error` may be ignored).
+- If `Error` is non-null and `WasCancelled` is `false`, the coroutine is treated as failed with that exception.
+- Otherwise the coroutine succeeded. If it is an `ICoTask<TResult>`, the result is read from `Result`.
+
+**Important:** Each co-task must raise `Completed` exactly once per execution. If both an error and cancellation apply, cancellation takes precedence (as reflected by the executor's mapping to `TaskCanceledException`). Implementations should be deterministic about which one they signal. For Task-based adapters, `OperationCanceledException` from the awaited Task is translated to `WasCancelled = true`; other exceptions become `Error`. The framework does not require that `Task.IsCanceled` is set—an `OperationCanceledException` is sufficient.
 
 Note that `Rescue` (with the default `cancelCoTask: true`) and `WhenCancelled` keep the overall coroutine marked as cancelled even when the fallback succeeds — so `await workflow.ExecuteAsync()` above throws `TaskCanceledException`. Use `.OverrideCancel()`, or `.OverrideCancel<TResult>(...)` when a result is involved, to turn the cancelled outcome into a successful one instead.
 
