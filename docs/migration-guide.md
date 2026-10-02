@@ -93,3 +93,13 @@ Replacement patterns:
 Additional notes:
 - `UIContext.TaskScheduler` and `IUIContext` have no direct equivalent on `IDispatcher`. If your code relied on them, consider using the platform's dispatcher TaskScheduler or an app-owned abstraction tailored to your needs.
 
+### File dialogs migration
+
+Older versions of Caliburn.Light provided coroutine-based file dialog helpers. In current versions, file dialogs are exposed as Task-based methods on `IWindowManager` (platform-specific implementations), not as coroutines in the core framework.
+
+- **WPF**: Replace any old open/save file dialog coroutines with `IWindowManager.ShowOpenFileDialog(OpenFileDialogOptions, ownerViewModel)`, `ShowSaveFileDialog(SaveFileDialogOptions, ownerViewModel)`, and `ShowOpenFolderDialog(OpenFolderDialogOptions, ownerViewModel)`. All return `Task` results (not `ICoTask`).
+- **WinUI**: Use `ShowFileOpenPickerAsync(FileOpenPickerOptions, ownerViewModel)`, `ShowFileSavePickerAsync(FileSavePickerOptions, ownerViewModel)`, and `ShowFolderPickerAsync(FolderPickerOptions, ownerViewModel)`.
+- **Avalonia**: Use `ShowOpenFilePickerAsync(FilePickerOpenOptions, ownerViewModel)`, `ShowSaveFilePickerAsync(FilePickerSaveOptions, ownerViewModel)`, and `ShowOpenFolderPickerAsync(FolderPickerOpenOptions, ownerViewModel)`.
+
+Configure dialogs via the platform-specific options classes. File dialog APIs remain platform-specific (not in Core), aligning with UI platform capabilities. See [Window Manager](window-manager.md) for examples and API details.
+
