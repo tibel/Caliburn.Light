@@ -19,7 +19,7 @@ Migrating away from the meta-package is a package reference change; the framewor
 + <PackageReference Include="Caliburn.Light.WPF" Version="..." />
 ```
 
-The three platform packages share one API surface. The meta-package forwards to `Caliburn.Light.WPF` **and** `Caliburn.Light.Coroutines`, so an application that used coroutines must add that reference explicitly:
+The three platform packages share a common API surface, alongside platform-specific APIs and behavior. The meta-package forwards to `Caliburn.Light.WPF` **and** `Caliburn.Light.Coroutines`, so an application that used coroutines must add that reference explicitly:
 
 ```diff
   <PackageReference Include="Caliburn.Light.WPF" Version="..." />
@@ -93,9 +93,9 @@ Replacement patterns:
 Additional notes:
 - `UIContext.TaskScheduler` and `IUIContext` have no direct equivalent on `IDispatcher`. If your code relied on them, consider using the platform's dispatcher TaskScheduler or an app-owned abstraction tailored to your needs.
 
-### Migration checklist (3.x → current)
+### Migration checklist (to the latest version)
 
-Use this checklist to estimate and track migration work. It highlights what is typically mechanical versus what requires behavior decisions or remains application-owned.
+Use the items relevant to your starting version and the APIs your application uses. The checklist highlights what is typically mechanical versus what requires behavior decisions or remains application-owned.
 
 - [ ] **Package split** (mechanical) — Update package references. Use `Caliburn.Light.Core` plus the appropriate platform package (`Caliburn.Light.WPF`, `Caliburn.Light.WinUI`, or `Caliburn.Light.Avalonia`). Add `Caliburn.Light.Coroutines` only if you use the coroutine APIs.
 - [ ] **Startup composition and view-model mappings** (decision) — Replace any removed bootstrapper model with explicit app startup. Verify view location/view-model mapping is configured via `ViewModelLocator` and platform conventions; no legacy bootstrapper types remain.
@@ -119,4 +119,3 @@ Older versions of Caliburn.Light provided coroutine-based file dialog helpers. I
 - **Avalonia**: Use `ShowOpenFilePickerAsync(FilePickerOpenOptions, ownerViewModel)`, `ShowSaveFilePickerAsync(FilePickerSaveOptions, ownerViewModel)`, and `ShowOpenFolderPickerAsync(FolderPickerOpenOptions, ownerViewModel)`.
 
 Configure dialogs via the platform-specific options classes. File dialog APIs remain platform-specific (not in Core), aligning with UI platform capabilities. See [Window Manager](window-manager.md) for examples and API details.
-

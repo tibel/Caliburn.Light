@@ -171,7 +171,7 @@ Three differences matter:
 
 - **A scope resolves scoped services, it does not accept new ones.** `AddScoped<T>` registrations live in the provider. `SimpleContainer` let a child register a new service locally; there is no equivalent, so such registrations have to move into the `ServiceCollection`.
 - **A scoped service is one instance per scope**, disposed when the scope is disposed. `SimpleContainer` had no scoped lifetime and no disposal, so a `SimpleContainer` child shared the parent's singletons and created a fresh per-request instance on every resolution.
-- **Resolving a scoped service from the root provider works by default**, which makes an accidental scope leak quiet. Turn on `ValidateScopes` and `ValidateOnBuild` while migrating so the provider reports missing and mis-scoped registrations at startup instead:
+- **Resolving a scoped service from the root provider works by default**, which makes an accidental scope leak quiet. Enable `ValidateScopes` and `ValidateOnBuild` during development so the provider reports missing and mis-scoped registrations at startup:
 
 ```csharp
 var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions
@@ -180,8 +180,6 @@ var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions
     ValidateScopes = true
 });
 ```
-
-Keep those checks off in release builds; they add startup cost.
 
 ## Disposal
 
