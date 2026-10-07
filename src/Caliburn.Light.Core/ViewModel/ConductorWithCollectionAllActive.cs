@@ -91,6 +91,7 @@ public partial class Conductor<T>
                 if (item is null)
                     return;
 
+                // ensure item is in the collection
                 var index = _items.IndexOf(item);
                 if (index < 0)
                     _items.Add(item);
@@ -127,8 +128,7 @@ public partial class Conductor<T>
             /// </summary>
             /// <param name="newItem">The item to ensure.</param>
             /// <returns>The item to be activated.</returns>
-            [Obsolete("Override item association in the concrete conductor instead.", true)]
-            [EditorBrowsable(EditorBrowsableState.Never)]
+            [Obsolete("Override item association in the concrete conductor instead.")]
             protected override T EnsureItem(T newItem) => base.EnsureItem(newItem);
         }
     }

@@ -64,6 +64,10 @@ public partial class Conductor<T>
                     return;
                 }
 
+                // ensure item is in the collection
+                if (item is not null && _items.IndexOf(item) < 0)
+                    _items.Add(item);
+
                 await ChangeActiveItemAsync(item, false);
             }
 
@@ -193,30 +197,12 @@ public partial class Conductor<T>
                 }
             }
 
-            private new async Task ChangeActiveItemAsync(T? newItem, bool closePrevious)
-            {
-                if (ActiveItem is IActivatable deactivator)
-                    await deactivator.DeactivateAsync(closePrevious);
-
-                if (newItem is not null && _items.IndexOf(newItem) < 0)
-                    _items.Add(newItem);
-
-                if (IsActive && newItem is IActivatable activator)
-                    await activator.ActivateAsync();
-
-                SetActiveItem(newItem);
-
-                if (newItem is not null)
-                    OnActivationProcessed(newItem, true);
-            }
-
             /// <summary>
             /// Ensures that an item is ready to be activated.
             /// </summary>
             /// <param name="newItem">The item to ensure.</param>
             /// <returns>The item to be activated.</returns>
-            [Obsolete("Override item association in the concrete conductor instead.", true)]
-            [EditorBrowsable(EditorBrowsableState.Never)]
+            [Obsolete("Override item association in the concrete conductor instead.")]
             protected override T EnsureItem(T newItem) => base.EnsureItem(newItem);
         }
     }

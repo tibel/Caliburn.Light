@@ -24,19 +24,22 @@ public abstract class ConductorBaseWithActiveItem<T> : ConductorBase<T>, IHaveAc
     object? IHaveActiveItem.ActiveItem => ActiveItem;
 
     /// <summary>
-    /// Sets the active item without any activation or deactivation.
-    /// </summary>
-    /// <param name="newItem">The new item to set as active.</param>
-    /// <returns>True if the active item was changed; otherwise, false.</returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected bool SetActiveItem(T? newItem) => SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
-
-    /// <summary>
     /// Changes the active item.
     /// </summary>
     /// <param name="newItem">The new item to activate.</param>
     /// <param name="closePrevious">Indicates whether or not to close the previous active item.</param>
-    [Obsolete("Override active-item transitions in the concrete conductor instead.", true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected Task ChangeActiveItemAsync(T? newItem, bool closePrevious) => Task.CompletedTask;
+    protected async Task ChangeActiveItemAsync(T? newItem, bool closePrevious)
+    {
+        if (ActiveItem is IActivatable deactivator)
+            await deactivator.DeactivateAsync(closePrevious);
+
+        if (IsActive && newItem is IActivatable activator)
+            await activator.ActivateAsync();
+
+        SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
+
+        if (newItem is not null)
+            OnActivationProcessed(newItem, true);
+    }
 }

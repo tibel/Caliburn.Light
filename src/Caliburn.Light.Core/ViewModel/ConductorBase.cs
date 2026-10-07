@@ -79,7 +79,6 @@ public abstract class ConductorBase<T> : Screen, IConductor where T : class
     /// </summary>
     /// <param name="newItem">The item to ensure.</param>
     /// <returns>The item to be activated.</returns>
-    [Obsolete("Override item association in the concrete conductor instead.", true)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Obsolete("Override item association in the concrete conductor instead.")]
     protected virtual T EnsureItem(T newItem) => newItem;
 }
