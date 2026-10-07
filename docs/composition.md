@@ -22,7 +22,7 @@ In an application like Visual Studio, you would have both a ScreenConductor mana
 Caliburn.Light breaks down the notion of screen activation into several interfaces:
 
 - **IActivatable** – Combines activation and deactivation. Provides `ActivateAsync()` and `DeactivateAsync(bool close)` methods, `IsActive` property, and three events: `Activated`, `Deactivating`, and `Deactivated`.
-- **ICloseGuard** – Inherits from `IClose` and indicates that the implementer may need to cancel a close operation. Has one method: `CanCloseAsync()` which returns a `Task<bool>`.
+- **ICloseGuard** – Inherits from `IClose`, so an implementation must provide `TryCloseAsync()`, and adds `CanCloseAsync()` which returns a `Task<bool>` to cancel a close operation
 
 Additional helper interfaces:
 
@@ -152,8 +152,18 @@ public class ShellViewModel : Conductor<object>
 {
     public ShellViewModel()
     {
+        ShowPageOneCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(() => ShowPageOneAsync())
+            .Build();
+        ShowPageTwoCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(() => ShowPageTwoAsync())
+            .Build();
+
         ShowPageOneAsync();
     }
+
+    public ICommand ShowPageOneCommand { get; }
+    public ICommand ShowPageTwoCommand { get; }
 
     public async Task ShowPageOneAsync()
     {
@@ -186,6 +196,15 @@ View:
 public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
 {
     private int _count = 1;
+
+    public ShellViewModel()
+    {
+        OpenTabCommand = DelegateCommandBuilder.NoParameter()
+            .OnExecute(() => OpenTabAsync())
+            .Build();
+    }
+
+    public ICommand OpenTabCommand { get; }
 
     public async Task OpenTabAsync()
     {
@@ -254,9 +273,17 @@ You can provide a custom close strategy:
 ```csharp
 public class MyCloseStrategy<T> : ICloseStrategy<T> where T : class
 {
-    public async Task<CloseResult<T>> ExecuteAsync(IReadOnlyList<T> toClose)
+    public Task<CloseResult<T>> ExecuteAsync(IReadOnlyList<T> toClose)
     {
         // Custom logic to determine which items can close
+        var canClose = Array.TrueForAll(toClose, item => ShouldClose(item));
+        return Task.FromResult(new CloseResult<T>(canClose, toClose));
+    }
+
+    private bool ShouldClose(T item)
+    {
+        // Inspect the item; return false to veto its close
+        return true;
     }
 }
 ```

@@ -16,7 +16,6 @@ Caliburn.Light.Coroutines provides an `ICoTask`-based coroutine system that lets
   - `OverrideCancel` — suppress cancellation and continue normally
 - **Adapters**: Wrap existing constructs as coroutines with `Coroutine.From()`:
   - `Action` and `Func<TResult>` delegates
-  - `Task` and `Task<TResult>`
   - `Func<CommandExecutionContext, Task>`, `Func<CommandExecutionContext, Task<TResult>>`, `Func<Task>`, and `Func<Task<TResult>>`
   - `IEnumerator<ICoTask>` sequences
 - **`SimpleCoTask`**: Factory for trivial coroutines — `Succeeded()`, `Cancelled()`, `Failed(exception)`

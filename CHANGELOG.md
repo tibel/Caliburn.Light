@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: Made `ViewAware` inherit from `ParentAware`
 - Core: Added protected `ViewAware.GetAttachedView()` convenience accessor for derived view models
 - Reintroduced `Caliburn.Light.Coroutines` for compatibility and easier migration from earlier Caliburn.Light versions
+- Coroutines: Unified the adapter API on `Coroutine.From(...)` and added lazy `Task` factory adapters (`Func<Task>`, `Func<Task<TResult>>`, `Func<CommandExecutionContext, Task>` and `Func<CommandExecutionContext, Task<TResult>>`), which start the task only when the coroutine executes
 - Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
 - Core: Added `WeakEventHandler.RegisterActivatedWeak`, `RegisterDeactivatingWeak` and `RegisterDeactivatedWeak` for `IActivatable` activation events
 - Core: Added `WeakEventHandler.RegisterAsyncCommandExecutingWeak` and `RegisterEventAggregatorExecutingWeak` for the static `AsyncCommand.Executing` and `EventAggregator.Executing` events

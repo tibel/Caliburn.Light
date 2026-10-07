@@ -53,7 +53,7 @@ Then execute it with `ExecuteAsync()`:
 
 ```csharp
 var workflow = new UserWorkflow();
-    await Coroutine.From(workflow.LoadUser()).ExecuteAsync();
+await Coroutine.From(workflow.LoadUser()).ExecuteAsync();
 ```
 
 This preserves a sequential flow while still allowing asynchronous steps in between.

@@ -33,7 +33,7 @@ public interface IWindowManager
     bool Activate(object viewModel);
 
     /// <summary>
-    /// Shows a <see cref="ContentControl"/> for the specified model.
+    /// Shows a <see cref="ContentDialog"/> for the specified model.
     /// </summary>
     /// <param name="viewModel">The view model.</param>
     /// <param name="ownerViewModel">The owner view model.</param>

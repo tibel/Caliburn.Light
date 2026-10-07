@@ -43,7 +43,7 @@ public class PersonViewModel : BindableObject
 The `SetProperty` method is the recommended way to update properties:
 
 ```csharp
-protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)
+protected virtual bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)
 ```
 
 - Updates the backing field if the value has changed
@@ -152,7 +152,7 @@ public interface IBindableObject : INotifyPropertyChanged
 
 ### Refresh
 
-The `Refresh` method raises `PropertyChanged` with an empty string, indicating that all properties should be re-read:
+The `Refresh` method raises `PropertyChanging` and then `PropertyChanged` with an empty string, indicating that all properties should be re-read:
 
 ```csharp
 public void ReloadData()

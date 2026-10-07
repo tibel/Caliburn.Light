@@ -60,6 +60,8 @@ For the design-time experience to work well, your view model should have a param
 ```csharp
 public class MainViewModel : Screen
 {
+    private readonly IDataService _dataService;
+
     // Parameterless constructor for design-time
     public MainViewModel()
     {

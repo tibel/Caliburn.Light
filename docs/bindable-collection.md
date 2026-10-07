@@ -61,7 +61,8 @@ public class ProductListViewModel : BindableObject
                 Products.Add(new ProductViewModel(product));
             }
         }
-        // Notifications resume here - UI gets one update instead of many
+        // Nothing was raised while suspended - refresh once so the UI catches up
+        Products.Refresh();
     }
 }
 ```
@@ -69,7 +70,7 @@ public class ProductListViewModel : BindableObject
 ### How SuspendNotifications Works
 
 - When suspended, `CollectionChanged` and `PropertyChanged` events are not raised
-- When the suspension ends (via `Dispose`), notifications resume but no automatic `Reset` is raised
+- Nothing is replayed when the suspension ends (via `Dispose`): notifications resume, but no event is raised for the changes made while suspended
 - Multiple levels of suspension are supported (reference counted)
 - Always use a `using` statement to ensure notifications are properly resumed
 - Use `AddRange()` or `RemoveRange()` which automatically raise a `Reset` notification, or call `Refresh()` manually after bulk operations
@@ -143,6 +144,9 @@ public class ContactsViewModel : BindableObject
             }
         }
 
+        // Raise a single Reset now that the bulk update is done
+        Contacts.Refresh();
+
         // Select first contact
         SelectedContact = Contacts.FirstOrDefault();
     }
@@ -213,7 +217,8 @@ Like `ObservableCollection<T>`, `BindableCollection<T>` is not thread-safe. If y
 
 ```csharp
 // Using the dispatcher
-await _dispatcher.InvokeAsync(() => Items.Add(newItem));
+await _dispatcher.SwitchTo();
+Items.Add(newItem);
 ```
 
 See [UI Thread Dispatching](dispatching.md) for more information.
@@ -223,7 +228,7 @@ See [UI Thread Dispatching](dispatching.md) for more information.
 1. **Use SuspendNotifications for bulk operations** - Prevents UI updates for each individual change
 2. **Use AddRange/RemoveRange** - More efficient than multiple Add/Remove calls
 3. **Consider virtualization** - For large collections, use virtualized list controls
-4. **Clear before repopulating** - When replacing all items, clear first within suspended notifications
+4. **Clear before repopulating** - When replacing all items, clear first within suspended notifications, then call `Refresh()` after resuming (or use `AddRange()` outside suspension) so the UI sees the result
 
 ## See Also
 

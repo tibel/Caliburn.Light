@@ -239,7 +239,7 @@ public class CommandMonitor
 
 ### Monitoring the Active Item
 
-`IConductor.ActivationProcessed` is obsolete and no longer raised by the framework; it carried no information beyond `PropertyChanged(nameof(ActiveItem))` and `IActivatable.Activated`. To react to active-item changes on a conductor that exposes `ActiveItem`, observe `PropertyChanged` weakly:
+`IConductor.ActivationProcessed` is obsolete and no longer raised by the framework. `PropertyChanged(nameof(ActiveItem))` and `IActivatable.Activated` cover successful activations; the one thing they do not report is a vetoed activation (`Success == false`), which `Conductor<T>` subclasses can observe by overriding `OnActivationVetoed`. To react to active-item changes on a conductor that exposes `ActiveItem`, observe `PropertyChanged` weakly:
 
 ```csharp
 public class ActivationMonitor
@@ -456,7 +456,7 @@ public class ItemRepository
 
 1. **Stores handlers weakly** - Event handlers are stored using weak references, allowing subscribers to be garbage collected even if they don't explicitly unsubscribe
 2. **Thread-safe** - All operations are protected by a lock for safe concurrent access
-3. **Automatic cleanup** - Dead (garbage collected) handlers are automatically removed when the event is raised
+3. **Automatic cleanup** - Dead (garbage collected) handlers are skipped when the event is raised and pruned on the next `Add`/`Remove`
 4. **Null-safe** - Adding or removing `null` handlers is safely ignored
 
 ### Key Behaviors
@@ -466,7 +466,7 @@ public class ItemRepository
 | `Add(null)` | Safely ignored, no exception thrown |
 | `Remove(null)` | Safely ignored, no exception thrown |
 | `Raise()` with no handlers | Works without error |
-| Subscriber garbage collected | Handler automatically cleaned up on next `Raise()` |
+| Subscriber garbage collected | Handler is skipped on `Raise()` and pruned on the next `Add`/`Remove` |
 | Multiple handlers from same target | All handlers invoked correctly |
 
 ### WeakEventSource vs WeakEventHandler

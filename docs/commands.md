@@ -111,7 +111,7 @@ The `AsyncCommand` base class provides:
 
 - **Re-entrancy prevention**: While the command is executing, `CanExecute` returns `false`
 - **IsExecuting property**: Track whether the command is currently running
-- **Executing event**: Static event fired when an async command starts (useful for global loading indicators)
+- **Executing event**: Static event raised when `Execute` starts an operation that does not complete synchronously (useful for global loading indicators)
 
 ```csharp
 // Check if command is running
@@ -206,5 +206,5 @@ var command = new DelegateCommand(
     execute: () => DoSomething(),
     canExecute: () => CanDoSomething,
     target: this,
-    propertyNames: nameof(CanDoSomething));
+    nameof(CanDoSomething));
 ```
