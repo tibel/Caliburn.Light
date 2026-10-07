@@ -108,6 +108,24 @@ public class ConductorTests
     }
 
     [Test]
+    public async Task ActivateItemAsync_SetsActiveItemBeforeActivationRuns()
+    {
+        var conductor = new Conductor<Screen>();
+        await ActivateAsync(conductor);
+
+        Screen? activeItemDuringActivation = null;
+        var item = new CallbackScreen
+        {
+            OnActivateAction = () => activeItemDuringActivation = conductor.ActiveItem
+        };
+
+        await conductor.ActivateItemAsync(item);
+
+        await Assert.That(activeItemDuringActivation).IsSameReferenceAs(item);
+        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(item);
+    }
+
+    [Test]
     public async Task ActivateItemAsync_NewItem_OldCannotClose_DoesNotSwitch()
     {
         var conductor = new Conductor<Screen>();
@@ -154,7 +172,7 @@ public class ConductorTests
     }
 
     [Test]
-    public async Task ActivateItemAsync_NewItemActivationFails_KeepsOldParent()
+    public async Task ActivateItemAsync_NewItemActivationFails_ActiveItemIsNewItem()
     {
         var conductor = new Conductor<Screen>();
         await ActivateAsync(conductor);
@@ -166,8 +184,8 @@ public class ConductorTests
         var action = () => conductor.ActivateItemAsync(newItem);
 
         await Assert.That(action).ThrowsExactly<InvalidOperationException>();
-        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(oldItem);
-        await Assert.That(((IParentAware)oldItem).Parent).IsSameReferenceAs(conductor);
+        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(newItem);
+        await Assert.That(oldItem.IsActive).IsFalse();
     }
 
     [Test]
@@ -440,6 +458,17 @@ public class ConductorTests
     {
         public bool AllowClose { get; set; } = true;
         public override Task<bool> CanCloseAsync() => Task.FromResult(AllowClose);
+    }
+
+    private class CallbackScreen : Screen
+    {
+        public Action? OnActivateAction { get; set; }
+
+        protected override Task OnActivateAsync()
+        {
+            OnActivateAction?.Invoke();
+            return Task.CompletedTask;
+        }
     }
 
     private class ThrowingActivationScreen : Screen

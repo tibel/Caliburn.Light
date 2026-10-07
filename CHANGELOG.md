@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Avalonia: Updated to 12.1.3
 - WinUI: Updated AppSDK to 2.5.1
 - Core: Reworked parent association and conductor active-item transitions
+- Core: `ConductorBaseWithActiveItem<T>` now updates `ActiveItem` after deactivating the previous item and before activating the new item, ensuring UI bindings and child view models reflect the new active item during activation
 - WPF: Updated `WindowManager` parent traversal to use `IParentAware`
 - Avalonia: Updated `WindowManager` parent traversal to use `IParentAware`
 - WinUI: Updated `WindowManager` parent traversal to use `IParentAware`
@@ -29,13 +30,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: `ValidationAdapter.GetErrors()` now returns a cached snapshot that is recomputed on each validation
 
 ### Deprecated
-- Core: Obsoleted legacy `ConductorBase<T>.EnsureItem` and `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` APIs; existing binaries remain loadable, but source consumers must migrate
+- Core: Obsoleted legacy `ConductorBase<T>.EnsureItem`; existing binaries remain loadable, but source consumers must migrate
 - Core: Obsoleted `IChild`; inherit from `Screen` or `ParentAware`, or implement `IParentAware` directly
 - Core: Obsoleted `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs` and `ConductorBase<T>.OnActivationProcessed`; warning-only, so existing binaries and source remain compatible. The conductor no longer calls `OnActivationProcessed`, so the event does not fire during normal use (subclasses calling it directly still raise the event). Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated` instead; `Conductor<T>` subclasses can override `OnActivationVetoed` to observe vetoed activations, or raise your own event from your `ICloseGuard`
 
 ### Fixed
 - Core: Fixed parent references not being cleared when conductor collections are cleared or items are removed in ranges
-- Core: Fixed single-item conductor parent references becoming stale after replacement or failed activation
+- Core: Fixed single-item conductor parent references becoming stale after replacement
 
 ## [7.0.0] - 2026-05-08
 

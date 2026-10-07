@@ -49,7 +49,6 @@ The following APIs are no longer part of the framework, or are obsoleted. Member
 | WPF `IWindowManager.ShowPopup(viewModel, context)` | 6.1.0 | No direct replacement; host a `Popup` yourself and use `PopupLifecycle` for activation |
 | `IChild` (obsoleted) | current release | Inherit from `Screen` or `ParentAware`, or implement `IParentAware` |
 | `ConductorBase<T>.EnsureItem` (obsoleted) | current release | Override item association in the concrete conductor |
-| `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` (obsoleted) | current release | Override active-item transitions in the concrete conductor |
 | `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs`, `ConductorBase<T>.OnActivationProcessed` (obsoleted, warning only) | current release | No longer raised by the framework; the conductor no longer calls `OnActivationProcessed`, so the event does not fire during normal use. Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated`; `Conductor<T>` subclasses can override `OnActivationVetoed` to observe vetoed activations, or raise your own event from your `ICloseGuard` |
 
 `SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.

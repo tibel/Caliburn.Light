@@ -34,9 +34,9 @@ public abstract class ConductorBaseWithActiveItem<T> : ConductorBase<T>, IHaveAc
         if (ActiveItem is IActivatable deactivator)
             await deactivator.DeactivateAsync(closePrevious);
 
+        SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
+
         if (IsActive && newItem is IActivatable activator)
             await activator.ActivateAsync();
-
-        SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
     }
 }
