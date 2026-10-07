@@ -100,18 +100,6 @@ public static IDisposable RegisterDeactivatedWeak<TSubscriber>(
     where TSubscriber : class
 ```
 
-### RegisterActivationProcessedWeak
-
-Registers a weak handler to `IConductor.ActivationProcessed`. `ActivationProcessedEventArgs.Success` is `false` when a close guard on the outgoing item vetoed the activation.
-
-```csharp
-public static IDisposable RegisterActivationProcessedWeak<TSubscriber>(
-    this IConductor source,
-    TSubscriber subscriber,
-    Action<TSubscriber, object?, ActivationProcessedEventArgs> weakHandler)
-    where TSubscriber : class
-```
-
 ### RegisterAsyncCommandExecutingWeak
 
 Registers a weak handler to the static `AsyncCommand.Executing` event.
@@ -249,29 +237,30 @@ public class CommandMonitor
 }
 ```
 
-### Monitoring Screen Activation
+### Monitoring the Active Item
+
+`IConductor.ActivationProcessed` is obsolete and no longer raised by the framework; it carried no information beyond `PropertyChanged(nameof(ActiveItem))` and `IActivatable.Activated`. To react to active-item changes on a conductor that exposes `ActiveItem`, observe `PropertyChanged` weakly:
 
 ```csharp
 public class ActivationMonitor
 {
     private readonly IDisposable _subscription;
 
-    public ActivationMonitor(IConductor conductor)
+    public ActivationMonitor(INotifyPropertyChanged conductor)
     {
-        // Reacts to activation attempts performed through the conductor
-        _subscription = conductor.RegisterActivationProcessedWeak(this,
-            static (subscriber, sender, e) => subscriber.OnActivationProcessed(e));
+        // Reacts to ActiveItem changes on the conductor
+        _subscription = conductor.RegisterPropertyChangedWeak(this,
+            static (subscriber, sender, e) => subscriber.OnActiveItemChanged(sender));
     }
 
-    private void OnActivationProcessed(ActivationProcessedEventArgs e)
+    private void OnActiveItemChanged(object conductor)
     {
-        if (!e.Success)
-        {
-            // The outgoing item's close guard vetoed the activation
-        }
+        // Read the conductor's ActiveItem
     }
 }
 ```
+
+For feedback on whether an activation attempt succeeded, raise your own event from your `ICloseGuard` instead.
 
 ## How It Works
 

@@ -14,6 +14,21 @@ internal class TestScreen : Screen
 
 }
 
+/// <summary>
+/// A Conductor that records vetoed activation attempts via OnActivationVetoed.
+/// </summary>
+internal class BlockRecordingConductor : Conductor<TestScreen>
+{
+    public int BlockedCount;
+    public TestScreen? BlockedItem;
+
+    protected override void OnActivationVetoed(TestScreen? requestedItem)
+    {
+        BlockedCount++;
+        BlockedItem = requestedItem;
+    }
+}
+
 public class ConductorTests
 {
     private static Task ActivateAsync(object obj) => ((IActivatable)obj).ActivateAsync();
@@ -108,6 +123,37 @@ public class ConductorTests
     }
 
     [Test]
+    public async Task ActivateItemAsync_OldCannotClose_CallsOnActivationVetoed()
+    {
+        var conductor = new BlockRecordingConductor();
+        await ActivateAsync(conductor);
+        var item1 = new TestScreen { CanCloseResult = false };
+        var item2 = new TestScreen();
+
+        await conductor.ActivateItemAsync(item1);
+        await conductor.ActivateItemAsync(item2);
+
+        await Assert.That(conductor.BlockedCount).IsEqualTo(1);
+        await Assert.That(conductor.BlockedItem).IsSameReferenceAs(item2);
+        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(item1);
+    }
+
+    [Test]
+    public async Task ActivateItemAsync_OldCanClose_DoesNotCallOnActivationVetoed()
+    {
+        var conductor = new BlockRecordingConductor();
+        await ActivateAsync(conductor);
+        var item1 = new TestScreen();
+        var item2 = new TestScreen();
+        await conductor.ActivateItemAsync(item1);
+
+        await conductor.ActivateItemAsync(item2);
+
+        await Assert.That(conductor.BlockedCount).IsEqualTo(0);
+        await Assert.That(conductor.ActiveItem).IsSameReferenceAs(item2);
+    }
+
+    [Test]
     public async Task ActivateItemAsync_NewItemActivationFails_KeepsOldParent()
     {
         var conductor = new Conductor<Screen>();
@@ -122,40 +168,6 @@ public class ConductorTests
         await Assert.That(action).ThrowsExactly<InvalidOperationException>();
         await Assert.That(conductor.ActiveItem).IsSameReferenceAs(oldItem);
         await Assert.That(((IParentAware)oldItem).Parent).IsSameReferenceAs(conductor);
-    }
-
-    [Test]
-    public async Task ActivationProcessed_OnActivation_FiresWithSuccess()
-    {
-        var conductor = new Conductor<Screen>();
-        await ActivateAsync(conductor);
-        var item = new Screen();
-        ActivationProcessedEventArgs? eventArgs = null;
-        conductor.ActivationProcessed += (_, e) => eventArgs = e;
-
-        await conductor.ActivateItemAsync(item);
-
-        await Assert.That(eventArgs).IsNotNull();
-        await Assert.That(eventArgs!.Item).IsEqualTo(item);
-        await Assert.That(eventArgs.Success).IsTrue();
-    }
-
-    [Test]
-    public async Task ActivationProcessed_FailedActivation_FiresWithFailure()
-    {
-        var conductor = new Conductor<Screen>();
-        await ActivateAsync(conductor);
-        var item1 = new TestScreen { CanCloseResult = false };
-        await conductor.ActivateItemAsync(item1);
-        ActivationProcessedEventArgs? eventArgs = null;
-        conductor.ActivationProcessed += (_, e) => eventArgs = e;
-        var item2 = new TestScreen();
-
-        await conductor.ActivateItemAsync(item2);
-
-        await Assert.That(eventArgs).IsNotNull();
-        await Assert.That(eventArgs!.Item).IsEqualTo(item2);
-        await Assert.That(eventArgs.Success).IsFalse();
     }
 
     [Test]

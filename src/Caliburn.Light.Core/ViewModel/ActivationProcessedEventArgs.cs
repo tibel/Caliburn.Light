@@ -5,6 +5,7 @@ namespace Caliburn.Light;
 /// <summary>
 /// Contains details about the success or failure of an item's activation through an <see cref="IConductor"/>.
 /// </summary>
+[Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
 public sealed class ActivationProcessedEventArgs : EventArgs
 {
     /// <summary>

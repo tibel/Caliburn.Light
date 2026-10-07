@@ -38,8 +38,5 @@ public abstract class ConductorBaseWithActiveItem<T> : ConductorBase<T>, IHaveAc
             await activator.ActivateAsync();
 
         SetProperty(ref _activeItem, newItem, nameof(ActiveItem));
-
-        if (newItem is not null)
-            OnActivationProcessed(newItem, true);
     }
 }

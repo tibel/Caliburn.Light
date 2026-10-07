@@ -29,6 +29,7 @@ public interface IConductor
     /// <summary>
     /// Occurs when an activation request is processed.
     /// </summary>
+    [Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
     event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
 
     /// <summary>

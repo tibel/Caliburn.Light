@@ -83,6 +83,8 @@ public interface IConductor
 }
 ```
 
+`ActivationProcessed` is obsolete and no longer raised by the framework; the conductor no longer calls `OnActivationProcessed`, so the event does not fire during normal use. Observe `PropertyChanged(nameof(ActiveItem))` and `IActivatable.Activated` instead. Subclasses of `Conductor<T>` can override `OnActivationVetoed` to observe vetoed activations, or raise your own event from your `ICloseGuard`.
+
 Caliburn.Light provides three conductor implementations:
 
 #### Conductor&lt;T&gt;

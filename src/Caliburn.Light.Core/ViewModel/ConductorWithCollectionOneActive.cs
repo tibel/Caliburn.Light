@@ -57,8 +57,6 @@ public partial class Conductor<T>
                     {
                         if (item is IActivatable activeItem)
                             await activeItem.ActivateAsync();
-
-                        OnActivationProcessed(item, true);
                     }
 
                     return;

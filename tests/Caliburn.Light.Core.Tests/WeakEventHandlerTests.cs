@@ -246,51 +246,6 @@ public class WeakEventHandlerTests
     }
 
     [Test]
-    public async Task RegisterActivationProcessedWeak_ReceivesEvents()
-    {
-        var conductor = new Conductor<TestScreen>();
-        var subscriber = new ActivationProcessedSubscriber();
-        var item = new TestScreen();
-        using var reg = conductor.RegisterActivationProcessedWeak(subscriber,
-            static (s, sender, e) => s.OnActivationProcessed(sender, e));
-
-        await conductor.ActivateItemAsync(item);
-
-        await Assert.That(subscriber.CallCount).IsEqualTo(1);
-        await Assert.That(subscriber.Item).IsSameReferenceAs(item);
-        await Assert.That(subscriber.Success).IsTrue();
-    }
-
-    [Test]
-    public async Task RegisterActivationProcessedWeak_CloseGuardDenied_ReceivesFailure()
-    {
-        var conductor = new Conductor<TestScreen>();
-        var subscriber = new ActivationProcessedSubscriber();
-        using var reg = conductor.RegisterActivationProcessedWeak(subscriber,
-            static (s, sender, e) => s.OnActivationProcessed(sender, e));
-
-        await conductor.ActivateItemAsync(new TestScreen { CanCloseResult = false });
-        await conductor.ActivateItemAsync(new TestScreen());
-
-        await Assert.That(subscriber.CallCount).IsEqualTo(2);
-        await Assert.That(subscriber.Success).IsFalse();
-    }
-
-    [Test]
-    public async Task RegisterActivationProcessedWeak_Dispose_StopsEvents()
-    {
-        var conductor = new Conductor<TestScreen>();
-        var subscriber = new ActivationProcessedSubscriber();
-        var reg = conductor.RegisterActivationProcessedWeak(subscriber,
-            static (s, sender, e) => s.OnActivationProcessed(sender, e));
-
-        reg.Dispose();
-        await conductor.ActivateItemAsync(new TestScreen());
-
-        await Assert.That(subscriber.CallCount).IsEqualTo(0);
-    }
-
-    [Test]
     public async Task RegisterActivatedWeak_SubscriberCollected_AutoRemoves()
     {
         var source = new TestScreen();
@@ -415,20 +370,6 @@ public class WeakEventHandlerTests
         {
             CallCount++;
             WasClosed = e.WasClosed;
-        }
-    }
-
-    private class ActivationProcessedSubscriber
-    {
-        public int CallCount;
-        public object? Item;
-        public bool? Success;
-
-        public void OnActivationProcessed(object? sender, ActivationProcessedEventArgs e)
-        {
-            CallCount++;
-            Item = e.Item;
-            Success = e.Success;
         }
     }
 

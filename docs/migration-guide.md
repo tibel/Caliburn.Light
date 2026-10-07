@@ -28,7 +28,7 @@ The three platform packages share a common API surface, alongside platform-speci
 
 ## Migrating removed and obsoleted APIs
 
-The following APIs are no longer part of the framework. Members marked as obsoleted in the current release fail to compile, so they must be migrated rather than suppressed.
+The following APIs are no longer part of the framework, or are obsoleted. Members obsoleted in the current release still compile (with a warning) and remain binary compatible, but should be migrated since they may be removed in a later release.
 
 | Removed or obsoleted API | Since | Replacement |
 |--------------------------|-------|-------------|
@@ -50,10 +50,11 @@ The following APIs are no longer part of the framework. Members marked as obsole
 | `IChild` (obsoleted) | current release | Inherit from `Screen` or `ParentAware`, or implement `IParentAware` |
 | `ConductorBase<T>.EnsureItem` (obsoleted) | current release | Override item association in the concrete conductor |
 | `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` (obsoleted) | current release | Override active-item transitions in the concrete conductor |
+| `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs`, `ConductorBase<T>.OnActivationProcessed` (obsoleted, warning only) | current release | No longer raised by the framework; the conductor no longer calls `OnActivationProcessed`, so the event does not fire during normal use. Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated`; `Conductor<T>` subclasses can override `OnActivationVetoed` to observe vetoed activations, or raise your own event from your `ICloseGuard` |
 
 `SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.
 
-`EnsureItem` and `ChangeActiveItemAsync` were reduced to no-ops before being obsoleted. Applications that relied on overriding them should move the logic into the concrete conductor, as described in [Screens, Conductors and Composition](composition.md).
+`EnsureItem` was reduced to a no-op before being obsoleted, and the conductor no longer calls `OnActivationProcessed`, so `ActivationProcessed` does not fire during normal use (subclasses calling `OnActivationProcessed` directly still raise the event). Applications that relied on overriding the conductor methods should move the logic into the concrete conductor, as described in [Screens, Conductors and Composition](composition.md).
 
 ### Coroutine API changes
 

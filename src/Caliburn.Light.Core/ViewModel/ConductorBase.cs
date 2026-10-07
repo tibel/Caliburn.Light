@@ -43,6 +43,7 @@ public abstract class ConductorBase<T> : Screen, IConductor where T : class
     /// <summary>
     /// Occurs when an activation request is processed.
     /// </summary>
+    [Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
     public event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
 
     /// <summary>
@@ -69,6 +70,7 @@ public abstract class ConductorBase<T> : Screen, IConductor where T : class
     /// </summary>
     /// <param name="item">The item on which activation was attempted.</param>
     /// <param name="success">if set to <c>true</c> activation was successful.</param>
+    [Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
     protected virtual void OnActivationProcessed(T item, bool success)
     {
         ActivationProcessed?.Invoke(this, new ActivationProcessedEventArgs(item, success));

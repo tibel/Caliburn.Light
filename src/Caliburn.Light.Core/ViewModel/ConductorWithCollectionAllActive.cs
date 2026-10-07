@@ -99,7 +99,6 @@ public partial class Conductor<T>
                 if (IsActive && item is IActivatable activator)
                     await activator.ActivateAsync();
 
-                OnActivationProcessed(item, true);
                 return;
             }
 

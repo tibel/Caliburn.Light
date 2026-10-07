@@ -13,7 +13,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Reintroduced `Caliburn.Light.Coroutines` for compatibility and easier migration from earlier Caliburn.Light versions
 - Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
 - Core: Added `WeakEventHandler.RegisterActivatedWeak`, `RegisterDeactivatingWeak` and `RegisterDeactivatedWeak` for `IActivatable` activation events
-- Core: Added `WeakEventHandler.RegisterActivationProcessedWeak` for `IConductor.ActivationProcessed`
 - Core: Added `WeakEventHandler.RegisterAsyncCommandExecutingWeak` and `RegisterEventAggregatorExecutingWeak` for the static `AsyncCommand.Executing` and `EventAggregator.Executing` events
 - Docs: Added a migration guide from `SimpleContainer` to `Microsoft.Extensions.DependencyInjection`, covering the API mapping and the behavioral differences in keyed registrations, multiple registrations, scopes, disposal, and constructor selection
 
@@ -32,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Deprecated
 - Core: Obsoleted legacy `ConductorBase<T>.EnsureItem` and `ConductorBaseWithActiveItem<T>.ChangeActiveItemAsync` APIs; existing binaries remain loadable, but source consumers must migrate
 - Core: Obsoleted `IChild`; inherit from `Screen` or `ParentAware`, or implement `IParentAware` directly
+- Core: Obsoleted `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs` and `ConductorBase<T>.OnActivationProcessed`; warning-only, so existing binaries and source remain compatible. The conductor no longer calls `OnActivationProcessed`, so the event does not fire during normal use (subclasses calling it directly still raise the event). Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated` instead; `Conductor<T>` subclasses can override `OnActivationVetoed` to observe vetoed activations, or raise your own event from your `ICloseGuard`
 
 ### Fixed
 - Core: Fixed parent references not being cleared when conductor collections are cleared or items are removed in ranges

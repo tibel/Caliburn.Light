@@ -116,21 +116,6 @@ public static class WeakEventHandler
     }
 
     /// <summary>
-    /// Registers a weak event handler to <see cref="IConductor.ActivationProcessed"/>.
-    /// </summary>
-    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
-    /// <param name="source">The event source.</param>
-    /// <param name="subscriber">The event subscriber.</param>
-    /// <param name="weakHandler">The weak handler.</param>
-    /// <returns>A registration object that can be used to deregister from the event.</returns>
-    public static IDisposable RegisterActivationProcessedWeak<TSubscriber>(this IConductor source,
-        TSubscriber subscriber, Action<TSubscriber, object?, ActivationProcessedEventArgs> weakHandler)
-        where TSubscriber : class
-    {
-        return new WeakActivationProcessedHandler<TSubscriber>(source, subscriber, weakHandler);
-    }
-
-    /// <summary>
     /// Registers a weak handler to the static <see cref="AsyncCommand.Executing"/> event.
     /// </summary>
     /// <remarks>

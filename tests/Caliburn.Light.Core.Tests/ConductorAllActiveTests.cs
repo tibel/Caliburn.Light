@@ -268,22 +268,6 @@ public class ConductorAllActiveTests
     }
 
     [Test]
-    public async Task ActivationProcessed_Fires_OnActivateItem()
-    {
-        var conductor = new Conductor<Screen>.Collection.AllActive();
-        await ActivateAsync(conductor);
-        var item = new Screen();
-        ActivationProcessedEventArgs? eventArgs = null;
-        conductor.ActivationProcessed += (_, e) => eventArgs = e;
-
-        await conductor.ActivateItemAsync(item);
-
-        await Assert.That(eventArgs).IsNotNull();
-        await Assert.That(eventArgs!.Item).IsEqualTo(item);
-        await Assert.That(eventArgs.Success).IsTrue();
-    }
-
-    [Test]
     public async Task AllActive_MultipleItems_AllActive()
     {
         var conductor = new Conductor<Screen>.Collection.AllActive();

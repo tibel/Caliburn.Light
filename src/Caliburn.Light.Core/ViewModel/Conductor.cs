@@ -21,8 +21,6 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
             {
                 if (item is IActivatable activeItem)
                     await activeItem.ActivateAsync();
-
-                OnActivationProcessed(item, true);
             }
 
             return;
@@ -38,7 +36,7 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
         if (result.CanClose)
             await ChangeActiveItemAsync(item);
         else if (item is not null)
-            OnActivationProcessed(item, false);
+            OnActivationVetoed(item);
     }
 
     /// <summary>
@@ -114,6 +112,14 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
     public override IReadOnlyList<T> GetChildren()
     {
         return ActiveItem is null ? Array.Empty<T>() : new[] { ActiveItem };
+    }
+
+    /// <summary>
+    /// Called when an activation request is vetoed by a close guard on the active item.
+    /// </summary>
+    /// <param name="requestedItem">The item whose activation was vetoed.</param>
+    protected virtual void OnActivationVetoed(T? requestedItem)
+    {
     }
 
     private async Task ChangeActiveItemAsync(T? newItem)

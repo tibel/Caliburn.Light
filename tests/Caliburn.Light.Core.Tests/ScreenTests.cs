@@ -52,6 +52,7 @@ public class StubConductor : IConductor
     }
 
 #pragma warning disable CS0067
+    [Obsolete("ActivationProcessed is obsolete and no longer raised.")]
     public event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
 #pragma warning restore CS0067
 
