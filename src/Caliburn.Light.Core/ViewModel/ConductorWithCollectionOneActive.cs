@@ -48,16 +48,13 @@ public partial class Conductor<T>
                 if (item is null)
                 {
                     var lastIndex = ActiveItem is not null ? _items.IndexOf(ActiveItem) : 0;
-                    item = DetermineNextItemToActivate(_items, lastIndex)!;
+                    item = DetermineNextItemToActivate(_items, lastIndex);
                 }
 
                 if (ReferenceEquals(ActiveItem, item))
                 {
-                    if (IsActive && item is not null)
-                    {
-                        if (item is IActivatable activeItem)
-                            await activeItem.ActivateAsync();
-                    }
+                    if (IsActive && item is IActivatable activeItem)
+                        await activeItem.ActivateAsync();
 
                     return;
                 }

@@ -17,11 +17,8 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
     {
         if (ReferenceEquals(ActiveItem, item))
         {
-            if (IsActive && item is not null)
-            {
-                if (item is IActivatable activeItem)
-                    await activeItem.ActivateAsync();
-            }
+            if (IsActive && item is IActivatable activeItem)
+                await activeItem.ActivateAsync();
 
             return;
         }
@@ -35,7 +32,7 @@ public partial class Conductor<T> : ConductorBaseWithActiveItem<T> where T : cla
         var result = await CloseStrategy.ExecuteAsync(new[] { ActiveItem });
         if (result.CanClose)
             await ChangeActiveItemAsync(item);
-        else if (item is not null)
+        else
             OnActivationVetoed(item);
     }
 
