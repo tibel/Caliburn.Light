@@ -41,7 +41,7 @@ var options = new MessageBoxDialogOptions
     Text = "Are you sure you want to delete this item?",
     Caption = "Confirm Delete",
     Button = MessageBoxButton.YesNo,
-    Icon = MessageBoxImage.Question
+    Image = MessageBoxImage.Question
 };
 
 var result = await _windowManager.ShowMessageBoxDialog(options, this);
@@ -145,3 +145,4 @@ Register views with context:
 ```csharp
 services.Configure<ViewModelLocatorConfiguration>(config =>
     config.AddMapping<CompactDocumentView, DocumentViewModel>("Compact"));
+```

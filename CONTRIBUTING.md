@@ -32,7 +32,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ### Pull Requests
 
-1. **Fork the repository** and create your branch from `master`.
+1. **Fork the repository** and create your branch from `main`.
 2. **Follow the coding style** used throughout the project.
 3. **Add tests** if you've added code that should be tested.
 4. **Ensure the test suite passes**.
@@ -108,7 +108,7 @@ dotnet test --project tests/Caliburn.Light.WinUI.Tests -r win-x64
 - Name tests `MethodName_Condition_ExpectedResult`.
 - Use hand-written test doubles (stubs/fakes) — no mocking libraries.
 - One assertion per test, clear Arrange/Act/Assert structure.
-- Use `[NotInParallel("key")]` when tests touch static state (see `.github/copilot-instructions.md` for details).
+- Use `[NotInParallel("key")]` when tests touch static state (see [tests/AGENTS.md](tests/AGENTS.md) for details).
 - For async UI events, use `TaskCompletionSource` with `.WaitAsync(TimeSpan.FromSeconds(5))` timeout guards.
 - TUnit uses `--treenode-filter` (not `--filter`) for test filtering.
 

@@ -86,32 +86,31 @@ The following adapters are available:
 
 If you need custom behavior, implement `ICoTask` and raise `Completed` when the work finishes. The framework treats both synchronous and asynchronous completion the same way.
 
-When implementing `ICoTask` for async work, **never** use `async void` methods as an event handler substitute. Instead, execute the async work inside `BeginExecute`, observe the returned `Task` (by awaiting it or attaching continuations), and raise `Completed` exactly once when the Task completes. The example below shows the correct pattern:
+A custom `ICoTask` only earns its keep when completion is driven by something other than a `Task` — for example a user interaction that finishes when a button is clicked or a message box result is chosen. Don't write one to re-wrap `Task`-based work; `Coroutine.From(Func<Task>)` already provides that. Implement the interaction inside `BeginExecute`, and **raise `Completed` exactly once** when it finishes. **Never** use `async void` methods as an event handler substitute. The example below shows a confirmation dialog that completes when the user clicks a button:
 
 ```csharp
 using System;
-using System.Threading.Tasks;
+using System.Windows;
 using Caliburn.Light;
 
-public sealed class BusyIndicatorCoTask : ICoTask
+public sealed class MessageBoxCoTask : ICoTask
 {
     private readonly string _message;
-    private readonly bool _show;
+    private readonly string _caption;
 
-    public BusyIndicatorCoTask(string message, bool show)
+    public MessageBoxCoTask(string message, string caption)
     {
         _message = message;
-        _show = show;
+        _caption = caption;
     }
 
     public event EventHandler<CoTaskCompletedEventArgs>? Completed;
 
     public void BeginExecute(CommandExecutionContext context)
     {
-        // Show or hide the busy indicator.
-        Completed?.Invoke(this, new CoTaskCompletedEventArgs(null, false));
+        var result = MessageBox.Show(_message, _caption, MessageBoxButton.OKCancel);
+        Completed?.Invoke(this, new CoTaskCompletedEventArgs(null, result == MessageBoxResult.Cancel));
     }
-
 }
 ```
 

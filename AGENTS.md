@@ -8,7 +8,7 @@ Caliburn.Light is a magic-free MVVM framework supporting WPF, Avalonia, and WinU
 # Build
 dotnet build Caliburn.Light.slnx
 
-# Run all tests from solution root (runs Core, Coroutines, WPF, Avalonia; excludes WinUI which requires -r win-x64)
+# Run all tests from solution root (runs Core, Coroutines, WPF, Avalonia and WinUI; WinUI runs via the solution's x64 platform mapping)
 dotnet test
 
 # Test each project individually (WinUI requires runtime identifier)

@@ -1,6 +1,6 @@
 # Screens, Conductors and Composition
 
-The Screens and Conductors piece of Caliburn.Light is essential for engineering well-structured UIs, particularly when leveraging composition. The terms Screen, Screen Conductor and Screen Collection have been codified by Jeremy Miller during his work on the book "Presentation Patterns" for Addison Wesley. While these patterns are primarily used in Caliburn.Light by inheriting ViewModels from particular base classes, it's important to think of them as roles rather than as View-Models.
+The Screens and Conductors piece of Caliburn.Light is essential for engineering well-structured UIs, particularly when leveraging composition. The terms Screen, Screen Conductor and Screen Collection were popularized by Rob Eisenberg's Caliburn (the predecessor of Caliburn.Micro) and live on across the Caliburn family of frameworks, which Caliburn.Light continues. While these patterns are primarily used in Caliburn.Light by inheriting ViewModels from particular base classes, it's important to think of them as roles rather than as View-Models.
 
 ## Theory
 
@@ -74,6 +74,8 @@ public class Screen : ViewAware, IActivatable, ICloseGuard
 The `IConductor` interface defines:
 
 ```csharp
+using System.Collections;
+
 public interface IConductor
 {
     Task ActivateItemAsync(object? item);

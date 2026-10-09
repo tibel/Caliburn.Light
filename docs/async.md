@@ -73,6 +73,8 @@ public class MyViewModel : Screen
 All conductor operations are also async:
 
 ```csharp
+using System.Collections;
+
 public interface IConductor
 {
     Task ActivateItemAsync(object? item);

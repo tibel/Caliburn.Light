@@ -221,32 +221,33 @@ public class ShellViewModel : BindableObject
 Create `ShellView.xaml`:
 
 ```xml
-<Window x:Class="MyApp.ShellView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="My First Caliburn.Light App">
+<UserControl x:Class="MyApp.ShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock Text="{x:Bind ViewModel.Greeting, Mode=OneWay}" FontSize="24" Margin="0,0,0,20"/>
-        <Button Content="Say Hello" Command="{x:Bind ViewModel.SayHelloCommand}" Padding="10,5"/>
+        <TextBlock Text="{x:Bind Model.Entity.Greeting, Mode=OneWay}" FontSize="24" Margin="0,0,0,20"/>
+        <Button Content="Say Hello" Command="{x:Bind Model.Entity.SayHelloCommand}" Padding="10,5"/>
     </StackPanel>
-</Window>
+</UserControl>
 ```
 
 Code-behind (`ShellView.xaml.cs`):
 
 ```csharp
-using Microsoft.UI.Xaml;
+using Caliburn.Light.WinUI;
+using Microsoft.UI.Xaml.Controls;
 
 namespace MyApp;
 
-public sealed partial class ShellView : Window
+public sealed partial class ShellView : UserControl
 {
     public ShellView()
     {
         InitializeComponent();
+        Model = new DataContextWrapper<ShellViewModel>(this);
     }
 
-    public ShellViewModel? ViewModel => Content?.DataContext as ShellViewModel;
+    public DataContextWrapper<ShellViewModel> Model { get; }
 }
 ```
 

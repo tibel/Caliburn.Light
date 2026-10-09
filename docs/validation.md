@@ -23,6 +23,10 @@ See the validation demos in the gallery samples:
 The recommended approach is to use `ValidationAdapter` with `RuleValidator`:
 
 ```csharp
+using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+
 public sealed partial class MyViewModel : BindableObject, INotifyDataErrorInfo
 {
     private readonly ValidationAdapter _validation;
@@ -47,7 +51,7 @@ public sealed partial class MyViewModel : BindableObject, INotifyDataErrorInfo
         set => SetProperty(ref _email, value);
     }
 
-    protected override bool SetProperty<T>(ref T field, T newValue, string? propertyName = null)
+    protected override bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)
     {
         var result = base.SetProperty(ref field, newValue, propertyName);
         if (result)
@@ -134,6 +138,8 @@ validator.AddDelegateRule<MyViewModel>(
 For simple cases, you can implement `INotifyDataErrorInfo` manually:
 
 ```csharp
+using System.Collections;
+
 public class MyViewModel : BindableObject, INotifyDataErrorInfo
 {
     private string _name = string.Empty;

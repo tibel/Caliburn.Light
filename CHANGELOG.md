@@ -182,7 +182,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Removed coroutines
 - Removed logging
 
-## [4.0.0] - 2020-11-11
+## [4.0.0] - 2019-11-11
 
 ### Added
 - Support for view model life cycles where async operations are happening
@@ -208,7 +208,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Changed minimum supported frameworks to NET 4.6.1 and UAP 10.0.16299
 - Added .NET Core 3.0 WPF support
 
-## [3.2.0] - 2018-10-26
+## [3.2.0] - 2016-10-26
 
 ### Added
 - Added new FrameAdapter that attaches the framework to a Frame instance
@@ -226,7 +226,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Removed NavigationHelper
 - Removed CallMethodAction and InvokeCommandAction
 
-## [3.1.0] - 2018-01-14
+## [3.1.0] - 2016-01-14
 
 ### Changed
 - Changed Validation to be reflection free
@@ -244,12 +244,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Removed
 - Removed support for static subscribers in `EventAggregator`
 
-## [3.0.4] - 2017-11-19
+## [3.0.4] - 2015-11-19
 
 ### Fixed
 - Fix null check (#74)
 
-## [3.0.3] - 2017-11-19
+## [3.0.3] - 2015-11-19
 
 ### Changed
 - Updated Weakly 2.7.0
@@ -269,12 +269,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - IoC: Removed property injection
 - UAP: Removed Behavior SDK
 
-## [2.0.1] - 2017-04-29
+## [2.0.1] - 2015-04-29
 
 ### Fixed
 - Fixed DelegateBuilder where no canExecute function was set
 
-## [2.0.0] - 2017-04-28
+## [2.0.0] - 2015-04-28
 
 ### Changed
 - Refactored DelegateCommand
@@ -285,12 +285,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Added DelegateCommandBuilder
 
-## [1.8.1] - 2017-04-23
+## [1.8.1] - 2015-04-23
 
 ### Fixed
 - Fixed EventAggregator
 
-## [1.8.0] - 2017-04-13
+## [1.8.0] - 2015-04-13
 
 ### Changed
 - Updated Weakly 2.5.0
@@ -298,7 +298,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Removed
 - Removed AsyncSubsystem
 
-## [1.7.0] - 2017-04-11
+## [1.7.0] - 2015-04-11
 
 ### Changed
 - View-Model first: Bind before setting content
@@ -312,12 +312,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added AsyncSubsystem
 - Added DataTrigger
 
-## [1.6.5] - 2016-12-12
+## [1.6.5] - 2014-12-12
 
 ### Added
 - Added `Coroutine.OverrideCancel<TResult>()`
 
-## [1.6.4] - 2016-10-20
+## [1.6.4] - 2014-10-20
 
 ### Added
 - Added UIContext.VerifyAccess()
@@ -328,7 +328,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Deal with unicode in names
 - Changed handling of InitialDirectory in FileOpen and FileSave CoTasks (net45)
 
-## [1.6.3] - 2016-09-09
+## [1.6.3] - 2014-09-09
 
 ### Changed
 - Use ObserveException()
@@ -336,23 +336,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Added UIContext.Run() overloads similar to Task.Run()
 
-## [1.6.2] - 2016-08-26
+## [1.6.2] - 2014-08-26
 
 ### Fixed
 - Bugfixes
 
-## [1.6.1] - 2016-08-26
+## [1.6.1] - 2014-08-26
 
 ### Fixed
 - Bugfixes
 
-## [1.6.0] - 2016-08-23
+## [1.6.0] - 2014-08-23
 
 ### Added
 - Async CanClose handling (`ICloseGuard` and `ICloseStrategy<T>`)
 - Propagate exceptions from async methods
 
-## [1.5.0] - 2016-08-09
+## [1.5.0] - 2014-08-09
 
 ### Changed
 - Changed initialization of `UIContext`
@@ -361,7 +361,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### WPF
 - Added common dialogs
 
-## [1.4.0] - 2016-08-01
+## [1.4.0] - 2014-08-01
 
 ### Changed
 - UIContext: Added `Initialize` overload with more parameters
@@ -374,45 +374,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Screen: Removed `IChild` (Parent property)
 - Removed `IChild<TParent>` and `IParent<out T>`
 
-## [1.3.0] - 2015-06-13
+## [1.3.0] - 2014-06-13
 
 ### Changed
 - Optimized EventAggregator
 - Removed obsolete methods
 
-## [1.2.4] - 2015-06-11
+## [1.2.4] - 2014-06-11
 
 ### Fixed
 - Bugfixes
 
-## [1.2.3] - 2015-06-05
+## [1.2.3] - 2014-06-05
 
 ### Fixed
 - Bugfixes
 
-## [1.2.2] - 2015-05-27
+## [1.2.2] - 2014-05-27
 
 ### Fixed
 - Bugfixes
 
-## [1.2.1] - 2015-05-16
+## [1.2.1] - 2014-05-16
 
 ### Changed
 - Removed Universal App PCL
 - Updated Weakly
 
-## [1.2.0] - 2015-05-14
+## [1.2.0] - 2014-05-14
 
 ### Added
 - Added parameter support to `DelegateCommand`
 
-## [1.1.0] - 2015-05-10
+## [1.1.0] - 2014-05-10
 
 ### Added
 - Added support for special values with the `ISpecialValue` interface
 - The value of objects that implement this interface will be resolved at runtime when used inside `CallMethodAction.Parameters` or `InvokeCommandAction.CommandParameter`
 
-## [1.0.0] - 2015-05-08
+## [1.0.0] - 2014-05-08
 
 ### Added
 - Initial release of Caliburn.Light where at least WPF can be considered stable
