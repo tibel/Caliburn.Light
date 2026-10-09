@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [7.1.0] - 2026-10-09
+
 ### Added
 - Core: Added `IParentAware` and the `ParentAware` base class for parent/child lifecycle association
 - Core: Made `ViewAware` inherit from `ParentAware`
@@ -417,7 +419,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Initial release of Caliburn.Light where at least WPF can be considered stable
 
-[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v7.0.0...HEAD
+[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v7.1.0...HEAD
+[7.1.0]: https://github.com/tibel/Caliburn.Light/compare/v7.0.0...v7.1.0
 [7.0.0]: https://github.com/tibel/Caliburn.Light/compare/v6.3.1...v7.0.0
 [6.3.1]: https://github.com/tibel/Caliburn.Light/compare/v6.3.0...v6.3.1
 [6.3.0]: https://github.com/tibel/Caliburn.Light/compare/v6.2.1...v6.3.0
