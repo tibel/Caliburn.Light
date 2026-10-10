@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- Avalonia: Updated to 12.1.4
+
 ## [7.1.0] - 2026-10-09
 
 ### Added
