@@ -198,7 +198,7 @@ Two consequences to plan for:
 - **Services that were never disposed now are.** If a singleton implements `IDisposable` and holds a file handle, a socket, or an event subscription, it will be torn down when the provider is disposed. That is usually what you want; make sure the shutdown path actually disposes the provider.
 - **Do not double-dispose.** Objects you own elsewhere in the application should not also be owned by the provider. Register an instance you created yourself rather than a container registration of the same object, so exactly one owner disposes it.
 
-`IServiceScope` is `IDisposable`, and `IAsyncScope` from `CreateAsyncScope()` is `IAsyncDisposable`. Prefer `await using` when the scoped services themselves implement `IAsyncDisposable`.
+`IServiceScope` is `IDisposable`, and `AsyncServiceScope` returned by `CreateAsyncScope()` implements `IAsyncDisposable`. Prefer `await using` when the scoped services themselves implement `IAsyncDisposable`.
 
 ## Constructor selection
 

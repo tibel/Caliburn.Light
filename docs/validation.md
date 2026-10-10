@@ -173,12 +173,16 @@ public class MyViewModel : BindableObject, INotifyDataErrorInfo
             _errors[propertyName] = new List<string>();
         _errors[propertyName].Add(error);
         ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        RaisePropertyChanged(nameof(HasErrors));
     }
 
     private void ClearErrors(string propertyName)
     {
         if (_errors.Remove(propertyName))
+        {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            RaisePropertyChanged(nameof(HasErrors));
+        }
     }
 
     public bool HasErrors => _errors.Count > 0;
@@ -199,11 +203,13 @@ Enable validation in your XAML bindings:
 <!-- WPF -->
 <TextBox Text="{Binding Name, ValidatesOnNotifyDataErrors=True}" />
 
-<!-- WinUI / Avalonia -->
+<!-- Avalonia -->
 <TextBox Text="{Binding Name, Mode=TwoWay}" />
 ```
 
-The XAML framework will automatically display validation errors based on the `INotifyDataErrorInfo` implementation.
+WPF reports `INotifyDataErrorInfo` errors through binding validation when `ValidatesOnNotifyDataErrors` is enabled. Avalonia also picks up `INotifyDataErrorInfo` errors from the binding and displays them through its default control templates.
+
+WinUI does not automatically display `INotifyDataErrorInfo` errors. The WinUI gallery demonstrates validation and disabling Save, but does not display per-field errors. To show them, bind an error message or other visual state to your view model; Microsoft's [WinUI validated form guide](https://learn.microsoft.com/en-us/windows/apps/get-started/line-of-business/build-validated-form) shows a complete example.
 
 ## Disabling Save When Invalid
 

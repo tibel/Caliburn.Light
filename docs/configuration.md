@@ -29,6 +29,10 @@ All platforms follow a similar configuration pattern:
 
 ```csharp
 using Caliburn.Light;
+// Add exactly one platform namespace:
+// using Caliburn.Light.WPF;
+// using Caliburn.Light.WinUI;
+// using Caliburn.Light.Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

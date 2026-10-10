@@ -1,6 +1,6 @@
 # NuGet Package Installation
 
-[NuGet](http://www.nuget.org/) is a Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects that use the .NET Framework.
+NuGet is the package manager for .NET. Use it to add Caliburn.Light packages to your application with Visual Studio's NuGet tools or the .NET CLI.
 
 ### Installing the packages
 

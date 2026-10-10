@@ -100,7 +100,7 @@ WPF provides several lifecycle classes:
 - `PopupLifecycle` - Manages the lifecycle of a Popup
 - `PageLifecycle` - Manages the lifecycle of a Page
 
-These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` also respects `ICloseGuard` — see [Composition & Lifecycle](composition.md) for details.
+These classes ensure that `IActivatable` view models are properly activated and deactivated as the associated view becomes visible or hidden. The `WindowLifecycle` respects `ICloseGuard` when its window closes, and `PageLifecycle` checks it during navigation — see [Composition & Lifecycle](composition.md) for details.
 
 ## XAML Namespace
 

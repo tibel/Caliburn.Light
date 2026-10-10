@@ -109,7 +109,7 @@ public class ShellViewModel : Conductor<TabViewModel>.Collection.OneActive
 
 ## Window Manager
 
-The Window Manager also uses async for modal dialogs:
+Window manager APIs vary by platform. The following message box and file dialog methods are **WPF-specific**; see the [WPF](wpf.md), [WinUI](winui.md), and [Avalonia](avalonia.md) guides for each platform's dialog and picker APIs.
 
 ```csharp
 // Show a modal dialog and wait for it to close

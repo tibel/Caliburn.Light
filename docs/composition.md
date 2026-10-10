@@ -161,7 +161,7 @@ public class ShellViewModel : Conductor<object>
             .OnExecute(() => ShowPageTwoAsync())
             .Build();
 
-        ShowPageOneAsync();
+        ShowPageOneAsync().Observe();
     }
 
     public ICommand ShowPageOneCommand { get; }
