@@ -14,7 +14,7 @@ namespace Caliburn.Light.Avalonia.Tests;
 /// onto the Avalonia Dispatcher. Apply via [TestExecutor&lt;AvaloniaTestExecutor&gt;] at
 /// assembly, class, or method level.
 /// </summary>
-public class AvaloniaTestExecutor : ITestExecutor
+public sealed class AvaloniaTestExecutor : ITestExecutor
 {
     private static volatile bool _initialized;
     private static readonly Lock _lock = new();
@@ -58,13 +58,22 @@ public class AvaloniaTestExecutor : ITestExecutor
             if (_initialized) return;
 
             var ready = new ManualResetEventSlim(false);
+            Exception? initError = null;
 
             var thread = new Thread(() =>
             {
-                AppBuilder.Configure<TestApp>()
-                    .UseHeadless(new AvaloniaHeadlessPlatformOptions())
-                    .AfterSetup(_ => ready.Set())
-                    .StartWithClassicDesktopLifetime([], ShutdownMode.OnExplicitShutdown);
+                try
+                {
+                    AppBuilder.Configure<TestApp>()
+                        .UseHeadless(new AvaloniaHeadlessPlatformOptions())
+                        .AfterSetup(_ => ready.Set())
+                        .StartWithClassicDesktopLifetime([], ShutdownMode.OnExplicitShutdown);
+                }
+                catch (Exception ex)
+                {
+                    initError = ex;
+                    ready.Set();
+                }
             })
             {
                 IsBackground = true,
@@ -73,7 +82,10 @@ public class AvaloniaTestExecutor : ITestExecutor
             thread.Start();
 
             if (!ready.Wait(TimeSpan.FromSeconds(15)))
-                throw new TimeoutException("Avalonia runtime failed to initialize within 15 seconds.");
+                throw new TimeoutException("Avalonia Application failed to initialize within 15 seconds.");
+
+            if (initError is not null)
+                throw new InvalidOperationException("Avalonia Application initialization failed.", initError);
 
             _initialized = true;
         }
@@ -82,5 +94,5 @@ public class AvaloniaTestExecutor : ITestExecutor
     /// <summary>
     /// Minimal Avalonia application for headless testing.
     /// </summary>
-    private class TestApp : Application { }
+    private sealed class TestApp : Application { }
 }

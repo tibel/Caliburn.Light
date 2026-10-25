@@ -21,7 +21,7 @@ namespace Caliburn.Light.WinUI.Tests;
 ///   ContentDialog.ShowAsync() and Popup. XamlRoot is null until the XAML tree loads.
 /// - IXamlMetadataProvider on TestApp enables Frame.Navigate() for PageLifecycle tests.
 /// </summary>
-public class WinUITestExecutor : ITestExecutor
+public sealed partial class WinUITestExecutor : ITestExecutor
 {
     internal static DispatcherQueue? _dispatcherQueue;
     internal static volatile bool _initialized;
@@ -119,7 +119,7 @@ public class WinUITestExecutor : ITestExecutor
     /// Minimal WinUI application for test hosting.
     /// Implements IXamlMetadataProvider to enable Frame.Navigate() for PageLifecycle tests.
     /// </summary>
-    private class TestApp : Application, IXamlMetadataProvider
+    private sealed partial class TestApp : Application, IXamlMetadataProvider
     {
         public IXamlType GetXamlType(Type type)
         {
@@ -140,7 +140,7 @@ public class WinUITestExecutor : ITestExecutor
     /// <summary>
     /// Minimal IXamlType that supports type activation for Frame.Navigate().
     /// </summary>
-    private class SimpleXamlType : IXamlType
+    private sealed partial class SimpleXamlType : IXamlType
     {
         private readonly Type _type;
         public SimpleXamlType(Type type) => _type = type;

@@ -68,11 +68,11 @@ Use `[Before(Test)]` / `[After(Test)]` for per-test setup/teardown. Only reset s
 
 Each UI platform has a custom `ITestExecutor` — **any test class that creates or touches UI elements must declare `[TestExecutor<T>]`** at class level, otherwise tests run off the UI thread and will fail. Pure-logic classes need no executor; `BooleanToVisibilityConverterTests` and `PickerOptionsTests` in the WinUI project are the current examples, as neither instantiates a control. There is no assembly-level default.
 
-- **WpfTestExecutor** — New STA thread with `Dispatcher.Run()` per test.
+- **WpfTestExecutor** — Singleton app on STA thread with explicit shutdown, dispatches tests via `Dispatcher.InvokeAsync()`.
 - **AvaloniaTestExecutor** — Singleton headless app, dispatches to `Dispatcher.UIThread`.
 - **WinUITestExecutor** — Singleton app on STA thread, `DispatcherQueue.TryEnqueue()`. `TestApp` implements `IXamlMetadataProvider` for `Frame.Navigate()`.
 
-Both Avalonia and WinUI executors use `volatile` on the `_initialized` field for correct double-checked locking, and suppress TUnit0031 for intentional `async void` lambdas in dispatcher callbacks — the completion is bridged via `TaskCompletionSource`. Do not remove either.
+All three executors use `volatile` on the `_initialized` field for correct double-checked locking, and suppress TUnit0031 for intentional `async void` lambdas in dispatcher callbacks — the completion is bridged via `TaskCompletionSource`. Do not remove either.
 
 ### Async UI event coordination
 
