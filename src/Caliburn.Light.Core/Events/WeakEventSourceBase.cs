@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Caliburn.Light;
 
@@ -12,7 +13,8 @@ namespace Caliburn.Light;
 public abstract class WeakEventSourceBase<TEventHandler>
     where TEventHandler : Delegate
 {
-    private readonly object _lockObject = new object();
+    private readonly Lock _lockObject = new();
+    private readonly object _staticTarget = new();
 
     private List<WeakReference<TEventHandler>>? _list;
     private ConditionalWeakTable<object, List<TEventHandler>>? _cwt;
@@ -27,7 +29,7 @@ public abstract class WeakEventSourceBase<TEventHandler>
 
         lock (_lockObject)
         {
-            var target = GetTarget(eventHandler, _lockObject);
+            var target = GetTarget(eventHandler, _staticTarget);
 
             _list = _list is null
                 ? new List<WeakReference<TEventHandler>>(1)
@@ -59,7 +61,7 @@ public abstract class WeakEventSourceBase<TEventHandler>
             var index = _list.FindIndex(wr => wr.TryGetTarget(out var handler) && Equals(handler, eventHandler));
             if (index >= 0) _list.RemoveAt(index);
 
-            var target = GetTarget(eventHandler, _lockObject);
+            var target = GetTarget(eventHandler, _staticTarget);
 
             if (_cwt.TryGetValue(target, out var value))
             {

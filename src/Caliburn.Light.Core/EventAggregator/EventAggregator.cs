@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light;
@@ -10,7 +11,7 @@ namespace Caliburn.Light;
 /// </summary>
 public sealed class EventAggregator : IEventAggregator
 {
-    private readonly object _lockObject = new object();
+    private readonly Lock _lockObject = new();
 
     private List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>>? _contexts;
 

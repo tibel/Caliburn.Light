@@ -1,3 +1,4 @@
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -16,7 +17,7 @@ namespace Caliburn.Light.Avalonia.Tests;
 public class AvaloniaTestExecutor : ITestExecutor
 {
     private static volatile bool _initialized;
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)
     {

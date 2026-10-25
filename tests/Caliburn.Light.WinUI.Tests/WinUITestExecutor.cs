@@ -1,3 +1,4 @@
+using System.Threading;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -24,7 +25,7 @@ public class WinUITestExecutor : ITestExecutor
 {
     internal static DispatcherQueue? _dispatcherQueue;
     internal static volatile bool _initialized;
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)
     {
