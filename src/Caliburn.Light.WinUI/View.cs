@@ -414,7 +414,7 @@ public static class View
 
         public void BeginInvoke(Action action) => _dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, new DispatcherQueueHandler(action));
 
-        public override bool Equals(object? obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
+        public override bool Equals(object? obj) => obj is ViewDispatcher other && _dispatcher.Equals(other._dispatcher);
 
         public override int GetHashCode() => _dispatcher.GetHashCode();
     }

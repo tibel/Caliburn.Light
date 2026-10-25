@@ -387,8 +387,8 @@ public static class View
 
         public void BeginInvoke(Action action) => _dispatcher.BeginInvoke(action);
 
-        public override bool Equals(object? obj) => obj is ViewDispatcher other && GetHashCode() == other.GetHashCode();
+        public override bool Equals(object? obj) => obj is ViewDispatcher other && _dispatcher.Equals(other._dispatcher);
 
-        public override int GetHashCode() => _dispatcher.Thread.ManagedThreadId;
+        public override int GetHashCode() => _dispatcher.GetHashCode();
     }
 }
