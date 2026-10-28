@@ -22,9 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- WORKAROUND https://github.com/microsoft/WindowsAppSDK/issues/6766-->
-    <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" />
-
     <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" />
   </ItemGroup>
 
