@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Caliburn.Light;
@@ -54,15 +55,28 @@ public static class ViewHelper
     /// <returns><see langword="true"/> if a registered adapter can handle the object; otherwise, <see langword="false"/>.</returns>
     public static bool IsView(object view)
     {
-        return _viewAdapters.Exists(v => v.CanHandle(view));
+        for (var i = 0; i < _viewAdapters.Count; i++)
+        {
+            if (_viewAdapters[i].CanHandle(view))
+                return true;
+        }
+
+        return false;
     }
 
     private static IViewAdapter ResolveViewAdapter(object view)
     {
-        var viewAdapter = _viewAdapters.Find(v => v.CanHandle(view));
-        return viewAdapter ?? ThrowNotInitializedException(view);
+        for (var i = 0; i < _viewAdapters.Count; i++)
+        {
+            var viewAdapter = _viewAdapters[i];
+            if (viewAdapter.CanHandle(view))
+                return viewAdapter;
+        }
+
+        return ThrowNotInitializedException(view);
     }
 
+    [DoesNotReturn]
     private static IViewAdapter ThrowNotInitializedException(object view)
     {
         throw new InvalidOperationException("No view adapter for " + view.GetType() + " is initialized.");
