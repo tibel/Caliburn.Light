@@ -12,13 +12,13 @@ public interface IEventAggregator
     IEventAggregatorHandler Subscribe<TTarget, TMessage>(
         TTarget target, 
         Action<TTarget, TMessage> handler, 
-        IDispatcher? dispatcher = default)
+        ThreadOption threadOption = ThreadOption.PublisherThread)
         where TTarget : class;
 
     IEventAggregatorHandler Subscribe<TTarget, TMessage>(
         TTarget target, 
         Func<TTarget, TMessage, Task> handler, 
-        IDispatcher? dispatcher = default)
+        ThreadOption threadOption = ThreadOption.PublisherThread)
         where TTarget : class;
 
     void Unsubscribe(IEventAggregatorHandler handler);
@@ -93,16 +93,27 @@ _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
     static async (target, message) => await target.HandleMessageAsync(message));
 ```
 
-### Thread Dispatching
+### Thread Options
 
-You can specify an `IDispatcher` to control which thread the handler runs on:
+Choose how the handler runs with `ThreadOption`:
 
 ```csharp
 _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
     this,
     static (target, message) => target.HandleMessage(message),
-    dispatcher: uiDispatcher);
+    threadOption: ThreadOption.UIThread);
 ```
+
+`PublisherThread` (the default) runs the handler inline on the publishing thread. `UIThread` finds a view
+from the target itself, its `IViewAware` views, or its `IParentAware` parent chain, then runs the
+handler on that view's UI thread. If no view can be found, it runs inline on the publishing thread.
+`BackgroundThread` runs inline when publishing is already on a thread-pool thread; otherwise the
+EventAggregator queues a thread-pool continuation.
+
+Handlers that share a reachable UI thread or background execution pass are batched into one
+continuation. Async handler tasks are observed and reported through `EventAggregator.Executing`
+when they do not complete synchronously. If the thread pool rejects a queued background batch, those
+background deliveries are dropped.
 
 ## Unsubscribing
 

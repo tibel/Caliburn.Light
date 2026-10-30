@@ -4,7 +4,7 @@ using Caliburn.Light;
 
 namespace Caliburn.Light.Core.Tests;
 
-[NotInParallel("StaticExecutingEvent")]
+[NotInParallel("SharedStaticEventAndViewHelper")]
 public class WeakStaticEventHandlerTests
 {
     [Test]

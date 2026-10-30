@@ -9,8 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Changed
 - Avalonia: Updated to 12.1.4
 - WinUI: Updated AppSDK to 2.6.4
+- Core: Replaced EventAggregator dispatcher parameters with `ThreadOption` (`PublisherThread`, `BackgroundThread`, `UIThread`)
 
 ### Removed
+- Core: Removed `IDispatcher`, `CurrentThreadDispatcher`, and `ViewHelper.GetDispatcher`; use view-based `ViewHelper` operations and EventAggregator `ThreadOption`
 - Core: Removed obsolete `DispatcherHelper`, `View.GetDispatcherFrom`, `IChild`, `ConductorBase<T>.EnsureItem`, and the `ActivationProcessed` event API
 
 ## [7.1.0] - 2026-10-09

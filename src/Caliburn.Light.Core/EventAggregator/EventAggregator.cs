@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +15,7 @@ public sealed class EventAggregator : IEventAggregator
 {
     private readonly Lock _lockObject = new();
 
-    private List<IEventAggregatorHandler>? _handlers;
+    private List<IEventAggregatorHandlerEntry>? _handlers;
 
     /// <summary>
     /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
@@ -21,13 +24,14 @@ public sealed class EventAggregator : IEventAggregator
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <param name="target">The message handler target.</param>
     /// <param name="handler">The message handler to register.</param>
-    /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed</param>
+    /// <param name="threadOption">Specifies the thread on which the <paramref name="handler"/> is executed.</param>
     /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher? dispatcher = default)
+    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
         where TTarget : class
     {
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(handler);
+        ThrowIfInvalidThreadOption(threadOption);
 
         Task wrapper(TTarget t, TMessage m)
         {
@@ -35,7 +39,7 @@ public sealed class EventAggregator : IEventAggregator
             return Task.CompletedTask;
         }
 
-        var item = new EventAggregatorHandler<TTarget, TMessage>(target, wrapper, dispatcher ?? CurrentThreadDispatcher.Instance);
+        var item = new EventAggregatorHandlerEntry<TTarget, TMessage>(target, wrapper, threadOption);
         SubscribeCore(item);
         return item;
     }
@@ -47,25 +51,35 @@ public sealed class EventAggregator : IEventAggregator
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <param name="target">The message handler target.</param>
     /// <param name="handler">The message handler to register.</param>
-    /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
+    /// <param name="threadOption">Specifies the thread on which the <paramref name="handler"/> is executed.</param>
     /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher? dispatcher = default)
+    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
         where TTarget : class
     {
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(handler);
+        ThrowIfInvalidThreadOption(threadOption);
 
-        var item = new EventAggregatorHandler<TTarget, TMessage>(target, handler, dispatcher ?? CurrentThreadDispatcher.Instance);
+        var item = new EventAggregatorHandlerEntry<TTarget, TMessage>(target, handler, threadOption);
         SubscribeCore(item);
         return item;
     }
 
-    private void SubscribeCore(IEventAggregatorHandler handler)
+    private static void ThrowIfInvalidThreadOption(ThreadOption value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (value < ThreadOption.PublisherThread || value > ThreadOption.UIThread)
+            ThrowOutOfRange(value, paramName);
+    }
+
+    [DoesNotReturn]
+    private static void ThrowOutOfRange(ThreadOption value, string? paramName) => throw new ArgumentOutOfRangeException(paramName, value, null);
+
+    private void SubscribeCore(IEventAggregatorHandlerEntry handler)
     {
         lock (_lockObject)
         {
             var handlers = _handlers;
-            var copy = new List<IEventAggregatorHandler>((handlers?.Count ?? 0) + 1);
+            var copy = new List<IEventAggregatorHandlerEntry>((handlers?.Count ?? 0) + 1);
 
             if (handlers is not null)
             {
@@ -108,7 +122,7 @@ public sealed class EventAggregator : IEventAggregator
 
             if (handlerIndex < 0) return;
 
-            var copy = new List<IEventAggregatorHandler>(handlers.Count - 1);
+            var copy = new List<IEventAggregatorHandlerEntry>(handlers.Count - 1);
 
             for (var i = 0; i < handlers.Count; i++)
             {
@@ -136,7 +150,7 @@ public sealed class EventAggregator : IEventAggregator
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        List<IEventAggregatorHandler>? handlers;
+        List<IEventAggregatorHandlerEntry>? handlers;
 
         lock (_lockObject)
         {
@@ -149,9 +163,11 @@ public sealed class EventAggregator : IEventAggregator
         PublishCore(message, handlers, new bool[handlers.Count]);
     }
 
-    private static void PublishCore(object message, List<IEventAggregatorHandler> handlers, bool[] processedHandlers)
+    private static void PublishCore(object message, List<IEventAggregatorHandlerEntry> handlers, bool[] processedHandlers)
     {
-        IDispatcher? queuedDispatcher = null;
+        object? queuedView = null;
+        var queueBackground = false;
+        var isThreadPoolThread = Thread.CurrentThread.IsThreadPoolThread;
 
         for (var i = 0; i < handlers.Count; i++)
         {
@@ -166,27 +182,90 @@ public sealed class EventAggregator : IEventAggregator
                 continue;
             }
 
-            if (!handler.Dispatcher.CheckAccess())
+            if (!handler.TryGetTarget(out var target))
             {
-                queuedDispatcher ??= handler.Dispatcher;
+                processedHandlers[i] = true;
                 continue;
             }
 
-            processedHandlers[i] = true;
-
-            var task = handler.HandleAsync(message);
-
-            task.Observe();
-
-            if (!task.IsCompleted)
-                Executing?.Invoke(null, new TaskEventArgs(task));
+            switch (handler.ThreadOption)
+            {
+                case ThreadOption.PublisherThread:
+                    processedHandlers[i] = true;
+                    InvokeHandler(handler, message, target);
+                    break;
+                case ThreadOption.UIThread:
+                    var view = FindView(target);
+                    if (view is null || ViewHelper.CheckAccess(view))
+                    {
+                        processedHandlers[i] = true;
+                        InvokeHandler(handler, message, target);
+                    }
+                    else if (queuedView is null && !queueBackground)
+                    {
+                        queuedView = view;
+                    }
+                    break;
+                case ThreadOption.BackgroundThread:
+                    if (isThreadPoolThread)
+                    {
+                        processedHandlers[i] = true;
+                        InvokeHandler(handler, message, target);
+                    }
+                    else if (queuedView is null && !queueBackground)
+                    {
+                        queueBackground = true;
+                    }
+                    break;
+            }
         }
 
-        queuedDispatcher?.BeginInvoke(() => PublishCore(message, handlers, processedHandlers));
+        if (queuedView is not null)
+        {
+            ViewHelper.BeginInvoke(queuedView, () => PublishCore(message, handlers, processedHandlers));
+        }
+        else if (queueBackground)
+        {
+            ThreadPool.QueueUserWorkItem(
+                static (state) => PublishCore(state.Message, state.Handlers, state.ProcessedHandlers),
+                (Message: message, Handlers: handlers, ProcessedHandlers: processedHandlers),
+                preferLocal: false);
+        }
+    }
+
+    private static void InvokeHandler(IEventAggregatorHandlerEntry handler, object message, object target)
+    {
+        var task = handler.HandleAsync(message, target);
+
+        task.Observe();
+
+        if (!task.IsCompleted)
+            Executing?.Invoke(null, new TaskEventArgs(task));
+    }
+
+    private static object? FindView(object target)
+    {
+        if (ViewHelper.IsView(target))
+            return target;
+
+        var current = target;
+        while (current is not null)
+        {
+            if (current is IViewAware viewAware)
+            {
+                var view = viewAware.GetViews().FirstOrDefault().Value;
+                if (view is not null)
+                    return view;
+            }
+
+            current = (current as IParentAware)?.Parent;
+        }
+
+        return null;
     }
 
     /// <summary>
-    /// Occurs when <see cref="IEventAggregatorHandler.HandleAsync(object)"/> is invoked and the operation has not completed synchronously.
+    /// Occurs when an event aggregator handler is invoked and the operation has not completed synchronously.
     /// </summary>
     public static event EventHandler<TaskEventArgs>? Executing;
 }

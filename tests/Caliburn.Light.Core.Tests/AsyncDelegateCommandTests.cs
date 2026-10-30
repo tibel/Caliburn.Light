@@ -4,7 +4,7 @@ using TUnit.Core;
 
 namespace Caliburn.Light.Core.Tests;
 
-[NotInParallel("StaticExecutingEvent")]
+[NotInParallel("SharedStaticEventAndViewHelper")]
 public class AsyncDelegateCommandTests
 {
     [Test]

@@ -15,9 +15,9 @@ public interface IEventAggregator
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <param name="target">The message handler target.</param>
     /// <param name="handler">The message handler to register.</param>
-    /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
+    /// <param name="threadOption">Specifies the thread on which the <paramref name="handler"/> is executed.</param>
     /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-    IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, IDispatcher? dispatcher = default)
+    IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
         where TTarget : class;
 
     /// <summary>
@@ -27,9 +27,9 @@ public interface IEventAggregator
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <param name="target">The message handler target.</param>
     /// <param name="handler">The message handler to register.</param>
-    /// <param name="dispatcher">Specifies in which context the <paramref name="handler"/> is executed.</param>
+    /// <param name="threadOption">Specifies the thread on which the <paramref name="handler"/> is executed.</param>
     /// <returns>The <see cref="IEventAggregatorHandler"/>.</returns>
-    IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, IDispatcher? dispatcher = default)
+    IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
         where TTarget : class;
 
     /// <summary>

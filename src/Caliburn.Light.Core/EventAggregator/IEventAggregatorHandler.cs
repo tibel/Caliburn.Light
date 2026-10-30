@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Caliburn.Light;
 
 /// <summary>
@@ -7,11 +5,6 @@ namespace Caliburn.Light;
 /// </summary>
 public interface IEventAggregatorHandler
 {
-    /// <summary>
-    /// Gets the execution context.
-    /// </summary>
-    IDispatcher Dispatcher { get; }
-
     /// <summary>
     /// Gets a value indicating whether this handler is dead.
     /// </summary>
@@ -25,9 +18,7 @@ public interface IEventAggregatorHandler
     bool CanHandle(object message);
 
     /// <summary>
-    /// Handles the specified message.
+    /// Gets the thread on which this handler is executed.
     /// </summary>
-    /// <param name="message">The message.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    Task HandleAsync(object message);
+    ThreadOption ThreadOption { get; }
 }

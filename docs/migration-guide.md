@@ -34,7 +34,7 @@ The following APIs have been removed from the framework:
 |--------------------------|-------|-------------|
 | `BootstrapperBase`, `CaliburnApplication` | 4.0.0 | Compose ViewModels directly and register framework services in your `IServiceProvider` |
 | `NameBasedViewModelTypeResolver` | 4.0.0 | `ViewModelLocator` with explicit `ViewModelLocatorConfiguration` mappings |
-| `UIContext` | 4.0.0 | `IDispatcher` |
+| `UIContext` | 4.0.0 | View-based `ViewHelper.CheckAccess`, `BeginInvoke`, and `SwitchToViewAsync` |
 | `ScreenHelper`, `PropertySupport` | 4.0.0 | `BindableObject` and `nameof()` |
 | `IServiceLocator` | 4.0.0 | `IServiceProvider` |
 | `IActivate`, `IDeactivate` | 4.0.0 | `IActivatable` |
@@ -51,7 +51,8 @@ The following APIs have been removed from the framework:
 | `ConductorBase<T>.EnsureItem` | 8.0.0 | Override item association in the concrete conductor |
 | `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs`, `ConductorBase<T>.OnActivationProcessed` | 8.0.0 | Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated` |
 | `DispatcherHelper` | 8.0.0 | Use `ViewHelper.SwitchToViewAsync(view)` |
-| `View.GetDispatcherFrom` | 8.0.0 | Use `ViewHelper.GetDispatcher(view)` |
+| `View.GetDispatcherFrom`, `IDispatcher`, `CurrentThreadDispatcher`, `ViewHelper.GetDispatcher` | 8.0.0 | Use view-based `ViewHelper.CheckAccess`, `BeginInvoke`, and `SwitchToViewAsync` |
+| EventAggregator `dispatcher` subscription argument | 8.0.0 | Specify `ThreadOption.PublisherThread`, `UIThread`, or `BackgroundThread` |
 
 `SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.
 
@@ -65,23 +66,13 @@ Coroutines moved out of the framework in 5.0.0 and are back as the `Caliburn.Lig
 - The public `CoTask` base class is gone and `CoTaskDecorator` is now internal, so there is no longer a public base class to derive from. Implement `ICoTask` or `ICoTask<T>` directly.
 - `OverrideCancel<TResult>()` no longer defaults its result argument, so `coTask.OverrideCancel<string>()` must become `coTask.OverrideCancel(default(string))`. The non-generic `OverrideCancel()` is unchanged.
 
-### UI dispatching migration (IDispatcher)
+### UI dispatching migration
 
-The framework no longer has `UIContext`. In modern Caliburn.Light, UI thread marshaling is handled by `IDispatcher`, which is defined in Caliburn.Light.Core and implemented by the platform-specific dispatchers.
-
-To obtain an `IDispatcher`:
-- When a view is attached, use `Caliburn.Light.ViewHelper.GetDispatcher(view)`. See [UI Thread Dispatching](dispatching.md) for more details.
-- If no view is attached, `CurrentThreadDispatcher.Instance` does not marshal work to a UI thread. Use a dispatcher from your application shell/view, or resolve `IDispatcher` from the platform context your app already has (e.g. the main window/view's dispatcher). See [UI Thread Dispatching](dispatching.md) for guidance.
-
-Notes about behavior:
-- `IDispatcher.BeginInvoke(Action)` returns `void` (unlike `UIContext.Run`, which returned a `Task`). Exceptions thrown by the dispatched action surface on the dispatcher thread unless you explicitly await the work.
-- Behavior differs by implementation: platform dispatchers (WPF, Avalonia, WinUI) always enqueue work; `CurrentThreadDispatcher` always executes work inline on the calling thread with no marshaling. WinUI enqueues can also be rejected (e.g. during shutdown), in which case the work may not execute. Always consider using `dispatcher.CheckAccess()` when appropriate.
-- `UIContext.VerifyAccess()` maps to `dispatcher.CheckAccess()` (but `VerifyAccess()` threw if not on the UI thread, whereas `CheckAccess()` only returns a boolean; if you need the throwing behavior, check the result and throw explicitly).
-
-Replacement patterns:
-- **Continue on the UI thread (async continuation):** `await ViewHelper.SwitchToViewAsync(view);`.
-- **Fire-and-forget UI work:** `dispatcher.BeginInvoke(action);`. Be aware that exceptions from the action will not be propagated to the caller.
-- **Await a dispatched callback that returns a value:** In an async method, switch to the UI thread and then compute the result:
+The framework no longer has `UIContext`, `IDispatcher`, or `CurrentThreadDispatcher`. For a known view, use `ViewHelper` directly:
+- **Check access:** `ViewHelper.CheckAccess(view)`.
+- **Fire-and-forget UI work:** `ViewHelper.BeginInvoke(view, action)`. Exceptions from the action are raised on the UI thread.
+- **Continue on the UI thread (async continuation):** `await ViewHelper.SwitchToViewAsync(view)`.
+- **Await a callback that returns a value:** switch to the UI thread, then execute the callback:
   ```csharp
   static async Task<T> RunOnUiThreadAsync<T>(object view, Func<T> func)
   {
@@ -89,11 +80,10 @@ Replacement patterns:
       return func();
   }
   ```
-  This propagates exceptions and results to the caller. If `func` is synchronous, you can also return it directly after switching. Use `ConfigureAwait(false)` when the continuation doesn't need to be on the UI thread.
-- **Migrating from `UIContext.Run`:** There is no direct 1:1 mapping for all `UIContext.Run` overloads. For fire-and-forget cases, use `BeginInvoke`. For cases where you need the result or exception propagation, switch to the UI thread in an async method and execute the work. The replacement depends on whether you need fire-and-forget execution, return a value, or propagate exceptions/cancellation.
-
-Additional notes:
-- `UIContext.TaskScheduler` and `IUIContext` have no direct equivalent on `IDispatcher`. If your code relied on them, consider using the platform's dispatcher TaskScheduler or an app-owned abstraction tailored to your needs.
+- If code requires a platform dispatcher when no view is available, use an application-owned or platform API; Caliburn.Light no longer exposes a dispatcher abstraction.
+- For EventAggregator subscriptions, choose `ThreadOption` instead of supplying a dispatcher. `UIThread` locates a view through the target, `IViewAware`, or `IParentAware` ancestry; with no view it runs on the publishing thread.
+- `BackgroundThread` runs inline when publishing is already on a thread-pool thread; otherwise the EventAggregator queues a thread-pool continuation.
+- **Migrating from `UIContext.Run`:** There is no direct 1:1 mapping for every overload. Use `BeginInvoke` for fire-and-forget, or switch to a view's UI thread when a result, exception propagation, or cancellation is needed.
 
 ### Migration checklist (to the latest version)
 
@@ -102,7 +92,7 @@ Use the items relevant to your starting version and the APIs your application us
 - [ ] **Package split** (mechanical) — Update package references. Use `Caliburn.Light.Core` plus the appropriate platform package (`Caliburn.Light.WPF`, `Caliburn.Light.WinUI`, or `Caliburn.Light.Avalonia`). Add `Caliburn.Light.Coroutines` only if you use the coroutine APIs.
 - [ ] **Startup composition and view-model mappings** (decision) — Replace any removed bootstrapper model with explicit app startup. Verify view location/view-model mapping is configured through explicit `ViewModelLocator` mappings; no legacy bootstrapper types remain.
 - [ ] **SimpleContainer and service-locator migration** (decision/app-owned) — `SimpleContainer` was removed. Port registrations and lifetimes to your chosen DI container. If you previously relied on service-locator patterns, refactor to constructor injection where feasible.
-- [ ] **Dispatcher, lifecycle, and view-awareness** (mix) — Migrate from `UIContext` to `IDispatcher` patterns (see [UI dispatching migration](#ui-dispatching-migration-idispatcher)). Update lifecycle/view-awareness usage to current platform APIs. Behavior around activation, close guards, and navigation differs by platform (see platform-specific docs).
+- [ ] **UI dispatching, lifecycle, and view-awareness** (mix) — Migrate from `UIContext`/`IDispatcher` to view-based `ViewHelper` operations (see [UI dispatching migration](#ui-dispatching-migration)). Update lifecycle/view-awareness usage to current platform APIs. Behavior around activation, close guards, and navigation differs by platform (see platform-specific docs).
 - [ ] **Coroutines** (mix) — Replace `Coroutine.FromTask(...)`/`AsCoTask(...)` legacy patterns with `Coroutine.From(...)` overloads where applicable. If you have custom co-tasks derived from removed base classes, implement `ICoTask` or `ICoTask<T>` directly (see [Coroutines](coroutines.md)). Ensure completion is raised exactly once with correct cancellation/error precedence.
 - [ ] **File dialogs responsibilities** (app/platform-owned) — Replace any old coroutine-based file dialog helpers with Task-based `IWindowManager` methods on your platform (see [File dialogs migration](#file-dialogs-migration) and [Window Manager](window-manager.md)). File dialogs are platform-specific, not part of Core.
 - [ ] **Configuration and assembly-name checks** (mechanical) — Update namespaces, using directives, and any assembly references to match current package names. Verify target frameworks align with your app (`net10.0` / platform-specific TFMs). Remove references to deprecated types (e.g. removed bootstrapper/container/dispatcher types).

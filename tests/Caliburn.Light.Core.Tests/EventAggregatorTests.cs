@@ -12,9 +12,21 @@ public class TestTarget
     public List<object> ReceivedMessages { get; } = [];
 }
 
-[NotInParallel("StaticExecutingEvent")]
+[NotInParallel("SharedStaticEventAndViewHelper")]
 public class EventAggregatorTests
 {
+    [Before(Test)]
+    public void Setup()
+    {
+        ViewHelper.Reset();
+    }
+
+    [After(Test)]
+    public void Cleanup()
+    {
+        ViewHelper.Reset();
+    }
+
     [Test]
     public async Task Subscribe_WithValidArgs_ReturnsHandler()
     {
@@ -305,30 +317,18 @@ public class EventAggregatorTests
     }
 
     [Test]
-    public async Task Subscribe_WithoutDispatcher_UsesCurrentThreadDispatcher()
+    public async Task Subscribe_WithoutThreadOption_UsesPublisher()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
 
         var handler = ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m));
 
-        await Assert.That(handler.Dispatcher).IsEqualTo(CurrentThreadDispatcher.Instance);
+        await Assert.That(handler.ThreadOption).IsEqualTo(ThreadOption.PublisherThread);
     }
 
     [Test]
-    public async Task Subscribe_WithCustomDispatcher_UsesProvidedDispatcher()
-    {
-        var ea = new EventAggregator();
-        var target = new TestTarget();
-        var customDispatcher = new TestDispatcher();
-
-        var handler = ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), customDispatcher);
-
-        await Assert.That(handler.Dispatcher).IsEqualTo(customDispatcher);
-    }
-
-    [Test]
-    public async Task Subscribe_AsyncWithoutDispatcher_UsesCurrentThreadDispatcher()
+    public async Task Subscribe_AsyncWithoutThreadOption_UsesPublisher()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
@@ -339,7 +339,37 @@ public class EventAggregatorTests
             return Task.CompletedTask;
         });
 
-        await Assert.That(handler.Dispatcher).IsEqualTo(CurrentThreadDispatcher.Instance);
+        await Assert.That(handler.ThreadOption).IsEqualTo(ThreadOption.PublisherThread);
+    }
+
+    [Test]
+    public async Task Subscribe_InvalidThreadOption_Throws()
+    {
+        var ea = new EventAggregator();
+        var target = new TestTarget();
+
+        await Assert.That(() => ea.Subscribe<TestTarget, MessageA>(
+                target,
+                (t, m) => t.ReceivedMessages.Add(m),
+                (ThreadOption)3))
+            .Throws<ArgumentOutOfRangeException>();
+    }
+
+    [Test]
+    public async Task Subscribe_AsyncInvalidThreadOption_Throws()
+    {
+        var ea = new EventAggregator();
+        var target = new TestTarget();
+
+        await Assert.That(() => ea.Subscribe<TestTarget, MessageA>(
+                target,
+                (t, m) =>
+                {
+                    t.ReceivedMessages.Add(m);
+                    return Task.CompletedTask;
+                },
+                (ThreadOption)(-1)))
+            .Throws<ArgumentOutOfRangeException>();
     }
 
     [Test]
@@ -373,106 +403,185 @@ public class EventAggregatorTests
     }
 
     [Test]
-    public async Task Handler_HandleAsync_DeadTarget_ReturnsCompletedTask()
+    public async Task Publish_UIThread_WhenPublisherHasViewAccess_RunsInline()
     {
+        var context = new TestViewContext { IsCurrent = true };
+        var view = new TestView(context);
+        var target = new TestViewAwareTarget();
+        ((IViewAware)target).AttachView(view, null);
+        ViewHelper.Initialize(new TestViewAdapter());
         var ea = new EventAggregator();
-        var handler = SubscribeWeakTarget(ea);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        GC.Collect();
-
-        var task = handler.HandleAsync(new MessageA("dead"));
-
-        await Assert.That(task.IsCompleted).IsTrue();
-    }
-
-    [Test]
-    public async Task Publish_CustomDispatcherWithCheckAccess_PublishesViaBeginInvoke()
-    {
-        var ea = new EventAggregator();
-        var target = new TestTarget();
-        var dispatcher = new NonCurrentThreadDispatcher();
-        ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), dispatcher);
-
-        ea.Publish(new MessageA("dispatched"));
-
-        await Assert.That(dispatcher.QueuedActions.Count).IsEqualTo(1);
-
-        dispatcher.RunNext();
+        ea.Publish(new MessageA("inline"));
 
         await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(context.QueuedActions.Count).IsEqualTo(0);
     }
 
     [Test]
-    public async Task Publish_SameDispatcherInstance_ContinuesWithoutCallingEquals()
+    public async Task Publish_UIThread_ViewsOnSameThread_SharesOneContinuation()
     {
+        var context = new TestViewContext();
+        var view1 = new TestView(context);
+        var view2 = new TestView(context);
+        var target1 = new TestViewAwareTarget();
+        var target2 = new TestViewAwareTarget();
+        ((IViewAware)target1).AttachView(view1, null);
+        ((IViewAware)target2).AttachView(view2, null);
+        ViewHelper.Initialize(new TestViewAdapter());
         var ea = new EventAggregator();
-        var target1 = new TestTarget();
-        var target2 = new TestTarget();
-        var dispatcher = new DispatcherWithThrowingEquals();
-        var handler1 = ea.Subscribe<TestTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), dispatcher);
-        ea.Subscribe<TestTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), dispatcher);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
 
-        ea.Unsubscribe(handler1);
-        ea.Publish(new MessageA("identity-group"));
+        ea.Publish(new MessageA("batched"));
 
-        await Assert.That(dispatcher.CheckAccessCalls).IsEqualTo(1);
-        await Assert.That(dispatcher.QueuedActions.Count).IsEqualTo(1);
-        dispatcher.RunNext();
-        await Assert.That(dispatcher.CheckAccessCalls).IsEqualTo(2);
+        await Assert.That(context.QueuedActions.Count).IsEqualTo(1);
         await Assert.That(target1.ReceivedMessages.Count).IsEqualTo(0);
-        await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
-    }
-
-    [Test]
-    public async Task Publish_EqualButDistinctDispatchers_QueuesSeparateContinuations()
-    {
-        var ea = new EventAggregator();
-        var target1 = new TestTarget();
-        var target2 = new TestTarget();
-        var dispatcher1 = new EqualDispatcher();
-        var dispatcher2 = new EqualDispatcher();
-        ea.Subscribe<TestTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), dispatcher1);
-        ea.Subscribe<TestTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), dispatcher2);
-
-        ea.Publish(new MessageA("distinct-groups"));
-
-        await Assert.That(dispatcher1.QueuedActions.Count).IsEqualTo(1);
-        await Assert.That(dispatcher2.QueuedActions.Count).IsEqualTo(0);
-        dispatcher1.RunNext();
-        await Assert.That(dispatcher2.QueuedActions.Count).IsEqualTo(1);
-        dispatcher2.RunNext();
+        context.RunNext();
         await Assert.That(target1.ReceivedMessages.Count).IsEqualTo(1);
         await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
     }
 
     [Test]
-    public async Task Publish_InterleavedDispatchersWithSharedThread_AvoidsRevisitingContext()
+    public async Task Publish_UIThread_InterleavedViews_BatchesEachThreadOnce()
+    {
+        var contextA = new TestViewContext();
+        var contextB = new TestViewContext();
+        var targetA1 = new TestViewAwareTarget();
+        var targetB = new TestViewAwareTarget();
+        var targetA2 = new TestViewAwareTarget();
+        ((IViewAware)targetA1).AttachView(new TestView(contextA), null);
+        ((IViewAware)targetB).AttachView(new TestView(contextB), null);
+        ((IViewAware)targetA2).AttachView(new TestView(contextA), null);
+        ViewHelper.Initialize(new TestViewAdapter());
+        var ea = new EventAggregator();
+        ea.Subscribe<TestViewAwareTarget, MessageA>(targetA1, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(targetB, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(targetA2, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+
+        ea.Publish(new MessageA("interleaved"));
+
+        await Assert.That(contextA.QueuedActions.Count).IsEqualTo(1);
+        await Assert.That(contextB.QueuedActions.Count).IsEqualTo(0);
+        contextA.RunNext();
+        await Assert.That(targetA1.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(targetA2.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(contextB.QueuedActions.Count).IsEqualTo(1);
+        contextB.RunNext();
+        await Assert.That(targetB.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_UIThread_TargetIsView_UsesTargetView()
+    {
+        ViewHelper.Initialize(new TestViewAdapter());
+        var context = new TestViewContext();
+        var view = new TestView(context);
+        var ea = new EventAggregator();
+        ea.Subscribe<TestView, MessageA>(view, (target, message) => target.ReceivedMessages.Add(message), ThreadOption.UIThread);
+
+        ea.Publish(new MessageA("target-view"));
+
+        await Assert.That(context.QueuedActions.Count).IsEqualTo(1);
+        context.RunNext();
+        await Assert.That(view.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_UIThread_FindsViewThroughParentChain()
+    {
+        ViewHelper.Initialize(new TestViewAdapter());
+        var context = new TestViewContext();
+        var view = new TestView(context);
+        var parent = new TestParentAwareTarget();
+        ((IViewAware)parent).AttachView(view, null);
+        var target = new TestParentAwareTarget();
+        ((IParentAware)target).AttachParent(parent);
+        var ea = new EventAggregator();
+        ea.Subscribe<TestParentAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+
+        ea.Publish(new MessageA("parent-view"));
+
+        await Assert.That(context.QueuedActions.Count).IsEqualTo(1);
+        context.RunNext();
+        await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_UIThread_WithoutView_FallsBackToPublisher()
     {
         var ea = new EventAggregator();
-        var contextA = new TestDispatcherContext();
-        var dispatcherA1 = new ContextDispatcher(contextA);
-        var dispatcherA2 = new ContextDispatcher(contextA);
-        var contextB = new TestDispatcherContext();
-        var dispatcherB = new ContextDispatcher(contextB);
-        var targetA1 = new TestTarget();
-        var targetB = new TestTarget();
-        var targetA2 = new TestTarget();
-        ea.Subscribe<TestTarget, MessageA>(targetA1, (t, m) => t.ReceivedMessages.Add(m), dispatcherA1);
-        ea.Subscribe<TestTarget, MessageA>(targetB, (t, m) => t.ReceivedMessages.Add(m), dispatcherB);
-        ea.Subscribe<TestTarget, MessageA>(targetA2, (t, m) => t.ReceivedMessages.Add(m), dispatcherA2);
+        var target = new TestTarget();
+        ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
 
-        ea.Publish(new MessageA("shared-thread"));
+        ea.Publish(new MessageA("fallback"));
 
-        await Assert.That(contextA.BeginInvokeCalls).IsEqualTo(1);
-        await Assert.That(contextB.BeginInvokeCalls).IsEqualTo(0);
-        contextA.RunNext();
-        await Assert.That(contextB.BeginInvokeCalls).IsEqualTo(1);
-        contextB.RunNext();
-        await Assert.That(targetA1.ReceivedMessages.Count).IsEqualTo(1);
-        await Assert.That(targetB.ReceivedMessages.Count).IsEqualTo(1);
-        await Assert.That(targetA2.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_BackgroundThread_OnThreadPool_RunsInline()
+    {
+        var ea = new EventAggregator();
+        var target = new TestTarget();
+        var publisherThreadId = 0;
+        var handlerThreadId = 0;
+        ea.Subscribe<TestTarget, MessageA>(target, (_, _) =>
+        {
+            handlerThreadId = Environment.CurrentManagedThreadId;
+        }, ThreadOption.BackgroundThread);
+
+        await Task.Run(() =>
+        {
+            publisherThreadId = Environment.CurrentManagedThreadId;
+            ea.Publish(new MessageA("thread-pool"));
+            return handlerThreadId;
+        });
+
+        await Assert.That(handlerThreadId).IsEqualTo(publisherThreadId);
+    }
+
+    [Test]
+    public async Task Publish_BackgroundThread_OffThreadPool_BatchesOnThreadPool()
+    {
+        var ea = new EventAggregator();
+        var target1 = new TestTarget();
+        var target2 = new TestTarget();
+        var publisherThreadId = 0;
+        var handlerThreadIds = new List<int>();
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var received = 0;
+
+        void Handle(TestTarget target, MessageA message)
+        {
+            lock (handlerThreadIds)
+                handlerThreadIds.Add(Environment.CurrentManagedThreadId);
+
+            target.ReceivedMessages.Add(message);
+            if (Interlocked.Increment(ref received) == 2)
+                completed.TrySetResult();
+        }
+
+        ea.Subscribe<TestTarget, MessageA>(target1, Handle, ThreadOption.BackgroundThread);
+        ea.Subscribe<TestTarget, MessageA>(target2, Handle, ThreadOption.BackgroundThread);
+        var publishReturned = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var publisherThread = new Thread(() =>
+        {
+            publisherThreadId = Environment.CurrentManagedThreadId;
+            ea.Publish(new MessageA("queued"));
+            publishReturned.TrySetResult();
+        });
+
+        publisherThread.Start();
+        await publishReturned.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await completed.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        await Assert.That(target1.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(handlerThreadIds.Count).IsEqualTo(2);
+        await Assert.That(handlerThreadIds[0]).IsNotEqualTo(publisherThreadId);
+        await Assert.That(handlerThreadIds[0]).IsEqualTo(handlerThreadIds[1]);
     }
 
     [Test]
@@ -491,17 +600,15 @@ public class EventAggregatorTests
         await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
     }
 
-    private sealed class TestDispatcherContext
+    private sealed class TestViewContext
     {
         public bool IsCurrent { get; set; }
-        public int BeginInvokeCalls { get; set; }
         public List<Action> QueuedActions { get; } = [];
 
         public void RunNext()
         {
             var action = QueuedActions[0];
             QueuedActions.RemoveAt(0);
-            var wasCurrent = IsCurrent;
             IsCurrent = true;
             try
             {
@@ -509,106 +616,37 @@ public class EventAggregatorTests
             }
             finally
             {
-                IsCurrent = wasCurrent;
+                IsCurrent = false;
             }
         }
     }
 
-    private sealed class ContextDispatcher(TestDispatcherContext context) : IDispatcher
+    private sealed class TestView(TestViewContext context)
     {
-        public bool CheckAccess() => context.IsCurrent;
-
-        public void BeginInvoke(Action action)
-        {
-            context.BeginInvokeCalls++;
-            context.QueuedActions.Add(action);
-        }
-    }
-}
-
-public class TestDispatcher : IDispatcher
-{
-    public bool CheckAccess() => true;
-    public void BeginInvoke(Action action) => action();
-}
-
-public class NonCurrentThreadDispatcher : IDispatcher
-{
-    public List<Action> QueuedActions { get; } = [];
-    public bool IsCurrent { get; private set; }
-    public bool CheckAccess() => IsCurrent;
-    public void BeginInvoke(Action action) => QueuedActions.Add(action);
-
-    public void RunNext()
-    {
-        var action = QueuedActions[0];
-        QueuedActions.RemoveAt(0);
-        IsCurrent = true;
-        try
-        {
-            action();
-        }
-        finally
-        {
-            IsCurrent = false;
-        }
-    }
-}
-
-public sealed class DispatcherWithThrowingEquals : IDispatcher
-{
-    public List<Action> QueuedActions { get; } = [];
-    public int CheckAccessCalls { get; private set; }
-    public bool IsCurrent { get; private set; }
-
-    public bool CheckAccess()
-    {
-        CheckAccessCalls++;
-        return IsCurrent;
+        public TestViewContext Context { get; } = context;
+        public List<object> ReceivedMessages { get; } = [];
     }
 
-    public void BeginInvoke(Action action) => QueuedActions.Add(action);
-    public void RunNext()
+    private sealed class TestViewAwareTarget : ViewAware
     {
-        var action = QueuedActions[0];
-        QueuedActions.RemoveAt(0);
-        IsCurrent = true;
-        try
-        {
-            action();
-        }
-        finally
-        {
-            IsCurrent = false;
-        }
+        public List<object> ReceivedMessages { get; } = [];
     }
 
-    public override bool Equals(object? obj) => throw new InvalidOperationException("Dispatcher equality should not be used.");
-    public override int GetHashCode() => throw new InvalidOperationException("Dispatcher hashing should not be used.");
-}
-
-public sealed class EqualDispatcher : IDispatcher
-{
-    public List<Action> QueuedActions { get; } = [];
-    public bool IsCurrent { get; private set; }
-    public bool CheckAccess() => IsCurrent;
-    public void BeginInvoke(Action action) => QueuedActions.Add(action);
-
-    public void RunNext()
+    private sealed class TestParentAwareTarget : ViewAware
     {
-        var action = QueuedActions[0];
-        QueuedActions.RemoveAt(0);
-        IsCurrent = true;
-        try
-        {
-            action();
-        }
-        finally
-        {
-            IsCurrent = false;
-        }
+        public List<object> ReceivedMessages { get; } = [];
     }
 
-    public override bool Equals(object? obj) => obj is EqualDispatcher;
-    public override int GetHashCode() => 0;
+    private sealed class TestViewAdapter : IViewAdapter
+    {
+        public bool IsInDesignTool => false;
+        public bool CanHandle(object view) => view is TestView;
+        public object GetFirstNonGeneratedView(object view) => view;
+        public void ExecuteOnFirstLoad(object view, Action<object> handler) { }
+        public void ExecuteOnLayoutUpdated(object view, Action<object> handler) { }
+        public Task<bool> TryCloseAsync(object view) => Task.FromResult(false);
+        public object? GetCommandParameter(object view) => null;
+        public bool CheckAccess(object view) => ((TestView)view).Context.IsCurrent;
+        public void BeginInvoke(object view, Action action) => ((TestView)view).Context.QueuedActions.Add(action);
+    }
 }

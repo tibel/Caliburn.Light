@@ -120,17 +120,6 @@ public static class ViewHelper
     }
 
     /// <summary>
-    /// Gets the Dispatcher this view is associated with.
-    /// </summary>
-    /// <param name="view">The view.</param>
-    /// <returns>The dispatcher for the view.</returns>
-    public static IDispatcher GetDispatcher(object view)
-    {
-        var viewAdapter = ResolveViewAdapter(view);
-        return new ViewDispatcher(viewAdapter, view);
-    }
-
-    /// <summary>
     /// Gets an awaitable that switches execution to the UI thread associated with the specified view.
     /// </summary>
     /// <param name="view">The view.</param>

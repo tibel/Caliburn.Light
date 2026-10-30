@@ -1,9 +1,8 @@
-using System.Runtime.CompilerServices;
 using Caliburn.Light;
 
 namespace Caliburn.Light.Core.Tests;
 
-[NotInParallel("ViewHelperTests")]
+[NotInParallel("SharedStaticEventAndViewHelper")]
 public class ViewHelperTests
 {
     [Before(Test)]
@@ -181,51 +180,7 @@ public class ViewHelperTests
     }
 
     [Test]
-    public async Task GetDispatcher_DelegatesToAdapter()
-    {
-        var adapter = new TestViewAdapter { CheckAccessResult = false };
-        ViewHelper.Initialize(adapter);
-
-        var result = ViewHelper.GetDispatcher("view");
-
-        await Assert.That(result.CheckAccess()).IsFalse();
-        await Assert.That(adapter.LastCheckAccessView).IsEqualTo("view");
-    }
-
-    [Test]
-    public async Task GetDispatcher_BeginInvoke_DelegatesToAdapter()
-    {
-        var adapter = new TestViewAdapter();
-        ViewHelper.Initialize(adapter);
-        Action action = () => { };
-
-        ViewHelper.GetDispatcher("view").BeginInvoke(action);
-
-        await Assert.That(adapter.LastBeginInvokeView).IsEqualTo("view");
-        await Assert.That(ReferenceEquals(adapter.LastBeginInvokeAction, action)).IsTrue();
-    }
-
-    [Test]
-    public async Task GetDispatcher_DoesNotKeepViewAlive()
-    {
-        ViewHelper.Initialize(new NonRetainingViewAdapter());
-        var (viewReference, dispatcher) = CreateDispatcherForCollectableView();
-
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        GC.Collect();
-
-        await Assert.That(viewReference.TryGetTarget(out _)).IsFalse();
-        await Assert.That(dispatcher.CheckAccess()).IsFalse();
-
-        var actionInvoked = false;
-        dispatcher.BeginInvoke(() => actionInvoked = true);
-
-        await Assert.That(actionInvoked).IsFalse();
-    }
-
-    [Test]
-    public async Task SwitchToViewAsync_UsesViewDispatcher()
+    public async Task SwitchToViewAsync_UsesViewAdapter()
     {
         var adapter = new TestViewAdapter { CheckAccessResult = false };
         ViewHelper.Initialize(adapter);
@@ -310,15 +265,6 @@ public class ViewHelperTests
     }
 
     [Test]
-    public async Task GetDispatcher_NoAdapterMatches_ThrowsInvalidOperationException()
-    {
-        ViewHelper.Initialize(new TestViewAdapter { CanHandleResult = false });
-
-        await Assert.That(() => ViewHelper.GetDispatcher("view"))
-            .Throws<InvalidOperationException>();
-    }
-
-    [Test]
     public async Task CheckAccess_NoAdapterMatches_ThrowsInvalidOperationException()
     {
         ViewHelper.Initialize(new TestViewAdapter { CanHandleResult = false });
@@ -348,13 +294,6 @@ public class ViewHelperTests
         var result = ViewHelper.GetFirstNonGeneratedView("view");
 
         await Assert.That(result).IsSameReferenceAs(expected);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static (WeakReference<object> ViewReference, IDispatcher Dispatcher) CreateDispatcherForCollectableView()
-    {
-        var view = new object();
-        return (new WeakReference<object>(view), ViewHelper.GetDispatcher(view));
     }
 
     private sealed class TestViewAdapter : IViewAdapter
@@ -409,16 +348,4 @@ public class ViewHelperTests
         }
     }
 
-    private sealed class NonRetainingViewAdapter : IViewAdapter
-    {
-        public bool IsInDesignTool => false;
-        public bool CanHandle(object view) => true;
-        public object GetFirstNonGeneratedView(object view) => view;
-        public void ExecuteOnFirstLoad(object view, Action<object> handler) { }
-        public void ExecuteOnLayoutUpdated(object view, Action<object> handler) { }
-        public Task<bool> TryCloseAsync(object view) => Task.FromResult(false);
-        public object? GetCommandParameter(object view) => null;
-        public bool CheckAccess(object view) => true;
-        public void BeginInvoke(object view, Action action) => action();
-    }
 }
