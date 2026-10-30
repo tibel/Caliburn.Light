@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +12,7 @@ public sealed class EventAggregator : IEventAggregator
 {
     private readonly Lock _lockObject = new();
 
-    private List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>>? _contexts;
+    private List<IEventAggregatorHandler>? _handlers;
 
     /// <summary>
     /// Subscribes the specified handler for messages of type <typeparamref name="TMessage" />.
@@ -65,18 +64,22 @@ public sealed class EventAggregator : IEventAggregator
     {
         lock (_lockObject)
         {
-            if (_contexts is null)
+            var handlers = _handlers;
+            var copy = new List<IEventAggregatorHandler>((handlers?.Count ?? 0) + 1);
+
+            if (handlers is not null)
             {
-                _contexts = [new KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>(handler.Dispatcher, [handler])];
-                return;
+                for (var i = 0; i < handlers.Count; i++)
+                {
+                    var existingHandler = handlers[i];
+
+                    if (!existingHandler.IsDead)
+                        copy.Add(existingHandler);
+                }
             }
 
-            _contexts = Clone(_contexts);
-            var targetContext = _contexts.Find(x => x.Key.Equals(handler.Dispatcher));
-            if (targetContext.Key is null)
-                _contexts.Add(new KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>(handler.Dispatcher, [handler]));
-            else
-                targetContext.Value.Add(handler);
+            copy.Add(handler);
+            _handlers = copy;
         }
     }
 
@@ -90,20 +93,38 @@ public sealed class EventAggregator : IEventAggregator
 
         lock (_lockObject)
         {
-            if (_contexts is null) return;
+            if (_handlers is null) return;
 
-            _contexts = Clone(_contexts);
-            var targetContext = _contexts.Find(x => x.Key.Equals(handler.Dispatcher));
-            if (targetContext.Key is not null)
+            var handlers = _handlers;
+            var handlerIndex = -1;
+            for (var i = 0; i < handlers.Count; i++)
             {
-                targetContext.Value.Remove(handler);
-
-                if (targetContext.Value.Count == 0)
-                    _contexts.Remove(targetContext);
+                if (ReferenceEquals(handlers[i], handler))
+                {
+                    handlerIndex = i;
+                    break;
+                }
             }
 
-            if (_contexts.Count == 0)
-                _contexts = null;
+            if (handlerIndex < 0) return;
+
+            var copy = new List<IEventAggregatorHandler>(handlers.Count - 1);
+
+            for (var i = 0; i < handlers.Count; i++)
+            {
+                if (i == handlerIndex)
+                    continue;
+
+                var existingHandler = handlers[i];
+
+                if (!existingHandler.IsDead)
+                    copy.Add(existingHandler);
+            }
+
+            if (copy.Count == 0)
+                _handlers = null;
+            else
+                _handlers = copy;
         }
     }
 
@@ -115,52 +136,43 @@ public sealed class EventAggregator : IEventAggregator
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        IEnumerable<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>> contexts;
+        List<IEventAggregatorHandler>? handlers;
 
         lock (_lockObject)
         {
-            contexts = _contexts ?? Enumerable.Empty<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>>();
+            handlers = _handlers;
         }
 
-        // publish to current context
-        foreach (var context in contexts)
-        {
-            if (context.Key.CheckAccess())
-                PublishCore(message, context.Value);
-        }
+        if (handlers is null)
+            return;
 
-        // publish to other contexts
-        foreach (var context in contexts)
-        {
-            if (!context.Key.CheckAccess())
-                context.Key.BeginInvoke(() => PublishCore(message, context.Value));
-        }
+        PublishCore(message, handlers, new bool[handlers.Count]);
     }
 
-    private static List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>> Clone(List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>> contexts)
+    private static void PublishCore(object message, List<IEventAggregatorHandler> handlers, bool[] processedHandlers)
     {
-        var copy = new List<KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>>(contexts.Count);
+        IDispatcher? queuedDispatcher = null;
 
-        for (var i = 0; i < contexts.Count; i++)
-        {
-            var context = contexts[i];
-
-            var handlers = context.Value.FindAll(static h => !h.IsDead);
-            if (handlers.Count > 0)
-                copy.Add(new KeyValuePair<IDispatcher, List<IEventAggregatorHandler>>(context.Key, handlers));
-        }
-
-        return copy;
-    }
-
-    private static void PublishCore(object message, List<IEventAggregatorHandler> handlers)
-    {
         for (var i = 0; i < handlers.Count; i++)
         {
+            if (processedHandlers[i])
+                continue;
+
             var handler = handlers[i];
 
             if (!handler.CanHandle(message))
+            {
+                processedHandlers[i] = true;
                 continue;
+            }
+
+            if (!handler.Dispatcher.CheckAccess())
+            {
+                queuedDispatcher ??= handler.Dispatcher;
+                continue;
+            }
+
+            processedHandlers[i] = true;
 
             var task = handler.HandleAsync(message);
 
@@ -169,6 +181,8 @@ public sealed class EventAggregator : IEventAggregator
             if (!task.IsCompleted)
                 Executing?.Invoke(null, new TaskEventArgs(task));
         }
+
+        queuedDispatcher?.BeginInvoke(() => PublishCore(message, handlers, processedHandlers));
     }
 
     /// <summary>

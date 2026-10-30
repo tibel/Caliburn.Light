@@ -128,6 +128,21 @@ public class EventAggregatorTests
     }
 
     [Test]
+    public async Task Unsubscribe_UnknownHandler_DoesNotAffectSubscribers()
+    {
+        var ea = new EventAggregator();
+        var target = new TestTarget();
+        ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m));
+        var otherAggregator = new EventAggregator();
+        var unknownHandler = otherAggregator.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m));
+
+        ea.Unsubscribe(unknownHandler);
+        ea.Publish(new MessageA("still-subscribed"));
+
+        await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
     public async Task Unsubscribe_NullHandler_ThrowsArgumentNullException()
     {
         var ea = new EventAggregator();
@@ -384,9 +399,80 @@ public class EventAggregatorTests
 
         await Assert.That(dispatcher.QueuedActions.Count).IsEqualTo(1);
 
-        dispatcher.QueuedActions[0]();
+        dispatcher.RunNext();
 
         await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_SameDispatcherInstance_ContinuesWithoutCallingEquals()
+    {
+        var ea = new EventAggregator();
+        var target1 = new TestTarget();
+        var target2 = new TestTarget();
+        var dispatcher = new DispatcherWithThrowingEquals();
+        var handler1 = ea.Subscribe<TestTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), dispatcher);
+        ea.Subscribe<TestTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), dispatcher);
+
+        ea.Unsubscribe(handler1);
+        ea.Publish(new MessageA("identity-group"));
+
+        await Assert.That(dispatcher.CheckAccessCalls).IsEqualTo(1);
+        await Assert.That(dispatcher.QueuedActions.Count).IsEqualTo(1);
+        dispatcher.RunNext();
+        await Assert.That(dispatcher.CheckAccessCalls).IsEqualTo(2);
+        await Assert.That(target1.ReceivedMessages.Count).IsEqualTo(0);
+        await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_EqualButDistinctDispatchers_QueuesSeparateContinuations()
+    {
+        var ea = new EventAggregator();
+        var target1 = new TestTarget();
+        var target2 = new TestTarget();
+        var dispatcher1 = new EqualDispatcher();
+        var dispatcher2 = new EqualDispatcher();
+        ea.Subscribe<TestTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), dispatcher1);
+        ea.Subscribe<TestTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), dispatcher2);
+
+        ea.Publish(new MessageA("distinct-groups"));
+
+        await Assert.That(dispatcher1.QueuedActions.Count).IsEqualTo(1);
+        await Assert.That(dispatcher2.QueuedActions.Count).IsEqualTo(0);
+        dispatcher1.RunNext();
+        await Assert.That(dispatcher2.QueuedActions.Count).IsEqualTo(1);
+        dispatcher2.RunNext();
+        await Assert.That(target1.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Publish_InterleavedDispatchersWithSharedThread_AvoidsRevisitingContext()
+    {
+        var ea = new EventAggregator();
+        var contextA = new TestDispatcherContext();
+        var dispatcherA1 = new ContextDispatcher(contextA);
+        var dispatcherA2 = new ContextDispatcher(contextA);
+        var contextB = new TestDispatcherContext();
+        var dispatcherB = new ContextDispatcher(contextB);
+        var targetA1 = new TestTarget();
+        var targetB = new TestTarget();
+        var targetA2 = new TestTarget();
+        ea.Subscribe<TestTarget, MessageA>(targetA1, (t, m) => t.ReceivedMessages.Add(m), dispatcherA1);
+        ea.Subscribe<TestTarget, MessageA>(targetB, (t, m) => t.ReceivedMessages.Add(m), dispatcherB);
+        ea.Subscribe<TestTarget, MessageA>(targetA2, (t, m) => t.ReceivedMessages.Add(m), dispatcherA2);
+
+        ea.Publish(new MessageA("shared-thread"));
+
+        await Assert.That(contextA.BeginInvokeCalls).IsEqualTo(1);
+        await Assert.That(contextB.BeginInvokeCalls).IsEqualTo(0);
+        contextA.RunNext();
+        await Assert.That(contextB.BeginInvokeCalls).IsEqualTo(1);
+        contextB.RunNext();
+        await Assert.That(targetA1.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(targetB.ReceivedMessages.Count).IsEqualTo(1);
+        await Assert.That(targetA2.ReceivedMessages.Count).IsEqualTo(1);
     }
 
     [Test]
@@ -404,6 +490,40 @@ public class EventAggregatorTests
         await Assert.That(target1.ReceivedMessages.Count).IsEqualTo(0);
         await Assert.That(target2.ReceivedMessages.Count).IsEqualTo(1);
     }
+
+    private sealed class TestDispatcherContext
+    {
+        public bool IsCurrent { get; set; }
+        public int BeginInvokeCalls { get; set; }
+        public List<Action> QueuedActions { get; } = [];
+
+        public void RunNext()
+        {
+            var action = QueuedActions[0];
+            QueuedActions.RemoveAt(0);
+            var wasCurrent = IsCurrent;
+            IsCurrent = true;
+            try
+            {
+                action();
+            }
+            finally
+            {
+                IsCurrent = wasCurrent;
+            }
+        }
+    }
+
+    private sealed class ContextDispatcher(TestDispatcherContext context) : IDispatcher
+    {
+        public bool CheckAccess() => context.IsCurrent;
+
+        public void BeginInvoke(Action action)
+        {
+            context.BeginInvokeCalls++;
+            context.QueuedActions.Add(action);
+        }
+    }
 }
 
 public class TestDispatcher : IDispatcher
@@ -415,6 +535,80 @@ public class TestDispatcher : IDispatcher
 public class NonCurrentThreadDispatcher : IDispatcher
 {
     public List<Action> QueuedActions { get; } = [];
-    public bool CheckAccess() => false;
+    public bool IsCurrent { get; private set; }
+    public bool CheckAccess() => IsCurrent;
     public void BeginInvoke(Action action) => QueuedActions.Add(action);
+
+    public void RunNext()
+    {
+        var action = QueuedActions[0];
+        QueuedActions.RemoveAt(0);
+        IsCurrent = true;
+        try
+        {
+            action();
+        }
+        finally
+        {
+            IsCurrent = false;
+        }
+    }
+}
+
+public sealed class DispatcherWithThrowingEquals : IDispatcher
+{
+    public List<Action> QueuedActions { get; } = [];
+    public int CheckAccessCalls { get; private set; }
+    public bool IsCurrent { get; private set; }
+
+    public bool CheckAccess()
+    {
+        CheckAccessCalls++;
+        return IsCurrent;
+    }
+
+    public void BeginInvoke(Action action) => QueuedActions.Add(action);
+    public void RunNext()
+    {
+        var action = QueuedActions[0];
+        QueuedActions.RemoveAt(0);
+        IsCurrent = true;
+        try
+        {
+            action();
+        }
+        finally
+        {
+            IsCurrent = false;
+        }
+    }
+
+    public override bool Equals(object? obj) => throw new InvalidOperationException("Dispatcher equality should not be used.");
+    public override int GetHashCode() => throw new InvalidOperationException("Dispatcher hashing should not be used.");
+}
+
+public sealed class EqualDispatcher : IDispatcher
+{
+    public List<Action> QueuedActions { get; } = [];
+    public bool IsCurrent { get; private set; }
+    public bool CheckAccess() => IsCurrent;
+    public void BeginInvoke(Action action) => QueuedActions.Add(action);
+
+    public void RunNext()
+    {
+        var action = QueuedActions[0];
+        QueuedActions.RemoveAt(0);
+        IsCurrent = true;
+        try
+        {
+            action();
+        }
+        finally
+        {
+            IsCurrent = false;
+        }
+    }
+
+    public override bool Equals(object? obj) => obj is EqualDispatcher;
+    public override int GetHashCode() => 0;
 }
