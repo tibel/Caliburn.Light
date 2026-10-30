@@ -1,8 +1,8 @@
 using Caliburn.Light;
-using static Caliburn.Light.DispatcherHelper;
 
 namespace Caliburn.Light.Core.Tests;
 
+[Obsolete("Tests for the obsolete DispatcherHelper API.")]
 public class DispatcherHelperTests
 {
     [Test]
@@ -10,15 +10,15 @@ public class DispatcherHelperTests
     {
         IDispatcher dispatcher = CurrentThreadDispatcher.Instance;
 
-        var awaitable = dispatcher.SwitchTo();
+        var awaitable = DispatcherHelper.SwitchTo(dispatcher);
 
-        await Assert.That(awaitable).IsAssignableTo<DispatcherAwaitable>();
+        await Assert.That(awaitable).IsAssignableTo<DispatcherHelper.DispatcherAwaitable>();
     }
 
     [Test]
     public async Task GetAwaiter_ReturnsSelf()
     {
-        var awaitable = CurrentThreadDispatcher.Instance.SwitchTo();
+        var awaitable = DispatcherHelper.SwitchTo(CurrentThreadDispatcher.Instance);
 
         var awaiter = awaitable.GetAwaiter();
 
@@ -28,7 +28,7 @@ public class DispatcherHelperTests
     [Test]
     public async Task IsCompleted_WhenHasAccess_ReturnsTrue()
     {
-        var awaitable = CurrentThreadDispatcher.Instance.SwitchTo();
+        var awaitable = DispatcherHelper.SwitchTo(CurrentThreadDispatcher.Instance);
 
         var result = awaitable.IsCompleted;
 
@@ -39,7 +39,7 @@ public class DispatcherHelperTests
     public async Task IsCompleted_WhenNoAccess_ReturnsFalse()
     {
         var dispatcher = new NoAccessDispatcher();
-        var awaitable = dispatcher.SwitchTo();
+        var awaitable = DispatcherHelper.SwitchTo(dispatcher);
 
         var result = awaitable.IsCompleted;
 
@@ -49,7 +49,7 @@ public class DispatcherHelperTests
     [Test]
     public async Task GetResult_DoesNotThrow()
     {
-        var awaitable = CurrentThreadDispatcher.Instance.SwitchTo();
+        var awaitable = DispatcherHelper.SwitchTo(CurrentThreadDispatcher.Instance);
         var action = () => awaitable.GetResult();
         await Assert.That(action).ThrowsNothing();
     }
@@ -58,7 +58,7 @@ public class DispatcherHelperTests
     public async Task OnCompleted_DispatchesAction()
     {
         var dispatched = false;
-        var awaitable = CurrentThreadDispatcher.Instance.SwitchTo();
+        var awaitable = DispatcherHelper.SwitchTo(CurrentThreadDispatcher.Instance);
 
         awaitable.OnCompleted(() => dispatched = true);
 
@@ -70,7 +70,7 @@ public class DispatcherHelperTests
     {
         var dispatcher = CurrentThreadDispatcher.Instance;
 
-        await dispatcher.SwitchTo();
+        await DispatcherHelper.SwitchTo(dispatcher);
     }
 
     private sealed class NoAccessDispatcher : IDispatcher

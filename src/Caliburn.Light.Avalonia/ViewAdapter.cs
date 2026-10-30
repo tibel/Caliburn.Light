@@ -84,9 +84,7 @@ internal sealed class ViewAdapter : IViewAdapter
         return null;
     }
 
-    public IDispatcher GetDispatcher(object view)
-    {
-        var avaloniaObject = (AvaloniaObject)view;
-        return View.GetDispatcherFrom(avaloniaObject.Dispatcher);
-    }
+    public bool CheckAccess(object view) => ((AvaloniaObject)view).Dispatcher.CheckAccess();
+
+    public void BeginInvoke(object view, Action action) => ((AvaloniaObject)view).Dispatcher.Post(action);
 }

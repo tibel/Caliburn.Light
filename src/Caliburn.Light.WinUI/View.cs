@@ -399,11 +399,13 @@ public static class View
     /// </summary>
     /// <param name="dispatcher">The UI dispatcher.</param>
     /// <returns>The dispatcher.</returns>
+    [Obsolete("Use ViewHelper.GetDispatcher(view) instead.")]
     public static IDispatcher GetDispatcherFrom(DispatcherQueue dispatcher)
     {
         return new ViewDispatcher(dispatcher);
     }
 
+    [Obsolete("Use ViewHelper.GetDispatcher(view) instead.")]
     private sealed class ViewDispatcher : IDispatcher
     {
         private readonly DispatcherQueue _dispatcher;

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Caliburn.Light;
 
 namespace Caliburn.Light.Core.Tests;
@@ -72,6 +73,28 @@ public class ViewHelperTests
         ViewHelper.Initialize(new TestViewAdapter { InDesignTool = true });
 
         await Assert.That(ViewHelper.IsInDesignTool).IsTrue();
+    }
+
+    [Test]
+    public async Task IsView_WhenNoAdapter_ReturnsFalse()
+    {
+        await Assert.That(ViewHelper.IsView(new object())).IsFalse();
+    }
+
+    [Test]
+    public async Task IsView_WhenAdapterCanHandle_ReturnsTrue()
+    {
+        ViewHelper.Initialize(new TestViewAdapter { CanHandleResult = true });
+
+        await Assert.That(ViewHelper.IsView(new object())).IsTrue();
+    }
+
+    [Test]
+    public async Task IsView_WhenNoAdapterCanHandle_ReturnsFalse()
+    {
+        ViewHelper.Initialize(new TestViewAdapter { CanHandleResult = false });
+
+        await Assert.That(ViewHelper.IsView(new object())).IsFalse();
     }
 
     [Test]
@@ -160,13 +183,103 @@ public class ViewHelperTests
     [Test]
     public async Task GetDispatcher_DelegatesToAdapter()
     {
-        var dispatcher = CurrentThreadDispatcher.Instance;
-        var adapter = new TestViewAdapter { Dispatcher = dispatcher };
+        var adapter = new TestViewAdapter { CheckAccessResult = false };
         ViewHelper.Initialize(adapter);
 
         var result = ViewHelper.GetDispatcher("view");
 
-        await Assert.That(result).IsSameReferenceAs(dispatcher);
+        await Assert.That(result.CheckAccess()).IsFalse();
+        await Assert.That(adapter.LastCheckAccessView).IsEqualTo("view");
+    }
+
+    [Test]
+    public async Task GetDispatcher_BeginInvoke_DelegatesToAdapter()
+    {
+        var adapter = new TestViewAdapter();
+        ViewHelper.Initialize(adapter);
+        Action action = () => { };
+
+        ViewHelper.GetDispatcher("view").BeginInvoke(action);
+
+        await Assert.That(adapter.LastBeginInvokeView).IsEqualTo("view");
+        await Assert.That(ReferenceEquals(adapter.LastBeginInvokeAction, action)).IsTrue();
+    }
+
+    [Test]
+    public async Task GetDispatcher_DoesNotKeepViewAlive()
+    {
+        ViewHelper.Initialize(new NonRetainingViewAdapter());
+        var (viewReference, dispatcher) = CreateDispatcherForCollectableView();
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        await Assert.That(viewReference.TryGetTarget(out _)).IsFalse();
+        await Assert.That(dispatcher.CheckAccess()).IsFalse();
+
+        var actionInvoked = false;
+        dispatcher.BeginInvoke(() => actionInvoked = true);
+
+        await Assert.That(actionInvoked).IsFalse();
+    }
+
+    [Test]
+    public async Task SwitchToViewAsync_UsesViewDispatcher()
+    {
+        var adapter = new TestViewAdapter { CheckAccessResult = false };
+        ViewHelper.Initialize(adapter);
+        var view = new object();
+        var resumedWithViewAccess = false;
+
+        async Task Switch()
+        {
+            await ViewHelper.SwitchToViewAsync(view);
+            resumedWithViewAccess = adapter.CheckAccess(view);
+        }
+
+        var switchTask = Switch();
+        await Assert.That(switchTask.IsCompleted).IsFalse();
+        await Assert.That(adapter.LastBeginInvokeView).IsSameReferenceAs(view);
+
+        var continuation = adapter.LastBeginInvokeAction ?? throw new InvalidOperationException();
+        adapter.CheckAccessResult = true;
+        continuation();
+        await switchTask;
+
+        await Assert.That(resumedWithViewAccess).IsTrue();
+    }
+
+    [Test]
+    public async Task SwitchToViewAsync_NoAdapter_ThrowsBeforeReturningAwaitable()
+    {
+        await Assert.That(() => ViewHelper.SwitchToViewAsync(new object()))
+            .Throws<InvalidOperationException>();
+    }
+
+    [Test]
+    public async Task CheckAccess_DelegatesToAdapter()
+    {
+        var adapter = new TestViewAdapter { CheckAccessResult = false };
+        ViewHelper.Initialize(adapter);
+
+        var result = ViewHelper.CheckAccess("view");
+
+        await Assert.That(result).IsFalse();
+        await Assert.That(adapter.LastCheckAccessView).IsEqualTo("view");
+    }
+
+    [Test]
+    public async Task BeginInvoke_DelegatesToAdapter()
+    {
+        var adapter = new TestViewAdapter();
+        ViewHelper.Initialize(adapter);
+        Action action = () => { };
+
+        ViewHelper.BeginInvoke("view", action);
+
+        await Assert.That(adapter.LastBeginInvokeView).IsEqualTo("view");
+        await Assert.That(ReferenceEquals(adapter.LastBeginInvokeAction, action)).IsTrue();
     }
 
     [Test]
@@ -206,6 +319,24 @@ public class ViewHelperTests
     }
 
     [Test]
+    public async Task CheckAccess_NoAdapterMatches_ThrowsInvalidOperationException()
+    {
+        ViewHelper.Initialize(new TestViewAdapter { CanHandleResult = false });
+
+        await Assert.That(() => ViewHelper.CheckAccess("view"))
+            .Throws<InvalidOperationException>();
+    }
+
+    [Test]
+    public async Task BeginInvoke_NoAdapterMatches_ThrowsInvalidOperationException()
+    {
+        ViewHelper.Initialize(new TestViewAdapter { CanHandleResult = false });
+
+        await Assert.That(() => ViewHelper.BeginInvoke("view", () => { }))
+            .Throws<InvalidOperationException>();
+    }
+
+    [Test]
     public async Task MultipleAdapters_UsesCorrectOne()
     {
         var adapter1 = new TestViewAdapter { CanHandleResult = false };
@@ -219,6 +350,13 @@ public class ViewHelperTests
         await Assert.That(result).IsSameReferenceAs(expected);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static (WeakReference<object> ViewReference, IDispatcher Dispatcher) CreateDispatcherForCollectableView()
+    {
+        var view = new object();
+        return (new WeakReference<object>(view), ViewHelper.GetDispatcher(view));
+    }
+
     private sealed class TestViewAdapter : IViewAdapter
     {
         public bool InDesignTool { get; set; }
@@ -226,12 +364,15 @@ public class ViewHelperTests
         public object FirstNonGeneratedView { get; set; } = new object();
         public bool TryCloseResult { get; set; } = true;
         public object? CommandParameter { get; set; }
-        public IDispatcher Dispatcher { get; set; } = CurrentThreadDispatcher.Instance;
+        public bool CheckAccessResult { get; set; } = true;
 
         public object? LastFirstLoadView { get; private set; }
         public Action<object>? LastFirstLoadHandler { get; private set; }
         public object? LastLayoutUpdatedView { get; private set; }
         public Action<object>? LastLayoutUpdatedHandler { get; private set; }
+        public object? LastCheckAccessView { get; private set; }
+        public object? LastBeginInvokeView { get; private set; }
+        public Action? LastBeginInvokeAction { get; private set; }
 
         public bool IsInDesignTool => InDesignTool;
 
@@ -255,6 +396,29 @@ public class ViewHelperTests
 
         public object? GetCommandParameter(object view) => CommandParameter;
 
-        public IDispatcher GetDispatcher(object view) => Dispatcher;
+        public bool CheckAccess(object view)
+        {
+            LastCheckAccessView = view;
+            return CheckAccessResult;
+        }
+
+        public void BeginInvoke(object view, Action action)
+        {
+            LastBeginInvokeView = view;
+            LastBeginInvokeAction = action;
+        }
+    }
+
+    private sealed class NonRetainingViewAdapter : IViewAdapter
+    {
+        public bool IsInDesignTool => false;
+        public bool CanHandle(object view) => true;
+        public object GetFirstNonGeneratedView(object view) => view;
+        public void ExecuteOnFirstLoad(object view, Action<object> handler) { }
+        public void ExecuteOnLayoutUpdated(object view, Action<object> handler) { }
+        public Task<bool> TryCloseAsync(object view) => Task.FromResult(false);
+        public object? GetCommandParameter(object view) => null;
+        public bool CheckAccess(object view) => true;
+        public void BeginInvoke(object view, Action action) => action();
     }
 }

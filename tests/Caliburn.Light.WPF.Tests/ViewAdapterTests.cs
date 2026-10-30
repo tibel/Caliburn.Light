@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TUnit.Core;
@@ -73,25 +75,19 @@ public class ViewAdapterTests
     }
 
     [Test]
-    public async Task GetDispatcher_ReturnsIDispatcher_WithCheckAccess()
+    public async Task CheckAccess_ReturnsTrue_OnDispatcherThread()
     {
-        var button = new Button();
-        var dispatcher = _adapter.GetDispatcher(button);
-
-        await Assert.That(dispatcher).IsNotNull();
-        await Assert.That(dispatcher.CheckAccess()).IsTrue();
+        await Assert.That(_adapter.CheckAccess(new Button())).IsTrue();
     }
 
     [Test]
-    public async Task GetDispatcher_ReturnsSameDispatcher_ForSameThread()
+    public async Task BeginInvoke_ExecutesOnDispatcherThread()
     {
-        var button1 = new Button();
-        var button2 = new Button();
+        var view = new Button();
+        var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _adapter.BeginInvoke(view, () => completion.SetResult(_adapter.CheckAccess(view)));
 
-        var d1 = _adapter.GetDispatcher(button1);
-        var d2 = _adapter.GetDispatcher(button2);
-
-        await Assert.That(d1.Equals(d2)).IsTrue();
+        await Assert.That(await completion.Task.WaitAsync(TimeSpan.FromSeconds(5))).IsTrue();
     }
 
     [Test]

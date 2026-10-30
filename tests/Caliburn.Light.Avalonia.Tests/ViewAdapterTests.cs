@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using TUnit.Core;
 using TUnit.Core.Executors;
@@ -78,25 +80,19 @@ public class ViewAdapterTests
     }
 
     [Test]
-    public async Task GetDispatcher_ReturnsIDispatcher()
+    public async Task CheckAccess_ReturnsTrue_OnDispatcherThread()
     {
-        var control = new TextBlock();
-        var result = _adapter.GetDispatcher(control);
-
-        await Assert.That(result).IsNotNull();
-        await Assert.That(result).IsAssignableTo<IDispatcher>();
+        await Assert.That(_adapter.CheckAccess(new TextBlock())).IsTrue();
     }
 
     [Test]
-    public async Task GetDispatcher_ReturnsSameDispatcher_ForSameThread()
+    public async Task BeginInvoke_ExecutesOnDispatcherThread()
     {
-        var control1 = new TextBlock();
-        var control2 = new TextBlock();
-        var d1 = _adapter.GetDispatcher(control1);
-        var d2 = _adapter.GetDispatcher(control2);
-        var areEqual = d1.Equals(d2);
+        var view = new TextBlock();
+        var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _adapter.BeginInvoke(view, () => completion.SetResult(_adapter.CheckAccess(view)));
 
-        await Assert.That(areEqual).IsTrue();
+        await Assert.That(await completion.Task.WaitAsync(TimeSpan.FromSeconds(5))).IsTrue();
     }
 
     [Test]

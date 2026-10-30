@@ -57,9 +57,16 @@ public interface IViewAdapter
     object? GetCommandParameter(object view);
 
     /// <summary>
-    /// Gets the Dispatcher this view is associated with.
+    /// Checks whether the current thread has access to the specified view.
     /// </summary>
     /// <param name="view">The view.</param>
-    /// <returns>The dispatcher for the view.</returns>
-    IDispatcher GetDispatcher(object view);
+    /// <returns>true if the current thread has access to the view; otherwise false.</returns>
+    bool CheckAccess(object view);
+
+    /// <summary>
+    /// Schedules an action on the dispatcher associated with the specified view.
+    /// </summary>
+    /// <param name="view">The view.</param>
+    /// <param name="action">The action to execute.</param>
+    void BeginInvoke(object view, Action action);
 }

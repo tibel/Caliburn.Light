@@ -67,6 +67,7 @@ public class ViewTests
     }
 
     [Test]
+    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
     public async Task GetDispatcherFrom_ReturnsIDispatcher()
     {
         var result = View.GetDispatcherFrom(Dispatcher.UIThread);
@@ -76,6 +77,7 @@ public class ViewTests
     }
 
     [Test]
+    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
     public async Task GetDispatcherFrom_CheckAccess_TrueOnUIThread()
     {
         var dispatcher = View.GetDispatcherFrom(Dispatcher.UIThread);
@@ -85,6 +87,7 @@ public class ViewTests
     }
 
     [Test]
+    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
     public async Task GetDispatcherFrom_SameDispatcher_AreEqual()
     {
         var dispatcher1 = View.GetDispatcherFrom(Dispatcher.UIThread);

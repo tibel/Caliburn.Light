@@ -6,6 +6,7 @@ namespace Caliburn.Light;
 /// <summary>
 /// Extensions for <see cref="IDispatcher"/>.
 /// </summary>
+[Obsolete("Use ViewHelper.SwitchToViewAsync(view) instead.")]
 public static class DispatcherHelper
 {
     /// <summary>

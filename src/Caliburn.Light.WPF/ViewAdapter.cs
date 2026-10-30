@@ -86,9 +86,7 @@ internal sealed class ViewAdapter : IViewAdapter
         return null;
     }
 
-    public IDispatcher GetDispatcher(object view)
-    {
-        var dependencyObject = (DependencyObject)view;
-        return View.GetDispatcherFrom(dependencyObject.Dispatcher);
-    }
+    public bool CheckAccess(object view) => ((DependencyObject)view).Dispatcher.CheckAccess();
+
+    public void BeginInvoke(object view, Action action) => ((DependencyObject)view).Dispatcher.BeginInvoke(action);
 }

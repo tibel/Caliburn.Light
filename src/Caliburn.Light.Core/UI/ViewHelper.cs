@@ -47,6 +47,16 @@ public static class ViewHelper
         get { return _viewAdapters.Count == 0 || _viewAdapters.Exists(v => v.IsInDesignTool); }
     }
 
+    /// <summary>
+    /// Determines whether the specified object is recognized as a view by a registered view adapter.
+    /// </summary>
+    /// <param name="view">The object to check.</param>
+    /// <returns><see langword="true"/> if a registered adapter can handle the object; otherwise, <see langword="false"/>.</returns>
+    public static bool IsView(object view)
+    {
+        return _viewAdapters.Exists(v => v.CanHandle(view));
+    }
+
     private static IViewAdapter ResolveViewAdapter(object view)
     {
         var viewAdapter = _viewAdapters.Find(v => v.CanHandle(view));
@@ -116,6 +126,38 @@ public static class ViewHelper
     /// <returns>The dispatcher for the view.</returns>
     public static IDispatcher GetDispatcher(object view)
     {
-        return ResolveViewAdapter(view).GetDispatcher(view);
+        var viewAdapter = ResolveViewAdapter(view);
+        return new ViewDispatcher(viewAdapter, view);
+    }
+
+    /// <summary>
+    /// Gets an awaitable that switches execution to the UI thread associated with the specified view.
+    /// </summary>
+    /// <param name="view">The view.</param>
+    /// <returns>An awaitable that resumes on the view's UI thread.</returns>
+    public static ViewSwitchAwaitable SwitchToViewAsync(object view)
+    {
+        var viewAdapter = ResolveViewAdapter(view);
+        return new ViewSwitchAwaitable(viewAdapter, view);
+    }
+
+    /// <summary>
+    /// Checks whether the current thread has access to the specified view.
+    /// </summary>
+    /// <param name="view">The view.</param>
+    /// <returns>true if the current thread has access to the view; otherwise false.</returns>
+    public static bool CheckAccess(object view)
+    {
+        return ResolveViewAdapter(view).CheckAccess(view);
+    }
+
+    /// <summary>
+    /// Schedules an action on the dispatcher associated with the specified view.
+    /// </summary>
+    /// <param name="view">The view.</param>
+    /// <param name="action">The action to execute.</param>
+    public static void BeginInvoke(object view, Action action)
+    {
+        ResolveViewAdapter(view).BeginInvoke(view, action);
     }
 }

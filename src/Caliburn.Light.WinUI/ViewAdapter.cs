@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -90,9 +91,8 @@ internal sealed class ViewAdapter : IViewAdapter
         return null;
     }
 
-    public IDispatcher GetDispatcher(object view)
-    {
-        var dependencyObject = (DependencyObject)view;
-        return View.GetDispatcherFrom(dependencyObject.DispatcherQueue);
-    }
+    public bool CheckAccess(object view) => ((DependencyObject)view).DispatcherQueue.HasThreadAccess;
+
+    public void BeginInvoke(object view, Action action) =>
+        ((DependencyObject)view).DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, new DispatcherQueueHandler(action));
 }

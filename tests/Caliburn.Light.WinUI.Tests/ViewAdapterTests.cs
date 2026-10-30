@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using TUnit.Core;
@@ -69,20 +71,19 @@ public class ViewAdapterTests
     }
 
     [Test]
-    public async Task GetDispatcher_ReturnsIDispatcher()
+    public async Task CheckAccess_ReturnsTrue_OnDispatcherThread()
     {
-        var tb = new TextBlock();
-        await Assert.That(_adapter.GetDispatcher(tb)).IsNotNull();
+        await Assert.That(_adapter.CheckAccess(new TextBlock())).IsTrue();
     }
 
     [Test]
-    public async Task GetDispatcher_ReturnsSameDispatcher_ForSameThread()
+    public async Task BeginInvoke_ExecutesOnDispatcherThread()
     {
-        var tb1 = new TextBlock();
-        var tb2 = new TextBlock();
-        var d1 = _adapter.GetDispatcher(tb1);
-        var d2 = _adapter.GetDispatcher(tb2);
-        await Assert.That(d1.Equals(d2)).IsTrue();
+        var view = new TextBlock();
+        var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _adapter.BeginInvoke(view, () => completion.SetResult(_adapter.CheckAccess(view)));
+
+        await Assert.That(await completion.Task.WaitAsync(TimeSpan.FromSeconds(5))).IsTrue();
     }
 
     [Test]

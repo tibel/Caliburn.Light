@@ -6,8 +6,6 @@ namespace Caliburn.Light.Gallery.WinUI.Threading;
 
 public sealed partial class ThreadingViewModel : ViewAware, IHaveDisplayName
 {
-    private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
-
     public string? DisplayName => "Threading";
 
     public ThreadingViewModel()
@@ -29,33 +27,22 @@ public sealed partial class ThreadingViewModel : ViewAware, IHaveDisplayName
     public ICommand ConfigureAwaitFalseCommand { get; }
     public ICommand ConfigureAwaitTrueCommand { get; }
 
-    protected override void OnViewAttached(object view, string? context)
-    {
-        base.OnViewAttached(view, context);
-        _dispatcher = ViewHelper.GetDispatcher(view);
-    }
-
-    protected override void OnViewDetached(object view, string? context)
-    {
-        _dispatcher = CurrentThreadDispatcher.Instance;
-        base.OnViewDetached(view, context);
-    }
-
     private async Task OnSwitchTo()
     {
         await Task.Delay(10).ConfigureAwait(false);
-        Trace.Assert(!_dispatcher.CheckAccess());
+        Trace.Assert(!IsOnUIThread());
 
-        await _dispatcher.SwitchTo();
-        Trace.Assert(_dispatcher.CheckAccess());
+        if (GetAttachedView() is object view)
+            await ViewHelper.SwitchToViewAsync(view);
 
+        Trace.Assert(IsOnUIThread());
         Trace.TraceInformation("On UI thread after SwitchTo().");
     }
 
     private async Task OnConfigureAwaitFalse()
     {
         await Task.Delay(10).ConfigureAwait(false);
-        Trace.Assert(!_dispatcher.CheckAccess());
+        Trace.Assert(!IsOnUIThread());
 
         Trace.TraceInformation("On ThreadPool thread after ConfigureAwait(false).");
     }
@@ -64,7 +51,12 @@ public sealed partial class ThreadingViewModel : ViewAware, IHaveDisplayName
     {
         await Task.Delay(10).ConfigureAwait(true);
 
-        Trace.Assert(_dispatcher.CheckAccess());
+        Trace.Assert(IsOnUIThread());
         Trace.TraceInformation("On UI thread after ConfigureAwait(true).");
+    }
+
+    private bool IsOnUIThread()
+    {
+        return GetAttachedView() is object view && ViewHelper.CheckAccess(view);
     }
 }
