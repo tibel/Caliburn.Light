@@ -137,10 +137,15 @@ public class Screen : ViewAware, IActivatable, ICloseGuard
             return;
         }
 
-        foreach (var entry in ((IViewAware)this).GetViews())
+        var views = ((IViewAware)this).GetViews();
+        if (views is not null)
         {
-            if (await ViewHelper.TryCloseAsync(entry.Value))
-                return;
+            for (var i = 0; i < views.Count; i++)
+            {
+                var view = views[i].Key.Target;
+                if (view is not null && await ViewHelper.TryCloseAsync(view))
+                    return;
+            }
         }
 
         Trace.TraceInformation("TryClose {0} requires an IParentAware.Parent of IConductor or a top-level view.", this);

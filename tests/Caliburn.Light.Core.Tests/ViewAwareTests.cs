@@ -128,11 +128,11 @@ public class ViewAwareTests
         va.AttachView(view1, "ctx1");
         va.AttachView(view2, "ctx2");
 
-        var views = va.GetViews().ToList();
+        var views = va.GetViews()!;
 
         await Assert.That(views.Count).IsEqualTo(2);
-        await Assert.That(views.Single(x => x.Key == "ctx1").Value).IsEqualTo(view1);
-        await Assert.That(views.Single(x => x.Key == "ctx2").Value).IsEqualTo(view2);
+        await Assert.That(views.Single(x => x.Value == "ctx1").Key.Target).IsEqualTo(view1);
+        await Assert.That(views.Single(x => x.Value == "ctx2").Key.Target).IsEqualTo(view2);
     }
 
     [Test]
@@ -141,9 +141,33 @@ public class ViewAwareTests
         var viewAware = new ViewAware();
         IViewAware va = viewAware;
 
-        var views = va.GetViews().ToList();
+        var views = va.GetViews();
 
-        await Assert.That(views.Count).IsEqualTo(0);
+        await Assert.That(views).IsNull();
+    }
+
+    [Test]
+    public async Task GetFirstAttachedView_ReturnsFirstAttachedView()
+    {
+        var viewAware = new ViewAware();
+        IViewAware va = viewAware;
+        var firstView = new object();
+        va.AttachView(firstView, "first");
+        va.AttachView(new object(), "second");
+
+        var view = va.GetFirstAttachedView();
+
+        await Assert.That(view).IsEqualTo(firstView);
+    }
+
+    [Test]
+    public async Task GetFirstAttachedView_NoViewsAttached_ReturnsNull()
+    {
+        var viewAware = new ViewAware();
+
+        var view = ((IViewAware)viewAware).GetFirstAttachedView();
+
+        await Assert.That(view).IsNull();
     }
 
     [Test]

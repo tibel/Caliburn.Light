@@ -9,19 +9,19 @@ namespace Caliburn.Light;
 /// </summary>
 public class ViewAware : ParentAware, IViewAware
 {
-    private List<KeyValuePair<string?, WeakReference>>? _views;
+    private List<KeyValuePair<WeakReference, string?>>? _views;
 
     void IViewAware.AttachView(object view, string? context)
     {
         ArgumentNullException.ThrowIfNull(view);
 
         Trace.TraceInformation("Attaching view {0} to {1}.", view, this);
-        _views ??= new List<KeyValuePair<string?, WeakReference>>(1);
-        var index = _views.FindIndex(p => string.Equals(p.Key, context, StringComparison.Ordinal));
+        _views ??= new List<KeyValuePair<WeakReference, string?>>(1);
+        var index = _views.FindIndex(p => string.Equals(p.Value, context, StringComparison.Ordinal));
         if (index < 0)
-            _views.Add(new KeyValuePair<string?, WeakReference>(context, new WeakReference(view)));
+            _views.Add(new KeyValuePair<WeakReference, string?>(new WeakReference(view), context));
         else
-            _views[index].Value.Target = view;
+            _views[index].Key.Target = view;
 
         OnViewAttached(view, context);
     }
@@ -31,7 +31,7 @@ public class ViewAware : ParentAware, IViewAware
         ArgumentNullException.ThrowIfNull(view);
 
         Trace.TraceInformation("Detaching view {0} from {1}.", view, this);
-        var detached = _views?.RemoveAll(p => string.Equals(p.Key, context, StringComparison.Ordinal)) > 0;
+        var detached = _views?.RemoveAll(p => string.Equals(p.Value, context, StringComparison.Ordinal)) > 0;
 
         if (detached)
             OnViewDetached(view, context);
@@ -64,22 +64,11 @@ public class ViewAware : ParentAware, IViewAware
     /// <returns>The view.</returns>
     protected object? GetAttachedView(string? context = null)
     {
-        var entry = _views?.Find(p => string.Equals(p.Key, context, StringComparison.Ordinal)) ?? default;
-        return entry.Value?.Target;
+        var entry = _views?.Find(p => string.Equals(p.Value, context, StringComparison.Ordinal)) ?? default;
+        return entry.Key?.Target;
     }
 
     object? IViewAware.GetView(string? context) => GetAttachedView(context);
 
-    IEnumerable<KeyValuePair<string?, object>> IViewAware.GetViews()
-    {
-        if (_views is null)
-            yield break;
-
-        foreach (var entry in _views)
-        {
-            var view = entry.Value.Target;
-            if (view is not null)
-                yield return new KeyValuePair<string?, object>(entry.Key, view);
-        }
-    }
+    IReadOnlyList<KeyValuePair<WeakReference, string?>>? IViewAware.GetViews() => _views;
 }

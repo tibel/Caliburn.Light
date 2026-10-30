@@ -201,7 +201,7 @@ public class WindowManager : IWindowManager
         while (viewModel is not null)
         {
             if (viewModel is IViewAware viewAware)
-                view = viewAware.GetViews().FirstOrDefault().Value;
+                view = viewAware.GetFirstAttachedView();
 
             if (view is not null)
                 break;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Caliburn.Light;
@@ -29,8 +30,8 @@ public interface IViewAware
     object? GetView(string? context = null);
 
     /// <summary>
-    /// Gets all views previously attached to this instance.
+    /// Gets weak references to all views previously attached to this instance and their contexts.
     /// </summary>
-    /// <returns>The views.</returns>
-    IEnumerable<KeyValuePair<string?, object>> GetViews();
+    /// <returns>A read-only list of view weak references and contexts, or <see langword="null"/> if no views have been attached.</returns>
+    IReadOnlyList<KeyValuePair<WeakReference, string?>>? GetViews();
 }

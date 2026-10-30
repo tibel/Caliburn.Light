@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -253,7 +252,7 @@ public sealed class EventAggregator : IEventAggregator
         {
             if (current is IViewAware viewAware)
             {
-                var view = viewAware.GetViews().FirstOrDefault().Value;
+                var view = viewAware.GetFirstAttachedView();
                 if (view is not null)
                     return view;
             }

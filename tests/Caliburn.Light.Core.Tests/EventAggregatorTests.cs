@@ -420,6 +420,46 @@ public class EventAggregatorTests
     }
 
     [Test]
+    public async Task Publish_UIThread_ViewAwareWithMultipleViews_UsesFirstAttachedView()
+    {
+        ViewHelper.Initialize(new TestViewAdapter());
+        var firstContext = new TestViewContext();
+        var secondContext = new TestViewContext();
+        var target = new TestViewAwareTarget();
+        var firstView = new TestView(firstContext);
+        var secondView = new TestView(secondContext);
+        ((IViewAware)target).AttachView(firstView, "first");
+        ((IViewAware)target).AttachView(secondView, "second");
+        var ea = new EventAggregator();
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+
+        ea.Publish(new MessageA("first-view"));
+
+        await Assert.That(firstContext.QueuedActions.Count).IsEqualTo(1);
+        await Assert.That(secondContext.QueuedActions.Count).IsEqualTo(0);
+        firstContext.RunNext();
+        await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+        GC.KeepAlive(firstView);
+        GC.KeepAlive(secondView);
+    }
+
+    [Test]
+    public async Task Publish_UIThread_CustomViewAware_UsesGetViewsFallback()
+    {
+        ViewHelper.Initialize(new TestViewAdapter());
+        var context = new TestViewContext();
+        var target = new CustomViewAwareTarget(new TestView(context));
+        var ea = new EventAggregator();
+        ea.Subscribe<CustomViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+
+        ea.Publish(new MessageA("custom-view-aware"));
+
+        await Assert.That(context.QueuedActions.Count).IsEqualTo(1);
+        context.RunNext();
+        await Assert.That(target.ReceivedMessages.Count).IsEqualTo(1);
+    }
+
+    [Test]
     public async Task Publish_UIThread_ViewsOnSameThread_SharesOneContinuation()
     {
         var context = new TestViewContext();
@@ -635,6 +675,17 @@ public class EventAggregatorTests
     private sealed class TestParentAwareTarget : ViewAware
     {
         public List<object> ReceivedMessages { get; } = [];
+    }
+
+    private sealed class CustomViewAwareTarget(object view) : IViewAware
+    {
+        public List<object> ReceivedMessages { get; } = [];
+
+        public void AttachView(object attachedView, string? context) { }
+        public bool DetachView(object attachedView, string? context) => false;
+        public object? GetView(string? context = null) => view;
+        public IReadOnlyList<KeyValuePair<WeakReference, string?>> GetViews() =>
+            [new KeyValuePair<WeakReference, string?>(new WeakReference(view), null)];
     }
 
     private sealed class TestViewAdapter : IViewAdapter
