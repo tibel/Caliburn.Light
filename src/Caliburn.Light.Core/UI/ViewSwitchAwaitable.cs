@@ -32,7 +32,7 @@ public readonly struct ViewSwitchAwaitable : INotifyCompletion
     /// <summary>
     /// Gets whether execution already has access to the view.
     /// </summary>
-    public bool IsCompleted => _viewAdapter.CheckAccess(_view);
+    public bool IsCompleted => _view is null || _viewAdapter is null || _viewAdapter.CheckAccess(_view);
 
     /// <summary>
     /// Schedules the continuation on the view's UI thread.
@@ -40,6 +40,7 @@ public readonly struct ViewSwitchAwaitable : INotifyCompletion
     /// <param name="continuation">The continuation to schedule.</param>
     public void OnCompleted(Action continuation)
     {
-        _viewAdapter.BeginInvoke(_view, continuation);
+        if (_view is not null && _viewAdapter is not null)
+            _viewAdapter.BeginInvoke(_view, continuation);
     }
 }
