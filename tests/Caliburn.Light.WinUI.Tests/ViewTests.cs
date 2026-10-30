@@ -84,33 +84,6 @@ public class ViewTests
     }
 
     [Test]
-    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
-    public async Task GetDispatcherFrom_ReturnsIDispatcher()
-    {
-        var dq = DispatcherQueue.GetForCurrentThread();
-        await Assert.That(View.GetDispatcherFrom(dq)).IsNotNull();
-    }
-
-    [Test]
-    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
-    public async Task GetDispatcherFrom_CheckAccess_TrueOnUIThread()
-    {
-        var dq = DispatcherQueue.GetForCurrentThread();
-        var dispatcher = View.GetDispatcherFrom(dq);
-        await Assert.That(dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
-    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
-    public async Task GetDispatcherFrom_SameDispatcher_AreEqual()
-    {
-        var dq = DispatcherQueue.GetForCurrentThread();
-        var d1 = View.GetDispatcherFrom(dq);
-        var d2 = View.GetDispatcherFrom(dq);
-        await Assert.That(d1.Equals(d2)).IsTrue();
-    }
-
-    [Test]
     public async Task ExecuteOnFirstLoad_NotLoaded_DoesNotFireImmediately()
     {
         var fired = false;

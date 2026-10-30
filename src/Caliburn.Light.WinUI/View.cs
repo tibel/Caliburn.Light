@@ -1,4 +1,3 @@
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -392,33 +391,6 @@ public static class View
         }
 
         element.LayoutUpdated += onLayoutUpdate;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="IDispatcher"/> from a <see cref="DispatcherQueue"/>.
-    /// </summary>
-    /// <param name="dispatcher">The UI dispatcher.</param>
-    /// <returns>The dispatcher.</returns>
-    [Obsolete("Use ViewHelper.GetDispatcher(view) instead.")]
-    public static IDispatcher GetDispatcherFrom(DispatcherQueue dispatcher)
-    {
-        return new ViewDispatcher(dispatcher);
-    }
-
-    [Obsolete("Use ViewHelper.GetDispatcher(view) instead.")]
-    private sealed class ViewDispatcher : IDispatcher
-    {
-        private readonly DispatcherQueue _dispatcher;
-
-        public ViewDispatcher(DispatcherQueue dispatcher) => _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-
-        public bool CheckAccess() => _dispatcher.HasThreadAccess;
-
-        public void BeginInvoke(Action action) => _dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, new DispatcherQueueHandler(action));
-
-        public override bool Equals(object? obj) => obj is ViewDispatcher other && _dispatcher.Equals(other._dispatcher);
-
-        public override int GetHashCode() => _dispatcher.GetHashCode();
     }
 
     /// <summary>

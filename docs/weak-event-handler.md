@@ -239,7 +239,7 @@ public class CommandMonitor
 
 ### Monitoring the Active Item
 
-`IConductor.ActivationProcessed` is obsolete and no longer raised by the framework. `PropertyChanged(nameof(ActiveItem))` and `IActivatable.Activated` cover successful activations; the one thing they do not report is a vetoed activation (`Success == false`), which `Conductor<T>` subclasses can observe by overriding `OnActivationVetoed`. To react to active-item changes on a conductor that exposes `ActiveItem`, observe `PropertyChanged` weakly:
+To react to active-item changes on a conductor that exposes `ActiveItem`, observe `PropertyChanged` weakly:
 
 ```csharp
 public class ActivationMonitor

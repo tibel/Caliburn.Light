@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -41,12 +40,6 @@ public abstract class ConductorBase<T> : Screen, IConductor where T : class
     }
 
     /// <summary>
-    /// Occurs when an activation request is processed.
-    /// </summary>
-    [Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
-    public event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
-
-    /// <summary>
     /// Gets the children.
     /// </summary>
     /// <returns>The collection of children.</returns>
@@ -64,23 +57,4 @@ public abstract class ConductorBase<T> : Screen, IConductor where T : class
     /// <param name="item">The item to deactivate.</param>
     /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
     public abstract Task DeactivateItemAsync(T item, bool close);
-
-    /// <summary>
-    /// Called by a subclass when an activation needs processing.
-    /// </summary>
-    /// <param name="item">The item on which activation was attempted.</param>
-    /// <param name="success">if set to <c>true</c> activation was successful.</param>
-    [Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
-    protected virtual void OnActivationProcessed(T item, bool success)
-    {
-        ActivationProcessed?.Invoke(this, new ActivationProcessedEventArgs(item, success));
-    }
-
-    /// <summary>
-    /// Ensures that an item is ready to be activated.
-    /// </summary>
-    /// <param name="newItem">The item to ensure.</param>
-    /// <returns>The item to be activated.</returns>
-    [Obsolete("Override item association in the concrete conductor instead.")]
-    protected virtual T EnsureItem(T newItem) => newItem;
 }

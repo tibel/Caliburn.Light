@@ -58,15 +58,6 @@ public class ViewTests
     }
 
     [Test]
-    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
-    public async Task GetDispatcherFrom_ReturnsIDispatcher()
-    {
-        var dispatcher = View.GetDispatcherFrom(Dispatcher.CurrentDispatcher);
-        await Assert.That(dispatcher).IsNotNull();
-        await Assert.That(dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
     public async Task ExecuteOnFirstLoad_FiresHandler_OnFirstLoadedEvent()
     {
         var button = new Button();
@@ -147,23 +138,6 @@ public class ViewTests
     {
         var cc = new ContentControl();
         await Assert.That(View.GetIsGenerated(cc)).IsFalse();
-    }
-
-    [Test]
-    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
-    public async Task GetDispatcherFrom_CheckAccess_TrueOnUIThread()
-    {
-        var dispatcher = View.GetDispatcherFrom(System.Windows.Threading.Dispatcher.CurrentDispatcher);
-        await Assert.That(dispatcher.CheckAccess()).IsTrue();
-    }
-
-    [Test]
-    [Obsolete("Tests the obsolete View.GetDispatcherFrom API.")]
-    public async Task GetDispatcherFrom_SameDispatcher_AreEqual()
-    {
-        var d1 = View.GetDispatcherFrom(System.Windows.Threading.Dispatcher.CurrentDispatcher);
-        var d2 = View.GetDispatcherFrom(System.Windows.Threading.Dispatcher.CurrentDispatcher);
-        await Assert.That(d1.Equals(d2)).IsTrue();
     }
 
     [Test]

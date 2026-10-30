@@ -23,14 +23,16 @@ public interface IDispatcher
 | `CheckAccess()` | Returns `true` if you're on the UI thread |
 | `BeginInvoke(action)` | Queues the action to run on the UI thread (fire-and-forget) |
 
-### Extension Method
+### Switching to a View Thread
 
-The `DispatcherHelper` class provides an extension method:
+Use `ViewHelper.SwitchToViewAsync(view)` to continue on the UI thread associated with a view:
 
 ```csharp
-// Enables await to switch to the UI thread
-await dispatcher.SwitchTo();
+await ViewHelper.SwitchToViewAsync(view);
 ```
+
+The view must be registered with a platform adapter. The awaitable resolves that adapter when it is
+created, then schedules the continuation only when the caller is not already on the view thread.
 
 ## Getting the Dispatcher
 
@@ -57,38 +59,45 @@ public class MyViewModel : ViewAware
 
 ## Usage Examples
 
-### Using SwitchTo() - Recommended Pattern
+### Switching Back to the UI Thread
 
-The `SwitchTo()` extension method provides a clean way to switch to the UI thread:
+Capture the attached view before starting background work, then use it to switch back:
 
 ```csharp
 public class DataViewModel : ViewAware
 {
-    private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
+    private object? _view;
 
     protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
-        _dispatcher = ViewHelper.GetDispatcher(view);
+        _view = view;
+    }
+
+    protected override void OnViewDetached(object view, string? context)
+    {
+        _view = null;
+        base.OnViewDetached(view, context);
     }
 
     private async Task LoadDataAsync()
     {
+        var view = _view ?? throw new InvalidOperationException("A view must be attached.");
+
         // Start on UI thread
         Status = "Loading...";
 
         // Move to background thread
         await Task.Delay(10).ConfigureAwait(false);
-        
-        // Now on background thread
-        Debug.Assert(!_dispatcher.CheckAccess());
+
+        // Do work without accessing UI-bound state
         var data = LoadDataFromDatabase();
 
         // Switch back to UI thread
-        await _dispatcher.SwitchTo();
-        
+        await ViewHelper.SwitchToViewAsync(view);
+
         // Now on UI thread
-        Debug.Assert(_dispatcher.CheckAccess());
+        Debug.Assert(ViewHelper.CheckAccess(view));
         Items.AddRange(data);
         Status = "Loaded";
     }
@@ -103,7 +112,7 @@ For fire-and-forget scenarios:
 public void HandleBackgroundEvent(object sender, DataEventArgs e)
 {
     // Queue the update on UI thread and continue immediately
-    _dispatcher.BeginInvoke(() =>
+    ViewHelper.BeginInvoke(_view!, () =>
     {
         ProcessedCount++;
         LastItem = e.Data;
@@ -116,7 +125,7 @@ public void HandleBackgroundEvent(object sender, DataEventArgs e)
 ```csharp
 public void UpdateStatus(string message)
 {
-    if (_dispatcher.CheckAccess())
+    if (ViewHelper.CheckAccess(_view!))
     {
         // Already on UI thread
         Status = message;
@@ -124,7 +133,7 @@ public void UpdateStatus(string message)
     else
     {
         // Need to marshal to UI thread
-        _dispatcher.BeginInvoke(() => Status = message);
+        ViewHelper.BeginInvoke(_view!, () => Status = message);
     }
 }
 ```
@@ -133,21 +142,9 @@ public void UpdateStatus(string message)
 
 Understanding `ConfigureAwait` is important when working with dispatchers:
 
-```csharp
-private async Task OnConfigureAwaitFalse()
-{
-    await Task.Delay(10).ConfigureAwait(false);
-    // Now on ThreadPool thread, NOT UI thread
-    Debug.Assert(!_dispatcher.CheckAccess());
-}
-
-private async Task OnConfigureAwaitTrue()
-{
-    await Task.Delay(10).ConfigureAwait(true);
-    // Back on UI thread (captured context)
-    Debug.Assert(_dispatcher.CheckAccess());
-}
-```
+`ConfigureAwait(false)` avoids capturing the current synchronization context; it does not itself
+guarantee a thread switch. Use `ViewHelper.SwitchToViewAsync(view)` when code must continue on a
+specific view's UI thread.
 
 ## Complete Example
 
@@ -156,6 +153,7 @@ Here's a complete example from the gallery samples:
 ```csharp
 public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
 {
+    private object? _view;
     private IDispatcher _dispatcher = CurrentThreadDispatcher.Instance;
 
     public string? DisplayName => "Threading";
@@ -172,26 +170,29 @@ public sealed class ThreadingViewModel : ViewAware, IHaveDisplayName
     protected override void OnViewAttached(object view, string? context)
     {
         base.OnViewAttached(view, context);
+        _view = view;
         _dispatcher = ViewHelper.GetDispatcher(view);
     }
 
     protected override void OnViewDetached(object view, string? context)
     {
+        _view = null;
         _dispatcher = CurrentThreadDispatcher.Instance;
         base.OnViewDetached(view, context);
     }
 
     private async Task OnSwitchTo()
     {
+        var view = _view ?? throw new InvalidOperationException("A view must be attached.");
+
         // Move off UI thread
         await Task.Delay(10).ConfigureAwait(false);
-        Debug.Assert(!_dispatcher.CheckAccess());
 
         // Switch back to UI thread
-        await _dispatcher.SwitchTo();
-        Debug.Assert(_dispatcher.CheckAccess());
+        await ViewHelper.SwitchToViewAsync(view);
+        Debug.Assert(ViewHelper.CheckAccess(view));
 
-        Trace.TraceInformation("On UI thread after SwitchTo().");
+        Trace.TraceInformation("On UI thread after SwitchToViewAsync().");
     }
 }
 ```
@@ -210,15 +211,15 @@ _subscription = eventAggregator.Subscribe<MyViewModel, DataUpdatedMessage>(
 
 ## Best Practices
 
-### 1. Use SwitchTo() for Clean Async Code
+### 1. Use SwitchToViewAsync for Clean Async Code
 
-The `SwitchTo()` pattern keeps your async code readable:
+The explicit view awaitable keeps async code readable:
 
 ```csharp
 private async Task ProcessAsync()
 {
     await Task.Run(() => HeavyComputation()).ConfigureAwait(false);
-    await _dispatcher.SwitchTo();
+    await ViewHelper.SwitchToViewAsync(view);
     UpdateUI();
 }
 ```
@@ -253,22 +254,22 @@ Task.Run(() => LoadData()).Wait();
 
 // Good - async all the way
 await Task.Run(() => LoadData()).ConfigureAwait(false);
-await _dispatcher.SwitchTo();
+await ViewHelper.SwitchToViewAsync(view);
 ```
 
 ## Platform-Specific Notes
 
 ### WPF
 
-Uses `System.Windows.Threading.Dispatcher` internally via `View.GetDispatcherFrom()`.
+Uses the view's WPF dispatcher through its `IViewAdapter`.
 
 ### WinUI
 
-Uses `Microsoft.UI.Dispatching.DispatcherQueue` internally via `View.GetDispatcherFrom()`.
+Uses the view's WinUI dispatcher through its `IViewAdapter`.
 
 ### Avalonia
 
-Uses `Avalonia.Threading.Dispatcher.UIThread` internally via `View.GetDispatcherFrom()`.
+Uses the view's Avalonia dispatcher through its `IViewAdapter`.
 
 ## See Also
 

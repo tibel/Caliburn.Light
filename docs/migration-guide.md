@@ -1,10 +1,10 @@
 # Migration Guide
 
-This page covers the parts of Caliburn.Light that exist for migration from earlier versions: the deprecated meta-package and the APIs that were removed or obsoleted along the way. Nothing on this page is required for new applications — see [Basic Configuration](configuration.md) and [NuGet Packages](nuget.md) instead.
+This page covers the parts of Caliburn.Light that exist for migration from earlier versions: the deprecated meta-package and APIs that were removed along the way. Nothing on this page is required for new applications — see [Basic Configuration](configuration.md) and [NuGet Packages](nuget.md) instead.
 
 ## The Caliburn.Light meta-package
 
-`Caliburn.Light` is a deprecated compatibility package that forwards to `Caliburn.Light.WPF` and `Caliburn.Light.Coroutines`. New applications should reference the package for their platform instead:
+`Caliburn.Light` remains as a deprecated compatibility package that forwards to `Caliburn.Light.WPF` and `Caliburn.Light.Coroutines`. New applications should reference the package for their platform instead:
 
 | Platform | Package |
 |----------|---------|
@@ -28,7 +28,7 @@ The three platform packages share a common API surface, alongside platform-speci
 
 ## Migrating removed and obsoleted APIs
 
-The following APIs are no longer part of the framework, or are obsoleted. Members obsoleted in the current release still compile (with a warning) and remain binary compatible, but should be migrated since they may be removed in a later release.
+The following APIs have been removed from the framework:
 
 | Removed or obsoleted API | Since | Replacement |
 |--------------------------|-------|-------------|
@@ -47,13 +47,15 @@ The following APIs are no longer part of the framework, or are obsoleted. Member
 | `IViewAware.ViewAttached`, `ViewAware.Views` | 6.0.0 | `ViewAware.OnViewAttached(view, context)`, `IViewAware.GetViews()` |
 | WinUI `SuspensionManager`, `NavigationService`, `FrameAdapter` | 6.0.0 | `PageLifecycle` wrapping a `Frame` |
 | WPF `IWindowManager.ShowPopup(viewModel, context)` | 6.1.0 | No direct replacement; host a `Popup` yourself and use `PopupLifecycle` for activation |
-| `IChild` (obsoleted) | current release | Inherit from `Screen` or `ParentAware`, or implement `IParentAware` |
-| `ConductorBase<T>.EnsureItem` (obsoleted) | current release | Override item association in the concrete conductor |
-| `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs`, `ConductorBase<T>.OnActivationProcessed` (obsoleted, warning only) | current release | No longer raised by the framework; the conductor no longer calls `OnActivationProcessed`, so the event does not fire during normal use. Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated`; `Conductor<T>` subclasses can override `OnActivationVetoed` to observe vetoed activations, or raise your own event from your `ICloseGuard` |
+| `IChild` | 8.0.0 | Inherit from `Screen` or `ParentAware`, or implement `IParentAware` |
+| `ConductorBase<T>.EnsureItem` | 8.0.0 | Override item association in the concrete conductor |
+| `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs`, `ConductorBase<T>.OnActivationProcessed` | 8.0.0 | Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated` |
+| `DispatcherHelper` | 8.0.0 | Use `ViewHelper.SwitchToViewAsync(view)` |
+| `View.GetDispatcherFrom` | 8.0.0 | Use `ViewHelper.GetDispatcher(view)` |
 
 `SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.
 
-`EnsureItem` was reduced to a no-op before being obsoleted, and the conductor no longer calls `OnActivationProcessed`, so `ActivationProcessed` does not fire during normal use (subclasses calling `OnActivationProcessed` directly still raise the event). Applications that relied on overriding the conductor methods should move the logic into the concrete conductor, as described in [Screens, Conductors and Composition](composition.md).
+`EnsureItem` was reduced to a no-op before removal. Applications that relied on overriding it should move the logic into the concrete conductor, as described in [Screens, Conductors and Composition](composition.md).
 
 ### Coroutine API changes
 
@@ -68,8 +70,8 @@ Coroutines moved out of the framework in 5.0.0 and are back as the `Caliburn.Lig
 The framework no longer has `UIContext`. In modern Caliburn.Light, UI thread marshaling is handled by `IDispatcher`, which is defined in Caliburn.Light.Core and implemented by the platform-specific dispatchers.
 
 To obtain an `IDispatcher`:
-- When a view is attached, use `Caliburn.Light.ViewHelper.GetDispatcher(view)` (or platform-specific `View.GetDispatcherFrom` helpers). See [UI Thread Dispatching](dispatching.md) for more details.
-- If no view is attached, do not use `Caliburn.Light.CurrentThreadDispatcher.Instance` as a fallback for UI thread marshaling—it always executes work on the current thread with no marshaling, and its `SwitchTo()`/`BeginInvoke` complete inline. Instead, use a dispatcher from your application shell/view, or resolve `IDispatcher` from the platform context your app already has (e.g. the main window/view's dispatcher). See [UI Thread Dispatching](dispatching.md) for guidance.
+- When a view is attached, use `Caliburn.Light.ViewHelper.GetDispatcher(view)`. See [UI Thread Dispatching](dispatching.md) for more details.
+- If no view is attached, `CurrentThreadDispatcher.Instance` does not marshal work to a UI thread. Use a dispatcher from your application shell/view, or resolve `IDispatcher` from the platform context your app already has (e.g. the main window/view's dispatcher). See [UI Thread Dispatching](dispatching.md) for guidance.
 
 Notes about behavior:
 - `IDispatcher.BeginInvoke(Action)` returns `void` (unlike `UIContext.Run`, which returned a `Task`). Exceptions thrown by the dispatched action surface on the dispatcher thread unless you explicitly await the work.
@@ -77,13 +79,13 @@ Notes about behavior:
 - `UIContext.VerifyAccess()` maps to `dispatcher.CheckAccess()` (but `VerifyAccess()` threw if not on the UI thread, whereas `CheckAccess()` only returns a boolean; if you need the throwing behavior, check the result and throw explicitly).
 
 Replacement patterns:
-- **Continue on the UI thread (async continuation):** `await dispatcher.SwitchTo();` (or your platform's equivalent).
+- **Continue on the UI thread (async continuation):** `await ViewHelper.SwitchToViewAsync(view);`.
 - **Fire-and-forget UI work:** `dispatcher.BeginInvoke(action);`. Be aware that exceptions from the action will not be propagated to the caller.
 - **Await a dispatched callback that returns a value:** In an async method, switch to the UI thread and then compute the result:
   ```csharp
-  static async Task<T> RunOnUiThreadAsync<T>(IDispatcher dispatcher, Func<T> func)
+  static async Task<T> RunOnUiThreadAsync<T>(object view, Func<T> func)
   {
-      await dispatcher.SwitchTo();
+      await ViewHelper.SwitchToViewAsync(view);
       return func();
   }
   ```

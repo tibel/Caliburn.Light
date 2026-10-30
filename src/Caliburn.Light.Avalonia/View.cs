@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using System;
 
 namespace Caliburn.Light.Avalonia;
@@ -374,30 +373,4 @@ public static class View
         element.LayoutUpdated += onLayoutUpdate;
     }
 
-    /// <summary>
-    /// Gets the <see cref="IDispatcher"/> from a <see cref="Dispatcher"/>.
-    /// </summary>
-    /// <param name="dispatcher">The UI dispatcher.</param>
-    /// <returns>The dispatcher.</returns>
-    [Obsolete("Use ViewHelper.GetDispatcher(view) instead.")]
-    public static IDispatcher GetDispatcherFrom(Dispatcher dispatcher)
-    {
-        return new ViewDispatcher(dispatcher);
-    }
-
-    [Obsolete("Use ViewHelper.GetDispatcher(view) instead.")]
-    private sealed class ViewDispatcher : IDispatcher
-    {
-        private readonly Dispatcher _dispatcher;
-
-        public ViewDispatcher(Dispatcher dispatcher) => _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-
-        public bool CheckAccess() => _dispatcher.CheckAccess();
-
-        public void BeginInvoke(Action action) => _dispatcher.Post(action);
-
-        public override bool Equals(object? obj) => obj is ViewDispatcher other && _dispatcher.Equals(other._dispatcher);
-
-        public override int GetHashCode() => _dispatcher.GetHashCode();
-    }
 }

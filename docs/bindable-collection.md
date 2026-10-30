@@ -216,8 +216,8 @@ Bind to `BindableCollection<T>` like any other collection:
 Like `ObservableCollection<T>`, `BindableCollection<T>` is not thread-safe. If you need to modify the collection from a background thread, marshal the call to the UI thread:
 
 ```csharp
-// Using the dispatcher
-await _dispatcher.SwitchTo();
+// Switch to the UI thread associated with the attached view
+await ViewHelper.SwitchToViewAsync(view);
 Items.Add(newItem);
 ```
 

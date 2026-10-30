@@ -121,14 +121,6 @@ public partial class Conductor<T>
                     _items.Remove(item);
                 }
             }
-
-            /// <summary>
-            /// Ensures that an item is ready to be activated.
-            /// </summary>
-            /// <param name="newItem">The item to ensure.</param>
-            /// <returns>The item to be activated.</returns>
-            [Obsolete("Override item association in the concrete conductor instead.")]
-            protected override T EnsureItem(T newItem) => base.EnsureItem(newItem);
         }
     }
 }

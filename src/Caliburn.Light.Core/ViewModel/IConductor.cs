@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Threading.Tasks;
 
@@ -25,12 +24,6 @@ public interface IConductor
     /// <param name="item">The item to close.</param>
     /// <param name="close">Indicates whether or not to close the item after deactivating it.</param>
     Task DeactivateItemAsync(object item, bool close);
-
-    /// <summary>
-    /// Occurs when an activation request is processed.
-    /// </summary>
-    [Obsolete("ActivationProcessed is obsolete and no longer raised by the framework. Observe PropertyChanged(nameof(ActiveItem)) or IActivatable.Activated instead, or raise your own event from your ICloseGuard. Retained for compatibility; will be removed.")]
-    event EventHandler<ActivationProcessedEventArgs>? ActivationProcessed;
 
     /// <summary>
     /// Gets the children.

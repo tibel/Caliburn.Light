@@ -60,7 +60,7 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 - [History](history.md) - Project history and evolution
 
 ### Legacy and Migration
-- [Migration Guide](migration-guide.md) - The deprecated meta-package and removed or obsoleted APIs
+- [Migration Guide](migration-guide.md) - Package and API changes when upgrading from earlier versions
 - [Migrating from SimpleContainer](simple-container-migration.md) - Step-by-step migration to Microsoft.Extensions.DependencyInjection
 
 ---

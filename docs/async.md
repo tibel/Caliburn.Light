@@ -79,12 +79,9 @@ public interface IConductor
 {
     Task ActivateItemAsync(object? item);
     Task DeactivateItemAsync(object item, bool close);
-    event EventHandler<ActivationProcessedEventArgs> ActivationProcessed; // obsolete, no longer raised
     IEnumerable GetChildren();
 }
 ```
-
-See [Screens, Conductors and Composition](composition.md) for details on the obsoleted `ActivationProcessed` event.
 
 Example:
 
