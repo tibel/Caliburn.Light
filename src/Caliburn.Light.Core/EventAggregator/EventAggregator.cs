@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -159,7 +160,10 @@ public sealed class EventAggregator : IEventAggregator
         if (handlers is null)
             return;
 
-        PublishCore(message, handlers, new bool[handlers.Count]);
+        var processedHandlers = ArrayPool<bool>.Shared.Rent(handlers.Count);
+        Array.Clear(processedHandlers, 0, handlers.Count);
+
+        PublishCore(message, handlers, processedHandlers);
     }
 
     private static void PublishCore(object message, List<IEventAggregatorHandlerEntry> handlers, bool[] processedHandlers)
@@ -229,6 +233,10 @@ public sealed class EventAggregator : IEventAggregator
                 static (state) => PublishCore(state.Message, state.Handlers, state.ProcessedHandlers),
                 (Message: message, Handlers: handlers, ProcessedHandlers: processedHandlers),
                 preferLocal: false);
+        }
+        else
+        {
+            ArrayPool<bool>.Shared.Return(processedHandlers, clearArray: false);
         }
     }
 
