@@ -17,12 +17,9 @@ public static class ViewAwareExtensions
         ArgumentNullException.ThrowIfNull(viewAware);
 
         var views = viewAware.GetViews();
-        if (views is null)
-            return null;
-
         for (var i = 0; i < views.Count; i++)
         {
-            var view = views[i].Key.Target;
+            var view = views[i].View;
             if (view is not null)
                 return view;
         }

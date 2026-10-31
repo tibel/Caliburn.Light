@@ -30,8 +30,8 @@ public interface IViewAware
     object? GetView(string? context = null);
 
     /// <summary>
-    /// Gets weak references to all views previously attached to this instance and their contexts.
+    /// Gets all views previously attached to this instance and their contexts.
     /// </summary>
-    /// <returns>A read-only list of view weak references and contexts, or <see langword="null"/> if no views have been attached.</returns>
-    IReadOnlyList<KeyValuePair<WeakReference, string?>>? GetViews();
+    /// <returns>A read-only list of attached views and contexts. The list is empty if no views have been attached.</returns>
+    IReadOnlyList<ViewAwareEntry> GetViews();
 }

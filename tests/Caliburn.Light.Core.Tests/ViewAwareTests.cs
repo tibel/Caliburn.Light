@@ -128,11 +128,11 @@ public class ViewAwareTests
         va.AttachView(view1, "ctx1");
         va.AttachView(view2, "ctx2");
 
-        var views = va.GetViews()!;
+        var views = va.GetViews();
 
         await Assert.That(views.Count).IsEqualTo(2);
-        await Assert.That(views.Single(x => x.Value == "ctx1").Key.Target).IsEqualTo(view1);
-        await Assert.That(views.Single(x => x.Value == "ctx2").Key.Target).IsEqualTo(view2);
+        await Assert.That(views.Single(x => x.Context == "ctx1").View).IsEqualTo(view1);
+        await Assert.That(views.Single(x => x.Context == "ctx2").View).IsEqualTo(view2);
     }
 
     [Test]
@@ -143,7 +143,7 @@ public class ViewAwareTests
 
         var views = va.GetViews();
 
-        await Assert.That(views).IsNull();
+        await Assert.That(views.Count).IsEqualTo(0);
     }
 
     [Test]

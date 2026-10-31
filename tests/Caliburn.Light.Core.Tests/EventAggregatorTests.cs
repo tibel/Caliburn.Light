@@ -684,8 +684,8 @@ public class EventAggregatorTests
         public void AttachView(object attachedView, string? context) { }
         public bool DetachView(object attachedView, string? context) => false;
         public object? GetView(string? context = null) => view;
-        public IReadOnlyList<KeyValuePair<WeakReference, string?>> GetViews() =>
-            [new KeyValuePair<WeakReference, string?>(new WeakReference(view), null)];
+        public IReadOnlyList<ViewAwareEntry> GetViews() =>
+            [new ViewAwareEntry(view, null)];
     }
 
     private sealed class TestViewAdapter : IViewAdapter
