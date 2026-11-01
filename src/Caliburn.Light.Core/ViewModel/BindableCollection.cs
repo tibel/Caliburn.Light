@@ -356,7 +356,7 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
     {
         // Allow a single listener to mutate during notification for compatibility with selection controls;
         // with multiple listeners, a nested mutation could invalidate the change seen by later listeners.
-        if (_notificationDepth > 0 && CollectionChanged?.GetInvocationList().Length > 1)
+        if (_notificationDepth > 0 && CollectionChanged is { HasSingleTarget: false })
             ThrowCannotChangeDuringCollectionChanged();
     }
 

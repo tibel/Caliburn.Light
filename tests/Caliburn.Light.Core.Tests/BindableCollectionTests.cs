@@ -710,4 +710,38 @@ public class BindableCollectionTests
         await Assert.That(collection.Count).IsEqualTo(1);
     }
 
+    [Test]
+    public async Task CollectionChanged_WithNoSubscribers_AllowsMutation()
+    {
+        var collection = new BindableCollection<string>();
+
+        collection.Add("item");
+
+        await Assert.That(collection.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task CollectionChanged_ReentrantMutationWithSameTargetSubscribedTwice_Throws()
+    {
+        var collection = new BindableCollection<string>();
+        var subscriber = new ReentrantCollectionChangedSubscriber(collection);
+        collection.CollectionChanged += subscriber.OnCollectionChanged;
+        collection.CollectionChanged += subscriber.OnCollectionChanged;
+
+        await Assert.That(() => collection.Add("outer")).Throws<InvalidOperationException>();
+        await Assert.That(collection.Count).IsEqualTo(1);
+    }
+
+    private sealed class ReentrantCollectionChangedSubscriber(BindableCollection<string> collection)
+    {
+        private bool _nestedMutationStarted;
+
+        public void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_nestedMutationStarted) return;
+            _nestedMutationStarted = true;
+            collection.Add("nested");
+        }
+    }
+
 }
