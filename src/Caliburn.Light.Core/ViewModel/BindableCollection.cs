@@ -25,7 +25,12 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
     {
     }
 
-    internal BindableCollection(IBindableCollectionItemHandler<T> itemHandler)
+    /// <summary>
+    /// Initializes a new instance of <see cref="BindableCollection{T}"/> that notifies the handler when items are added or removed.
+    /// </summary>
+    /// <param name="itemHandler">The handler to notify when an item is added or removed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="itemHandler"/> is <see langword="null"/>.</exception>
+    public BindableCollection(IBindableCollectionItemHandler<T> itemHandler)
     {
         ArgumentNullException.ThrowIfNull(itemHandler);
         _itemHandler = itemHandler;
