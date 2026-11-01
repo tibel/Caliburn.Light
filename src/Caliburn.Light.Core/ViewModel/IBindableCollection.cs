@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
@@ -23,8 +24,29 @@ public interface IBindableCollection<T> : IList<T>, INotifyCollectionChanged, IB
     void AddRange(IEnumerable<T> items);
 
     /// <summary>
+    /// Inserts a range of items into the collection at the specified index.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the items should be inserted.</param>
+    /// <param name="items">The items to insert.</param>
+    void InsertRange(int index, IEnumerable<T> items);
+
+    /// <summary>
     /// Removes the range.
     /// </summary>
     /// <param name="items">The items.</param>
-    void RemoveRange(IEnumerable<T> items);
+    int RemoveRange(IEnumerable<T> items);
+
+    /// <summary>
+    /// Removes a range of elements from the collection.
+    /// </summary>
+    /// <param name="index">The zero-based index of the first element to remove.</param>
+    /// <param name="count">The number of elements to remove.</param>
+    void RemoveRange(int index, int count);
+
+    /// <summary>
+    /// Removes all items that match the specified predicate.
+    /// </summary>
+    /// <param name="match">The predicate that determines whether an item should be removed.</param>
+    /// <returns>The number of items removed from the collection.</returns>
+    int RemoveAll(Predicate<T> match);
 }

@@ -22,7 +22,7 @@ Though Caliburn.Light favors the ViewModel-First approach, View-First is also su
 This service provides a View-Model-centric way of displaying Windows, dialogs, and file pickers. Simply pass it an instance of the View Model and it will locate the view, wrap it in a Window if necessary, and show the window. See [The Window Manager](window-manager.md) for details.
 
 ### BindableObject and BindableCollection
-What self respecting XAML framework could go without a base implementation of INotifyPropertyChanged? The Caliburn.Light implementation enables string-based (use `nameof` operator) change notification. BindableCollection<T> is a simple collection that inherits from ObservableCollection<T> and allows to suspend change notifications. See [BindableObject](bindable-object.md) and [BindableCollection](bindable-collection.md) for details.
+What self respecting XAML framework could go without a base implementation of INotifyPropertyChanged? The Caliburn.Light implementation enables string-based (use `nameof` operator) change notification. `BindableCollection<T>` is a collection that notifies about changes and allows notifications to be suspended. See [BindableObject](bindable-object.md) and [BindableCollection](bindable-collection.md) for details.
 
 **Note**: It is not ensured that the events are raised on the UI thread. See [UI Thread Dispatching](dispatching.md) for details.
 

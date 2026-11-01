@@ -1,12 +1,12 @@
 # BindableCollection
 
-`BindableCollection<T>` is an observable collection optimized for MVVM applications. It extends `ObservableCollection<T>` with additional features useful for data binding scenarios.
+`BindableCollection<T>` is an observable collection for MVVM applications. It implements `IBindableCollection<T>` and `IReadOnlyBindableCollection<T>`.
 
 ## Overview
 
 `BindableCollection<T>` provides:
 
-- All functionality of `ObservableCollection<T>`
+- The generic list operations and collection change notifications
 - Ability to suspend change notifications for bulk operations
 - Implementation of `IBindableCollection<T>`
 - Helper methods for common collection operations
@@ -73,7 +73,7 @@ public class ProductListViewModel : BindableObject
 - Nothing is replayed when the suspension ends (via `Dispose`): notifications resume, but no event is raised for the changes made while suspended
 - Multiple levels of suspension are supported (reference counted)
 - Always use a `using` statement to ensure notifications are properly resumed
-- Use `AddRange()` or `RemoveRange()` which automatically raise a `Reset` notification, or call `Refresh()` manually after bulk operations
+- Use `AddRange()`, `InsertRange()`, or either `RemoveRange()` overload for bulk changes; each raises a single `Reset` notification when it changes the collection
 
 ## IBindableCollection Interface
 
@@ -84,11 +84,16 @@ public interface IBindableCollection<T> : IList<T>, INotifyCollectionChanged, IB
 {
     void Move(int oldIndex, int newIndex);
     void AddRange(IEnumerable<T> items);
-    void RemoveRange(IEnumerable<T> items);
+    void InsertRange(int index, IEnumerable<T> items);
+    int RemoveAll(Predicate<T> match);
+    int RemoveRange(IEnumerable<T> items);
+    void RemoveRange(int index, int count);
 }
 ```
 
 Note: `SuspendNotifications()` comes from `IBindableObject`, which `IBindableCollection<T>` inherits.
+
+The collection also implements `IReadOnlyBindableCollection<T>`.
 
 ### AddRange
 
@@ -105,6 +110,12 @@ var newItems = new List<OrderViewModel>
 Orders.AddRange(newItems);
 ```
 
+Insert multiple items at a specific position:
+
+```csharp
+Orders.InsertRange(0, newItems);
+```
+
 ### RemoveRange
 
 Remove multiple items efficiently:
@@ -113,6 +124,16 @@ Remove multiple items efficiently:
 var completedOrders = Orders.Where(o => o.IsComplete).ToList();
 Orders.RemoveRange(completedOrders);
 ```
+
+Remove every item that matches a predicate:
+
+```csharp
+var removedCount = Orders.RemoveAll(order => order.IsComplete);
+```
+
+Range operations and `RemoveAll` raise a single `Reset` notification when they change the collection. Empty additions and removals with no matching items do not raise change notifications. Clearing an already empty collection or moving an item to its current index is also a no-op. Call `Refresh()` when bindings should be notified even though the collection contents have not changed.
+
+If a range source is a lazy query over the same collection, materialize it before calling `AddRange`, `InsertRange`, or `RemoveRange` (for example, with `ToList()`). This prevents the operation from modifying the collection while that query is being enumerated.
 
 ## Example: Master-Detail Pattern
 
@@ -213,7 +234,7 @@ Bind to `BindableCollection<T>` like any other collection:
 
 ## Thread Safety
 
-Like `ObservableCollection<T>`, `BindableCollection<T>` is not thread-safe. If you need to modify the collection from a background thread, marshal the call to the UI thread:
+`BindableCollection<T>` is not thread-safe. If you need to modify the collection from a background thread, marshal the call to the UI thread:
 
 ```csharp
 // Switch to the UI thread associated with the attached view

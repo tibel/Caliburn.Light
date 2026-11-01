@@ -58,7 +58,7 @@ Each platform project references Core and mirrors the same patterns: `WindowLife
 
 ### Changelog
 
-When documenting dependency updates in `CHANGELOG.md`, mention updates to user-facing platform dependencies (such as Avalonia or WinUI). Do not list test-only dependency updates.
+Record user-facing API and behavior changes in `CHANGELOG.md`, along with updates to user-facing platform dependencies (such as Avalonia or WinUI). Omit test-only changes and test-only dependency updates.
 
 ### Lifecycle event cleanup
 

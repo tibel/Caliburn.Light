@@ -35,7 +35,7 @@ Additional helper interfaces:
 ### Base Classes
 
 - **BindableObject** – Implements `IBindableObject` (and thus `INotifyPropertyChanged`)
-- **BindableCollection&lt;T&gt;** – Implements `IBindableCollection<T>` by inheriting from `ObservableCollection<T>`
+- **BindableCollection&lt;T&gt;** – Implements `IBindableCollection<T>` and `IReadOnlyBindableCollection<T>`
 - **ParentAware** – Inherits from `BindableObject` and implements `IParentAware`, providing parent association
 - **ViewAware** – Inherits from `ParentAware` and implements `IViewAware`, providing access to attached views
 - **Screen** – Inherits from `ViewAware` and implements `IActivatable`, `ICloseGuard`

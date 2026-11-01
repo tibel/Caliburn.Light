@@ -16,16 +16,28 @@ public partial class Conductor<T>
         /// <summary>
         /// An implementation of <see cref="IConductor"/> that holds on many items but only activates one at a time.
         /// </summary>
-        public class OneActive : ConductorBaseWithActiveItem<T>
+        public class OneActive : ConductorBaseWithActiveItem<T>, IBindableCollectionItemHandler<T>
         {
-            private readonly ConductorCollection _items;
+            private readonly BindableCollection<T> _items;
 
             /// <summary>
             /// Initializes a new instance of <see cref="Conductor&lt;T&gt;.Collection.OneActive"/>.
             /// </summary>
             public OneActive()
             {
-                _items = new ConductorCollection(this);
+                _items = new BindableCollection<T>(this);
+            }
+
+            void IBindableCollectionItemHandler<T>.OnItemAdded(T item)
+            {
+                if (item is IParentAware parentAware)
+                    parentAware.AttachParent(this);
+            }
+
+            void IBindableCollectionItemHandler<T>.OnItemRemoved(T item)
+            {
+                if (item is IParentAware parentAware)
+                    parentAware.DetachParent(this);
             }
 
             /// <summary>

@@ -1,6 +1,6 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -10,9 +10,12 @@ namespace Caliburn.Light;
 /// Represents a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
 /// </summary>
 /// <typeparam name="T">The type of elements in the collection.</typeparam>
-public class BindableCollection<T> : ObservableCollection<T>, IBindableCollection<T>, IReadOnlyBindableCollection<T>
+public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBindableCollection<T>, IList
 {
+    private readonly List<T> _items = new();
+    private readonly IBindableCollectionItemHandler<T>? _itemHandler;
     private int _suspensionCount;
+    private int _notificationDepth;
 
     /// <summary>
     /// Initializes a new instance of BindableCollection that is empty and has default initial capacity.
@@ -21,209 +24,345 @@ public class BindableCollection<T> : ObservableCollection<T>, IBindableCollectio
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the BindableCollection that contains elements copied from the specified collection.
-    /// </summary>
-    /// <param name="collection">The collection whose elements are copied to the new BindableCollection.</param>
-    public BindableCollection(IEnumerable<T> collection) : base(collection)
+    internal BindableCollection(IBindableCollectionItemHandler<T> itemHandler)
     {
+        ArgumentNullException.ThrowIfNull(itemHandler);
+        _itemHandler = itemHandler;
     }
+
+    /// <inheritdoc />
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <inheritdoc />
+    public int Count => _items.Count;
+
+    /// <inheritdoc />
+    bool ICollection<T>.IsReadOnly => false;
+
+    /// <inheritdoc />
+    public T this[int index]
+    {
+        get => _items[index];
+        set => SetItem(index, value);
+    }
+
+    /// <inheritdoc />
+    public void Add(T item) => InsertItem(_items.Count, item);
+
+    /// <inheritdoc />
+    public void Clear() => ClearItems();
+
+    /// <inheritdoc />
+    public bool Contains(T item) => _items.Contains(item);
+
+    /// <inheritdoc />
+    public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
+
+    /// <inheritdoc />
+    public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
+
+    /// <inheritdoc />
+    public int IndexOf(T item) => _items.IndexOf(item);
+
+    /// <inheritdoc />
+    public void Insert(int index, T item) => InsertItem(index, item);
+
+    /// <inheritdoc />
+    public bool Remove(T item)
+    {
+        var index = _items.IndexOf(item);
+        if (index < 0) return false;
+        RemoveItem(index);
+        return true;
+    }
+
+    /// <inheritdoc />
+    public void RemoveAt(int index) => RemoveItem(index);
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
     /// Suspends the notifications.
     /// </summary>
-    /// <returns></returns>
     public IDisposable SuspendNotifications()
     {
         _suspensionCount++;
         return new DisposableAction(ResumeNotifications);
     }
 
-    private void ResumeNotifications()
-    {
-        _suspensionCount--;
-    }
+    private void ResumeNotifications() => _suspensionCount--;
 
-    /// <summary>
-    /// Determines whether notifications are suspended.
-    /// </summary>
-    /// <returns></returns>
-    protected bool AreNotificationsSuspended()
-    {
-        return _suspensionCount > 0;
-    }
-
-    /// <summary>
-    /// Raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event.
-    /// </summary>
-    /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-    {
-        if (AreNotificationsSuspended()) return;
-        base.OnPropertyChanged(e);
-    }
-
-    /// <summary>
-    /// Raises the <see cref="INotifyCollectionChanged.CollectionChanged" /> event.
-    /// </summary>
-    /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
-    protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-    {
-        if (AreNotificationsSuspended()) return;
-        base.OnCollectionChanged(e);
-    }
-
-    /// <summary>
-    /// Clears the collection.
-    /// </summary>
-    protected override void ClearItems()
-    {
-        CheckReentrancy();
-
-        var oldItems = Items.Count > 0 ? new List<T>(Items) : null;
-        Items.Clear();
-
-        if (oldItems is not null)
-        {
-            foreach (var item in oldItems)
-                OnItemRemoved(item);
-        }
-
-        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
-        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
-    }
-
-    /// <summary>
-    /// Inserts an item and assigns this collection's parent to it when applicable.
-    /// </summary>
-    protected override void InsertItem(int index, T item)
-    {
-        CheckReentrancy();
-
-        Items.Insert(index, item);
-
-        OnItemAdded(item);
-
-        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
-        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-    }
-
-    /// <summary>
-    /// Removes an item and clears its parent when applicable.
-    /// </summary>
-    protected override void RemoveItem(int index)
-    {
-        CheckReentrancy();
-
-        var item = Items[index];
-        Items.RemoveAt(index);
-
-        OnItemRemoved(item);
-
-        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
-        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-    }
-
-    /// <summary>
-    /// Replaces an item and updates the parent references when applicable.
-    /// </summary>
-    protected override void SetItem(int index, T item)
-    {
-        CheckReentrancy();
-
-        var oldItem = Items[index];
-        Items[index] = item;
-
-        OnItemRemoved(oldItem);
-        OnItemAdded(item);
-
-        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, oldItem, item, index));
-    }
-
-    /// <summary>
-    /// Raises a property and collection changed event that notifies that all of the properties on this object have changed.
-    /// </summary>
-    protected virtual void OnCollectionRefreshed()
-    {
-        if (AreNotificationsSuspended()) return;
-        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
-        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
-    }
-
-    /// <summary>
-    /// Raises a property and collection changed event that notifies that all of the properties on this object have changed.
-    /// </summary>
+    /// <inheritdoc />
     public void Refresh()
     {
         CheckReentrancy();
         OnCollectionRefreshed();
     }
 
-    /// <summary>
-    /// Adds the elements of the specified collection to the end of the BindableCollection.
-    /// </summary>
-    /// <param name="items">The collection whose elements should be added to the end of the BindableCollection.</param>
+    /// <inheritdoc />
+    public void Move(int oldIndex, int newIndex)
+    {
+        var item = _items[oldIndex];
+        if ((uint)newIndex >= (uint)_items.Count)
+            throw new ArgumentOutOfRangeException(nameof(newIndex));
+
+        if (oldIndex == newIndex) return;
+
+        CheckReentrancy();
+        _items.RemoveAt(oldIndex);
+        _items.Insert(newIndex, item);
+
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+    }
+
+    /// <inheritdoc />
     public void AddRange(IEnumerable<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
-        CheckReentrancy();
-
-        foreach (var item in items)
-        {
-            Items.Add(item);
-            OnItemAdded(item);
-        }
-
-        OnCollectionRefreshed();
+        InsertRange(_items.Count, items);
     }
 
-    /// <summary>
-    /// Removes a range of elements from the BindableCollection.
-    /// </summary>
-    /// <param name="items">The collection whose elements should be removed from the BindableCollection.</param>
-    public void RemoveRange(IEnumerable<T> items)
+    /// <inheritdoc />
+    public void InsertRange(int index, IEnumerable<T> items)
     {
         ArgumentNullException.ThrowIfNull(items);
+        if (index < 0 || index > _items.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        CheckReentrancy();
+        var oldCount = _items.Count;
+
+        if (items is ICollection<T> collection)
+        {
+            var insertedCount = collection.Count;
+            if (ReferenceEquals(items, this))
+                _items.InsertRange(index, _items);
+            else
+                _items.InsertRange(index, collection);
+
+            for (var i = index; i < index + insertedCount; i++)
+                _itemHandler?.OnItemAdded(_items[i]);
+        }
+        else
+        {
+            foreach (var item in items)
+            {
+                _items.Insert(index++, item);
+                _itemHandler?.OnItemAdded(item);
+            }
+        }
+
+        if (oldCount != _items.Count)
+            OnCollectionRefreshed();
+    }
+
+    /// <inheritdoc />
+    public int RemoveAll(Predicate<T> match)
+    {
+        ArgumentNullException.ThrowIfNull(match);
+        CheckReentrancy();
+
+        var removedItems = new List<T>();
+        var removedCount = _items.RemoveAll(item =>
+        {
+            if (!match(item)) return false;
+            removedItems.Add(item);
+            return true;
+        });
+
+        foreach (var item in removedItems)
+            _itemHandler?.OnItemRemoved(item);
+
+        if (removedCount > 0)
+            OnCollectionRefreshed();
+
+        return removedCount;
+    }
+
+    /// <inheritdoc />
+    public int RemoveRange(IEnumerable<T> items)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+        if (ReferenceEquals(items, this))
+        {
+            var count = _items.Count;
+            ClearItems();
+            return count;
+        }
 
         CheckReentrancy();
 
+        var oldCount = _items.Count;
+
         foreach (var item in items)
         {
-            var index = Items.IndexOf(item);
+            var index = _items.IndexOf(item);
             if (index < 0) continue;
-            var removedItem = Items[index];
-            Items.RemoveAt(index);
 
-            OnItemRemoved(removedItem);
+            var removedItem = _items[index];
+            _items.RemoveAt(index);
+            _itemHandler?.OnItemRemoved(removedItem);
         }
+
+        if (oldCount != _items.Count)
+            OnCollectionRefreshed();
+
+        return oldCount - _items.Count;
+    }
+
+    /// <inheritdoc />
+    public void RemoveRange(int index, int count)
+    {
+        if (index < 0 || index > _items.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count));
+        if (count > _items.Count - index)
+            throw new ArgumentException("The range exceeds the collection bounds.");
+        if (count == 0)
+            return;
+
+        CheckReentrancy();
+        var removedItems = _items.GetRange(index, count);
+        _items.RemoveRange(index, count);
+        foreach (var item in removedItems)
+            _itemHandler?.OnItemRemoved(item);
 
         OnCollectionRefreshed();
     }
 
-    /// <summary>
-    /// Called after an item is added to the collection and before change notifications are raised.
-    /// </summary>
-    protected virtual void OnItemAdded(T item)
+    private void InsertItem(int index, T item)
     {
+        CheckReentrancy();
+        _items.Insert(index, item);
+        _itemHandler?.OnItemAdded(item);
+
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
     }
 
-    /// <summary>
-    /// Called after an item is removed from the collection and before change notifications are raised.
-    /// </summary>
-    protected virtual void OnItemRemoved(T item)
+    private void RemoveItem(int index)
     {
+        CheckReentrancy();
+        var item = _items[index];
+        _items.RemoveAt(index);
+        _itemHandler?.OnItemRemoved(item);
+
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+    }
+
+    private void SetItem(int index, T item)
+    {
+        CheckReentrancy();
+        var oldItem = _items[index];
+        _items[index] = item;
+        _itemHandler?.OnItemRemoved(oldItem);
+        _itemHandler?.OnItemAdded(item);
+
+        // Indexer assignment is a replacement operation; notify even when oldItem equals item.
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, oldItem, item, index));
+    }
+
+    private void ClearItems()
+    {
+        if (_items.Count == 0) return;
+
+        CheckReentrancy();
+        var oldItems = _items.ToArray();
+        _items.Clear();
+        foreach (var item in oldItems)
+            _itemHandler?.OnItemRemoved(item);
+
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
+    }
+
+    private void OnCollectionRefreshed()
+    {
+        if (_suspensionCount > 0) return;
+        OnPropertyChanged(EventArgsCache.CountPropertyChanged);
+        OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
+    }
+
+    private void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        if (_suspensionCount == 0)
+            PropertyChanged?.Invoke(this, e);
+    }
+
+    private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+    {
+        if (_suspensionCount > 0) return;
+
+        var handlers = CollectionChanged;
+        if (handlers is null) return;
+
+        _notificationDepth++;
+        try
+        {
+            handlers(this, e);
+        }
+        finally
+        {
+            _notificationDepth--;
+        }
+    }
+
+    private void CheckReentrancy()
+    {
+        // Allow a single listener to mutate during notification for compatibility with selection controls;
+        // with multiple listeners, a nested mutation could invalidate the change seen by later listeners.
+        if (_notificationDepth > 0 && CollectionChanged?.GetInvocationList().Length > 1)
+            throw new InvalidOperationException("Cannot change the collection during a CollectionChanged event.");
+    }
+
+    bool IList.IsReadOnly => false;
+    bool IList.IsFixedSize => false;
+    bool ICollection.IsSynchronized => false;
+    object ICollection.SyncRoot => ((ICollection)_items).SyncRoot;
+    void ICollection.CopyTo(Array array, int index) => ((ICollection)_items).CopyTo(array, index);
+
+    object? IList.this[int index]
+    {
+        get => this[index];
+        set => this[index] = ConvertItem(value);
+    }
+
+    int IList.Add(object? value)
+    {
+        Add(ConvertItem(value));
+        return Count - 1;
+    }
+
+    bool IList.Contains(object? value) => IsCompatibleObject(value) && Contains((T)value!);
+    int IList.IndexOf(object? value) => IsCompatibleObject(value) ? IndexOf((T)value!) : -1;
+    void IList.Insert(int index, object? value) => Insert(index, ConvertItem(value));
+    void IList.Remove(object? value)
+    {
+        if (IsCompatibleObject(value)) Remove((T)value!);
+    }
+
+    private static bool IsCompatibleObject(object? value) => value is T || (value is null && default(T) is null);
+
+    private static T ConvertItem(object? value)
+    {
+        if (IsCompatibleObject(value)) return (T)value!;
+        throw new ArgumentException($"The value must be of type {typeof(T)} or null.", nameof(value));
     }
 }
 
 internal static class EventArgsCache
 {
-    internal static readonly PropertyChangedEventArgs CountPropertyChanged = new PropertyChangedEventArgs("Count");
-    internal static readonly PropertyChangedEventArgs IndexerPropertyChanged = new PropertyChangedEventArgs("Item[]");
-    internal static readonly NotifyCollectionChangedEventArgs ResetCollectionChanged = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+    internal static readonly PropertyChangedEventArgs CountPropertyChanged = new("Count");
+    internal static readonly PropertyChangedEventArgs IndexerPropertyChanged = new("Item[]");
+    internal static readonly NotifyCollectionChangedEventArgs ResetCollectionChanged = new(NotifyCollectionChangedAction.Reset);
 }
