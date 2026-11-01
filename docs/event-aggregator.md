@@ -107,7 +107,7 @@ _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
 `PublisherThread` (the default) runs the handler inline on the publishing thread. `UIThread` finds a view
 from the target itself, its `IViewAware` views, or its `IParentAware` parent chain, then runs the
 handler on that view's UI thread. If no view can be found, it runs inline on the publishing thread.
-`BackgroundThread` runs inline when publishing is already on a thread-pool thread; otherwise the
+`ThreadPool` runs inline when publishing is already on a thread-pool thread; otherwise the
 EventAggregator queues a thread-pool continuation.
 
 Handlers that share a reachable UI thread or background execution pass are batched into one

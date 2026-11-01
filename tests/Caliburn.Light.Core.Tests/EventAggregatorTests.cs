@@ -561,7 +561,7 @@ public class EventAggregatorTests
     }
 
     [Test]
-    public async Task Publish_BackgroundThread_OnThreadPool_RunsInline()
+    public async Task Publish_ThreadPool_OnThreadPool_RunsInline()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
@@ -570,7 +570,7 @@ public class EventAggregatorTests
         ea.Subscribe<TestTarget, MessageA>(target, (_, _) =>
         {
             handlerThreadId = Environment.CurrentManagedThreadId;
-        }, ThreadOption.BackgroundThread);
+        }, ThreadOption.ThreadPool);
 
         await Task.Run(() =>
         {
@@ -583,7 +583,7 @@ public class EventAggregatorTests
     }
 
     [Test]
-    public async Task Publish_BackgroundThread_OffThreadPool_BatchesOnThreadPool()
+    public async Task Publish_ThreadPool_OffThreadPool_BatchesOnThreadPool()
     {
         var ea = new EventAggregator();
         var target1 = new TestTarget();
@@ -603,8 +603,8 @@ public class EventAggregatorTests
                 completed.TrySetResult();
         }
 
-        ea.Subscribe<TestTarget, MessageA>(target1, Handle, ThreadOption.BackgroundThread);
-        ea.Subscribe<TestTarget, MessageA>(target2, Handle, ThreadOption.BackgroundThread);
+        ea.Subscribe<TestTarget, MessageA>(target1, Handle, ThreadOption.ThreadPool);
+        ea.Subscribe<TestTarget, MessageA>(target2, Handle, ThreadOption.ThreadPool);
         var publishReturned = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var publisherThread = new Thread(() =>
         {

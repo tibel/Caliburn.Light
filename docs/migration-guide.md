@@ -52,7 +52,7 @@ The following APIs have been removed from the framework:
 | `IConductor.ActivationProcessed`, `ActivationProcessedEventArgs`, `ConductorBase<T>.OnActivationProcessed` | 8.0.0 | Observe `PropertyChanged(nameof(ActiveItem))` or `IActivatable.Activated` |
 | `DispatcherHelper` | 8.0.0 | Use `ViewHelper.SwitchToViewAsync(view)` |
 | `View.GetDispatcherFrom`, `IDispatcher`, `CurrentThreadDispatcher`, `ViewHelper.GetDispatcher` | 8.0.0 | Use view-based `ViewHelper.CheckAccess`, `BeginInvoke`, and `SwitchToViewAsync` |
-| EventAggregator `dispatcher` subscription argument | 8.0.0 | Specify `ThreadOption.PublisherThread`, `UIThread`, or `BackgroundThread` |
+| EventAggregator `dispatcher` subscription argument | 8.0.0 | Specify `ThreadOption.PublisherThread`, `UIThread`, or `ThreadPool` |
 
 `SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.
 
@@ -82,7 +82,7 @@ The framework no longer has `UIContext`, `IDispatcher`, or `CurrentThreadDispatc
   ```
 - If code requires a platform dispatcher when no view is available, use an application-owned or platform API; Caliburn.Light no longer exposes a dispatcher abstraction.
 - For EventAggregator subscriptions, choose `ThreadOption` instead of supplying a dispatcher. `UIThread` locates a view through the target, `IViewAware`, or `IParentAware` ancestry; with no view it runs on the publishing thread.
-- `BackgroundThread` runs inline when publishing is already on a thread-pool thread; otherwise the EventAggregator queues a thread-pool continuation.
+- `ThreadPool` runs inline when publishing is already on a thread-pool thread; otherwise the EventAggregator queues a thread-pool continuation.
 - **Migrating from `UIContext.Run`:** There is no direct 1:1 mapping for every overload. Use `BeginInvoke` for fire-and-forget, or switch to a view's UI thread when a result, exception propagation, or cancellation is needed.
 
 ### Migration checklist (to the latest version)

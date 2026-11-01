@@ -209,7 +209,7 @@ public sealed class EventAggregator : IEventAggregator
                         queuedView = view;
                     }
                     break;
-                case ThreadOption.BackgroundThread:
+                case ThreadOption.ThreadPool:
                     if (isThreadPoolThread)
                     {
                         processedHandlers[i] = true;

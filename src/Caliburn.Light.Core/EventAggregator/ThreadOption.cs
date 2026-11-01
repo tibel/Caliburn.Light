@@ -13,7 +13,7 @@ public enum ThreadOption
     /// <summary>
     /// Executes the handler on a thread pool thread.
     /// </summary>
-    BackgroundThread,
+    ThreadPool,
 
     /// <summary>
     /// Executes the handler on the UI thread associated with its target's view.
