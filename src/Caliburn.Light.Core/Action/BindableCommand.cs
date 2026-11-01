@@ -9,6 +9,8 @@ namespace Caliburn.Light;
 /// </summary>
 public abstract class BindableCommand : ICommand, INotifyPropertyChanged
 {
+    private static readonly PropertyChangedEventArgs IsExecutablePropertyChanged = new(nameof(IsExecutable));
+
     private bool _isExecutableNeedsInvalidation = true;
     private bool _isExecutable;
 
@@ -29,16 +31,16 @@ public abstract class BindableCommand : ICommand, INotifyPropertyChanged
     {
         _isExecutableNeedsInvalidation = true;
         CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        OnPropertyChanged(nameof(IsExecutable));
+        OnPropertyChanged(IsExecutablePropertyChanged);
     }
 
     /// <summary>
     /// Raises the PropertyChanged event.
     /// </summary>
-    /// <param name="propertyName">The name of the property that changed.</param>
-    protected void OnPropertyChanged(string propertyName)
+    /// <param name="e">The event data for the property that changed.</param>
+    protected void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, e);
     }
 
     /// <summary>

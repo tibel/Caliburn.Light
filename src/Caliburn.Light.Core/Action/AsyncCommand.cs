@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -9,6 +10,8 @@ namespace Caliburn.Light;
 /// </summary>
 public abstract class AsyncCommand : BindableCommand
 {
+    private static readonly PropertyChangedEventArgs IsExecutingPropertyChanged = new(nameof(IsExecuting));
+
     private bool _isExecuting;
 
     /// <summary>
@@ -50,7 +53,7 @@ public abstract class AsyncCommand : BindableCommand
     {
         _isExecuting = value;
         OnCanExecuteChanged();
-        OnPropertyChanged(nameof(IsExecuting));
+        OnPropertyChanged(IsExecutingPropertyChanged);
     }
 
     /// <summary>

@@ -46,10 +46,10 @@ public sealed class DelegateCommand : BindableCommand
         _execute = execute;
         _canExecute = canExecute;
         _propertyNames = propertyNames;
-        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, static (t, _, e) => t.OnPropertyChanged(e));
+        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, static (t, _, e) => t.OnObservedPropertyChanged(e));
     }
 
-    private void OnPropertyChanged(PropertyChangedEventArgs e)
+    private void OnObservedPropertyChanged(PropertyChangedEventArgs e)
     {
         if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames!, e.PropertyName) >= 0)
             OnCanExecuteChanged();
@@ -128,10 +128,10 @@ public sealed class DelegateCommand<TParameter> : BindableCommand
         _execute = execute;
         _canExecute = canExecute;
         _propertyNames = propertyNames;
-        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, static (t, _, e) => t.OnPropertyChanged(e));
+        _propertyChangedRegistration = target.RegisterPropertyChangedWeak(this, static (t, _, e) => t.OnObservedPropertyChanged(e));
     }
 
-    private void OnPropertyChanged(PropertyChangedEventArgs e)
+    private void OnObservedPropertyChanged(PropertyChangedEventArgs e)
     {
         if (string.IsNullOrEmpty(e.PropertyName) || Array.IndexOf(_propertyNames!, e.PropertyName) >= 0)
             OnCanExecuteChanged();

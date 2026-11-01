@@ -10,6 +10,9 @@ namespace Caliburn.Light;
 /// </summary>
 public class BindableObject : IBindableObject, INotifyPropertyChanging
 {
+    private static readonly PropertyChangingEventArgs RefreshPropertyChanging = new(string.Empty);
+    private static readonly PropertyChangedEventArgs RefreshPropertyChanged = new(string.Empty);
+
     private int _suspensionCount;
 
     /// <summary>
@@ -42,8 +45,9 @@ public class BindableObject : IBindableObject, INotifyPropertyChanging
     /// </summary>
     public void Refresh()
     {
-        RaisePropertyChanging(string.Empty);
-        RaisePropertyChanged(string.Empty);
+        if (AreNotificationsSuspended()) return;
+        PropertyChanging?.Invoke(this, RefreshPropertyChanging);
+        PropertyChanged?.Invoke(this, RefreshPropertyChanged);
     }
 
     /// <summary>

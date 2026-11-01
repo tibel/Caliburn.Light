@@ -116,7 +116,7 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
         _items.Insert(newIndex, item);
 
         OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+        OnCollectionChanged(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex: oldIndex);
     }
 
     /// <inheritdoc />
@@ -242,7 +242,7 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
 
         OnPropertyChanged(EventArgsCache.CountPropertyChanged);
         OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+        OnCollectionChanged(NotifyCollectionChangedAction.Add, item, index);
     }
 
     private void RemoveItem(int index)
@@ -254,7 +254,7 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
 
         OnPropertyChanged(EventArgsCache.CountPropertyChanged);
         OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+        OnCollectionChanged(NotifyCollectionChangedAction.Remove, item, index);
     }
 
     private void SetItem(int index, T item)
@@ -267,7 +267,7 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
 
         // Indexer assignment is a replacement operation; notify even when oldItem equals item.
         OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, oldItem, item, index));
+        OnCollectionChanged(NotifyCollectionChangedAction.Replace, item, index, oldItem);
     }
 
     private void ClearItems()
@@ -310,6 +310,33 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
         try
         {
             handlers(this, e);
+        }
+        finally
+        {
+            _notificationDepth--;
+        }
+    }
+
+    private void OnCollectionChanged(NotifyCollectionChangedAction action, T item, int index, T? oldItem = default, int oldIndex = -1)
+    {
+        if (_suspensionCount > 0) return;
+
+        var handlers = CollectionChanged;
+        if (handlers is null) return;
+
+        var args = action switch
+        {
+            NotifyCollectionChangedAction.Add => new NotifyCollectionChangedEventArgs(action, item, index),
+            NotifyCollectionChangedAction.Remove => new NotifyCollectionChangedEventArgs(action, item, index),
+            NotifyCollectionChangedAction.Move => new NotifyCollectionChangedEventArgs(action, item, index, oldIndex),
+            NotifyCollectionChangedAction.Replace => new NotifyCollectionChangedEventArgs(action, oldItem, item, index),
+            _ => EventArgsCache.ResetCollectionChanged
+        };
+
+        _notificationDepth++;
+        try
+        {
+            handlers(this, args);
         }
         finally
         {
