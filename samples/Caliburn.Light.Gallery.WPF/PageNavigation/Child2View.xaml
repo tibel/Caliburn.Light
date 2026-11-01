@@ -1,4 +1,4 @@
-﻿<Page x:Class="Caliburn.Light.Gallery.WPF.PageNavigation.Child2View"
+<Page x:Class="Caliburn.Light.Gallery.WPF.PageNavigation.Child2View"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:cal="https://github.com/tibel/Caliburn.Light/"

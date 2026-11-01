@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using TUnit.Core.Executors;
 
 namespace Caliburn.Light.WPF.Tests;
