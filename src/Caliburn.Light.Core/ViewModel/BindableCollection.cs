@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Caliburn.Light;
 
@@ -105,13 +106,15 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
     /// <inheritdoc />
     public void Move(int oldIndex, int newIndex)
     {
-        var item = _items[oldIndex];
-        if ((uint)newIndex >= (uint)_items.Count)
-            throw new ArgumentOutOfRangeException(nameof(newIndex));
+        ArgumentOutOfRangeException.ThrowIfNegative(oldIndex);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(oldIndex, _items.Count);
+        ArgumentOutOfRangeException.ThrowIfNegative(newIndex);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(newIndex, _items.Count);
 
         if (oldIndex == newIndex) return;
 
         CheckReentrancy();
+        var item = _items[oldIndex];
         _items.RemoveAt(oldIndex);
         _items.Insert(newIndex, item);
 
@@ -129,8 +132,8 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
     public void InsertRange(int index, IEnumerable<T> items)
     {
         ArgumentNullException.ThrowIfNull(items);
-        if (index < 0 || index > _items.Count)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _items.Count);
 
         CheckReentrancy();
         var oldCount = _items.Count;
@@ -216,12 +219,12 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
     /// <inheritdoc />
     public void RemoveRange(int index, int count)
     {
-        if (index < 0 || index > _items.Count)
-            throw new ArgumentOutOfRangeException(nameof(index));
-        if (count < 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _items.Count);
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
         if (count > _items.Count - index)
-            throw new ArgumentException("The range exceeds the collection bounds.");
+            ThrowRangeExceedsCollectionBounds();
+
         if (count == 0)
             return;
 
@@ -349,8 +352,14 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
         // Allow a single listener to mutate during notification for compatibility with selection controls;
         // with multiple listeners, a nested mutation could invalidate the change seen by later listeners.
         if (_notificationDepth > 0 && CollectionChanged?.GetInvocationList().Length > 1)
-            throw new InvalidOperationException("Cannot change the collection during a CollectionChanged event.");
+            ThrowCannotChangeDuringCollectionChanged();
     }
+
+    [DoesNotReturn]
+    private static void ThrowRangeExceedsCollectionBounds() => throw new ArgumentException("The range exceeds the collection bounds.");
+
+    [DoesNotReturn]
+    private static void ThrowCannotChangeDuringCollectionChanged() => throw new InvalidOperationException("Cannot change the collection during a CollectionChanged event.");
 
     bool IList.IsReadOnly => false;
     bool IList.IsFixedSize => false;
@@ -383,8 +392,11 @@ public sealed class BindableCollection<T> : IBindableCollection<T>, IReadOnlyBin
     private static T ConvertItem(object? value)
     {
         if (IsCompatibleObject(value)) return (T)value!;
-        throw new ArgumentException($"The value must be of type {typeof(T)} or null.", nameof(value));
+        return ThrowIncompatibleValue(nameof(value));
     }
+
+    [DoesNotReturn]
+    private static T ThrowIncompatibleValue(string paramName) => throw new ArgumentException($"The value must be of type {typeof(T)} or null.", paramName);
 }
 
 internal static class EventArgsCache
