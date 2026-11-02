@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [8.0.0] - 2026-11-02
+
 ### Added
 - Core: Added `InsertRange`, indexed `RemoveRange`, and `RemoveAll` to `IBindableCollection<T>`
 - Core: Made `IBindableCollectionItemHandler<T>` and the `BindableCollection<T>` handler constructor public for custom conductors
@@ -434,7 +436,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - Initial release of Caliburn.Light where at least WPF can be considered stable
 
-[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v7.1.0...HEAD
+[Unreleased]: https://github.com/tibel/Caliburn.Light/compare/v8.0.0...HEAD
+[8.0.0]: https://github.com/tibel/Caliburn.Light/compare/v7.1.0...v8.0.0
 [7.1.0]: https://github.com/tibel/Caliburn.Light/compare/v7.0.0...v7.1.0
 [7.0.0]: https://github.com/tibel/Caliburn.Light/compare/v6.3.1...v7.0.0
 [6.3.1]: https://github.com/tibel/Caliburn.Light/compare/v6.3.0...v6.3.1
