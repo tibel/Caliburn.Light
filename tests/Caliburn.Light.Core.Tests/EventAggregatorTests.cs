@@ -203,61 +203,6 @@ public class EventAggregatorTests
     }
 
     [Test]
-    public async Task Publish_AsyncHandler_RaisesExecutingEvent()
-    {
-        var ea = new EventAggregator();
-        var target = new TestTarget();
-        var tcs = new TaskCompletionSource();
-        bool executingRaised = false;
-
-        void onExecuting(object? sender, TaskEventArgs e) => executingRaised = true;
-        EventAggregator.Executing += onExecuting;
-
-        try
-        {
-            ea.Subscribe<TestTarget, MessageA>(target, (t, m) =>
-            {
-                t.ReceivedMessages.Add(m);
-                return tcs.Task;
-            });
-
-            ea.Publish(new MessageA("pending"));
-
-            await Assert.That(executingRaised).IsTrue();
-
-            tcs.SetResult();
-        }
-        finally
-        {
-            EventAggregator.Executing -= onExecuting;
-        }
-    }
-
-    [Test]
-    public async Task Publish_SyncHandler_DoesNotRaiseExecutingEvent()
-    {
-        var ea = new EventAggregator();
-        var target = new TestTarget();
-        bool executingRaised = false;
-
-        void onExecuting(object? sender, TaskEventArgs e) => executingRaised = true;
-        EventAggregator.Executing += onExecuting;
-
-        try
-        {
-            ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m));
-
-            ea.Publish(new MessageA("sync"));
-
-            await Assert.That(executingRaised).IsFalse();
-        }
-        finally
-        {
-            EventAggregator.Executing -= onExecuting;
-        }
-    }
-
-    [Test]
     public async Task Handler_CanHandle_MatchingType_ReturnsTrue()
     {
         var ea = new EventAggregator();

@@ -34,8 +34,6 @@ public abstract class AsyncCommand : BindableCommand
         try
         {
             var task = ExecuteAsync(parameter);
-            if (!task.IsCompleted)
-                Executing?.Invoke(null, new TaskEventArgs(task));
             await task;
         }
         finally
@@ -43,11 +41,6 @@ public abstract class AsyncCommand : BindableCommand
             SetIsExecuting(false);
         }
     }
-
-    /// <summary>
-    /// Occurs when <see cref="ExecuteAsync(object)"/> is invoked and the operation has not completed synchronously.
-    /// </summary>
-    public static event EventHandler<TaskEventArgs>? Executing;
 
     private void SetIsExecuting(bool value)
     {

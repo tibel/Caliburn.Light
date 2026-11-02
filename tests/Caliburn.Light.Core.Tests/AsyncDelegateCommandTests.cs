@@ -4,7 +4,6 @@ using TUnit.Core;
 
 namespace Caliburn.Light.Core.Tests;
 
-[NotInParallel("SharedStaticEventAndViewHelper")]
 public class AsyncDelegateCommandTests
 {
     [Test]
@@ -118,51 +117,6 @@ public class AsyncDelegateCommandTests
 
         tcs.SetResult();
         await WaitForIsExecutingFalse(command);
-    }
-
-    [Test]
-    public async Task ExecutingStaticEvent_FiredForNonCompletedTask()
-    {
-        var tcs = new TaskCompletionSource();
-        Task? capturedTask = null;
-        EventHandler<TaskEventArgs> handler = (_, e) => capturedTask = e.Task;
-
-        AsyncCommand.Executing += handler;
-        try
-        {
-            var command = new AsyncDelegateCommand(() => tcs.Task);
-            command.Execute(null);
-
-            // The Executing event should have been fired with the task
-            await Assert.That(capturedTask is not null).IsTrue();
-
-            tcs.SetResult();
-            await WaitForIsExecutingFalse(command);
-        }
-        finally
-        {
-            AsyncCommand.Executing -= handler;
-        }
-    }
-
-    [Test]
-    public async Task ExecutingStaticEvent_NotFiredForCompletedTask()
-    {
-        var fired = false;
-        EventHandler<TaskEventArgs> handler = (_, _) => fired = true;
-
-        AsyncCommand.Executing += handler;
-        try
-        {
-            var command = new AsyncDelegateCommand(() => Task.CompletedTask);
-            command.Execute(null);
-
-            await Assert.That(fired).IsFalse();
-        }
-        finally
-        {
-            AsyncCommand.Executing -= handler;
-        }
     }
 
     [Test]

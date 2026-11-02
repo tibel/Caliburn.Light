@@ -68,35 +68,3 @@ public class TaskHelperTests
         await Assert.That(task.IsCompleted).IsTrue();
     }
 }
-
-public class TaskEventArgsTests
-{
-    [Test]
-    public async Task Constructor_NullTask_ThrowsArgumentNullException()
-    {
-        await Assert.That(() => new TaskEventArgs(null!)).Throws<ArgumentNullException>();
-    }
-
-    [Test]
-    public async Task Constructor_ValidTask_StoresTask()
-    {
-        var task = Task.CompletedTask;
-        var args = new TaskEventArgs(task);
-        await Assert.That(args.Task).IsEqualTo(task);
-    }
-
-    [Test]
-    public async Task Task_Property_ReturnsSameInstance()
-    {
-        var task = Task.FromResult(42);
-        var args = new TaskEventArgs(task);
-        await Assert.That(ReferenceEquals(args.Task, task)).IsTrue();
-    }
-
-    [Test]
-    public async Task InheritsFromEventArgs()
-    {
-        var args = new TaskEventArgs(Task.CompletedTask);
-        await Assert.That(args is EventArgs).IsTrue();
-    }
-}

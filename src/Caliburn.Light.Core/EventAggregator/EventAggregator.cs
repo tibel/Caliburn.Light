@@ -247,8 +247,6 @@ public sealed class EventAggregator : IEventAggregator
 
         task.Observe();
 
-        if (!task.IsCompleted)
-            Executing?.Invoke(null, new TaskEventArgs(task));
     }
 
     private static object? FindView(object target)
@@ -273,8 +271,4 @@ public sealed class EventAggregator : IEventAggregator
         return null;
     }
 
-    /// <summary>
-    /// Occurs when an event aggregator handler is invoked and the operation has not completed synchronously.
-    /// </summary>
-    public static event EventHandler<TaskEventArgs>? Executing;
 }

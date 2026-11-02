@@ -47,9 +47,8 @@ Tests use **TUnit** (not xUnit/NUnit). Key differences from other frameworks:
 
 ## Parallel execution and `[NotInParallel]`
 
-Static state shared across test classes requires `[NotInParallel("key")]` at class level to prevent race conditions. Always write the key as a **string literal, never `nameof(...)`**: a key is a coordination token shared by every class that touches the same state, and `nameof` binds it to one class's name. `"StaticExecutingEvent"` spans three classes (`AsyncDelegateCommandTests`, `EventAggregatorTests`, `WeakStaticEventHandlerTests`), so `nameof` there would have produced three different keys and silently disabled the isolation. Named keys in use:
+Static state shared across test classes requires `[NotInParallel("key")]` at class level to prevent race conditions. Always write the key as a **string literal, never `nameof(...)`**: a key is a coordination token shared by every class that touches the same state, and `nameof` binds it to one class's name. Named keys in use:
 
-- **`"StaticExecutingEvent"`** — test classes touching static `Executing` events on `AsyncCommand` / `EventAggregator`
 - **`"ViewHelperTests"`** — the Core test class that mutates the `ViewHelper` static state
 
 The platform `ViewAdapterTests` (WPF, Avalonia, WinUI) construct their own `ViewAdapter` instance per test and call it directly, so they hold no test-local state and need no `[NotInParallel]` at all. No test in those assemblies calls `ViewHelper.Reset()` or otherwise mutates the registry, so no isolation is required. Note that `new ViewAdapter()` does indirectly populate the registry once, because it is what triggers the platform module's `[ModuleInitializer]`.

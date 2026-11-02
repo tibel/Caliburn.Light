@@ -115,41 +115,4 @@ public static class WeakEventHandler
         return new WeakDeactivatedHandler<TSubscriber>(source, subscriber, weakHandler);
     }
 
-    /// <summary>
-    /// Registers a weak handler to the static <see cref="AsyncCommand.Executing"/> event.
-    /// </summary>
-    /// <remarks>
-    /// The event is static, so this is a static method rather than an extension method. Dispose the
-    /// returned registration for deterministic cleanup; otherwise the handler detaches itself the next
-    /// time the event is raised after <paramref name="subscriber"/> has been collected.
-    /// </remarks>
-    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
-    /// <param name="subscriber">The event subscriber.</param>
-    /// <param name="weakHandler">The weak handler.</param>
-    /// <returns>A registration object that can be used to deregister from the event.</returns>
-    public static IDisposable RegisterAsyncCommandExecutingWeak<TSubscriber>(TSubscriber subscriber,
-        Action<TSubscriber, object?, TaskEventArgs> weakHandler)
-        where TSubscriber : class
-    {
-        return new WeakAsyncCommandExecutingHandler<TSubscriber>(subscriber, weakHandler);
-    }
-
-    /// <summary>
-    /// Registers a weak handler to the static <see cref="EventAggregator.Executing"/> event.
-    /// </summary>
-    /// <remarks>
-    /// The event is static, so this is a static method rather than an extension method. Dispose the
-    /// returned registration for deterministic cleanup; otherwise the handler detaches itself the next
-    /// time the event is raised after <paramref name="subscriber"/> has been collected.
-    /// </remarks>
-    /// <typeparam name="TSubscriber">The type of the event subscriber.</typeparam>
-    /// <param name="subscriber">The event subscriber.</param>
-    /// <param name="weakHandler">The weak handler.</param>
-    /// <returns>A registration object that can be used to deregister from the event.</returns>
-    public static IDisposable RegisterEventAggregatorExecutingWeak<TSubscriber>(TSubscriber subscriber,
-        Action<TSubscriber, object?, TaskEventArgs> weakHandler)
-        where TSubscriber : class
-    {
-        return new WeakEventAggregatorExecutingHandler<TSubscriber>(subscriber, weakHandler);
-    }
 }

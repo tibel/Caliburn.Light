@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Removed
 - Core: Removed `IDispatcher`, `CurrentThreadDispatcher`, and `ViewHelper.GetDispatcher`; use view-based `ViewHelper` operations and EventAggregator execution options
 - Core: Removed obsolete `DispatcherHelper`, `View.GetDispatcherFrom`, `IChild`, `ConductorBase<T>.EnsureItem`, and the `ActivationProcessed` event API
+- Core: Removed the static `AsyncCommand.Executing` and `EventAggregator.Executing` events and their weak registration helpers
 
 ## [7.1.0] - 2026-10-09
 
@@ -31,7 +32,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Coroutines: Unified the adapter API on `Coroutine.From(...)` and added lazy `Task` factory adapters (`Func<Task>`, `Func<Task<TResult>>`, `Func<CommandExecutionContext, Task>` and `Func<CommandExecutionContext, Task<TResult>>`), which start the task only when the coroutine executes
 - Avalonia: Added `PageLifecycle` and navigation extensions for `NavigationPage`
 - Core: Added `WeakEventHandler.RegisterActivatedWeak`, `RegisterDeactivatingWeak` and `RegisterDeactivatedWeak` for `IActivatable` activation events
-- Core: Added `WeakEventHandler.RegisterAsyncCommandExecutingWeak` and `RegisterEventAggregatorExecutingWeak` for the static `AsyncCommand.Executing` and `EventAggregator.Executing` events
 - Docs: Added a migration guide from `SimpleContainer` to `Microsoft.Extensions.DependencyInjection`, covering the API mapping and the behavioral differences in keyed registrations, multiple registrations, scopes, disposal, and constructor selection
 
 ### Changed
