@@ -12,10 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - Core: `BindableCollection<T>` no longer inherits from `ObservableCollection<T>`; `RemoveRange(IEnumerable<T>)` returns the number removed, and no-op mutations no longer raise change notifications.
-- Avalonia: Updated to 12.1.4
-- WinUI: Updated AppSDK to 2.6.4
 - Core: Replaced EventAggregator dispatcher parameters with `EventAggregatorExecution` (`PublisherThread`, `ThreadPool`, `UIThread`)
 - Core: Changed `IViewAware.GetViews()` to return weak references with their view contexts, and added `GetFirstAttachedView()`
+- Avalonia: Updated to 12.1.5
+- WinUI: Updated AppSDK to 2.6.4
 
 ### Removed
 - Core: Removed `IDispatcher`, `CurrentThreadDispatcher`, and `ViewHelper.GetDispatcher`; use view-based `ViewHelper` operations and EventAggregator execution options
