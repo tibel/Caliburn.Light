@@ -14,15 +14,22 @@ namespace Caliburn.Light.WPF.Tests;
 /// </summary>
 public sealed class WpfTestExecutor : ITestExecutor
 {
-    private static Dispatcher? _dispatcher;
+    private static Application? _application;
     private static volatile bool _initialized;
     private static readonly Lock _lock = new();
+
+    [AfterEvery(TestSession)]
+    public static void ShutdownUiThread()
+    {
+        if (_application is { Dispatcher: { HasShutdownStarted: false } dispatcher })
+            dispatcher.BeginInvoke(_application.Shutdown);
+    }
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)
     {
         EnsureInitialized();
 
-        var dispatcher = _dispatcher
+        var dispatcher = _application?.Dispatcher
             ?? throw new InvalidOperationException("WPF Dispatcher is not available.");
 
         if (dispatcher.CheckAccess())
@@ -66,10 +73,9 @@ public sealed class WpfTestExecutor : ITestExecutor
             {
                 try
                 {
-                    var app = new TestApp { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                    _dispatcher = app.Dispatcher;
-                    _dispatcher.InvokeAsync(() => ready.Set());
-                    app.Run();
+                    _application = new TestApp { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+                    _application.Dispatcher.InvokeAsync(() => ready.Set());
+                    _application.Run();
                 }
                 catch (Exception ex)
                 {

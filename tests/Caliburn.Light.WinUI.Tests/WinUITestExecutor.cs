@@ -1,8 +1,8 @@
-using System.Threading;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
+using System.Threading;
 using TUnit.Core;
 using TUnit.Core.Interfaces;
 
@@ -26,6 +26,14 @@ public sealed partial class WinUITestExecutor : ITestExecutor
     internal static DispatcherQueue? _dispatcherQueue;
     internal static volatile bool _initialized;
     private static readonly Lock _lock = new();
+
+    [AfterEvery(TestSession)]
+    public static async Task ShutdownUiThread()
+    {
+        // Seems to generate AccessViolationException
+        //_dispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, () => Application.Current?.Exit());
+        //_dispatcherQueue?.EnqueueEventLoopExit();
+    }
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)
     {
@@ -82,12 +90,11 @@ public sealed partial class WinUITestExecutor : ITestExecutor
 
                     Application.Start(p =>
                     {
+                        _ = new TestApp { DispatcherShutdownMode = DispatcherShutdownMode.OnExplicitShutdown };
+
                         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-
-                        var syncContext = new DispatcherQueueSynchronizationContext(_dispatcherQueue);
-                        SynchronizationContext.SetSynchronizationContext(syncContext);
-
-                        _ = new TestApp();
+                        _dispatcherQueue.EnsureSystemDispatcherQueue();
+                        SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(_dispatcherQueue));
 
                         ready.Set();
                     });

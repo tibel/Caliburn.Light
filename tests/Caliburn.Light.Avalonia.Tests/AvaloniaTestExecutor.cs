@@ -1,8 +1,9 @@
-using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Headless;
 using Avalonia.Threading;
+using System.Threading;
 using TUnit.Core;
 using TUnit.Core.Interfaces;
 
@@ -16,14 +17,25 @@ namespace Caliburn.Light.Avalonia.Tests;
 /// </summary>
 public sealed class AvaloniaTestExecutor : ITestExecutor
 {
+    private static Application? _application;
     private static volatile bool _initialized;
     private static readonly Lock _lock = new();
+
+    [AfterEvery(TestSession)]
+    public static void ShutdownUiThread()
+    {
+        _application?.Dispatcher.Post(() =>
+            (_application?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown());
+    }
 
     public async ValueTask ExecuteTest(TestContext context, Func<ValueTask> action)
     {
         EnsureInitialized();
 
-        if (Dispatcher.UIThread.CheckAccess())
+        var dispatcher = _application?.Dispatcher
+            ?? throw new InvalidOperationException("Avalonia Dispatcher is not available.");
+
+        if (dispatcher.CheckAccess())
         {
             await action();
             return;
@@ -32,7 +44,7 @@ public sealed class AvaloniaTestExecutor : ITestExecutor
         var tcs = new TaskCompletionSource();
 
 #pragma warning disable TUnit0031 // async void is intentional — tcs bridges completion
-        Dispatcher.UIThread.Post(async () =>
+        dispatcher.Post(async () =>
 #pragma warning restore TUnit0031
         {
             try
@@ -66,7 +78,11 @@ public sealed class AvaloniaTestExecutor : ITestExecutor
                 {
                     AppBuilder.Configure<TestApp>()
                         .UseHeadless(new AvaloniaHeadlessPlatformOptions())
-                        .AfterSetup(_ => ready.Set())
+                        .AfterSetup(_ =>
+                        {
+                            _application = Application.Current;
+                            ready.Set();
+                        })
                         .StartWithClassicDesktopLifetime([], ShutdownMode.OnExplicitShutdown);
                 }
                 catch (Exception ex)
