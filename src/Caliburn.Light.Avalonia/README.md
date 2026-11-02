@@ -8,7 +8,7 @@ Avalonia-specific extensions for Caliburn.Light - a magic-free, powerful MVVM fr
 
 Caliburn.Light.Avalonia extends the core framework with Avalonia-specific features:
 
-- **View/ViewModel Resolution**: Automatic view location and binding
+- **View/ViewModel Resolution**: Explicit mappings with attached-property and window-manager resolution
 - **Window Management**: Window lifecycle and dialog services
 - **View Adapters**: Avalonia-specific view integration
 - **Lifecycle Management**: Window and popup lifecycle handlers

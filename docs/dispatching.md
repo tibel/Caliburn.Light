@@ -84,4 +84,4 @@ platform-specific dispatcher abstraction.
 
 - [Async (Task Support)](async.md) - Asynchronous programming patterns and lifecycle
 - [BindableCollection](bindable-collection.md) - Observable collections
-- [Event Aggregator](event-aggregator.md) - Pub/sub messaging and thread options
+- [Event Aggregator](event-aggregator.md) - Pub/sub messaging and execution options

@@ -1,6 +1,6 @@
 # View/ViewModel Resolution
 
-Caliburn.Light uses a **ViewModel-First** approach, where you compose your application by working with ViewModels, and the framework automatically locates and creates the appropriate Views.
+Caliburn.Light supports both ViewModel-First and View-First workflows. View resolution is explicit: you register view/view-model mappings, then use `View.Create` or `IWindowManager` to request a view for a view model. `View.Bind` associates a view with its existing `DataContext`; it does not resolve a mapped view model.
 
 ## Why ViewModel-First?
 
@@ -13,27 +13,27 @@ In traditional "View-First" MVVM, you create a View and it instantiates its View
 With **ViewModel-First**:
 
 - ViewModels are regular objects you can create, compose, and test easily
-- Views are automatically attached—you never instantiate Views directly
+- Views can be created and attached for you after you register mappings and request resolution
 - ViewModel composition feels natural (parents own children)
-- Navigation is just creating a new ViewModel
+- View models can be composed independently of their views; navigation is handled by the platform navigation APIs
 
 ```csharp
 // ViewModel-First: You work with ViewModels
 var settings = new SettingsViewModel();
 await ActivateItemAsync(settings);
-// The framework finds and displays SettingsView automatically!
+// With a registered mapping, View.Create or IWindowManager can resolve SettingsView.
 ```
 
 ## Overview
 
-The framework provides two main interfaces for resolution:
+The platform package provides two main types for resolution:
 
 - `IViewModelLocator` - Resolves a view model for a given view
 - `ViewModelLocatorConfiguration` - Configures the view-to-viewmodel and viewmodel-to-view mappings
 
 ## Registration
 
-Register view/viewmodel pairs by configuring `ViewModelLocatorConfiguration`:
+Register view/viewmodel pairs by configuring `ViewModelLocatorConfiguration`. There is no convention-based fallback: an unmapped type cannot be resolved. Register views with the service provider when they need constructor injection; otherwise the locator can create mapped views with a public parameterless constructor.
 
 ```csharp
 var services = new ServiceCollection();
@@ -80,7 +80,7 @@ Use the context in XAML:
 
 ## ViewModel-First Approach
 
-In the ViewModel-First approach, you work primarily with view models, and the framework automatically locates and creates the appropriate views.
+In the ViewModel-First approach, you work primarily with view models. Once a mapping is registered, the resolution triggers below can locate and create the corresponding view.
 
 ### View.Create Attached Property
 
@@ -91,7 +91,7 @@ Use `View.Create` to inject a view for a view model:
                 cal:View.Create="True" />
 ```
 
-The framework will:
+When `View.Create` is enabled, the framework will:
 1. Look up the registered view type for the view model
 2. Create an instance of the view
 3. Set the view model as the view's DataContext
@@ -108,7 +108,7 @@ _windowManager.ShowWindow(new ShellViewModel());
 
 ## View-First Approach
 
-In the View-First approach, you start with views, and the framework attaches them to the corresponding view models.
+In the View-First approach, you start with views that already have a view model as their `DataContext`, and the framework can attach the view to that model.
 
 ### View.Bind Attached Property
 
@@ -120,20 +120,22 @@ Use `View.Bind` inside DataTemplates where the view receives its DataContext fro
 </DataTemplate>
 ```
 
+`View.Bind` attaches or detaches the existing `DataContext` when it implements `IViewAware`. It does not look up or create a view model from the registered mappings.
+
 ## How Resolution Works
 
 When you request a view for a view model:
 
 1. The framework calls `IViewModelLocator.LocateForModel(model, context)`
 2. It retrieves the registered view type for the view model
-3. It creates an instance of the view using the service provider
+3. It asks the service provider for the view, then falls back to a public parameterless constructor
 4. It sets the view model as the view's DataContext
 
 When you request a view model for a view:
 
 1. The framework calls `IViewModelLocator.LocateForView(view)`
 2. It retrieves the registered view model type for the view
-3. It creates an instance of the view model using the service provider
+3. It asks the service provider for the view model; if it is not registered, resolution returns no model
 
 ## Example
 

@@ -8,7 +8,7 @@ WinUI-specific extensions for Caliburn.Light - a magic-free, powerful MVVM frame
 
 Caliburn.Light.WinUI extends the core framework with WinUI-specific features:
 
-- **View/ViewModel Resolution**: Automatic view location and binding for WinUI
+- **View/ViewModel Resolution**: Explicit mappings with attached-property and window-manager resolution
 - **Window Management**: Window lifecycle and dialog services
 - **View Adapters**: WinUI-specific view integration
 - **Page Navigation**: Page lifecycle management

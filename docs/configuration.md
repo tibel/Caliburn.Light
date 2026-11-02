@@ -66,4 +66,4 @@ serviceProvider.GetRequiredService<IWindowManager>()
 
 > **Tip:** The gallery samples include helper extension methods like `AddCaliburnLight()` and `AddView<>()` 
 > that wrap the registration pattern above. You can create similar helpers in your own application
-> to reduce boilerplate. See `ServiceCollectionExtensions.cs` in the sample projects.
+> to reduce boilerplate. These helpers are sample code, not part of the NuGet packages. See `ServiceCollectionExtensions.cs` in the sample projects.

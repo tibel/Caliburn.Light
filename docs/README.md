@@ -6,7 +6,7 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 
 ## Key Features
 
-- **ViewModel-First** - Compose your application by instantiating ViewModels; Views are located and attached automatically
+- **ViewModel-First** - Register view/view-model mappings, then resolve views through attached properties or the window manager
 - **Screens & Conductors** - Lifecycle management with activation, deactivation, and graceful shutdown
 - **Commands** - Type-safe, observable commands with async support
 - **Event Aggregator** - Loosely-coupled messaging between components

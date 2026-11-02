@@ -8,7 +8,7 @@ WPF-specific extensions for Caliburn.Light - a magic-free, powerful MVVM framewo
 
 Caliburn.Light.WPF extends the core framework with WPF-specific features:
 
-- **View/ViewModel Resolution**: Automatic view location and binding
+- **View/ViewModel Resolution**: Explicit mappings with attached-property and window-manager resolution
 - **Window Management**: Window lifecycle and dialog services
 - **View Adapters**: WPF-specific view integration
 - **Page Navigation**: Page lifecycle management

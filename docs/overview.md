@@ -4,7 +4,7 @@ Caliburn.Light is a lightweight, portable MVVM framework for WPF, WinUI, and Ava
 
 ## ViewModel-First Architecture
 
-Caliburn.Light uses a **ViewModel-First** approach where you compose your application by working with ViewModels, and Views are automatically located and attached. This allows for cleaner architecture, easier testing, and more natural ViewModel composition. See [View/ViewModel Resolution](viewmodel-resolver.md) for details.
+Caliburn.Light supports ViewModel-First composition. Register view/view-model mappings, then use `View.Create` or `IWindowManager` to resolve views explicitly; it does not infer mappings from type names. See [View/ViewModel Resolution](viewmodel-resolver.md) for details.
 
 ### Screens and Conductors
 The Screen, ScreenConductor and ScreenCollection patterns enable model-based tracking of the active or current item, enforcing of screen lifecycles and elegant shutdown or shutdown cancellation in an application. Caliburn.Light's implementation of these patterns is an evolution of the one found in Caliburn and supports conducting any type of class. You'll find that Caliburn.Light's screen implementation is quite thorough and even handles asynchronous shutdown scenarios with ease. See [Screens, Conductors and Composition](composition.md) for details.
@@ -13,10 +13,10 @@ The Screen, ScreenConductor and ScreenCollection patterns enable model-based tra
 The integrated EventAggregator is simple yet powerful. The aggregator follows a bus-style pub/sub model. You register a message handler with the aggregator, and it sends you any messages you are interested in. References to handlers are held weakly. See [The Event Aggregator](event-aggregator.md) for details.
 
 ### View Locator
-For every ViewModel in your application, Caliburn.Light has a strategy for locating the View that should render it. The recommended approach is registration-based using `IViewModelLocator` which is explicit and refactoring safe. Additionally, multiple views over the same ViewModel are supported by specifying a context.
+Caliburn.Light resolves views through mappings registered with `ViewModelLocatorConfiguration` and exposed by `IViewModelLocator`. Mappings are explicit and refactoring safe. Multiple views over the same ViewModel are supported by specifying a context.
 
 ### View Model Locator
-Though Caliburn.Light favors the ViewModel-First approach, View-First is also supported by providing a ViewModelLocator with the same mapping semantics as the ViewLocator.
+View-First is also supported: `View.Bind` attaches an existing view to its current `DataContext` when that model implements `IViewAware`; it does not resolve a view model from mappings.
 
 ### Window Manager
 This service provides a View-Model-centric way of displaying Windows, dialogs, and file pickers. Simply pass it an instance of the View Model and it will locate the view, wrap it in a Window if necessary, and show the window. See [The Window Manager](window-manager.md) for details.
@@ -36,4 +36,4 @@ Caliburn.Light supports the following platforms:
 - **Avalonia** (.NET 10.0)
 
 ### Dependency Injection
-Caliburn.Light is designed to work with any dependency injection container. The samples demonstrate usage with `Microsoft.Extensions.DependencyInjection`. Register your services, view models, and the Caliburn.Light infrastructure using the provided extension methods.
+Caliburn.Light is designed to work with any dependency injection container. The samples demonstrate usage with `Microsoft.Extensions.DependencyInjection`; their `AddCaliburnLight()` and `AddView<>()` helpers are sample code, not extensions shipped by the framework packages.

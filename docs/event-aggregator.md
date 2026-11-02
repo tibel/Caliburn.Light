@@ -93,7 +93,7 @@ _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
     static async (target, message) => await target.HandleMessageAsync(message));
 ```
 
-### Thread Options
+### Execution Options
 
 Choose how the handler runs with `EventAggregatorExecution`:
 
