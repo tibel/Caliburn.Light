@@ -12,13 +12,13 @@ public interface IEventAggregator
     IEventAggregatorHandler Subscribe<TTarget, TMessage>(
         TTarget target, 
         Action<TTarget, TMessage> handler, 
-        ThreadOption threadOption = ThreadOption.PublisherThread)
+        EventAggregatorExecution execution = EventAggregatorExecution.PublisherThread)
         where TTarget : class;
 
     IEventAggregatorHandler Subscribe<TTarget, TMessage>(
         TTarget target, 
         Func<TTarget, TMessage, Task> handler, 
-        ThreadOption threadOption = ThreadOption.PublisherThread)
+        EventAggregatorExecution execution = EventAggregatorExecution.PublisherThread)
         where TTarget : class;
 
     void Unsubscribe(IEventAggregatorHandler handler);
@@ -95,13 +95,13 @@ _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
 
 ### Thread Options
 
-Choose how the handler runs with `ThreadOption`:
+Choose how the handler runs with `EventAggregatorExecution`:
 
 ```csharp
 _subscription = eventAggregator.Subscribe<SubscriberViewModel, MyMessage>(
     this,
     static (target, message) => target.HandleMessage(message),
-    threadOption: ThreadOption.UIThread);
+    execution: EventAggregatorExecution.UIThread);
 ```
 
 `PublisherThread` (the default) runs the handler inline on the publishing thread. `UIThread` finds a view

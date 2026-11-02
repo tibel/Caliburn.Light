@@ -20,5 +20,5 @@ public interface IEventAggregatorHandler
     /// <summary>
     /// Gets the thread on which this handler is executed.
     /// </summary>
-    ThreadOption ThreadOption { get; }
+    EventAggregatorExecution Execution { get; }
 }

@@ -71,7 +71,7 @@ a thread switch. Use `SwitchToViewAsync` when code must continue on a particular
 
 ## Event aggregator
 
-Select handler execution using `ThreadOption` when subscribing. See
+Select handler execution using `EventAggregatorExecution` when subscribing. See
 [The Event Aggregator](event-aggregator.md) for its thread routing and batching behavior.
 
 ## Platform notes

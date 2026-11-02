@@ -3,7 +3,7 @@ namespace Caliburn.Light;
 /// <summary>
 /// Specifies the thread on which an event aggregator handler is executed.
 /// </summary>
-public enum ThreadOption
+public enum EventAggregatorExecution
 {
     /// <summary>
     /// Executes the handler on the thread that published the message.

@@ -317,18 +317,18 @@ public class EventAggregatorTests
     }
 
     [Test]
-    public async Task Subscribe_WithoutThreadOption_UsesPublisher()
+    public async Task Subscribe_WithoutExecutionOption_UsesPublisher()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
 
         var handler = ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m));
 
-        await Assert.That(handler.ThreadOption).IsEqualTo(ThreadOption.PublisherThread);
+        await Assert.That(handler.Execution).IsEqualTo(EventAggregatorExecution.PublisherThread);
     }
 
     [Test]
-    public async Task Subscribe_AsyncWithoutThreadOption_UsesPublisher()
+    public async Task Subscribe_AsyncWithoutExecutionOption_UsesPublisher()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
@@ -339,11 +339,11 @@ public class EventAggregatorTests
             return Task.CompletedTask;
         });
 
-        await Assert.That(handler.ThreadOption).IsEqualTo(ThreadOption.PublisherThread);
+        await Assert.That(handler.Execution).IsEqualTo(EventAggregatorExecution.PublisherThread);
     }
 
     [Test]
-    public async Task Subscribe_InvalidThreadOption_Throws()
+    public async Task Subscribe_InvalidExecutionOption_Throws()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
@@ -351,12 +351,12 @@ public class EventAggregatorTests
         await Assert.That(() => ea.Subscribe<TestTarget, MessageA>(
                 target,
                 (t, m) => t.ReceivedMessages.Add(m),
-                (ThreadOption)3))
+                (EventAggregatorExecution)3))
             .Throws<ArgumentOutOfRangeException>();
     }
 
     [Test]
-    public async Task Subscribe_AsyncInvalidThreadOption_Throws()
+    public async Task Subscribe_AsyncInvalidExecutionOption_Throws()
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
@@ -368,7 +368,7 @@ public class EventAggregatorTests
                     t.ReceivedMessages.Add(m);
                     return Task.CompletedTask;
                 },
-                (ThreadOption)(-1)))
+                (EventAggregatorExecution)(-1)))
             .Throws<ArgumentOutOfRangeException>();
     }
 
@@ -411,7 +411,7 @@ public class EventAggregatorTests
         ((IViewAware)target).AttachView(view, null);
         ViewHelper.Initialize(new TestViewAdapter());
         var ea = new EventAggregator();
-        ea.Subscribe<TestViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("inline"));
 
@@ -431,7 +431,7 @@ public class EventAggregatorTests
         ((IViewAware)target).AttachView(firstView, "first");
         ((IViewAware)target).AttachView(secondView, "second");
         var ea = new EventAggregator();
-        ea.Subscribe<TestViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("first-view"));
 
@@ -450,7 +450,7 @@ public class EventAggregatorTests
         var context = new TestViewContext();
         var target = new CustomViewAwareTarget(new TestView(context));
         var ea = new EventAggregator();
-        ea.Subscribe<CustomViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<CustomViewAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("custom-view-aware"));
 
@@ -471,8 +471,8 @@ public class EventAggregatorTests
         ((IViewAware)target2).AttachView(view2, null);
         ViewHelper.Initialize(new TestViewAdapter());
         var ea = new EventAggregator();
-        ea.Subscribe<TestViewAwareTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
-        ea.Subscribe<TestViewAwareTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target1, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(target2, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("batched"));
 
@@ -496,9 +496,9 @@ public class EventAggregatorTests
         ((IViewAware)targetA2).AttachView(new TestView(contextA), null);
         ViewHelper.Initialize(new TestViewAdapter());
         var ea = new EventAggregator();
-        ea.Subscribe<TestViewAwareTarget, MessageA>(targetA1, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
-        ea.Subscribe<TestViewAwareTarget, MessageA>(targetB, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
-        ea.Subscribe<TestViewAwareTarget, MessageA>(targetA2, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(targetA1, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(targetB, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
+        ea.Subscribe<TestViewAwareTarget, MessageA>(targetA2, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("interleaved"));
 
@@ -519,7 +519,7 @@ public class EventAggregatorTests
         var context = new TestViewContext();
         var view = new TestView(context);
         var ea = new EventAggregator();
-        ea.Subscribe<TestView, MessageA>(view, (target, message) => target.ReceivedMessages.Add(message), ThreadOption.UIThread);
+        ea.Subscribe<TestView, MessageA>(view, (target, message) => target.ReceivedMessages.Add(message), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("target-view"));
 
@@ -539,7 +539,7 @@ public class EventAggregatorTests
         var target = new TestParentAwareTarget();
         ((IParentAware)target).AttachParent(parent);
         var ea = new EventAggregator();
-        ea.Subscribe<TestParentAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestParentAwareTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("parent-view"));
 
@@ -553,7 +553,7 @@ public class EventAggregatorTests
     {
         var ea = new EventAggregator();
         var target = new TestTarget();
-        ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), ThreadOption.UIThread);
+        ea.Subscribe<TestTarget, MessageA>(target, (t, m) => t.ReceivedMessages.Add(m), EventAggregatorExecution.UIThread);
 
         ea.Publish(new MessageA("fallback"));
 
@@ -570,7 +570,7 @@ public class EventAggregatorTests
         ea.Subscribe<TestTarget, MessageA>(target, (_, _) =>
         {
             handlerThreadId = Environment.CurrentManagedThreadId;
-        }, ThreadOption.ThreadPool);
+        }, EventAggregatorExecution.ThreadPool);
 
         await Task.Run(() =>
         {
@@ -603,8 +603,8 @@ public class EventAggregatorTests
                 completed.TrySetResult();
         }
 
-        ea.Subscribe<TestTarget, MessageA>(target1, Handle, ThreadOption.ThreadPool);
-        ea.Subscribe<TestTarget, MessageA>(target2, Handle, ThreadOption.ThreadPool);
+        ea.Subscribe<TestTarget, MessageA>(target1, Handle, EventAggregatorExecution.ThreadPool);
+        ea.Subscribe<TestTarget, MessageA>(target2, Handle, EventAggregatorExecution.ThreadPool);
         var publishReturned = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var publisherThread = new Thread(() =>
         {

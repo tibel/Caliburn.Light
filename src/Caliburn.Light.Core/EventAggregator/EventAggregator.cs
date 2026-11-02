@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -24,14 +25,14 @@ public sealed class EventAggregator : IEventAggregator
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <param name="target">The message handler target.</param>
     /// <param name="handler">The message handler to register.</param>
-    /// <param name="threadOption">Specifies the thread on which the <paramref name="handler"/> is executed.</param>
+    /// <param name="execution">Specifies where the <paramref name="handler"/> is executed.</param>
     /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Action<TTarget, TMessage> handler, EventAggregatorExecution execution = EventAggregatorExecution.PublisherThread)
         where TTarget : class
     {
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(handler);
-        ThrowIfInvalidThreadOption(threadOption);
+        ThrowIfInvalidEventAggregatorExecution(execution);
 
         Task wrapper(TTarget t, TMessage m)
         {
@@ -39,7 +40,7 @@ public sealed class EventAggregator : IEventAggregator
             return Task.CompletedTask;
         }
 
-        var item = new EventAggregatorHandlerEntry<TTarget, TMessage>(target, wrapper, threadOption);
+        var item = new EventAggregatorHandlerEntry<TTarget, TMessage>(target, wrapper, execution);
         SubscribeCore(item);
         return item;
     }
@@ -51,28 +52,28 @@ public sealed class EventAggregator : IEventAggregator
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <param name="target">The message handler target.</param>
     /// <param name="handler">The message handler to register.</param>
-    /// <param name="threadOption">Specifies the thread on which the <paramref name="handler"/> is executed.</param>
+    /// <param name="execution">Specifies where the <paramref name="handler"/> is executed.</param>
     /// <returns>The <see cref="IEventAggregatorHandler" />.</returns>
-    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption = ThreadOption.PublisherThread)
+    public IEventAggregatorHandler Subscribe<TTarget, TMessage>(TTarget target, Func<TTarget, TMessage, Task> handler, EventAggregatorExecution execution = EventAggregatorExecution.PublisherThread)
         where TTarget : class
     {
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(handler);
-        ThrowIfInvalidThreadOption(threadOption);
+        ThrowIfInvalidEventAggregatorExecution(execution);
 
-        var item = new EventAggregatorHandlerEntry<TTarget, TMessage>(target, handler, threadOption);
+        var item = new EventAggregatorHandlerEntry<TTarget, TMessage>(target, handler, execution);
         SubscribeCore(item);
         return item;
     }
 
-    private static void ThrowIfInvalidThreadOption(ThreadOption value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    private static void ThrowIfInvalidEventAggregatorExecution(EventAggregatorExecution value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
-        if (value < ThreadOption.PublisherThread || value > ThreadOption.UIThread)
+        if (value < EventAggregatorExecution.PublisherThread || value > EventAggregatorExecution.UIThread)
             ThrowOutOfRange(value, paramName);
     }
 
     [DoesNotReturn]
-    private static void ThrowOutOfRange(ThreadOption value, string? paramName) => throw new ArgumentOutOfRangeException(paramName, value, null);
+    private static void ThrowOutOfRange(EventAggregatorExecution value, string? paramName) => throw new ArgumentOutOfRangeException(paramName, value, null);
 
     private void SubscribeCore(IEventAggregatorHandlerEntry handler)
     {
@@ -191,13 +192,13 @@ public sealed class EventAggregator : IEventAggregator
                 continue;
             }
 
-            switch (handler.ThreadOption)
+            switch (handler.Execution)
             {
-                case ThreadOption.PublisherThread:
+                case EventAggregatorExecution.PublisherThread:
                     processedHandlers[i] = true;
                     InvokeHandler(handler, message, target);
                     break;
-                case ThreadOption.UIThread:
+                case EventAggregatorExecution.UIThread:
                     var view = FindView(target);
                     if (view is null || ViewHelper.CheckAccess(view))
                     {
@@ -209,7 +210,7 @@ public sealed class EventAggregator : IEventAggregator
                         queuedView = view;
                     }
                     break;
-                case ThreadOption.ThreadPool:
+                case EventAggregatorExecution.ThreadPool:
                     if (isThreadPoolThread)
                     {
                         processedHandlers[i] = true;
@@ -268,6 +269,7 @@ public sealed class EventAggregator : IEventAggregator
             current = (current as IParentAware)?.Parent;
         }
 
+        Trace.TraceInformation("UIThread execution for EventAggregator target {0} could not find a view; the handler will run on the publishing thread.", target);
         return null;
     }
 

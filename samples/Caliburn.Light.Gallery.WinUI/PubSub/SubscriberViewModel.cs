@@ -6,7 +6,7 @@ public sealed partial class SubscriberViewModel : BindableObject
 
     public SubscriberViewModel(IEventAggregator eventAggregator)
     {
-        eventAggregator.Subscribe<SubscriberViewModel, string>(this, static (t, m) => t.OnMessageReceived(m));
+        eventAggregator.Subscribe<SubscriberViewModel, string>(this, static (t, m) => t.OnMessageReceived(m), EventAggregatorExecution.UIThread);
     }
 
     private void OnMessageReceived(string message)

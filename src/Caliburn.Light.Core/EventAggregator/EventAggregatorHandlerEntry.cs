@@ -10,14 +10,14 @@ internal sealed class EventAggregatorHandlerEntry<TTarget, TMessage> : IEventAgg
     private readonly WeakReference<TTarget> _weakTarget;
     private readonly Func<TTarget, TMessage, Task> _handler;
 
-    public EventAggregatorHandlerEntry(TTarget target, Func<TTarget, TMessage, Task> handler, ThreadOption threadOption)
+    public EventAggregatorHandlerEntry(TTarget target, Func<TTarget, TMessage, Task> handler, EventAggregatorExecution execution)
     {
         _weakTarget = new WeakReference<TTarget>(target);
         _handler = handler;
-        ThreadOption = threadOption;
+        Execution = execution;
     }
 
-    public ThreadOption ThreadOption { get; }
+    public EventAggregatorExecution Execution { get; }
 
     public bool IsDead => !_weakTarget.TryGetTarget(out _);
 
