@@ -60,6 +60,8 @@ Each platform project references Core and mirrors the same patterns: `WindowLife
 
 Record user-facing API and behavior changes in `CHANGELOG.md`, along with updates to user-facing platform dependencies (such as Avalonia or WinUI). Omit test-only changes and test-only dependency updates.
 
+When a change refines, corrects, or replaces behavior or an API covered by an entry under `[Unreleased]`, update that entry to describe the final state. Add a separate entry when the change is user-facing and not covered by an existing entry.
+
 ### Lifecycle event cleanup
 
 All events subscribed in lifecycle constructors **must** be unsubscribed when the lifecycle ends. In `WindowLifecycle`, `OnViewClosed` is terminal — unsubscribe everything (`Closed`, `Activated`, `Deactivated`, `Closing`) there. In `PopupLifecycle` and `ContentDialogLifecycle`, `Closed` is **not** terminal (controls can reopen), so events stay wired.
