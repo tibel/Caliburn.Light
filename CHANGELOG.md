@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- WinUI: Updated AppSDK to 2.6.5
+
 ## [8.0.0] - 2026-11-02
 
 ### Added
