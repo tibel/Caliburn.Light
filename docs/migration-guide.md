@@ -53,6 +53,7 @@ The following APIs have been removed from the framework:
 | `DispatcherHelper` | 8.0.0 | Use `ViewHelper.SwitchToViewAsync(view)` |
 | `View.GetDispatcherFrom`, `IDispatcher`, `CurrentThreadDispatcher`, `ViewHelper.GetDispatcher` | 8.0.0 | Use view-based `ViewHelper.CheckAccess`, `BeginInvoke`, and `SwitchToViewAsync` |
 | EventAggregator `dispatcher` subscription argument | 8.0.0 | Specify `EventAggregatorExecution.PublisherThread`, `UIThread`, or `ThreadPool` |
+| `AsyncCommand.Executing`, `EventAggregator.Executing`, `WeakEventHandler.RegisterAsyncCommandExecutingWeak`, `WeakEventHandler.RegisterEventAggregatorExecutingWeak`, `TaskEventArgs` | 8.0.0 | Track execution per command using `AsyncCommand.IsExecuting`; observe async tasks directly |
 
 `SimpleContainer` was removed in 6.0.0 alongside `ViewModelTypeResolver` and ships in no package, including the meta-package. [Migrating from the legacy container to Microsoft.Extensions.DependencyInjection](simple-container-migration.md) covers moving off it.
 

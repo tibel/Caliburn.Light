@@ -26,5 +26,10 @@ In 2026, version 6.3 and 7.0 continued that work:
 - **Platform updates** - Avalonia 12 and Windows App SDK 2.x
 - **Lifecycle fixes** - Fixed close-guard handling in the WinUI `WindowLifecycle` and activation-event unsubscription on close in the WPF and Avalonia ones
 
+Later in 2026, versions 7.1 and 8.0 continued that evolution:
+- **Coroutines & ParentAware** - Reintroduced `Caliburn.Light.Coroutines` and added `IParentAware`/`ParentAware` for parent/child lifecycle association
+- **Direct Dispatching** - Replaced dispatcher abstractions with view-based `ViewHelper` operations and `EventAggregatorExecution`
+- **Independent BindableCollection** - `BindableCollection<T>` became a standalone collection independent of `ObservableCollection<T>` with high-performance range operations
+
 And the rest is history!
 

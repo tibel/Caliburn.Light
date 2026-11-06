@@ -111,9 +111,8 @@ handler on that view's UI thread. If no view can be found, it runs inline on the
 EventAggregator queues a thread-pool continuation.
 
 Handlers that share a reachable UI thread or background execution pass are batched into one
-continuation. Async handler tasks are observed and reported through `EventAggregator.Executing`
-when they do not complete synchronously. If the thread pool rejects a queued background batch, those
-background deliveries are dropped.
+continuation. Async handler tasks are observed (`task.Observe()`) to suppress unobserved task
+exceptions. If the thread pool rejects a queued background batch, those background deliveries are dropped.
 
 ## Unsubscribing
 

@@ -77,8 +77,7 @@ IEnumerator<ICoTask> GetSteps()
 
 The following adapters are available:
 
-- `Action` and `Func<TResult>`
-- `Func<Task>` and `Func<Task<TResult>>` method groups or lambdas
+- `Action` and `Func<TResult>` delegates
 - `Func<CommandExecutionContext, Task>`, `Func<CommandExecutionContext, Task<TResult>>`, `Func<Task>`, and `Func<Task<TResult>>` (lazy factories that are invoked when the co-task begins executing)
 - `IEnumerator<ICoTask>` sequences
 

@@ -110,8 +110,7 @@ public class MyViewModel : BindableObject
 The `AsyncCommand` base class provides:
 
 - **Re-entrancy prevention**: While the command is executing, `CanExecute` returns `false`
-- **IsExecuting property**: Track whether the command is currently running
-- **Executing event**: Static event raised when `Execute` starts an operation that does not complete synchronously (useful for global loading indicators)
+- **IsExecuting property**: Track whether the command is currently running; raises `PropertyChanged` when its state changes and automatically triggers `CanExecuteChanged`
 
 ```csharp
 // Check if command is running
@@ -119,32 +118,7 @@ if (myCommand.IsExecuting)
 {
     // Show loading indicator
 }
-
-// Global handler for async command execution
-AsyncCommand.Executing += (sender, args) =>
-{
-    // args.Task contains the executing task
-};
 ```
-
-`Executing` is a static event, so a plain subscription keeps any captured object alive for the lifetime of the process. For handlers that should not outlive the object they capture, register weakly instead:
-
-```csharp
-private readonly IDisposable _registration;
-
-public LoadingIndicator()
-{
-    _registration = WeakEventHandler.RegisterAsyncCommandExecutingWeak(this,
-        static (subscriber, sender, args) => subscriber.OnCommandExecuting(args.Task));
-}
-
-private void OnCommandExecuting(Task task) { }
-
-// Dispose the registration to detach deterministically
-_registration.Dispose();
-```
-
-See [Weak Event Handler](weak-event-handler.md) for details.
 
 ## Observing Property Changes
 

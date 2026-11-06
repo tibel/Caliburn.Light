@@ -135,6 +135,16 @@ Range operations and `RemoveAll` raise a single `Reset` notification when they c
 
 If a range source is a lazy query over the same collection, materialize it before calling `AddRange`, `InsertRange`, or `RemoveRange` (for example, with `ToList()`). This prevents the operation from modifying the collection while that query is being enumerated.
 
+## Item Handlers for Conductors
+
+`BindableCollection<T>` can be constructed with an `IBindableCollectionItemHandler<T>`:
+
+```csharp
+public BindableCollection(IBindableCollectionItemHandler<T> itemHandler)
+```
+
+Custom conductor implementations can implement `IBindableCollectionItemHandler<T>` and pass themselves to the collection constructor. The collection invokes `OnItemAdded(item)` and `OnItemRemoved(item)` as items are added and removed, allowing conductors to maintain parent/child associations and manage item lifecycles.
+
 ## Example: Master-Detail Pattern
 
 A common pattern using `BindableCollection<T>`:

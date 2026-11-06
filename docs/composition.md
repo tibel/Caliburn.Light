@@ -275,7 +275,7 @@ public class MyCloseStrategy<T> : ICloseStrategy<T> where T : class
     public Task<CloseResult<T>> ExecuteAsync(IReadOnlyList<T> toClose)
     {
         // Custom logic to determine which items can close
-        var canClose = Array.TrueForAll(toClose, item => ShouldClose(item));
+        var canClose = toClose.All(item => ShouldClose(item));
         return Task.FromResult(new CloseResult<T>(canClose, toClose));
     }
 

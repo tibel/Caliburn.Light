@@ -11,7 +11,8 @@ Caliburn.Light.Avalonia extends the core framework with Avalonia-specific featur
 - **View/ViewModel Resolution**: Explicit mappings with attached-property and window-manager resolution
 - **Window Management**: Window lifecycle and dialog services
 - **View Adapters**: Avalonia-specific view integration
-- **Lifecycle Management**: Window and popup lifecycle handlers
+- **Page Navigation**: Page lifecycle management
+- **Lifecycle Management**: Window, popup, and page lifecycle handlers
 
 ## Documentation
 
