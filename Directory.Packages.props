@@ -8,9 +8,9 @@
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.6" />
     <PackageVersion Include="Avalonia.Headless" Version="12.1.6" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.6" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="11.0.0" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.6.5" />
-    <PackageVersion Include="TUnit" Version="1.81.16" />
+    <PackageVersion Include="TUnit" Version="1.83.0" />
   </ItemGroup>
 </Project>
