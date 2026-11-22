@@ -52,6 +52,7 @@ Caliburn.Light is a lightweight, portable MVVM framework designed for building m
 ### Advanced Topics
 - [UI Thread Dispatching](dispatching.md) - View-based UI thread access and dispatch
 - [Async (Task Support)](async.md) - Asynchronous patterns and lifecycle
+- [Deferred Events](deferred-events.md) - Await asynchronous event-handler work
 - [Weak Event Handler](weak-event-handler.md) - Prevent memory leaks with weak event subscriptions
 - [Design Time Support](design-time.md) - Visual Studio designer integration
 
