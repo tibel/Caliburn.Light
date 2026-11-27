@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Core: Added deferred event arguments and async event invocation with multiple deferrals and handler-accessible cancellation
 
 ### Changed
-- Avalonia: Updated to 12.1.6
+- Avalonia: Updated to 12.2.0
 - WinUI: Updated AppSDK to 2.7.0
 
 ## [8.0.0] - 2026-11-02
